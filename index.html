@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>BLDS | BlackLightDoms</title>
+<title>BLDS | The Eclipse</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,68 @@ body{
   position:relative;
 }
 
+/* LOADING */
+
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  background:black;
+  z-index:99999;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  animation:fadeOut 1.5s forwards;
+  animation-delay:2.2s;
+}
+
+.loading-core{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:white;
+
+  box-shadow:
+  0 0 15px white,
+  0 0 40px white,
+  0 0 80px rgba(255,255,255,0.6);
+
+  animation:pulse 2s infinite;
+}
+
+.loading-text{
+  margin-top:25px;
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:4px;
+  color:rgba(255,255,255,0.75);
+}
+
+@keyframes fadeOut{
+  to{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+
+@keyframes pulse{
+  0%{
+    transform:scale(0.7);
+    opacity:0.5;
+  }
+
+  50%{
+    transform:scale(1.4);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(0.7);
+    opacity:0.5;
+  }
+}
+
 /* BACKGROUND */
 
 body::before{
@@ -41,14 +103,60 @@ body::before{
 
   background:
   radial-gradient(circle at center,
-  rgba(255,255,255,0.08),
+  rgba(255,255,255,0.09),
   transparent 30%),
 
   radial-gradient(circle at top,
   rgba(255,255,255,0.05),
   transparent 40%);
 
-  z-index:-2;
+  z-index:-5;
+}
+
+/* PARTICLES */
+
+.nebula{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-4;
+}
+
+.fog{
+  position:absolute;
+  width:600px;
+  height:600px;
+  border-radius:50%;
+
+  background:
+  radial-gradient(circle,
+  rgba(255,255,255,0.06),
+  transparent 70%);
+
+  filter:blur(40px);
+
+  animation:fogMove 18s infinite alternate ease-in-out;
+}
+
+.fog:nth-child(1){
+  top:-100px;
+  left:-100px;
+}
+
+.fog:nth-child(2){
+  bottom:-200px;
+  right:-100px;
+  animation-duration:22s;
+}
+
+@keyframes fogMove{
+  from{
+    transform:translate(0,0) scale(1);
+  }
+
+  to{
+    transform:translate(60px,-30px) scale(1.1);
+  }
 }
 
 /* STARS */
@@ -57,7 +165,7 @@ body::before{
   position:fixed;
   inset:0;
   overflow:hidden;
-  z-index:-1;
+  z-index:-3;
   pointer-events:none;
 }
 
@@ -82,6 +190,39 @@ body::before{
 
 }
 
+/* MUSIC BUTTON */
+
+.music-toggle{
+  position:fixed;
+  top:20px;
+  right:20px;
+
+  width:50px;
+  height:50px;
+
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.25);
+
+  background:rgba(255,255,255,0.06);
+
+  color:white;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(10px);
+
+  z-index:999;
+
+  transition:0.3s;
+}
+
+.music-toggle:hover{
+  transform:scale(1.08);
+
+  box-shadow:
+  0 0 20px rgba(255,255,255,0.4);
+}
+
 /* MAIN */
 
 .container{
@@ -96,6 +237,45 @@ body::before{
   text-align:center;
 
   padding:30px;
+}
+
+/* ECLIPSE CORE */
+
+.core-visual{
+  position:absolute;
+  width:420px;
+  height:420px;
+
+  border-radius:50%;
+
+  background:
+  radial-gradient(circle,
+  rgba(255,255,255,0.15),
+  transparent 60%);
+
+  filter:blur(20px);
+
+  animation:corePulse 5s infinite;
+  z-index:-1;
+}
+
+@keyframes corePulse{
+
+  0%{
+    transform:scale(1);
+    opacity:0.5;
+  }
+
+  50%{
+    transform:scale(1.08);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(1);
+    opacity:0.5;
+  }
+
 }
 
 /* LOGO */
@@ -158,6 +338,7 @@ h1{
   color:rgba(255,255,255,0.7);
   letter-spacing:2px;
   margin-bottom:35px;
+  min-height:30px;
 }
 
 /* BUTTON */
@@ -210,90 +391,37 @@ h1{
   margin-bottom:40px;
 }
 
-/* LORE */
+/* SOCIAL UNDER BUTTON */
 
-.lore-box{
+.mini-social{
+  margin-top:-10px;
+  margin-bottom:10px;
 
-  width:100%;
-  max-width:900px;
-
-  background:rgba(255,255,255,0.03);
-
-  border:1px solid rgba(255,255,255,0.12);
-
-  border-radius:25px;
-
-  padding:35px;
-
-  margin-bottom:40px;
-
-  text-align:left;
-
-  backdrop-filter:blur(10px);
-
-  box-shadow:
-  0 0 25px rgba(255,255,255,0.08);
+  display:flex;
+  justify-content:center;
+  gap:15px;
 }
 
-.lore-title{
+.mini-social img{
+  width:28px;
+  height:28px;
 
-  font-family:'Orbitron',sans-serif;
+  transition:0.3s;
 
-  font-size:2rem;
-
-  letter-spacing:4px;
-
-  margin-bottom:25px;
-
-  text-align:center;
-
-  text-shadow:
-  0 0 10px white,
-  0 0 30px rgba(255,255,255,0.4);
+  opacity:0.8;
 }
 
-.lore-text{
-
-  color:rgba(255,255,255,0.82);
-
-  line-height:2;
-
-  font-size:1rem;
+.mini-social img:hover{
+  transform:scale(1.15);
+  opacity:1;
 }
 
-/* TIMELINE */
+/* CARDS */
 
-.timeline{
-  width:100%;
-  max-width:900px;
-
-  display:none;
-
-  animation:fadeIn 1s ease;
-}
-
-@keyframes fadeIn{
-
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-
-}
-
-.section-title{
-  font-family:'Orbitron',sans-serif;
-  font-size:2rem;
-  margin-bottom:35px;
-  letter-spacing:3px;
-}
-
-.card{
+.card,
+.member-card,
+.quote-box,
+.secret-box{
 
   border:1px solid rgba(255,255,255,0.12);
 
@@ -307,24 +435,84 @@ h1{
 
   margin-bottom:20px;
 
-  text-align:left;
+  width:100%;
+  max-width:900px;
 
-  transition:0.3s;
+  animation:fadeUp 1s ease;
 }
 
-.card:hover{
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(40px);
+  }
 
-  transform:translateY(-5px);
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 
-  border-color:rgba(255,255,255,0.35);
+.section-title{
+  font-family:'Orbitron',sans-serif;
+  margin-bottom:25px;
+  letter-spacing:3px;
+}
 
-  box-shadow:
-  0 0 25px rgba(255,255,255,0.15);
+/* MEMBER */
+
+.member-grid{
+  width:100%;
+  max-width:900px;
+
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.member-card h3{
+  margin-bottom:10px;
+  font-family:'Orbitron',sans-serif;
+}
+
+.member-card p{
+  color:rgba(255,255,255,0.7);
+}
+
+/* QUOTES */
+
+.quote-box{
+  display:none;
+}
+
+.quote-text{
+  font-size:1.2rem;
+  line-height:2;
+  color:rgba(255,255,255,0.85);
+}
+
+/* SECRET */
+
+.secret-box{
+  display:none;
+  text-align:left;
+}
+
+.secret-box p{
+  line-height:2;
+  color:rgba(255,255,255,0.8);
+}
+
+/* TIMELINE */
+
+.timeline{
+  width:100%;
+  max-width:900px;
+  display:none;
 }
 
 .date{
   font-family:'Orbitron',sans-serif;
-  font-size:0.9rem;
   color:rgba(255,255,255,0.6);
   margin-bottom:8px;
 }
@@ -334,74 +522,11 @@ h1{
   font-weight:600;
 }
 
-/* FOUNDERS */
-
-.founders{
-  margin-top:60px;
-}
-
-.founder-card{
-
-  padding:18px;
-
-  border-radius:18px;
-
-  margin-bottom:18px;
-
-  background:rgba(255,255,255,0.03);
-
-  border:1px solid rgba(255,255,255,0.1);
-
-  transition:0.3s;
-}
-
-.founder-card:hover{
-
-  transform:translateY(-5px);
-
-  box-shadow:
-  0 0 25px rgba(255,255,255,0.12);
-}
-
-.role{
-  color:rgba(255,255,255,0.6);
-  margin-top:5px;
-  font-size:0.95rem;
-}
-
-/* SOCIAL */
-
-.socials{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  margin-top:50px;
-  margin-bottom:50px;
-}
-
-.socials img{
-
-  width:60px;
-  height:60px;
-
-  transition:0.3s;
-
-  filter:
-  drop-shadow(0 0 10px white)
-  drop-shadow(0 0 25px rgba(255,255,255,0.4));
-}
-
-.socials img:hover{
-  transform:scale(1.15);
-}
-
 /* FOOTER */
 
 .footer{
-  color:rgba(255,255,255,0.45);
-  letter-spacing:2px;
-  font-size:0.9rem;
-  margin-top:30px;
+  margin-top:40px;
+  color:rgba(255,255,255,0.4);
 }
 
 /* MOBILE */
@@ -410,11 +535,6 @@ h1{
 
   h1{
     font-size:2rem;
-  }
-
-  .section-title,
-  .lore-title{
-    font-size:1.5rem;
   }
 
   .eclipse{
@@ -429,11 +549,34 @@ h1{
 
 <body>
 
+<!-- LOADING -->
+
+<div id="loadingScreen">
+
+  <div class="loading-core"></div>
+
+  <div class="loading-text">
+    ENTERING THE ECLIPSE...
+  </div>
+
+</div>
+
 <!-- MUSIC -->
 
 <audio id="bgMusic" loop>
   <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
 </audio>
+
+<button class="music-toggle" onclick="toggleMusic()" id="musicBtn">
+🔊
+</button>
+
+<!-- NEBULA -->
+
+<div class="nebula">
+  <div class="fog"></div>
+  <div class="fog"></div>
+</div>
 
 <!-- STARS -->
 
@@ -443,244 +586,216 @@ h1{
 
 <div class="container">
 
-  <!-- LOGO -->
+<div class="core-visual"></div>
 
-  <div class="eclipse">
-    <img src="logo.png" alt="BLDS Logo">
-  </div>
+<!-- LOGO -->
 
-  <!-- TITLE -->
+<div class="eclipse">
+  <img src="logo.png" alt="BLDS Logo">
+</div>
 
-  <h1>BLACKLIGHTDOMS</h1>
+<h1>BLACKLIGHTDOMS</h1>
 
-  <p class="subtitle">
-    THE ECLIPSE HAS BEGUN
-  </p>
+<p class="subtitle" id="typingText"></p>
 
-  <!-- ENTER BUTTON -->
+<button class="enter-btn" onclick="showMenu()">
+  ENTER THE ECLIPSE
+</button>
 
-  <button class="enter-btn" onclick="showMenu()">
-    ENTER THE ECLIPSE
+<!-- MENU -->
+
+<div class="menu-buttons" id="menuButtons">
+
+  <button class="menu-btn" onclick="openOrigin()">
+    ORIGIN
   </button>
 
-  <!-- MENU -->
+  <div class="mini-social">
+    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
+    </a>
 
-  <div class="menu-buttons" id="menuButtons">
-
-    <button class="menu-btn" onclick="openLore()">
-      THE ORIGIN
-    </button>
-
-    <button class="menu-btn" onclick="openTimeline()">
-      BLDS ARCHIVE
-    </button>
-
+    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+    </a>
   </div>
 
-  <!-- LORE -->
+  <button class="menu-btn" onclick="openQuotes()">
+    QUOTES
+  </button>
 
-  <div class="timeline" id="loreSection">
+  <div class="mini-social">
+    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
+    </a>
 
-    <div class="lore-box">
-
-      <h2 class="lore-title">
-        THE ORIGIN OF BLDS
-      </h2>
-
-      <p class="lore-text">
-
-        Before BLDS had a name...<br><br>
-
-        Before the symbol existed.<br>
-        Before the squad was formed.<br>
-        Before the eclipse began...<br><br>
-
-        There were only individuals trying to survive their own darkness.<br><br>
-
-        Some were ignored.<br>
-        Some were underestimated.<br>
-        Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-        They watched others rise faster.<br>
-        Watched others gain recognition.<br>
-        Watched people quit the moment things became difficult.<br><br>
-
-        And slowly, they realized something:<br><br>
-
-        Most people only shine when the world is bright.<br>
-        But very few can continue moving forward when everything turns dark.<br><br>
-
-        That realization became the beginning of BLDS.<br><br>
-
-        Not a squad created for fame.<br>
-        Not a kingdom built on arrogance.<br>
-        Not a place for people searching only for victory.<br><br>
-
-        But a dominion built by those who refused to disappear.<br><br>
-
-        A place where failure was never the end.<br>
-        A place where loyalty mattered more than status.<br>
-        A place where darkness was not feared... but embraced.<br><br>
-
-        BLDS was never meant to follow the light.<br><br>
-
-        It was created to become the eclipse itself.
-
-        <br><br><br>
-
-        <hr style="border:none;height:1px;background:rgba(255,255,255,0.15);margin:30px 0;">
-
-        <br>
-
-        <h2 class="lore-title">
-          THE CORE
-        </h2>
-
-        At the center of the eclipse lies the Core.<br><br>
-
-        A single star that continues to shine no matter how dark the sky becomes.<br><br>
-
-        The Core represents the inner purpose carried by every member of BLDS.<br><br>
-
-        Not a purpose given by the world.<br>
-        Not a purpose created by attention or popularity.<br>
-        But a purpose discovered through hardship.<br><br>
-
-        It is the reminder that:<br><br>
-
-        Even when everything around you changes…<br>
-        Even when people leave…<br>
-        Even when failure surrounds you…<br>
-        Your inner light can still remain alive.<br><br>
-
-        BLDS believes the strongest people are not those who never fall.<br><br>
-
-        The strongest are the ones who continue standing after every fall.<br><br>
-
-        That is why the Core never disappears.<br><br>
-
-        Because purpose cannot be erased by fear.
-
-        <br><br><br>
-
-        <hr style="border:none;height:1px;background:rgba(255,255,255,0.15);margin:30px 0;">
-
-        <br>
-
-        <h2 class="lore-title">
-          THE MEANING
-        </h2>
-
-        <b>The Eclipse</b><br>
-        The world.<br>
-        The darkness.<br>
-        The challenges we face every day.<br><br>
-
-        <b>The Core</b><br>
-        Our purpose.<br>
-        Our inner light.<br>
-        The source of our strength.
-
-      </p>
-
-    </div>
-
+    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+    </a>
   </div>
 
-  <!-- ARCHIVE -->
+  <button class="menu-btn" onclick="openMembers()">
+    MEMBER COUNT
+  </button>
 
-  <div class="timeline" id="timeline">
+  <div class="mini-social">
+    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
+    </a>
 
-    <h2 class="section-title">
-      BLDS ARCHIVE
-    </h2>
+    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+    </a>
+  </div>
 
-    <div class="card">
-      <div class="date">05-03-2024</div>
-      <div class="event">BLDS Born</div>
-    </div>
+  <button class="menu-btn" onclick="openTimeline()">
+    BLDS ARCHIVE
+  </button>
 
-    <div class="card">
-      <div class="date">15-05-2024</div>
-      <div class="event">WhatsApp Community</div>
-    </div>
+</div>
 
-    <div class="card">
-      <div class="date">12-09-2024</div>
-      <div class="event">Discord Community</div>
-    </div>
+<!-- QUOTES -->
 
-    <div class="card">
-      <div class="date">05-03-2025</div>
-      <div class="event">BLDS Anniversary</div>
-    </div>
+<div class="quote-box" id="quoteBox">
 
-    <div class="card">
-      <div class="date">20-08-2025</div>
-      <div class="event">Massive Remake</div>
-    </div>
+  <h2 class="section-title">
+    RANDOM QUOTE
+  </h2>
 
-    <div class="card">
-      <div class="date">05-03-2026</div>
-      <div class="event">BLDS Anniversary</div>
-    </div>
+  <div class="quote-text" id="quoteText"></div>
 
-    <!-- FOUNDERS -->
+</div>
 
-    <div class="founders">
+<!-- MEMBER -->
 
-      <h2 class="section-title">
-        THE ORIGIN TRINITY
-      </h2>
+<div class="member-grid" id="memberSection" style="display:none;">
 
-      <div class="founder-card">
-        <h3>Michael Lorenzo</h3>
-        <div class="role">
-          Founder of BLDS
-        </div>
-      </div>
+  <div class="member-card">
+    <h3>MEMBERS</h3>
+    <p>CLASSIFIED</p>
+  </div>
 
-      <div class="founder-card">
-        <h3>William Nayottama</h3>
-        <div class="role">
-          Right Hand of BLDS
-        </div>
-      </div>
+  <div class="member-card">
+    <h3>ACTIVE SINCE</h3>
+    <p>2024</p>
+  </div>
 
-      <div class="founder-card">
-        <h3>Felix</h3>
-        <div class="role">
-          Left Hand of BLDS
-        </div>
-      </div>
+  <div class="member-card">
+    <h3>PROJECTS</h3>
+    <p>ONGOING</p>
+  </div>
 
-    </div>
-
-    <!-- SOCIAL -->
-
-    <div class="socials">
-
-      <a href="https://discord.gg/r4dM4QFteV" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
-      </a>
-
-      <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-      </a>
-
-    </div>
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-      BLACKLIGHTDOMINIONS © 2026
-    </div>
-
+  <div class="member-card">
+    <h3>STATUS</h3>
+    <p>THE CORE IS STILL ALIVE 🔥</p>
   </div>
 
 </div>
 
+<!-- SECRET -->
+
+<div class="secret-box" id="secretLore">
+
+<h2 class="section-title">
+THE FORGOTTEN ECLIPSE
+</h2>
+
+<p>
+Long before BLDS became known…<br><br>
+
+before the symbol,<br>
+before the Core,<br>
+before the name itself existed…<br><br>
+
+there was another generation.<br><br>
+
+A generation erased from the archive.<br><br>
+
+They were the first ones who tried to build a dominion inside the darkness.<br><br>
+
+Not for power.<br>
+Not for glory.<br><br>
+
+But to create a place where broken people could still stand together.<br><br>
+
+And somewhere… buried beneath forgotten archives and erased memories… the remains of the first eclipse still exist.<br><br>
+
+Waiting.
+</p>
+
+</div>
+
+<!-- TIMELINE -->
+
+<div class="timeline" id="timeline">
+
+<h2 class="section-title">
+BLDS ARCHIVE
+</h2>
+
+<div class="card">
+  <div class="date">05-03-2024</div>
+  <div class="event">BLDS Born</div>
+</div>
+
+<div class="card">
+  <div class="date">15-05-2024</div>
+  <div class="event">WhatsApp Community</div>
+</div>
+
+<div class="card">
+  <div class="date">12-09-2024</div>
+  <div class="event">Discord Community</div>
+</div>
+
+<div class="card">
+  <div class="date">05-03-2025</div>
+  <div class="event">BLDS Anniversary</div>
+</div>
+
+<div class="card">
+  <div class="date">20-08-2025</div>
+  <div class="event">Massive Remake</div>
+</div>
+
+<div class="card">
+  <div class="date">05-03-2026</div>
+  <div class="event">BLDS Anniversary</div>
+</div>
+
+<div class="footer">
+BLACKLIGHTDOMINIONS © 2026
+</div>
+
+</div>
+
+</div>
+
 <script>
+
+/* TYPING EFFECT */
+
+const text =
+"THE ECLIPSE HAS BEGUN";
+
+let i = 0;
+
+function typing(){
+
+  if(i < text.length){
+
+    document.getElementById("typingText")
+    .innerHTML += text.charAt(i);
+
+    i++;
+
+    setTimeout(typing,80);
+
+  }
+
+}
+
+typing();
 
 /* MENU */
 
@@ -692,48 +807,133 @@ function showMenu(){
   document.getElementById("menuButtons")
   .style.display = "flex";
 
-}
-
-/* LORE */
-
-function openLore(){
-
-  document.getElementById("loreSection")
-  .style.display = "block";
-
-  document.getElementById("timeline")
-  .style.display = "none";
-
-  playMusic();
-
-}
-
-/* ARCHIVE */
-
-function openTimeline(){
-
-  document.getElementById("timeline")
-  .style.display = "block";
-
-  document.getElementById("loreSection")
-  .style.display = "none";
-
   playMusic();
 
 }
 
 /* MUSIC */
 
+let musicPlaying = true;
+
 function playMusic(){
 
   const music =
   document.getElementById("bgMusic");
 
-  music.volume = 0.3;
+  music.volume = 0.25;
 
-  music.play().catch(err => {
-    console.log("Audio blocked");
-  });
+  music.play().catch(() => {});
+
+}
+
+function toggleMusic(){
+
+  const music =
+  document.getElementById("bgMusic");
+
+  const btn =
+  document.getElementById("musicBtn");
+
+  if(music.paused){
+
+    music.play();
+    btn.innerHTML = "🔊";
+
+  }else{
+
+    music.pause();
+    btn.innerHTML = "🔇";
+
+  }
+
+}
+
+/* RANDOM QUOTES */
+
+const quotes = [
+
+"The eclipse was never meant to hide the light. It was meant to reveal who could survive without it.",
+
+"BLDS was built from broken nights and unfinished dreams.",
+
+"Some chase glory. We chase purpose.",
+
+"Only those who endure the darkness can understand the Core.",
+
+"The world fears the eclipse because it cannot control it.",
+
+"Legends are not born in comfort. They are forged in silence.",
+
+"The Core never fades, even when the world does.",
+
+"Most people shine in daylight. Few survive in eternal night.",
+
+"Darkness was never our enemy. It became our home.",
+
+"We do not fear the void. We walk through it."
+
+];
+
+const randomQuote =
+quotes[Math.floor(Math.random()*quotes.length)];
+
+document.getElementById("quoteText")
+.innerHTML = `"${randomQuote}"`;
+
+function hideAll(){
+
+  document.getElementById("quoteBox")
+  .style.display = "none";
+
+  document.getElementById("memberSection")
+  .style.display = "none";
+
+  document.getElementById("timeline")
+  .style.display = "none";
+
+}
+
+function openQuotes(){
+
+  hideAll();
+
+  document.getElementById("quoteBox")
+  .style.display = "block";
+
+}
+
+function openMembers(){
+
+  hideAll();
+
+  document.getElementById("memberSection")
+  .style.display = "grid";
+
+}
+
+function openTimeline(){
+
+  hideAll();
+
+  document.getElementById("timeline")
+  .style.display = "block";
+
+}
+
+/* SECRET CLICK */
+
+let originClick = 0;
+
+function openOrigin(){
+
+  originClick++;
+
+  if(originClick >= 5){
+
+    document.getElementById("secretLore")
+    .style.display = "block";
+
+  }
 
 }
 
@@ -742,7 +942,7 @@ function playMusic(){
 const starsContainer =
 document.getElementById("stars");
 
-for(let i = 0; i < 140; i++){
+for(let i = 0; i < 160; i++){
 
   const star =
   document.createElement("div");
