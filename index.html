@@ -100,9 +100,10 @@ body::before{
 }
 
 /* LOGO */
+
 .eclipse{
-  width:180px;
-  height:180px;
+  width:220px;
+  height:220px;
 
   display:flex;
   justify-content:center;
@@ -117,18 +118,17 @@ body::before{
 }
 
 .eclipse img{
-  width:100%; 
+  width:100%;
   height:100%;
 
   object-fit:contain;
-display:block;
+  display:block;
 
   filter:
   drop-shadow(0 0 10px white)
   drop-shadow(0 0 25px rgba(255,255,255,0.8))
   drop-shadow(0 0 70px rgba(255,255,255,0.35));
 }
-
 
 @keyframes floating{
 
@@ -137,7 +137,7 @@ display:block;
   }
 
   50%{
-    transform:translateY(-12px);
+    transform:translateY(-10px);
   }
 
   100%{
@@ -379,8 +379,8 @@ h1{
   }
 
   .eclipse{
-    width:180px;
-    height:180px;
+    width:170px;
+    height:170px;
   }
 
 }
@@ -408,14 +408,7 @@ h1{
 
   <div class="eclipse">
 
-    <!-- NAMA FILE LOGO -->
-
-  <div class="eclipse">
-
-  <img 
-    src="logo.png" 
-    alt="BLDS Logo"
-  >
+    <img src="logo.png" alt="BLDS Logo">
 
   </div>
 
@@ -540,19 +533,16 @@ function openTimeline(){
   document.querySelector(".enter-btn")
   .style.display = "none";
 
-  /* MUSIC */
-
   const music =
   document.getElementById("bgMusic");
 
   music.volume = 0.3;
 
-  music.play();.catch(err => {
-    console.log("Audio diblok browser, harus klik user dulu");
+  music.play().catch(err => {
+    console.log("Audio diblok browser");
   });
 
 }
-
 
 /* STARS */
 
