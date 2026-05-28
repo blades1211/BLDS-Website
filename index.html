@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>BLDS | BlackLightDoms</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:#000;
+  color:white;
+  overflow-x:hidden;
+  font-family:'Poppins',sans-serif;
+  min-height:100vh;
+  position:relative;
+}
+
+/* BACKGROUND */
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+
+  background:
+  radial-gradient(circle at center,
+  rgba(255,255,255,0.08),
+  transparent 30%),
+
+  radial-gradient(circle at top,
+  rgba(255,255,255,0.05),
+  transparent 40%);
+
+  z-index:-2;
+}
+
+/* STARS */
+
+.stars{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:-1;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation:blink 4s infinite;
+}
+
+@keyframes blink{
+
+  0%,100%{
+    opacity:0.2;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+}
+
+/* MAIN */
+
+.container{
+  min-height:100vh;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+  align-items:center;
+
+  text-align:center;
+
+  padding:30px;
+}
+
+/* LOGO */
+
+.eclipse{
+  width:240px;
+  height:240px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  margin-bottom:30px;
+
+  position:relative;
+  z-index:5;
+
+  animation:
+  rotateLogo 20s linear infinite,
+  floating 5s ease-in-out infinite;
+}
+
+.eclipse img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+
+  pointer-events:none;
+
+  filter:
+  drop-shadow(0 0 10px white)
+  drop-shadow(0 0 25px rgba(255,255,255,0.8))
+  drop-shadow(0 0 60px rgba(255,255,255,0.35));
+}
+
+@keyframes rotateLogo{
+
+  from{
+    transform:rotate(0deg);
+  }
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+@keyframes floating{
+
+  0%,100%{
+    translate:0 0;
+  }
+
+  50%{
+    translate:0 -10px;
+  }
+
+}
+
+/* TITLE */
+
+h1{
+  font-family:'Orbitron',sans-serif;
+
+  font-size:3rem;
+
+  letter-spacing:5px;
+
+  margin-bottom:10px;
+
+  text-shadow:
+  0 0 10px white,
+  0 0 30px rgba(255,255,255,0.5);
+}
+
+.subtitle{
+  color:rgba(255,255,255,0.7);
+
+  letter-spacing:2px;
+
+  margin-bottom:35px;
+}
+
+/* BUTTON */
+
+.enter-btn{
+  padding:15px 35px;
+
+  border:2px solid white;
+
+  background:transparent;
+
+  color:white;
+
+  border-radius:50px;
+
+  cursor:pointer;
+
+  font-family:'Orbitron',sans-serif;
+
+  letter-spacing:2px;
+
+  transition:0.4s;
+
+  margin-bottom:50px;
+
+  position:relative;
+  z-index:20;
+}
+
+.enter-btn:hover{
+
+  background:white;
+  color:black;
+
+  transform:scale(1.05);
+
+  box-shadow:
+  0 0 20px white,
+  0 0 50px rgba(255,255,255,0.5);
+}
+
+/* TIMELINE */
+
+.timeline{
+  width:100%;
+  max-width:900px;
+
+  display:none;
+
+  animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+.section-title{
+  font-family:'Orbitron',sans-serif;
+
+  font-size:2rem;
+
+  margin-bottom:35px;
+
+  letter-spacing:3px;
+}
+
+.card{
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  background:rgba(255,255,255,0.03);
+
+  backdrop-filter:blur(10px);
+
+  padding:20px;
+
+  border-radius:20px;
+
+  margin-bottom:20px;
+
+  text-align:left;
+
+  transition:0.3s;
+}
+
+.card:hover{
+
+  transform:translateY(-5px);
+
+  border-color:rgba(255,255,255,0.35);
+
+  box-shadow:
+  0 0 25px rgba(255,255,255,0.15);
+}
+
+.date{
+  font-family:'Orbitron',sans-serif;
+
+  font-size:0.9rem;
+
+  color:rgba(255,255,255,0.6);
+
+  margin-bottom:8px;
+}
+
+.event{
+  font-size:1.1rem;
+  font-weight:600;
+}
+
+/* FOUNDERS */
+
+.founders{
+  margin-top:60px;
+}
+
+.founder-card{
+
+  padding:18px;
+
+  border-radius:18px;
+
+  margin-bottom:18px;
+
+  background:rgba(255,255,255,0.03);
+
+  border:1px solid rgba(255,255,255,0.1);
+
+  transition:0.3s;
+}
+
+.founder-card:hover{
+
+  transform:translateY(-5px);
+
+  box-shadow:
+  0 0 25px rgba(255,255,255,0.12);
+}
+
+.role{
+  color:rgba(255,255,255,0.6);
+
+  margin-top:5px;
+
+  font-size:0.95rem;
+}
+
+/* SOCIAL */
+
+.socials{
+  display:flex;
+
+  justify-content:center;
+
+  gap:30px;
+
+  margin-top:50px;
+  margin-bottom:50px;
+}
+
+.socials img{
+
+  width:60px;
+  height:60px;
+
+  transition:0.3s;
+
+  filter:
+  drop-shadow(0 0 10px white)
+  drop-shadow(0 0 25px rgba(255,255,255,0.4));
+}
+
+.socials img:hover{
+  transform:scale(1.15);
+}
+
+/* FOOTER */
+
+.footer{
+  color:rgba(255,255,255,0.45);
+
+  letter-spacing:2px;
+
+  font-size:0.9rem;
+
+  margin-top:30px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  h1{
+    font-size:2rem;
+  }
+
+  .section-title{
+    font-size:1.5rem;
+  }
+
+  .eclipse{
+    width:180px;
+    height:180px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- MUSIC -->
+
+<audio id="bgMusic" loop>
+  <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
+</audio>
+
+<!-- STARS -->
+
+<div class="stars" id="stars"></div>
+
+<!-- MAIN -->
+
+<div class="container">
+
+  <!-- LOGO -->
+
+  <div class="eclipse">
+
+    <!-- NAMA FILE LOGO -->
+
+    <img src="logo.png">
+
+  alt="BLDS Logo"
+
+  style="
+  width:100%;
+  height:100%;
+  object-fit:contain;
+
+  filter:
+  drop-shadow(0 0 10px white)
+  drop-shadow(0 0 25px rgba(255,255,255,0.8))
+  drop-shadow(0 0 70px rgba(255,255,255,0.35));
+  "
+  >
+
+
+  </div>
+
+  <!-- TITLE -->
+
+  <h1>BLACKLIGHTDOMS</h1>
+
+  <p class="subtitle">
+    THE ECLIPSE HAS BEGUN
+  </p>
+
+  <!-- BUTTON -->
+
+  <button class="enter-btn" onclick="openTimeline()">
+    ENTER THE ECLIPSE
+  </button>
+
+  <!-- TIMELINE -->
+
+  <div class="timeline" id="timeline">
+
+    <h2 class="section-title">
+      BLDS ARCHIVE
+    </h2>
+
+    <div class="card">
+      <div class="date">05-03-2024</div>
+      <div class="event">BLDS Born</div>
+    </div>
+
+    <div class="card">
+      <div class="date">15-05-2024</div>
+      <div class="event">WhatsApp Community</div>
+    </div>
+
+    <div class="card">
+      <div class="date">12-09-2024</div>
+      <div class="event">Discord Community</div>
+    </div>
+
+    <div class="card">
+      <div class="date">05-03-2025</div>
+      <div class="event">BLDS Anniversary</div>
+    </div>
+
+    <div class="card">
+      <div class="date">20-08-2025</div>
+      <div class="event">Massive Remake</div>
+    </div>
+
+    <div class="card">
+      <div class="date">05-03-2026</div>
+      <div class="event">BLDS Anniversary</div>
+    </div>
+
+    <!-- FOUNDERS -->
+
+    <div class="founders">
+
+      <h2 class="section-title">
+        THE ORIGIN TRINITY
+      </h2>
+
+      <div class="founder-card">
+        <h3>Michael Lorenzo</h3>
+        <div class="role">
+          Founder of BLDS
+        </div>
+      </div>
+
+      <div class="founder-card">
+        <h3>William Nayottama</h3>
+        <div class="role">
+          Right Hand of BLDS
+        </div>
+      </div>
+
+      <div class="founder-card">
+        <h3>Felix</h3>
+        <div class="role">
+          Left Hand of BLDS
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SOCIAL -->
+
+    <div class="socials">
+
+      <a href="https://discord.gg/r4dM4QFteV" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
+      </a>
+
+      <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+      </a>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+      BLACKLIGHTDOMINIONS © 2026
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* OPEN TIMELINE */
+
+function openTimeline(){
+
+  const timeline =
+  document.getElementById("timeline");
+
+  timeline.style.display = "block";
+
+  document.querySelector(".enter-btn")
+  .style.display = "none";
+
+  /* MUSIC */
+
+  const music =
+  document.getElementById("bgMusic");
+
+  music.volume = 0.3;
+
+  music.play();.catch(err => {
+    console.log("Audio diblok browser, harus klik user dulu");
+  });
+
+}
+
+}
+
+/* STARS */
+
+const starsContainer =
+document.getElementById("stars");
+
+for(let i = 0; i < 140; i++){
+
+  const star =
+  document.createElement("div");
+
+  star.classList.add("star");
+
+  star.style.left =
+  Math.random() * 100 + "vw";
+
+  star.style.top =
+  Math.random() * 100 + "vh";
+
+  star.style.opacity =
+  Math.random();
+
+  star.style.animationDelay =
+  Math.random() * 5 + "s";
+
+  starsContainer.appendChild(star);
+
+}
+
+</script>
+
+</body>
+</html>
