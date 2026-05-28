@@ -98,7 +98,6 @@ body::before{
 }
 
 /* LOGO */
-
 .eclipse{
   width:240px;
   height:240px;
@@ -112,8 +111,10 @@ body::before{
   position:relative;
   z-index:5;
 
+  animation:floating 6s ease-in-out infinite;
+}
   animation:
-floating 5s ease-in-out infinite;
+floating 6s ease-in-out infinite;
 
 .eclipse img{
   width:100%;
@@ -131,12 +132,16 @@ floating 5s ease-in-out infinite;
 
 @keyframes floating{
 
-  0%,100%{
-    translate:0 0;
+  0%{
+    transform:translateY(0px);
   }
 
   50%{
-    translate:0 -10px;
+    transform:translateY(-12px);
+  }
+
+  100%{
+    transform:translateY(0px);
   }
 
 }
