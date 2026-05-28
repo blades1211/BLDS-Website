@@ -113,9 +113,7 @@ body::before{
   z-index:5;
 
   animation:
-  rotateLogo 20s linear infinite,
-  floating 5s ease-in-out infinite;
-}
+floating 5s ease-in-out infinite;
 
 .eclipse img{
   width:100%;
@@ -130,17 +128,6 @@ body::before{
   drop-shadow(0 0 60px rgba(255,255,255,0.35));
 }
 
-@keyframes rotateLogo{
-
-  from{
-    transform:rotate(0deg);
-  }
-
-  to{
-    transform:rotate(360deg);
-  }
-
-}
 
 @keyframes floating{
 
@@ -569,7 +556,6 @@ function openTimeline(){
 
 }
 
-}
 
 /* STARS */
 
