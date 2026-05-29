@@ -17,7 +17,7 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY FIX */
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
@@ -32,7 +32,6 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.8;
   animation:fall linear infinite;
 }
 
@@ -41,7 +40,7 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* ENTER FLASH */
+/* PORTAL */
 .portal{
   position:fixed;
   inset:0;
@@ -53,16 +52,16 @@ body{
 }
 .portal.active{opacity:1;}
 
-/* GLITCH */
-.glitch{
-  animation:shake .08s infinite;
-  filter:contrast(2) brightness(.7) hue-rotate(-20deg);
+/* ERROR */
+.error{
+  animation:shake .3s;
+  background:rgba(255,0,0,0.25);
 }
 
 @keyframes shake{
   0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-8px)}
-  50%{transform:translateX(8px)}
+  25%{transform:translateX(-10px)}
+  50%{transform:translateX(10px)}
 }
 
 /* MAIN */
@@ -115,6 +114,26 @@ button:hover{background:white;color:black}
   background:radial-gradient(circle, rgba(255,0,0,.35), black 70%);
 }
 
+/* LOGO FIX (PNG) */
+.logo{
+  width:140px;
+  height:auto;
+  margin-bottom:10px;
+  opacity:0;
+  animation:logoIn 1.2s ease forwards;
+}
+
+.logo-wrap{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+@keyframes logoIn{
+  from{opacity:0; transform:translateY(-20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
 footer{
   margin-top:40px;
   font-size:.9rem;
@@ -122,42 +141,6 @@ footer{
   text-align:center;
 }
 footer a{color:white;text-decoration:none;}
-
-.logo{
-  font-size:48px;
-  letter-spacing:10px;
-  margin-bottom:10px;
-  opacity:0;
-
-  /* FIX UTAMA */
-  transform:translateY(20px) scale(0.95);
-
-  animation:logoIn 1.4s ease forwards;
-
-  /* BIAR BERASA “CORE” */
-  text-shadow:
-    0 0 10px rgba(255,255,255,0.3),
-    0 0 25px rgba(255,255,255,0.15);
-}
-
-@keyframes logoIn{
-  0%{
-    opacity:0;
-    transform:translateY(20px) scale(0.9);
-    filter:blur(6px);
-  }
-  60%{
-    opacity:1;
-    transform:translateY(-3px) scale(1.02);
-    filter:blur(0px);
-  }
-  100%{
-    opacity:1;
-    transform:translateY(0) scale(1);
-    filter:blur(0px);
-  }
-}
-
 </style>
 </head>
 
@@ -169,10 +152,14 @@ footer a{color:white;text-decoration:none;}
 
 <div class="container">
 
-<div class="logo">BLDS</div>
+<!-- LOGO FIX -->
+<div class="logo-wrap">
+  <img src="logo.png" class="logo" alt="BLDS Logo">
+</div>
+
 <h1>BLACKLIGHTDOMS</h1>
 
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
@@ -181,61 +168,28 @@ footer a{color:white;text-decoration:none;}
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<!-- ORIGIN (FIXED + FULL) -->
+<!-- ORIGIN -->
 <div id="lore" class="page">
 <div class="box">
-
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br><br>
-
-there were only individuals trying to survive their own darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-That realization became BLDS.<br><br>
-
-<hr><br>
-
-<h3>THE BLACKLIGHT CORE</h3><br>
-A light that never disappears even in darkness.<br>
-Built from pain, failure, survival.<br><br>
-
-<hr><br>
-
-<h3>MEANING</h3><br>
-Eclipse = Darkness & pressure<br>
-Core = Inner purpose & identity<br><br>
+before BLDS had a name...<br>
+they were just survivors of darkness.<br><br>
 
 <hr><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
 <b>Greater</b><br>
-I. Vision — The ability to see direction even when others are lost.<br>
-II. Discipline — To continue growing even when nobody is watching.<br>
-III. Loyalty — To stand together through victory and defeat.<br>
-IV. Ambition — The desire to surpass limits and continue evolving.<br>
-V. Resilience — The strength to rise again after every fall.<br><br>
+Vision — Discipline — Loyalty — Ambition — Resilience<br><br>
 
 <b>Lesser</b><br>
-I. Hope — The light that remains during difficult times.<br>
-II. Awareness — The ability to stay conscious and understand reality.<br>
-III. Patience — Growth takes time and endurance.<br>
-IV. Courage — The will to move forward despite fear.<br>
-V. Unity — The bond that turns individuals into something greater.<br><br>
-
-Though smaller, these flames are just as important.<br>
-Because even the brightest Core will fade without what supports it.
+Hope — Awareness — Patience — Courage — Unity<br>
 
 </div>
 </div>
 
-<!-- QUOTES FIX -->
+<!-- QUOTES -->
 <div id="quotes" class="page">
 <div class="box">
 <div id="quote"></div>
@@ -247,40 +201,29 @@ Because even the brightest Core will fade without what supports it.
 <div id="code" class="page">
 <div class="box">
 <h2>SECRET</h2>
-<p>Type: <b>Forgotten</b></p>
-<input id="input" placeholder="code...">
+<input id="input" placeholder="Forgotten">
 <button onclick="check()">UNLOCK</button>
 </div>
 </div>
 
-<!-- ARCHIVE FIX -->
+<!-- ARCHIVE -->
 <div id="archive" class="page">
 <div class="box">
-
 <b>OWNER:</b> Michael Lorenzo<br>
 <b>RIGHT HAND:</b> William Nayottama<br>
 <b>LEFT HAND:</b> Felix<br><br>
 
 05-03-2024 — BLDS Born<br>
 15-05-2024 — Community Created<br>
-05-03-2025 — First Evolution<br>
-05-03-2026 — Eclipse Era Expansion<br>
-
+05-03-2026 — Eclipse Era
 </div>
 </div>
 
 <!-- FORGOTTEN -->
 <div id="forgotten" class="page">
 <div class="box">
-
 <h2>THE FORGOTTEN ECLIPSE</h2><br>
-
-Long before BLDS existed…<br>
-there was a generation erased from existence.<br><br>
-
-Only one message remains:<br>
-“If the eclipse returns… do not repeat the past.”
-
+If the eclipse returns… do not repeat the past.
 </div>
 </div>
 
@@ -294,37 +237,33 @@ BLACKLIGHTDOMS © 2026
 
 <script>
 
-/* SKY FIX */
+/* SKY */
 const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
- let s=document.createElement("div");
- s.className="star";
- s.style.left=Math.random()*100+"%";
- s.style.top=Math.random()*-100+"vh";
- s.style.animationDuration=(5+Math.random()*8)+"s";
- sky.appendChild(s);
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*-100+"vh";
+  s.style.animationDuration=(5+Math.random()*8)+"s";
+  sky.appendChild(s);
 }
 
 /* ENTER */
 function enter(){
- document.getElementById("portal").classList.add("active");
+  document.getElementById("portal").classList.add("active");
 
- setTimeout(()=>{
-  document.getElementById("portal").classList.remove("active");
-
-  // HAPUS ENTER BUTTON (FIX BUG KAMU)
-  document.querySelector("button[onclick='enter()']").style.display="none";
-
-  // TAMPILKAN MENU
-  document.getElementById("menu").style.display="flex";
- },700);
+  setTimeout(()=>{
+    document.getElementById("portal").classList.remove("active");
+    document.getElementById("enterBtn").style.display="none";
+    document.getElementById("menu").style.display="flex";
+  },700);
 }
 
 /* SHOW */
 function show(id){
- document.querySelectorAll(".page").forEach(p=>p.style.display="none");
- document.getElementById(id).style.display="block";
- if(id==="quotes") newQuote();
+  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  document.getElementById(id).style.display="block";
+  if(id==="quotes") newQuote();
 }
 
 /* QUOTES */
@@ -337,30 +276,28 @@ const quotes=[
 ];
 
 function newQuote(){
- document.getElementById("quote").innerText=
- quotes[Math.floor(Math.random()*quotes.length)];
+  document.getElementById("quote").innerText=
+  quotes[Math.floor(Math.random()*quotes.length)];
 }
 newQuote();
 
-/* CODE FIX */
+/* CODE */
 function check(){
- const val=document.getElementById("input");
- const overlay=document.getElementById("overlay");
+  const val=document.getElementById("input");
+  const overlay=document.getElementById("overlay");
 
- if(val.value.toLowerCase()==="forgotten"){
-  overlay.classList.add("active");
-  document.body.classList.add("glitch");
+  if(val.value.toLowerCase()==="forgotten"){
+    overlay.classList.add("active");
 
-  setTimeout(()=>{
-   overlay.classList.remove("active");
-   document.body.classList.remove("glitch");
-
-   show('forgotten');
-  },1600);
- } else {
-  val.classList.add("error");
- }
+    setTimeout(()=>{
+      overlay.classList.remove("active");
+      show('forgotten');
+    },1600);
+  } else {
+    val.classList.add("error");
+  }
 }
+
 </script>
 
 </body>
