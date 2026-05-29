@@ -124,15 +124,38 @@ footer{
 footer a{color:white;text-decoration:none;}
 
 .logo{
-  font-size:40px;
-  letter-spacing:6px;
+  font-size:48px;
+  letter-spacing:10px;
   margin-bottom:10px;
   opacity:0;
-  animation:logoIn 1.2s ease forwards;
+
+  /* FIX UTAMA */
+  transform:translateY(20px) scale(0.95);
+
+  animation:logoIn 1.4s ease forwards;
+
+  /* BIAR BERASA “CORE” */
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.3),
+    0 0 25px rgba(255,255,255,0.15);
 }
 
 @keyframes logoIn{
-  to{opacity:1; transform:translateY(0);}
+  0%{
+    opacity:0;
+    transform:translateY(20px) scale(0.9);
+    filter:blur(6px);
+  }
+  60%{
+    opacity:1;
+    transform:translateY(-3px) scale(1.02);
+    filter:blur(0px);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0px);
+  }
 }
 
 </style>
