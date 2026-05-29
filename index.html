@@ -60,11 +60,13 @@ input{
   border-radius:10px;
 }
 
-/* ERROR SHAKE */
+/* WRONG GLITCH */
 .error{
   animation:shake .3s;
-  background:rgba(255,0,0,0.2);
+  background:rgba(255,0,0,0.25);
+  box-shadow:0 0 20px red;
 }
+
 @keyframes shake{
   0%,100%{transform:translateX(0)}
   25%{transform:translateX(-10px)}
@@ -113,11 +115,17 @@ button{
 }
 button:hover{background:white;color:black}
 
-/* PAGE FIX IMPORTANT */
+/* PAGE */
 .page{
   display:none;
-  margin-top:20px;
   max-width:900px;
+  margin-top:20px;
+  animation:fade .4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 /* BOX */
@@ -173,7 +181,6 @@ footer a{
   <button onclick="checkCode()">ENTER</button>
 </div>
 
-<!-- MUSIC -->
 <audio id="bgMusic" loop>
 <source src="freesound_community-space-ambience-56265.mp3">
 </audio>
@@ -187,83 +194,36 @@ footer a{
 <div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
 <button onclick="show('quotes')">QUOTES</button>
+<button onclick="show('code')">CODE</button>
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
 <button class="backBtn" id="backBtn" onclick="back()">BACK</button>
 
-<!-- LORE FULL CINEMATIC -->
+<!-- LORE -->
 <div id="lore" class="page">
 <div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-Before BLDS had a name,<br>
-before the symbol existed,<br>
+Before BLDS had a name...<br>
+before the symbol existed...<br>
 before the squad was formed…<br><br>
 
-there were only individuals trying to survive their own darkness.<br><br>
+There were only individuals trying to survive darkness.<br><br>
 
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br>
-But a dominion built by those who refused to disappear.<br><br>
+Most people shine in light.<br>
+But BLDS was born in the eclipse.<br><br>
 
 <hr><br>
 
-<h3>THE BLACK LIGHT CORE</h3><br>
+<h3>THE CORE</h3><br>
 
-At the center of the eclipse lies the Core.<br>
-A single star that continues to shine no matter how dark the sky becomes.<br><br>
+A light that never disappears.<br>
+Purpose that survives everything.<br><br>
 
-The Core represents the inner purpose carried by every member of BLDS.<br><br>
-
-Not a purpose given by the world.<br>
-Not a purpose created by attention or popularity.<br>
-But a purpose discovered through hardship.<br><br>
-
-Even when everything changes…<br>
-Even when people leave…<br>
-Even when failure surrounds you…<br>
-your inner light still remains alive.<br><br>
-
-The strongest are not those who never fall.<br>
-But those who always rise again.<br><br>
-
-<hr><br>
-
-<h3>MEANING</h3>
-
-The eclipse = world, darkness, challenge<br>
-The core = purpose, inner light, strength<br><br>
-
-<hr><br>
-
-<h3>TEN FLAMES OF BLDS</h3>
-
-<b>Greater Flames</b><br>
-Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
-
-<b>Lesser Flames</b><br>
-Hope, Awareness, Patience, Courage, Unity<br><br>
-
-Though smaller, these flames are just as important.<br>
-Because even the Core will fade without them.
+The strongest are not those who never fall,<br>
+but those who always rise again.<br>
 
 </div>
 </div>
@@ -276,11 +236,26 @@ Because even the Core will fade without them.
 </div>
 </div>
 
+<!-- SECRET CODE PAGE -->
+<div id="code" class="page">
+<div class="box">
+
+<h2>FORGOTTEN ACCESS</h2><br>
+
+Only those who remember can pass.<br><br>
+
+This layer is hidden inside BLDS system.<br>
+A memory that should not be erased.<br><br>
+
+⚠️ STATUS: LOCKED DOMAIN<br>
+⚠️ SIGNAL: ECLIPSE GLITCH ACTIVE<br>
+
+</div>
+</div>
+
 <!-- ARCHIVE -->
 <div id="archive" class="page">
 <div class="box">
-
-<b>ORIGIN TRINITY</b><br><br>
 
 <b>OWNER:</b> Michael Lorenzo<br>
 <b>RIGHT HAND:</b> William Nayottama<br>
@@ -295,13 +270,7 @@ Because even the Core will fade without them.
 12-09-2024 — Discord Community Established<br>
 05-03-2025 — First Anniversary<br>
 20-08-2025 — Massive Remake Update<br>
-05-03-2026 — Eclipse Era Expansion<br><br>
-
-━━━━━━━━━━━━━━━━━━<br><br>
-
-<b>NOTE</b><br>
-Every phase of BLDS represents evolution, not repetition.<br>
-Each update marks survival, growth, and adaptation.<br>
+05-03-2026 — Eclipse Era Expansion<br>
 
 </div>
 </div>
@@ -316,6 +285,7 @@ BLACKLIGHTDOMS © 2026
 
 <script>
 
+/* SKY */
 const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
  let s=document.createElement("div");
@@ -328,12 +298,12 @@ for(let i=0;i<120;i++){
 /* LOGIN */
 function checkCode(){
  const val=document.getElementById("code");
- if(val.value){
+ if(val.value==="Dominion"){
    document.getElementById("login").style.display="none";
    document.getElementById("main").style.display="flex";
  } else {
    val.classList.add("error");
-   setTimeout(()=>val.classList.remove("error"),300);
+   setTimeout(()=>val.classList.remove("error"),400);
  }
 }
 
@@ -369,14 +339,12 @@ function show(id){
 const quotes=[
 "Darkness builds legends",
 "Rise beyond limits",
-"Pain creates purpose",
 "Core never fades",
 "Fear is temporary",
 "Stand after every fall",
 "Survive and evolve",
-"Shadows shape warriors",
-"Nothing is wasted",
-"Become unstoppable"
+"Become unstoppable",
+"Nothing is wasted"
 ];
 
 function newQuote(){
@@ -386,6 +354,7 @@ function newQuote(){
 
 newQuote();
 
+/* MUSIC */
 window.addEventListener("click",()=>{
  document.getElementById("bgMusic").play();
 },{once:true});
