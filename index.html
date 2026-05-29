@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | The Eclipse</title>
 
@@ -9,23 +9,34 @@
 
 <style>
 
-/* ===== RESET ===== */
-*{margin:0;padding:0;box-sizing:border-box;}
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 body{
   background:#000;
-  color:white;
+  color:#fff;
   font-family:'Poppins',sans-serif;
   overflow-x:hidden;
-  text-align:center;
 }
 
-/* ===== TITLE ===== */
+/* ================= LOGO ================= */
+.logo{
+  width:110px;
+  margin:20px auto 10px;
+  display:block;
+  filter:drop-shadow(0 0 10px white);
+}
+
+/* ================= GLITCH ================= */
 .glitch{
   position:relative;
   font-family:'Orbitron';
-  font-size:clamp(1.8rem,4vw,3rem);
-  margin-top:40px;
+  text-align:center;
+  font-size:2.6rem;
 }
 
 .glitch::before,
@@ -33,25 +44,25 @@ body{
   content:attr(data-text);
   position:absolute;
   left:0;
-  top:0;
   width:100%;
+  top:0;
 }
 
 .glitch::before{
   color:red;
-  left:2px;
+  transform:translate(2px,0);
   animation:g1 2s infinite;
 }
 
 .glitch::after{
   color:cyan;
-  left:-2px;
+  transform:translate(-2px,0);
   animation:g2 2s infinite;
 }
 
 @keyframes g1{
   0%,100%{clip-path:inset(0 0 80% 0);}
-  50%{clip-path:inset(30% 0 30% 0);}
+  50%{clip-path:inset(20% 0 20% 0);}
 }
 
 @keyframes g2{
@@ -59,113 +70,94 @@ body{
   50%{clip-path:inset(20% 0 20% 0);}
 }
 
-/* ===== LAYOUT ===== */
+/* ================= LAYOUT ================= */
 .container{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
   padding:20px;
+  text-align:center;
 }
 
-/* ===== BUTTON ===== */
+/* BUTTONS */
 button{
-  cursor:pointer;
-  padding:14px 28px;
-  font-size:16px;
-  border:1px solid white;
+  padding:14px 22px;
+  border:1px solid #fff;
   background:transparent;
-  color:white;
-  border-radius:999px;
-  transition:0.3s;
-  width:100%;
-  max-width:320px;
+  color:#fff;
+  border-radius:30px;
+  cursor:pointer;
+  margin:8px;
+  font-size:15px;
+  transition:0.2s;
 }
 
 button:hover{
-  background:white;
-  color:black;
+  background:#fff;
+  color:#000;
 }
 
-/* tombol lebih besar di HP */
-@media(max-width:600px){
-  button{
-    padding:16px 20px;
-    font-size:15px;
-    max-width:90%;
-  }
-}
-
-/* ===== HUB ===== */
-#hub{
-  display:none;
-  margin-top:30px;
-}
-
+/* MENU */
 .menu{
-  display:flex;
+  display:none;
   flex-direction:column;
-  gap:12px;
   align-items:center;
+  margin-top:20px;
 }
 
-/* ===== PAGE ===== */
+/* PAGE */
 .page{
   display:none;
-  margin-top:20px;
-  animation:fade 0.4s ease;
+  padding:20px;
 }
 
-@keyframes fade{
-  from{opacity:0;transform:translateY(15px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* ===== CARD ===== */
+/* CARD */
 .card{
   background:#111;
   border:1px solid #333;
   padding:15px;
   border-radius:12px;
-  margin:10px auto;
-  max-width:700px;
-  text-align:left;
+  margin:10px 0;
 }
 
-/* ===== MEMBER GRID ===== */
-.member-grid{
+/* GRID */
+.grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:10px;
-  max-width:800px;
-  margin:auto;
 }
 
-/* ===== SECRET ===== */
-#secret{
+/* ================= ORIGIN ================= */
+.origin-box{
   display:none;
-  padding:30px;
+  padding:20px;
+  line-height:1.8;
+  color:#ddd;
 }
 
-/* ===== START SCREEN ===== */
-#start{
-  margin-top:60px;
+/* SECRET */
+.secret{
+  display:none;
+  padding:20px;
+  color:#aaa;
 }
 
-/* ===== LOADING ===== */
-#loading{
+/* ================= FOOTER ================= */
+.footer{
+  margin-top:30px;
+  font-size:12px;
+  opacity:0.7;
+}
+
+.footer a{
+  color:#fff;
+  display:block;
+  margin-top:5px;
+  text-decoration:none;
+}
+
+/* ================= MUSIC BTN ================= */
+.music{
   position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-  animation:load 2s forwards;
-  animation-delay:1.5s;
-}
-
-@keyframes load{
-  to{opacity:0;visibility:hidden;}
+  top:15px;
+  right:15px;
 }
 
 </style>
@@ -173,103 +165,147 @@ button:hover{
 
 <body>
 
-<div id="loading">ENTERING THE ECLIPSE...</div>
+<!-- MUSIC -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7.mp3?filename=dark-ambient-110327.mp3">
+</audio>
+
+<div class="music">
+<button onclick="toggleMusic()">🔊</button>
+</div>
+
+<!-- LOGO -->
+<img class="logo" src="logo.png">
 
 <h1 class="glitch" data-text="BLACKLIGHTDOMINION">BLACKLIGHTDOMINION</h1>
 
 <div class="container">
 
-<div id="start">
-  <button onclick="enter()">ENTER THE ECLIPSE</button>
-</div>
+<button onclick="showMenu()">ENTER THE ECLIPSE</button>
 
-<div id="hub">
+<!-- MENU -->
+<div class="menu" id="menu">
 
-  <h2>HUB</h2>
-
-  <div class="menu">
-
-    <button onclick="openPage('origin')">ORIGIN</button>
-    <button onclick="openPage('core')">CORE</button>
-    <button onclick="openPage('eclipse')">ECLIPSE</button>
-    <button onclick="openPage('meaning')">MEANING</button>
-    <button onclick="openPage('quotes')">QUOTES</button>
-    <button onclick="openPage('member')">MEMBER</button>
-    <button onclick="openPage('archive')">ARCHIVE</button>
-
-  </div>
+<button onclick="openPage('home')">HOME</button>
+<button onclick="openPage('quotes')">QUOTES</button>
+<button onclick="openPage('member')">MEMBER</button>
+<button onclick="openPage('archive')">ARCHIVE</button>
+<button onclick="openOrigin()">ORIGIN</button>
 
 </div>
 
-<!-- PAGES -->
-<div class="page" id="origin">
-<h2>ORIGIN</h2>
-<div class="card">
-Before BLDS had a name… people survived their own darkness.
-</div>
-<button onclick="originClick()">tap 5x unlock secret</button>
+<!-- HOME -->
+<div class="page" id="home">
+  <h2>WELCOME TO BLDS</h2>
+  <p>The Eclipse has begun.</p>
 </div>
 
-<div class="page" id="core">
-<div class="card">CORE = inner purpose</div>
-</div>
-
-<div class="page" id="eclipse">
-<div class="card">ECLIPSE = challenges & darkness</div>
-</div>
-
-<div class="page" id="meaning">
-<div class="card">CORE = light / ECLIPSE = darkness</div>
-</div>
-
+<!-- QUOTES -->
 <div class="page" id="quotes">
-<div class="card">“Only those who survive the eclipse understand the light.”</div>
+  <h2>QUOTES</h2>
+  <p>"Darkness builds legends."</p>
 </div>
 
-<div class="page member-grid" id="member">
-<div class="card">MEMBERS</div>
-<div class="card">ACTIVE 2024</div>
-<div class="card">STATUS ALIVE</div>
-<div class="card">PROJECT ONGOING</div>
+<!-- MEMBER -->
+<div class="page" id="member">
+  <div class="grid">
+    <div class="card">MEMBERS: CLASSIFIED</div>
+    <div class="card">ACTIVE: 2024</div>
+    <div class="card">PROJECT: ONGOING</div>
+    <div class="card">STATUS: ALIVE</div>
+  </div>
 </div>
 
+<!-- ARCHIVE -->
 <div class="page" id="archive">
-<div class="card">BLDS BORN - 2024</div>
+  <div class="card">BLDS BORN - 2024</div>
 </div>
 
-<div id="secret">
-<h2>SECRET UNLOCKED</h2>
-<p>You reached the hidden layer of the Eclipse.</p>
+<!-- ORIGIN PAGE -->
+<div class="origin-box" id="origin">
+<h2>ORIGIN</h2>
+
+<p>
+Klik 5x untuk unlock SECRET LORE
+</p>
+</div>
+
+<!-- SECRET -->
+<div class="secret" id="secret">
+<h2>THE FORGOTTEN ECLIPSE</h2>
+
+<p>
+before BLDS had a name,<br>
+before the symbol existed,<br>
+before the squad was formed…<br><br>
+
+there were only individuals trying to survive their own darkness.<br><br>
+
+That realization became the beginning of BLDS.<br><br>
+
+Not a squad created for fame.<br>
+But a dominion built by those who refused to disappear.<br><br>
+
+The Core = inner purpose.<br>
+The Eclipse = the world & darkness.
+</p>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+BLDS © 2026
+
+<a href="https://discord.gg/r4dM4QFteV" target="_blank">Discord</a>
+<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">WhatsApp</a>
 </div>
 
 </div>
 
 <script>
 
-let count=0;
+let originClick = 0;
 
-function enter(){
-  document.getElementById("start").style.display="none";
-  document.getElementById("hub").style.display="block";
+/* MENU */
+function showMenu(){
+  document.getElementById("menu").style.display="flex";
+  openPage('home');
 }
 
+/* PAGE */
 function openPage(id){
 
   document.querySelectorAll(".page").forEach(p=>{
     p.style.display="none";
   });
 
+  document.getElementById("origin").style.display="none";
   document.getElementById("secret").style.display="none";
 
   document.getElementById(id).style.display="block";
 }
 
-function originClick(){
-  count++;
-  if(count>=5){
-    document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+/* ORIGIN SYSTEM */
+function openOrigin(){
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display="none";
+  });
+
+  document.getElementById("origin").style.display="block";
+
+  originClick++;
+
+  if(originClick >= 5){
+    document.getElementById("origin").style.display="none";
     document.getElementById("secret").style.display="block";
   }
+}
+
+/* MUSIC */
+function toggleMusic(){
+  const m = document.getElementById("music");
+  if(m.paused) m.play();
+  else m.pause();
 }
 
 </script>
