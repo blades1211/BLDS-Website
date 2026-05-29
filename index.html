@@ -50,7 +50,7 @@ body{
   z-index:999;
 }
 
-#login input{
+input{
   padding:12px;
   border:1px solid white;
   background:transparent;
@@ -59,11 +59,11 @@ body{
   border-radius:10px;
 }
 
+/* ERROR SHAKE */
 .error{
   animation:shake .3s;
   background:rgba(255,0,0,0.2);
 }
-
 @keyframes shake{
   0%,100%{transform:translateX(0)}
   25%{transform:translateX(-10px)}
@@ -74,13 +74,12 @@ body{
 .portal{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle, rgba(255,255,255,0.2), transparent 60%);
+  background:radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
   opacity:0;
+  transform:scale(1.2);
   pointer-events:none;
   transition:.6s;
-  transform:scale(1.2);
 }
-
 .portal.active{
   opacity:1;
   transform:scale(1);
@@ -97,6 +96,9 @@ body{
   padding:30px;
 }
 
+/* MENU */
+.menu{display:none;flex-direction:column}
+
 /* BUTTON */
 button{
   padding:12px 25px;
@@ -110,8 +112,8 @@ button{
 }
 button:hover{background:white;color:black}
 
-/* MENU */
-.menu{display:none;flex-direction:column}
+/* PAGE */
+.page{display:none;margin-top:20px}
 
 /* BOX */
 .box{
@@ -132,27 +134,48 @@ button:hover{background:white;color:black}
   border-radius:20px;
 }
 
-/* PAGE */
-.page{display:none;margin-top:20px}
+/* TRANSITION FADE */
+.fade{
+  opacity:0;
+  transform:translateY(10px);
+  transition:.3s;
+}
+
+/* FOOTER */
+footer{
+  margin-top:50px;
+  font-size:.9rem;
+  opacity:.7;
+  text-align:center;
+}
+footer a{
+  color:white;
+  text-decoration:none;
+}
+
+.backBtn{
+  position:fixed;
+  top:20px;
+  left:20px;
+  display:none;
+}
 
 </style>
 </head>
 
 <body>
 
-<!-- SKY -->
 <div class="sky" id="sky"></div>
-
-<!-- PORTAL EFFECT -->
 <div class="portal" id="portal"></div>
 
 <!-- LOGIN -->
 <div id="login">
   <h2>ENTER ACCESS CODE</h2>
-  <input id="code" placeholder="Type: Dominion">
+  <input id="code" placeholder="••••••••">
   <button onclick="checkCode()">ENTER</button>
 </div>
 
+<!-- MUSIC -->
 <audio id="bgMusic" loop>
 <source src="freesound_community-space-ambience-56265.mp3">
 </audio>
@@ -161,13 +184,16 @@ button:hover{background:white;color:black}
 
 <h1>BLACKLIGHTDOMS</h1>
 
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
 <button onclick="show('quotes')">QUOTES</button>
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
+
+<!-- BACK BUTTON -->
+<button class="backBtn" id="backBtn" onclick="back()">BACK</button>
 
 <!-- LORE -->
 <div id="lore" class="page">
@@ -183,59 +209,27 @@ there were only individuals trying to survive their own darkness.<br><br>
 
 Some were ignored.<br>
 Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
+Some failed over and over again…<br><br>
 
 Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br><br>
-
-But a dominion built by those who refused to disappear.<br><br>
+But BLDS was born from darkness itself.<br><br>
 
 <hr><br>
 
 <h3>THE BLACK LIGHT CORE</h3><br>
 
-At the center of the eclipse lies the Core.<br><br>
+At the center lies the Core.<br>
+A light that never disappears.<br><br>
 
-A single star that continues to shine no matter how dark the sky becomes.<br><br>
-
-The Core represents purpose, not given by the world… but discovered through hardship.<br><br>
-
-Even when everything changes…<br>
-Even when people leave…<br>
-Even when failure surrounds you…<br><br>
-
-your inner light still remains.<br><br>
-
-The strongest are not those who never fall,<br>
-but those who always rise again.<br><br>
-
-<hr><br>
-
-<h3>MEANING</h3>
-The Eclipse = World, darkness, struggle<br>
-The Core = Purpose, inner light, strength<br><br>
+Strength is not never falling,<br>
+but always rising again.<br><br>
 
 <hr><br>
 
 <h3>TEN FLAMES</h3>
 
-<b>Greater</b><br>
-Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
-
-<b>Lesser</b><br>
-Hope, Awareness, Patience, Courage, Unity<br><br>
+Vision, Discipline, Loyalty, Ambition, Resilience<br>
+Hope, Awareness, Patience, Courage, Unity
 
 </div>
 </div>
@@ -244,7 +238,7 @@ Hope, Awareness, Patience, Courage, Unity<br><br>
 <div id="quotes" class="page">
 <div class="box">
 <div id="quote"></div>
-<button onclick="newQuote()">Refresh Quote</button>
+<button onclick="newQuote()">Refresh</button>
 </div>
 </div>
 
@@ -266,6 +260,12 @@ Anniversary 2026<br>
 </div>
 </div>
 
+<footer>
+<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">WhatsApp</a> |
+<a href="https://discord.gg/r4dM4QFteV">Discord</a><br>
+BLACKLIGHTDOMS © 2026
+</footer>
+
 </div>
 
 <script>
@@ -280,10 +280,10 @@ for(let i=0;i<120;i++){
  sky.appendChild(s);
 }
 
-/* LOGIN CHECK */
+/* LOGIN */
 function checkCode(){
  const val=document.getElementById("code");
- if(val.value==="Dominion"){
+ if(val.value){
    document.getElementById("login").style.display="none";
    document.getElementById("main").style.display="flex";
  } else {
@@ -292,22 +292,36 @@ function checkCode(){
  }
 }
 
-/* ENTER PORTAL */
+/* ENTER */
 function enter(){
  document.getElementById("portal").classList.add("active");
 
  setTimeout(()=>{
+   document.getElementById("enterBtn").style.display="none";
    document.getElementById("menu").style.display="flex";
+   document.getElementById("backBtn").style.display="block";
    document.getElementById("portal").classList.remove("active");
 
    document.getElementById("bgMusic").play();
- },600);
+ },700);
 }
 
-/* SHOW PAGE */
-function show(id){
+/* BACK */
+function back(){
  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
- document.getElementById(id).style.display="block";
+ document.getElementById("menu").style.display="flex";
+}
+
+/* SHOW */
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>{
+   p.style.display="none";
+   p.classList.remove("fade");
+ });
+
+ let el=document.getElementById(id);
+ el.style.display="block";
+ el.classList.add("fade");
 
  if(id==="quotes") newQuote();
 }
@@ -321,17 +335,22 @@ const quotes=[
 "Fear is temporary",
 "Stand after every fall",
 "Survive and evolve",
-"Becoming unstoppable",
 "Shadows shape warriors",
-"Nothing is wasted"
+"Nothing is wasted",
+"Become unstoppable"
 ];
 
 function newQuote(){
- document.getElementById("quote").innerText =
+ document.getElementById("quote").innerText=
  quotes[Math.floor(Math.random()*quotes.length)];
 }
 
 newQuote();
+
+/* AUTO MUSIC */
+window.addEventListener("click",()=>{
+ document.getElementById("bgMusic").play();
+},{once:true});
 
 </script>
 
