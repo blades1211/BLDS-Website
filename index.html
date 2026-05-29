@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
@@ -15,12 +17,13 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY */
+/* SKY FIX */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(#000,#02040f);
   z-index:-2;
+  overflow:hidden;
 }
 
 .star{
@@ -29,6 +32,7 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
+  opacity:.8;
   animation:fall linear infinite;
 }
 
@@ -37,7 +41,7 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* PORTAL */
+/* ENTER FLASH */
 .portal{
   position:fixed;
   inset:0;
@@ -45,66 +49,79 @@ body{
   opacity:0;
   pointer-events:none;
   transition:.6s;
-  z-index:999;
+  z-index:9999;
 }
-.portal.active{opacity:1}
+.portal.active{opacity:1;}
 
 /* GLITCH */
 .glitch{
   animation:shake .08s infinite;
-  filter:contrast(2) brightness(.6);
+  filter:contrast(2) brightness(.7) hue-rotate(-20deg);
 }
 
 @keyframes shake{
   0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-10px)}
-  50%{transform:translateX(10px)}
+  25%{transform:translateX(-8px)}
+  50%{transform:translateX(8px)}
 }
 
 /* MAIN */
 .container{
   display:flex;
+  min-height:100vh;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  min-height:100vh;
   text-align:center;
-  padding:20px;
+  padding:30px;
 }
 
-.menu{display:flex;flex-direction:column}
+.menu{display:none;flex-direction:column}
 
 button{
-  padding:12px 25px;
-  margin:10px;
+  padding:12px 20px;
+  margin:8px;
   border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:30px;
+  border-radius:20px;
   cursor:pointer;
 }
 button:hover{background:white;color:black}
 
-/* PAGE */
-.page{display:none;margin-top:20px;max-width:800px}
+.page{display:none;max-width:900px;margin-top:20px}
+
 .box{
   background:rgba(255,255,255,0.03);
-  padding:20px;
-  border-radius:15px;
+  padding:25px;
+  border-radius:20px;
   border:1px solid rgba(255,255,255,0.1);
-  line-height:1.7;
+  text-align:left;
+  line-height:1.8;
 }
 
-/* INPUT */
-input{
-  padding:10px;
-  width:100%;
-  margin-top:10px;
-  background:transparent;
-  border:1px solid white;
-  color:white;
+/* OVERLAY */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+  z-index:9998;
+}
+.overlay.active{
+  opacity:1;
+  background:radial-gradient(circle, rgba(255,0,0,.35), black 70%);
+}
+
+footer{
+  margin-top:40px;
+  font-size:.9rem;
+  opacity:.7;
   text-align:center;
 }
+footer a{color:white;text-decoration:none;}
 </style>
 </head>
 
@@ -112,19 +129,22 @@ input{
 
 <div class="sky" id="sky"></div>
 <div class="portal" id="portal"></div>
+<div class="overlay" id="overlay"></div>
 
 <div class="container">
 
 <h1>BLACKLIGHTDOMS</h1>
 
-<div class="menu">
+<button onclick="enter()">ENTER THE ECLIPSE</button>
+
+<div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
 <button onclick="show('quotes')">QUOTES</button>
 <button onclick="show('code')">CODE</button>
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<!-- LORE -->
+<!-- ORIGIN (FIXED + FULL) -->
 <div id="lore" class="page">
 <div class="box">
 
@@ -140,66 +160,37 @@ Some were ignored.<br>
 Some were underestimated.<br>
 Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
 
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br>
-But a dominion built by those who refused to disappear.<br>
+That realization became BLDS.<br><br>
 
 <hr><br>
 
 <h3>THE BLACKLIGHT CORE</h3><br>
+A light that never disappears even in darkness.<br>
+Built from pain, failure, survival.<br><br>
 
-A light that never disappears in darkness.<br>
-It represents inner purpose and survival.<br><br>
+<hr><br>
+
+<h3>MEANING</h3><br>
+Eclipse = Darkness & pressure<br>
+Core = Inner purpose & identity<br><br>
 
 <hr><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
-<b>Greater Flames</b><br><br>
+<b>Greater</b><br>
+I. Vision — The ability to see direction even when others are lost.<br>
+II. Discipline — To continue growing even when nobody is watching.<br>
+III. Loyalty — To stand together through victory and defeat.<br>
+IV. Ambition — The desire to surpass limits and continue evolving.<br>
+V. Resilience — The strength to rise again after every fall.<br><br>
 
-I. Vision<br>
-The ability to see direction even when everything looks lost.<br><br>
-
-II. Discipline<br>
-The strength to keep moving even when no one is watching.<br><br>
-
-III. Loyalty<br>
-To stand together through victory and defeat without leaving anyone behind.<br><br>
-
-IV. Ambition<br>
-The desire to grow beyond limits and evolve endlessly.<br><br>
-
-V. Resilience<br>
-The power to rise again after every fall, no matter how many times it happens.<br><br>
-
-<b>Lesser Flames</b><br><br>
-
-I. Hope<br>
-The light that remains during the darkest moments of life.<br><br>
-
-II. Awareness<br>
-The ability to understand reality and not be blinded by illusion.<br><br>
-
-III. Patience<br>
-The endurance to grow slowly without giving up early.<br><br>
-
-IV. Courage<br>
-The will to move forward even when fear is present.<br><br>
-
-V. Unity<br>
-The bond that turns individuals into something stronger than themselves.<br><br>
+<b>Lesser</b><br>
+I. Hope — The light that remains during difficult times.<br>
+II. Awareness — The ability to stay conscious and understand reality.<br>
+III. Patience — Growth takes time and endurance.<br>
+IV. Courage — The will to move forward despite fear.<br>
+V. Unity — The bond that turns individuals into something greater.<br><br>
 
 Though smaller, these flames are just as important.<br>
 Because even the brightest Core will fade without what supports it.
@@ -207,7 +198,7 @@ Because even the brightest Core will fade without what supports it.
 </div>
 </div>
 
-<!-- QUOTES -->
+<!-- QUOTES FIX -->
 <div id="quotes" class="page">
 <div class="box">
 <div id="quote"></div>
@@ -218,114 +209,80 @@ Because even the brightest Core will fade without what supports it.
 <!-- CODE -->
 <div id="code" class="page">
 <div class="box">
+<h2>SECRET</h2>
+<p>Type: <b>Forgotten</b></p>
+<input id="input" placeholder="code...">
+<button onclick="check()">UNLOCK</button>
+</div>
+</div>
 
-<h2>FORGOTTEN ACCESS</h2>
+<!-- ARCHIVE FIX -->
+<div id="archive" class="page">
+<div class="box">
 
-<input id="codeInput" placeholder="Enter Code...">
-<button onclick="checkCode()">UNLOCK</button>
+<b>OWNER:</b> Michael Lorenzo<br>
+<b>RIGHT HAND:</b> William Nayottama<br>
+<b>LEFT HAND:</b> Felix<br><br>
+
+05-03-2024 — BLDS Born<br>
+15-05-2024 — Community Created<br>
+05-03-2025 — First Evolution<br>
+05-03-2026 — Eclipse Era Expansion<br>
 
 </div>
 </div>
 
 <!-- FORGOTTEN -->
-<!-- FORGOTTEN -->
-<div id="forgot" class="page">
+<div id="forgotten" class="page">
 <div class="box">
 
 <h2>THE FORGOTTEN ECLIPSE</h2><br>
 
-Long before BLDS became known…<br>
-before the symbol,<br>
-before the Core,<br>
-before the name itself existed…<br><br>
+Long before BLDS existed…<br>
+there was a generation erased from existence.<br><br>
 
-there was another generation.<br>
-A generation erased from the archive.<br><br>
-
-They were the first ones who tried to build a dominion inside the darkness.<br>
-Not for power.<br>
-Not for glory.<br>
-But to create a place where broken people could still stand together.<br><br>
-
-At first… they succeeded.<br>
-The eclipse began to grow.<br><br>
-
-More people arrived.<br>
-The light inside the Core became stronger.<br><br>
-
-But slowly, something changed.<br>
-Some members stopped believing in the original purpose.<br>
-They became obsessed with recognition.<br>
-With status.<br>
-With becoming feared instead of becoming united.<br><br>
-
-The dominion began tearing itself apart from within.<br><br>
-
-And then came the Collapse.<br>
-No one speaks about what truly happened that night.<br>
-The old records were destroyed.<br>
-Names disappeared.<br>
-Symbols vanished.<br>
-Entire conversations were erased as if they never existed.<br><br>
-
-Only one thing remained:<br>
-A single fragment of the Core.<br><br>
-
-Hidden by the last survivor.<br><br>
-
-Legend says the survivor left behind a message:<br><br>
-
-“If the eclipse ever returns…<br>
-do not let the darkness consume the Core again.”<br><br>
-
-Years later…<br>
-BLDS was born from the remains of that forgotten eclipse.<br><br>
-
-Not as a continuation.<br>
-But as a second chance.<br><br>
-
-That is why BLDS fears one thing more than failure:<br>
-Forgetting its true purpose.<br><br>
-
-Because the greatest threat was never the outside world.<br>
-It was the darkness growing inside the dominion itself.<br><br>
-
-And somewhere…<br>
-buried beneath forgotten archives and erased memories…<br>
-the remains of the first eclipse still exist.<br><br>
-
-Waiting.
+Only one message remains:<br>
+“If the eclipse returns… do not repeat the past.”
 
 </div>
 </div>
 
-<!-- ARCHIVE (FIX SIMPLE) -->
-<div id="archive" class="page">
-<div class="box">
-
-<b>05-03-2024</b> — BLDS Born<br>
-<b>15-05-2024</b> — Community Created<br>
-<b>12-09-2024</b> — Expansion<br>
-<b>05-03-2025</b> — First Evolution<br>
-<b>05-03-2026</b> — Eclipse Era
-
-</div>
-</div>
+<footer>
+<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">WhatsApp</a> |
+<a href="https://discord.gg/r4dM4QFteV">Discord</a><br>
+BLACKLIGHTDOMS © 2026
+</footer>
 
 </div>
 
 <script>
 
-/* SKY */
+/* SKY FIX */
 const sky=document.getElementById("sky");
-
-for(let i=0;i<100;i++){
+for(let i=0;i<120;i++){
  let s=document.createElement("div");
  s.className="star";
  s.style.left=Math.random()*100+"%";
- s.style.top=(-Math.random()*100)+"vh";
- s.style.animationDuration=(5+Math.random()*10)+"s";
+ s.style.top=Math.random()*-100+"vh";
+ s.style.animationDuration=(5+Math.random()*8)+"s";
  sky.appendChild(s);
+}
+
+/* ENTER */
+function enter(){
+ document.getElementById("portal").classList.add("active");
+
+ setTimeout(()=>{
+  document.getElementById("portal").classList.remove("active");
+  document.getElementById("menu").style.display="flex";
+ },700);
+}
+
+/* SHOW */
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+ document.getElementById(id).style.display="block";
+ if(id==="quotes") newQuote();
 }
 
 /* QUOTES */
@@ -341,34 +298,27 @@ function newQuote(){
  document.getElementById("quote").innerText=
  quotes[Math.floor(Math.random()*quotes.length)];
 }
-
-/* SHOW PAGE */
-function show(id){
- document.querySelectorAll(".page").forEach(p=>p.style.display="none");
- document.getElementById(id).style.display="block";
-}
-
-/* CODE SYSTEM FIX */
-function checkCode(){
- let v=document.getElementById("codeInput").value;
-
- if(v==="Forgotten"){
-   document.getElementById("portal").classList.add("active");
-
-   setTimeout(()=>{
-     document.getElementById("portal").classList.remove("active");
-     show("forgot");
-   },700);
-
- } else {
-   document.body.classList.add("glitch");
-   setTimeout(()=>document.body.classList.remove("glitch"),300);
- }
-}
-
-/* INIT */
 newQuote();
 
+/* CODE FIX */
+function check(){
+ const val=document.getElementById("input");
+ const overlay=document.getElementById("overlay");
+
+ if(val.value.toLowerCase()==="forgotten"){
+  overlay.classList.add("active");
+  document.body.classList.add("glitch");
+
+  setTimeout(()=>{
+   overlay.classList.remove("active");
+   document.body.classList.remove("glitch");
+
+   show('forgotten');
+  },1600);
+ } else {
+  val.classList.add("error");
+ }
+}
 </script>
 
 </body>
