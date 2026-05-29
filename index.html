@@ -8,12 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 body{
   background:#000;
   color:white;
-  font-family:Poppins;
+  font-family:Poppins,sans-serif;
   overflow-x:hidden;
 }
 
@@ -23,6 +27,7 @@ body{
   inset:0;
   background:linear-gradient(#000,#02040f);
   z-index:-2;
+  overflow:hidden;
 }
 
 .star{
@@ -31,15 +36,20 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
+  opacity:.8;
   animation:fall linear infinite;
 }
 
 @keyframes fall{
-  from{transform:translateY(-10vh);}
-  to{transform:translateY(110vh);}
+  from{
+    transform:translateY(-10vh);
+  }
+  to{
+    transform:translateY(110vh);
+  }
 }
 
-/* PORTAL (FIX → WHITE ONLY) */
+/* FLASH */
 .portal{
   position:fixed;
   inset:0;
@@ -49,91 +59,9 @@ body{
   transition:.6s;
   z-index:9999;
 }
-.portal.active{opacity:1;}
 
-/* ERROR */
-.error{
-  animation:shake .3s;
-}
-
-@keyframes shake{
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-10px)}
-  50%{transform:translateX(10px)}
-}
-
-/* MAIN */
-.container{
-  display:flex;
-  min-height:100vh;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-}
-
-.menu{display:none;flex-direction:column}
-
-button{
-  padding:12px 20px;
-  margin:8px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  border-radius:20px;
-  cursor:pointer;
-}
-button:hover{background:white;color:black}
-
-/* PAGE */
-.page{
-  display:none;
-  max-width:900px;
-  margin-top:20px;
-}
-
-.box{
-  background:rgba(255,255,255,0.03);
-  padding:25px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,0.1);
-  text-align:left;
-  line-height:1.8;
-}
-
-/* LOGO */
-.logo-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.logo{
-  width:140px;
-  filter:
-    drop-shadow(0 0 10px white)
-    drop-shadow(0 0 25px white)
-    drop-shadow(0 0 40px white);
-  animation:floatGlow 3s ease-in-out infinite;
-}
-
-@keyframes floatGlow{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-6px);}
-}
-
-/* TITLE (FIX → WHITE ONLY) */
-.title{
-  margin-top:10px;
-  font-size:30px;
-  letter-spacing:4px;
-  color:white;
-  text-shadow:
-    0 0 5px white,
-    0 0 15px white,
-    0 0 30px white;
+.portal.active{
+  opacity:1;
 }
 
 /* OVERLAY */
@@ -147,10 +75,135 @@ button:hover{background:white;color:black}
   z-index:9998;
 }
 
-/* FORGOTTEN TRANSITION (FIX → WHITE, NO RED) */
 .overlay.active{
   opacity:1;
-  background:radial-gradient(circle, rgba(255,255,255,0.25), black 70%);
+  background:radial-gradient(circle,
+  rgba(255,255,255,.18),
+  black 70%);
+}
+
+/* MAIN */
+.container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:100vh;
+  padding:30px;
+}
+
+/* LOGO */
+.logo-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.logo{
+  width:140px;
+  height:auto;
+
+  filter:
+  drop-shadow(0 0 4px rgba(255,255,255,.7))
+  drop-shadow(0 0 10px rgba(255,255,255,.45));
+
+  animation:floatGlow 3s ease-in-out infinite;
+}
+
+@keyframes floatGlow{
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-5px);
+  }
+}
+
+/* TITLE */
+.title{
+  margin-top:10px;
+  font-size:30px;
+  letter-spacing:4px;
+  color:white;
+
+  text-shadow:
+  0 0 4px rgba(255,255,255,.8),
+  0 0 12px rgba(255,255,255,.35);
+}
+
+/* BUTTON */
+button{
+  padding:12px 22px;
+  margin:8px;
+  border:1px solid rgba(255,255,255,.8);
+  background:transparent;
+  color:white;
+  border-radius:20px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+button:hover{
+  background:white;
+  color:black;
+}
+
+/* MENU */
+.menu{
+  display:none;
+  flex-direction:column;
+  margin-top:10px;
+}
+
+/* PAGE */
+.page{
+  display:none;
+  width:100%;
+  max-width:900px;
+  margin-top:20px;
+}
+
+.box{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:25px;
+  text-align:left;
+  line-height:1.8;
+  backdrop-filter:blur(4px);
+}
+
+/* INPUT */
+input{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04);
+  color:white;
+  outline:none;
+}
+
+.error{
+  animation:shake .3s;
+}
+
+@keyframes shake{
+  0%,100%{
+    transform:translateX(0);
+  }
+
+  25%{
+    transform:translateX(-8px);
+  }
+
+  50%{
+    transform:translateX(8px);
+  }
 }
 
 /* FOOTER */
@@ -158,9 +211,12 @@ footer{
   margin-top:40px;
   font-size:.9rem;
   opacity:.7;
-  text-align:center;
 }
-footer a{color:white;text-decoration:none;}
+
+footer a{
+  color:white;
+  text-decoration:none;
+}
 </style>
 </head>
 
@@ -174,82 +230,168 @@ footer a{color:white;text-decoration:none;}
 
 <!-- LOGO -->
 <div class="logo-wrap">
-  <img src="logo.png" class="logo">
+  <img src="logo.png" class="logo" alt="BLDS Logo">
   <div class="title">BLACKLIGHTDOMS</div>
 </div>
 
-<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
+<!-- ENTER -->
+<button id="enterBtn" onclick="enter()">
+ENTER THE ECLIPSE
+</button>
 
+<!-- MENU -->
 <div class="menu" id="menu">
-<button onclick="show('lore')">ORIGIN</button>
-<button onclick="show('quotes')">QUOTES</button>
-<button onclick="show('code')">CODE</button>
-<button onclick="show('archive')">ARCHIVE</button>
+  <button onclick="show('lore')">ORIGIN</button>
+  <button onclick="show('quotes')">QUOTES</button>
+  <button onclick="show('code')">CODE</button>
+  <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
 <!-- ORIGIN -->
 <div id="lore" class="page">
 <div class="box">
+
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-before BLDS had a name…<br>
-there were only individuals surviving darkness.<br><br>
+before BLDS had a name,<br>
+before the symbol existed,<br>
+before the squad was formed…<br><br>
+
+there were only individuals trying to survive their own darkness.<br><br>
+
+Some were ignored.<br>
+Some were underestimated.<br>
+Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
+
+They watched others rise faster.<br>
+Watched others gain recognition.<br>
+Watched people quit the moment things became difficult.<br><br>
+
+And slowly, they realized something:<br><br>
+
+Most people only shine when the world is bright.<br>
+But very few continue moving forward when everything turns dark.<br><br>
 
 That realization became BLDS.<br><br>
 
-<hr>
+Not a squad created for fame.<br>
+Not a kingdom built on arrogance.<br>
+But a dominion built by those who refused to disappear.<br><br>
 
-<h3>THE BLACKLIGHT CORE</h3>
-A light that never dies in darkness.<br><br>
+<hr><br>
 
-<hr>
+<h3>THE BLACKLIGHT CORE</h3><br>
 
-<h3>TEN FLAMES</h3>
-Vision — Discipline — Loyalty — Ambition — Resilience<br>
-Hope — Awareness — Patience — Courage — Unity
+A light that never disappears even in darkness.<br>
+Forged from pain, failure, survival.<br><br>
+
+It is the reminder that even when everything collapses…<br>
+your inner light still matters.<br><br>
+
+<hr><br>
+
+<h3>TEN FLAMES OF BLDS</h3><br>
+
+<b>Greater Flames</b><br>
+I. Vision — The ability to see direction even when others are lost.<br>
+II. Discipline — To continue growing even when nobody is watching.<br>
+III. Loyalty — To stand together through victory and defeat.<br>
+IV. Ambition — The desire to surpass limits and continue evolving.<br>
+V. Resilience — The strength to rise again after every fall.<br><br>
+
+<b>Lesser Flames</b><br>
+I. Hope — The light that remains during difficult times.<br>
+II. Awareness — The ability to stay conscious and understand reality.<br>
+III. Patience — Growth takes time and endurance.<br>
+IV. Courage — The will to move forward despite fear.<br>
+V. Unity — The bond that turns individuals into something greater.<br>
+
 </div>
 </div>
 
 <!-- QUOTES -->
 <div id="quotes" class="page">
 <div class="box">
-<div id="quote"></div>
+
+<div id="quote"
+style="
+font-size:22px;
+text-align:center;
+margin-bottom:20px;
+">
+</div>
+
+<div style="text-align:center;">
 <button onclick="newQuote()">Refresh</button>
+</div>
+
 </div>
 </div>
 
 <!-- CODE -->
 <div id="code" class="page">
 <div class="box">
-<h2>SECRET</h2>
-<input id="input" placeholder="Forgotten">
+
+<h2>SECRET</h2><br>
+
+<input
+id="input"
+type="password"
+placeholder="Enter Code..."
+autocomplete="off">
+
+<div style="margin-top:15px;">
 <button onclick="check()">UNLOCK</button>
+</div>
+
 </div>
 </div>
 
 <!-- ARCHIVE -->
 <div id="archive" class="page">
 <div class="box">
+
 <b>OWNER:</b> Michael Lorenzo<br>
 <b>RIGHT HAND:</b> William Nayottama<br>
 <b>LEFT HAND:</b> Felix<br><br>
 
 05-03-2024 — BLDS Born<br>
-05-03-2026 — Eclipse Era
+15-05-2024 — Community Created<br>
+05-03-2025 — First Evolution<br>
+05-03-2026 — Eclipse Era Expansion
+
 </div>
 </div>
 
 <!-- FORGOTTEN -->
 <div id="forgotten" class="page">
 <div class="box">
+
 <h2>THE FORGOTTEN ECLIPSE</h2><br>
-If the eclipse returns… do not repeat the past.
+
+Long before BLDS existed…<br>
+there was a generation erased from existence.<br><br>
+
+Only one message remains:<br>
+“If the eclipse returns… do not repeat the past.”
+
 </div>
 </div>
 
+<!-- FOOTER -->
 <footer>
-<a href="#">WhatsApp</a> |
-<a href="#">Discord</a><br>
+<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">
+WhatsApp
+</a>
+
+|
+
+<a href="https://discord.gg/r4dM4QFteV">
+Discord
+</a>
+
+<br><br>
+
 BLACKLIGHTDOMS © 2026
 </footer>
 
@@ -258,63 +400,125 @@ BLACKLIGHTDOMS © 2026
 <script>
 
 /* SKY */
-const sky=document.getElementById("sky");
+const sky = document.getElementById("sky");
+
 for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*-100+"vh";
-  s.style.animationDuration=(5+Math.random()*8)+"s";
+
+  let s = document.createElement("div");
+
+  s.className = "star";
+
+  s.style.left = Math.random()*100 + "%";
+  s.style.top = Math.random()*-100 + "vh";
+
+  s.style.animationDuration =
+  (5 + Math.random()*8) + "s";
+
   sky.appendChild(s);
 }
 
 /* ENTER */
 function enter(){
-  document.getElementById("portal").classList.add("active");
+
+  document.getElementById("portal")
+  .classList.add("active");
 
   setTimeout(()=>{
-    document.getElementById("portal").classList.remove("active");
-    document.getElementById("enterBtn").style.display="none";
-    document.getElementById("menu").style.display="flex";
+
+    document.getElementById("portal")
+    .classList.remove("active");
+
+    document.getElementById("enterBtn")
+    .style.display="none";
+
+    document.getElementById("menu")
+    .style.display="flex";
+
   },700);
 }
 
-/* SHOW */
+/* SHOW PAGE */
 function show(id){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-  document.getElementById(id).style.display="block";
-  if(id==="quotes") newQuote();
+
+  document.querySelectorAll(".page")
+  .forEach(p=>{
+    p.style.display="none";
+  });
+
+  document.getElementById(id)
+  .style.display="block";
+
+  if(id==="quotes"){
+    newQuote();
+  }
 }
 
 /* QUOTES */
-const quotes=[
-"Darkness builds legends",
-"Rise beyond limits",
-"Core never fades",
-"Survive and evolve",
-"Become unstoppable"
+const quotes = [
+
+"Darkness builds legends.",
+
+"Rise beyond limits.",
+
+"The Core never fades.",
+
+"Survive. Adapt. Evolve.",
+
+"Even eclipses create light.",
+
+"Pain shapes the strongest souls.",
+
+"Silence creates monsters and legends.",
+
+"Stay alive long enough to evolve.",
+
+"Some lights shine brightest in darkness.",
+
+"BLDS was never built to disappear."
+
 ];
 
 function newQuote(){
-  document.getElementById("quote").innerText=
-  quotes[Math.floor(Math.random()*quotes.length)];
+
+  document.getElementById("quote")
+  .innerText = quotes[
+    Math.floor(Math.random()*quotes.length)
+  ];
 }
+
 newQuote();
 
-/* CODE */
+/* SECRET */
 function check(){
-  const val=document.getElementById("input");
-  const overlay=document.getElementById("overlay");
 
-  if(val.value.toLowerCase()==="forgotten"){
+  const val =
+  document.getElementById("input");
+
+  const overlay =
+  document.getElementById("overlay");
+
+  if(
+    val.value.toLowerCase()
+    === "forgotten"
+  ){
+
     overlay.classList.add("active");
 
     setTimeout(()=>{
+
       overlay.classList.remove("active");
-      show('forgotten');
+
+      show("forgotten");
+
     },1400);
-  } else {
+
+  }else{
+
     val.classList.add("error");
+
+    setTimeout(()=>{
+      val.classList.remove("error");
+    },300);
   }
 }
 
