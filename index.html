@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -17,13 +17,12 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY FIXED (NO STUCK DOT LINE BUG) */
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(#000,#02040f);
   z-index:-2;
-  overflow:hidden;
 }
 
 .star{
@@ -32,7 +31,6 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.8;
   animation:fall linear infinite;
 }
 
@@ -60,110 +58,52 @@ input{
   color:white;
   text-align:center;
   border-radius:10px;
-  outline:none;
 }
 
-/* ERROR */
-.error{
-  animation:shake .3s;
-  background:rgba(255,0,0,0.25);
+/* BUTTON */
+button{
+  padding:10px 20px;
+  margin:10px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  border-radius:20px;
+  cursor:pointer;
 }
-
-@keyframes shake{
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-10px)}
-  50%{transform:translateX(10px)}
-}
-
-/* PORTAL WHITE FLASH FIX */
-.portal{
-  position:fixed;
-  inset:0;
-  background:white;
-  opacity:0;
-  pointer-events:none;
-  transition:.7s;
-  z-index:9998;
-}
-
-.portal.active{
-  opacity:1;
-}
-
-/* GLITCH */
-.glitch-shake{
-  animation:shake .08s infinite;
-  filter:contrast(2) brightness(.7) hue-rotate(-20deg);
-}
+button:hover{background:white;color:black}
 
 /* MAIN */
 .container{
   display:none;
   min-height:100vh;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
   text-align:center;
-  padding:30px;
+  padding:20px;
 }
 
-.menu{display:none;flex-direction:column}
-
-button{
-  padding:12px 25px;
-  margin:10px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  border-radius:30px;
-  cursor:pointer;
-}
-
-button:hover{background:white;color:black}
+.menu{display:none;flex-direction:column;margin-top:20px}
 
 .page{
   display:none;
-  max-width:900px;
+  max-width:800px;
   margin-top:20px;
-  animation:fade .4s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
 }
 
 .box{
+  padding:20px;
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:15px;
   background:rgba(255,255,255,0.03);
-  padding:25px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,0.1);
   text-align:left;
-  line-height:1.8;
+  line-height:1.6;
 }
 
 .backBtn{
   position:fixed;
-  top:20px;
-  left:20px;
+  top:10px;
+  left:10px;
   display:none;
-  z-index:1000;
-}
-
-/* FORGOTTEN OVERLAY */
-.forgot-overlay{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  transition:.6s;
-  z-index:9997;
-}
-
-.forgot-overlay.active{
-  opacity:1;
-  background:radial-gradient(circle, rgba(255,0,0,0.35), black 70%);
 }
 
 </style>
@@ -172,24 +112,19 @@ button:hover{background:white;color:black}
 <body>
 
 <div class="sky" id="sky"></div>
-<div class="portal" id="portal"></div>
-<div class="forgot-overlay" id="forgotOverlay"></div>
 
+<!-- LOGIN -->
 <div id="login">
-  <h2>ENTER ACCESS CODE</h2>
-  <input id="code" placeholder="••••••••">
+  <h2>ENTER CODE</h2>
+  <input id="code">
   <button onclick="checkCode()">ENTER</button>
 </div>
 
-<audio id="bgMusic" loop>
-<source src="freesound_community-space-ambience-56265.mp3">
-</audio>
-
 <div class="container" id="main">
 
-<h1>BLACKLIGHTDOMS</h1>
+<h1>BLDS SYSTEM</h1>
 
-<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
+<button onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
@@ -198,96 +133,23 @@ button:hover{background:white;color:black}
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<button class="backBtn" onclick="back()">BACK</button>
+<button class="backBtn" id="back" onclick="back()">BACK</button>
 
-<!-- LORE (NO CHANGE) -->
+<!-- LORE -->
 <div id="lore" class="page">
 <div class="box">
 
-<h2>THE ORIGIN OF BLDS</h2><br>
+<h2>ORIGIN</h2>
+Before BLDS had a name, there was only darkness and survival.
 
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br><br>
+</div>
+</div>
 
-there were only individuals trying to survive their own darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br>
-But a dominion built by those who refused to disappear.<br>
-
-<hr><br>
-
-<h3>THE BLACKLIGHT CORE</h3><br>
-
-At the center of BLDS lies the Core.<br>
-A single light that continues to exist even in absolute darkness.<br><br>
-
-The Core represents the inner purpose of every member of BLDS.<br><br>
-
-Not given by the world.<br>
-Not created by attention.<br>
-But forged through pain, failure, and survival.<br><br>
-
-<hr><br>
-
-<h3>TEN FLAMES OF BLDS</h3><br>
-
-<b>Greater Flames</b><br><br>
-
-I. Vision<br>
-The ability to see direction even when others are lost.<br><br>
-
-II. Discipline<br>
-To continue growing even when nobody is watching.<br><br>
-
-III. Loyalty<br>
-To stand together through victory and defeat.<br><br>
-
-IV. Ambition<br>
-The desire to surpass limits and continue evolving.<br><br>
-
-V. Resilience<br>
-The strength to rise again after every fall.<br><br>
-
-<hr><br>
-
-<b>Lesser Flames</b><br><br>
-
-I. Hope<br>
-The light that remains during difficult times.<br><br>
-
-II. Awareness<br>
-The ability to stay conscious and understand reality.<br><br>
-
-III. Patience<br>
-Growth takes time and endurance.<br><br>
-
-IV. Courage<br>
-The will to move forward despite fear.<br><br>
-
-V. Unity<br>
-The bond that turns individuals into something greater.<br><br>
-
-Though smaller, these flames are just as important.<br>
-Because even the brightest Core will fade without what supports it.
-
+<!-- QUOTES -->
+<div id="quotes" class="page">
+<div class="box">
+<div id="quote"></div>
+<button onclick="newQuote()">NEXT</button>
 </div>
 </div>
 
@@ -295,30 +157,20 @@ Because even the brightest Core will fade without what supports it.
 <div id="code" class="page">
 <div class="box">
 
-<h2>FORGOTTEN ACCESS</h2><br>
+<h2>FORGOTTEN ACCESS</h2>
 
-<input id="forgotInput" placeholder="Enter Code..." style="width:100%;padding:10px;">
-
+<input id="forgotInput" placeholder="enter code...">
 <button onclick="checkForgotten()">UNLOCK</button>
 
+<p id="msg"></p>
+
 </div>
 </div>
 
-<!-- FORGOTTEN LORE -->
-<div id="forgotLore" class="page">
+<!-- ARCHIVE -->
+<div id="archive" class="page">
 <div class="box">
-
-<h2>THE FORGOTTEN ECLIPSE</h2><br>
-
-Long before BLDS existed…<br>
-there was a generation erased from the archive.<br><br>
-
-They built the first dominion inside darkness.<br>
-But it collapsed from within.<br><br>
-
-Only one message remained:<br>
-“If the eclipse returns… don’t repeat the past.”
-
+<div id="archiveData"></div>
 </div>
 </div>
 
@@ -326,38 +178,29 @@ Only one message remained:<br>
 
 <script>
 
-/* SKY FIX */
+/* SKY */
 const sky=document.getElementById("sky");
-
-for(let i=0;i<140;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"%";
-  s.style.top=(-Math.random()*100)+"vh";
-  s.style.animationDuration=(5+Math.random()*10)+"s";
-  sky.appendChild(s);
+for(let i=0;i<120;i++){
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=(-Math.random()*100)+"vh";
+ s.style.animationDuration=(3+Math.random()*5)+"s";
+ sky.appendChild(s);
 }
 
 /* LOGIN */
 function checkCode(){
- const val=document.getElementById("code");
- if(val.value==="Dominion"){
+ if(document.getElementById("code").value==="Dominion"){
    document.getElementById("login").style.display="none";
    document.getElementById("main").style.display="flex";
  }
 }
 
-/* ENTER WHITE FLASH FIX */
+/* ENTER */
 function enter(){
- const p=document.getElementById("portal");
- p.classList.add("active");
-
- setTimeout(()=>{
-   p.classList.remove("active");
-   document.getElementById("enterBtn").style.display="none";
-   document.getElementById("menu").style.display="flex";
-   document.getElementById("bgMusic").play();
- },800);
+ document.getElementById("menu").style.display="flex";
+ document.getElementById("back").style.display="block";
 }
 
 /* SHOW */
@@ -372,26 +215,43 @@ function back(){
  document.getElementById("menu").style.display="flex";
 }
 
-/* FORGOTTEN */
+/* QUOTES (FIXED 100% WORK) */
+const quotes=[
+"Darkness builds legends",
+"Rise beyond limits",
+"Core never fades",
+"Survive and evolve",
+"Become unstoppable",
+"Fear is temporary",
+"Pain becomes power",
+"Shadows create warriors"
+];
+
+function newQuote(){
+ document.getElementById("quote").innerText=
+ quotes[Math.floor(Math.random()*quotes.length)];
+}
+newQuote();
+
+/* ARCHIVE (FIXED) */
+const archive=document.getElementById("archiveData");
+
+for(let i=1;i<=100;i++){
+ let div=document.createElement("div");
+ div.innerHTML="BLDS LOG #"+i+" — MEMORY ACTIVE";
+ archive.appendChild(div);
+}
+
+/* CODE (FIXED INPUT) */
 function checkForgotten(){
- const val=document.getElementById("forgotInput");
- const overlay=document.getElementById("forgotOverlay");
+ const v=document.getElementById("forgotInput").value.toLowerCase();
+ const msg=document.getElementById("msg");
 
- if(val.value.toLowerCase()==="forgotten"){
-
-   overlay.classList.add("active");
-   document.body.classList.add("glitch-shake");
-
-   setTimeout(()=>{
-     overlay.classList.remove("active");
-     document.body.classList.remove("glitch-shake");
-
-     document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-     document.getElementById("forgotLore").style.display="block";
-   },1800);
-
- } else {
-   val.classList.add("error");
+ if(v==="forgotten"){
+   msg.innerHTML="ACCESS GRANTED";
+   show('lore');
+ }else{
+   msg.innerHTML="ACCESS DENIED";
  }
 }
 
