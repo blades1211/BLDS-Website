@@ -12,17 +12,14 @@
 
 body{
   background:#000;
-  color:#fff;
+  color:white;
   font-family:Poppins,sans-serif;
   min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  overflow:hidden;
+  overflow-y:auto;   /* ✅ FIX SCROLL */
+  overflow-x:hidden;
 }
 
-/* SKY */
+/* SKY + STARS */
 .sky{
   position:fixed;
   inset:0;
@@ -30,40 +27,56 @@ body{
   z-index:-3;
 }
 
-/* ECLIPSE */
-.eclipse{
-  position:fixed;
-  top:50%;
-  left:50%;
-  width:280px;
-  height:280px;
-  transform:translate(-50%,-50%);
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
   border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.8),rgba(255,255,255,.1),transparent 70%);
-  opacity:.15;
-  animation:float 8s infinite ease-in-out;
-  z-index:-2;
+  opacity:.8;
+  animation:fall linear infinite;
 }
 
-@keyframes float{
-  0%,100%{transform:translate(-50%,-50%) scale(1);}
-  50%{transform:translate(-50%,-50%) scale(1.25);}
+@keyframes fall{
+  from{transform:translateY(-10vh);}
+  to{transform:translateY(110vh);}
+}
+
+/* CENTER WRAPPER */
+.wrapper{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:40px 20px;
 }
 
 /* CONTAINER */
 .container{
   width:100%;
-  max-width:800px;
-  padding:20px;
+  max-width:700px;
+  text-align:center;
 }
 
 /* LOGO */
 .logo{
   width:120px;
   filter:drop-shadow(0 0 10px white);
+  animation:float 4s ease-in-out infinite;
 }
 
-/* BUTTONS */
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+
+/* TITLE */
+h2{
+  letter-spacing:4px;
+  margin:10px 0;
+}
+
+/* BUTTON */
 button{
   padding:10px 16px;
   margin:6px;
@@ -83,21 +96,21 @@ button:hover{
 .menu{
   display:none;
   flex-direction:column;
-  margin-top:15px;
+  margin-top:20px;
 }
 
 /* PAGE */
 .page{
   display:none;
   margin-top:20px;
+  text-align:left;
 }
 
 .box{
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
-  padding:20px;
+  padding:18px;
   border-radius:14px;
-  text-align:left;
   line-height:1.7;
 }
 
@@ -124,17 +137,11 @@ button:hover{
   justify-content:center;
   align-items:center;
   z-index:9999;
+  text-align:center;
   flex-direction:column;
 }
 
-.bigLogo{
-  width:200px;
-  opacity:0;
-  transition:1s;
-}
-
-.show{opacity:1;}
-
+/* FADE */
 .fade{
   animation:fade .5s ease;
 }
@@ -148,65 +155,42 @@ button:hover{
 
 <body>
 
-<div class="sky"></div>
-<div class="eclipse"></div>
+<div class="sky" id="sky"></div>
 
-<div class="container">
+<div class="wrapper">
+
+<div class="container fade">
 
 <img src="logo.png" class="logo">
 <h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER</button>
+<button onclick="enter()">ENTER ECLIPSE</button>
 
 <div class="menu" id="menu">
-<button onclick="openPage('origin')">ORIGIN</button>
-<button onclick="openPage('core')">CORE</button>
-<button onclick="openPage('code')">CODE</button>
+<button onclick="show('origin')">ORIGIN</button>
+<button onclick="show('code')">CODE</button>
 </div>
 
 <!-- ORIGIN -->
 <div id="origin" class="page">
-<div class="box fade">
+<div class="box">
 
 <h2>ORIGIN</h2><br>
 
-Before BLDS existed, only silence remained.<br>
-No name. No light. Only survival.<br><br>
+Before BLDS, only silence existed.<br>
+No identity. No meaning.<br><br>
 
-They were not chosen… they survived.<br><br>
+They survived not because they were strong…<br>
+but because they refused to disappear.<br><br>
 
 <b>True light is born from darkness pressure.</b>
 
 </div>
 </div>
 
-<!-- CORE -->
-<div id="core" class="page">
-<div class="box fade">
-
-<h2>BLACKLIGHT CORE</h2><br>
-
-The Core is persistence itself.<br><br>
-
-<h3>10 FLAMES</h3><br>
-
-<span class="flame">1. Vision</span>
-<span class="flame">2. Discipline</span>
-<span class="flame">3. Loyalty</span>
-<span class="flame">4. Ambition</span>
-<span class="flame">5. Resilience</span>
-<span class="flame">6. Hope</span>
-<span class="flame">7. Awareness</span>
-<span class="flame">8. Patience</span>
-<span class="flame">9. Courage</span>
-<span class="flame">10. Unity</span>
-
-</div>
-</div>
-
 <!-- CODE -->
 <div id="code" class="page">
-<div class="box fade">
+<div class="box">
 
 <h2>CODE</h2>
 <input id="inp" placeholder="type code">
@@ -217,6 +201,7 @@ The Core is persistence itself.<br><br>
 </div>
 
 </div>
+</div>
 
 <!-- CUTSCENES -->
 <div class="cutscene" id="cutForgot">
@@ -224,44 +209,32 @@ The Core is persistence itself.<br><br>
 </div>
 
 <div class="cutscene" id="cutFlame">
-<img src="logo.png" class="bigLogo" id="bigLogo">
+<h1>12 FLAMES ACTIVATED</h1>
 </div>
 
 <script>
 
-/* STATE SAFE */
-let menuOpened=false;
+/* STAR FIX */
+const sky=document.getElementById("sky");
 
-/* ENTER */
+for(let i=0;i<100;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*-100+"vh";
+  s.style.animationDuration=(3+Math.random()*6)+"s";
+  sky.appendChild(s);
+}
+
+/* MENU */
 function enter(){
-  if(menuOpened) return;
-  menuOpened=true;
   document.getElementById("menu").style.display="flex";
 }
 
 /* PAGE */
-function openPage(id){
+function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
-
-  if(id==="core"){
-    flameAnim();
-  }
-}
-
-/* FLAME SAFE */
-function flameAnim(){
-  let f=document.querySelectorAll(".flame");
-  let i=0;
-
-  f.forEach(x=>x.classList.remove("active"));
-
-  let t=setInterval(()=>{
-    if(i<f.length){
-      f[i].classList.add("active");
-      i++;
-    }else clearInterval(t);
-  },180);
 }
 
 /* CODE */
@@ -269,35 +242,19 @@ function check(){
   let v=document.getElementById("inp").value.toLowerCase();
 
   if(v==="forgotten"){
-    showCut("cutForgot",2000);
+    let c=document.getElementById("cutForgot");
+    c.style.display="flex";
+    setTimeout(()=>c.style.display="none",2000);
   }
 
   if(v==="12flames"){
-    showCut("cutFlame",4000,true);
+    let c=document.getElementById("cutFlame");
+    c.style.display="flex";
+    setTimeout(()=>c.style.display="none",2000);
   }
 }
 
-/* CUTSCENE ENGINE (FIXED) */
-function showCut(id,time,flame=false){
-  let cut=document.getElementById(id);
-  let logo=document.getElementById("bigLogo");
-
-  cut.style.display="flex";
-
-  if(flame){
-    setTimeout(()=>{
-      logo.classList.add("show");
-      flameAnim();
-    },600);
-  }
-
-  setTimeout(()=>{
-    cut.style.display="none";
-    if(logo) logo.classList.remove("show");
-  },time);
-}
-
-/* AUDIO SAFE */
+/* AUDIO FIX */
 const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
 audio.loop=true;
 
