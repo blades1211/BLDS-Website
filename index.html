@@ -3,23 +3,25 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BLDS</title>
+<title>BLDS | BlackLightDoms</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  background:black;
-  color:white;
+  font-family:Poppins,sans-serif;
+  background:#000;
+  color:#fff;
   overflow:hidden;
-  text-align:center;
 }
 
 /* STAR BACKGROUND */
-#bg{
+#stars{
   position:fixed;
   inset:0;
-  z-index:-2;
+  z-index:-3;
 }
 
 .star{
@@ -27,113 +29,224 @@ body{
   width:2px;
   height:2px;
   background:white;
-  border-radius:50%;
-  opacity:.7;
+  opacity:.6;
+  animation:fall linear infinite;
 }
 
-/* CENTER */
-.container{
+@keyframes fall{
+  from{transform:translateY(-10vh);}
+  to{transform:translateY(110vh);}
+}
+
+/* ECLIPSE */
+.eclipse{
+  position:fixed;
+  width:350px;
+  height:350px;
+  border-radius:50%;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
+  opacity:.12;
+  animation:pulse 10s infinite;
+  z-index:-2;
+}
+
+@keyframes pulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.4);}
+}
+
+/* LAYOUT */
+.center{
   height:100vh;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
+  text-align:center;
+  flex-direction:column;
+  padding:20px;
 }
 
-/* MENU */
-.menu{display:none;margin-top:10px;}
+.logo{
+  width:120px;
+  filter:drop-shadow(0 0 20px white);
+}
+
+h1{letter-spacing:3px;margin-top:10px}
+
 button{
-  margin:5px;
-  padding:10px;
+  margin:6px;
+  padding:10px 16px;
   border:1px solid white;
   background:transparent;
   color:white;
+  border-radius:12px;
   cursor:pointer;
+  transition:.3s;
 }
 
-/* PAGE */
-.page{display:none;margin-top:15px;max-width:500px;}
+button:hover{
+  background:white;
+  color:black;
+}
+
+/* MENU */
+.menu{
+  display:none;
+  flex-direction:column;
+  margin-top:20px;
+}
+
+/* PAGES */
+.page{
+  display:none;
+  max-width:800px;
+  margin-top:20px;
+  animation:fade .5s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
 .box{
-  border:1px solid white;
-  padding:15px;
+  background:rgba(255,255,255,.04);
+  padding:20px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.1);
+  text-align:left;
+  line-height:1.7;
 }
 
-/* HIDE ENTER AFTER CLICK */
-.hide{display:none;}
+/* FLAME */
+.flame{
+  opacity:0;
+  transform:translateY(10px);
+  transition:.4s;
+}
+
+.flame.active{
+  opacity:1;
+  transform:translateY(0);
+  text-shadow:0 0 10px orange;
+}
+
+/* CUTSCENE */
+.cutscene{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  flex-direction:column;
+}
+
+.glitch{
+  animation:glitch .2s infinite;
+}
+
+@keyframes glitch{
+  0%,100%{opacity:1}
+  50%{opacity:.3}
+}
 </style>
 </head>
 
 <body>
 
-<div id="bg"></div>
+<div id="stars"></div>
+<div class="eclipse"></div>
 
-<div class="container">
+<!-- MAIN -->
+<div class="center" id="home">
+  <img src="logo.png" class="logo">
+  <h1>BLACKLIGHTDOMS</h1>
 
-<h2>BLACKLIGHTDOMS</h2>
+  <button onclick="enter()">ENTER</button>
 
-<button id="enterBtn" onclick="enter()">ENTER</button>
+  <div class="menu" id="menu">
+    <button onclick="openPage('origin')">ORIGIN</button>
+    <button onclick="openPage('quotes')">QUOTES</button>
+    <button onclick="openPage('archives')">ARCHIVES</button>
+    <button onclick="openPage('code')">CODE</button>
+  </div>
 
-<div class="menu" id="menu">
-<button onclick="openPage('origin')">ORIGIN</button>
-<button onclick="openPage('quotes')">QUOTES</button>
-<button onclick="openPage('archives')">ARCHIVES</button>
-<button onclick="openPage('code')">CODE</button>
+  <!-- ORIGIN -->
+  <div class="page" id="origin">
+    <div class="box">
+      <h2>ORIGIN OF BLDS</h2><br>
+      BLDS lahir dari tekanan kegelapan.<br><br>
+      10 Flames adalah pondasi manusia yang tidak mau hilang.<br><br>
+
+      <b>CORE 10 FLAMES:</b><br>
+      Vision, Discipline, Loyalty, Ambition, Resilience,<br>
+      Hope, Awareness, Patience, Courage, Unity
+    </div>
+  </div>
+
+  <!-- QUOTES -->
+  <div class="page" id="quotes">
+    <div class="box">
+      <h2>QUOTES SYSTEM</h2><br>
+      <div id="quoteBox">Tekan refresh</div><br>
+      <button onclick="newQuote()">REFRESH</button>
+    </div>
+  </div>
+
+  <!-- ARCHIVES -->
+  <div class="page" id="archives">
+    <div class="box">
+      <h2>ARCHIVES</h2><br>
+
+      05-03-2024 — BLDS Born<br>
+      15-05-2024 — WhatsApp Community<br>
+      12-09-2024 — Discord Community<br>
+      20-08-2025 — Massive Remake<br><br>
+
+      Michael Lorenzo — Founder<br>
+      William Nayottama — Right Hand<br>
+      Felix — Left Hand
+    </div>
+  </div>
+
+  <!-- CODE -->
+  <div class="page" id="code">
+    <div class="box">
+      <h2>ACCESS CODE</h2><br>
+      <input id="codeInput" placeholder="enter code">
+      <button onclick="check()">UNLOCK</button>
+    </div>
+  </div>
+
 </div>
 
-<!-- ORIGIN -->
-<div class="page" id="origin">
-<div class="box">
-BLDS lahir dari kegelapan dan kegagalan.
-</div>
+<!-- CUTSCENE -->
+<div class="cutscene" id="cut">
+  <h1 class="glitch">UNLOCKING...</h1>
 </div>
 
-<!-- QUOTES -->
-<div class="page" id="quotes">
-<div class="box" id="quoteBox">Klik refresh</div>
-<button onclick="newQuote()">REFRESH</button>
-</div>
-
-<!-- ARCHIVES -->
-<div class="page" id="archives">
-<div class="box">
-BLDS Born 2024<br>
-Community Started 2024<br>
-Massive Remake 2025
-</div>
-</div>
-
-<!-- CODE -->
-<div class="page" id="code">
-<div class="box">
-<input id="codeInput" placeholder="code">
-<button onclick="checkCode()">OK</button>
-</div>
-</div>
-
-</div>
-
-<!-- FORGOTTEN -->
-<div id="forgotten" style="display:none;position:fixed;inset:0;background:black;align-items:center;justify-content:center;font-size:20px;">
-FORGOTTEN MEMORY DETECTED
-</div>
+<audio id="beep" src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a0.mp3"></audio>
 
 <script>
 
-/* STAR */
-const bg=document.getElementById("bg");
-
-for(let i=0;i<80;i++){
+/* STAR GEN */
+const stars=document.getElementById("stars");
+for(let i=0;i<120;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*100+"%";
-  bg.appendChild(s);
+  s.style.animationDuration=(2+Math.random()*5)+"s";
+  stars.appendChild(s);
 }
 
 /* ENTER */
 function enter(){
-  document.getElementById("menu").style.display="block";
-  document.getElementById("enterBtn").classList.add("hide");
+  document.getElementById("menu").style.display="flex";
 }
 
 /* NAV */
@@ -142,31 +255,61 @@ function openPage(id){
   document.getElementById(id).style.display="block";
 }
 
-/* QUOTES */
+/* QUOTES (20 RANDOM) */
 const quotes=[
-"BLDS never breaks.",
-"From darkness we rise.",
-"Memory defines us.",
-"Eclipse continues.",
-"Survive and evolve."
+"Light is born from pressure",
+"Darkness is a teacher",
+"Failure builds system",
+"Pain creates evolution",
+"Silence is data",
+"Broken becomes code",
+"Truth hides in chaos",
+"Fear is just delay",
+"Endure or disappear",
+"Reality is not stable",
+"BLDS never resets",
+"Control your collapse",
+"Eyes open in void",
+"System learns pain",
+"Shadow builds strength",
+"Lost becomes found",
+"Nothing is wasted",
+"Core remembers all",
+"You are still loading",
+"Exist or vanish"
 ];
 
 function newQuote(){
-  document.getElementById("quoteBox").innerText=
+  document.getElementById("quoteBox").innerText =
   quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-/* CODE */
-function checkCode(){
+/* CODE SECRET (FALLBACK FOR 12 FLAMES + FORGOTTEN) */
+function check(){
   let v=document.getElementById("codeInput").value.toLowerCase();
 
   if(v==="forgotten"){
-    document.getElementById("forgotten").style.display="flex";
-    setTimeout(()=>{
-      document.getElementById("forgotten").style.display="none";
-    },2000);
+    showCut();
+    setTimeout(()=>alert("FORGOTTEN: SYSTEM ERASED"),1500);
+  }
+
+  if(v==="12flames" || v==="12 flames"){
+    showCut();
+    setTimeout(()=>alert("12 FLAMES PROTOCOL UNLOCKED"),1500);
   }
 }
+
+/* CUTSCENE */
+function showCut(){
+  let c=document.getElementById("cut");
+  c.style.display="flex";
+  setTimeout(()=>c.style.display="none",2000);
+}
+
+/* SOUND */
+document.addEventListener("click",()=>{
+  document.getElementById("beep").play();
+},{once:true});
 
 </script>
 
