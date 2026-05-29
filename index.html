@@ -3,109 +3,99 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BLDS | The Eclipse</title>
+<title>BLDS | BlackLightDoms</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
 /* RESET */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   background:#000;
   color:#fff;
   font-family:'Poppins',sans-serif;
   overflow-x:hidden;
+  text-align:center;
 }
 
-/* ================= LOGO ================= */
+/* STAR BACKGROUND */
+.stars{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation:blink 4s infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:0.2;}
+  50%{opacity:1;}
+}
+
+/* LOGO */
 .logo{
-  width:110px;
-  margin:20px auto 10px;
+  width:120px;
+  margin:20px auto;
   display:block;
   filter:drop-shadow(0 0 10px white);
 }
 
-/* ================= GLITCH ================= */
-.glitch{
-  position:relative;
+/* TITLE */
+h1{
   font-family:'Orbitron';
-  text-align:center;
   font-size:2.6rem;
+  letter-spacing:4px;
+  margin-bottom:10px;
 }
 
-.glitch::before,
-.glitch::after{
-  content:attr(data-text);
-  position:absolute;
-  left:0;
-  width:100%;
-  top:0;
+/* SUB */
+.subtitle{
+  opacity:0.7;
+  margin-bottom:25px;
 }
 
-.glitch::before{
-  color:red;
-  transform:translate(2px,0);
-  animation:g1 2s infinite;
-}
-
-.glitch::after{
-  color:cyan;
-  transform:translate(-2px,0);
-  animation:g2 2s infinite;
-}
-
-@keyframes g1{
-  0%,100%{clip-path:inset(0 0 80% 0);}
-  50%{clip-path:inset(20% 0 20% 0);}
-}
-
-@keyframes g2{
-  0%,100%{clip-path:inset(80% 0 0 0);}
-  50%{clip-path:inset(20% 0 20% 0);}
-}
-
-/* ================= LAYOUT ================= */
-.container{
-  padding:20px;
-  text-align:center;
-}
-
-/* BUTTONS */
+/* BUTTON */
 button{
   padding:14px 22px;
-  border:1px solid #fff;
+  border:1px solid white;
   background:transparent;
-  color:#fff;
+  color:white;
   border-radius:30px;
   cursor:pointer;
-  margin:8px;
-  font-size:15px;
+  margin:6px;
   transition:0.2s;
 }
 
 button:hover{
-  background:#fff;
-  color:#000;
+  background:white;
+  color:black;
 }
 
 /* MENU */
 .menu{
   display:none;
   flex-direction:column;
-  align-items:center;
+  gap:12px;
   margin-top:20px;
+  align-items:center;
 }
 
-/* PAGE */
+/* PAGE SYSTEM */
 .page{
   display:none;
+  max-width:900px;
+  margin:0 auto;
   padding:20px;
+  text-align:left;
 }
 
 /* CARD */
@@ -117,47 +107,40 @@ button:hover{
   margin:10px 0;
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:10px;
-}
-
-/* ================= ORIGIN ================= */
-.origin-box{
+/* LORE */
+.lore{
   display:none;
+  max-width:900px;
+  margin:0 auto;
   padding:20px;
+  text-align:left;
   line-height:1.8;
   color:#ddd;
 }
 
-/* SECRET */
-.secret{
-  display:none;
-  padding:20px;
-  color:#aaa;
-}
-
-/* ================= FOOTER ================= */
+/* FOOTER */
 .footer{
-  margin-top:30px;
-  font-size:12px;
+  margin-top:40px;
+  font-size:13px;
   opacity:0.7;
+  text-align:center;
 }
 
 .footer a{
-  color:#fff;
   display:block;
-  margin-top:5px;
+  color:white;
+  margin-top:6px;
   text-decoration:none;
 }
 
-/* ================= MUSIC BTN ================= */
-.music{
-  position:fixed;
-  top:15px;
-  right:15px;
+/* ANIMATION */
+.fade{
+  animation:fade 0.4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
 }
 
 </style>
@@ -165,21 +148,12 @@ button:hover{
 
 <body>
 
-<!-- MUSIC -->
-<audio id="music" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7.mp3?filename=dark-ambient-110327.mp3">
-</audio>
+<div class="stars" id="stars"></div>
 
-<div class="music">
-<button onclick="toggleMusic()">🔊</button>
-</div>
-
-<!-- LOGO -->
 <img class="logo" src="logo.png">
 
-<h1 class="glitch" data-text="BLACKLIGHTDOMINION">BLACKLIGHTDOMINION</h1>
-
-<div class="container">
+<h1>BLACKLIGHTDOMS</h1>
+<div class="subtitle">THE ECLIPSE HAS BEGUN</div>
 
 <button onclick="showMenu()">ENTER THE ECLIPSE</button>
 
@@ -187,33 +161,23 @@ button:hover{
 <div class="menu" id="menu">
 
 <button onclick="openPage('home')">HOME</button>
-<button onclick="openPage('quotes')">QUOTES</button>
 <button onclick="openPage('member')">MEMBER</button>
 <button onclick="openPage('archive')">ARCHIVE</button>
-<button onclick="openOrigin()">ORIGIN</button>
+<button onclick="openLore()">ORIGIN</button>
 
 </div>
 
 <!-- HOME -->
 <div class="page" id="home">
-  <h2>WELCOME TO BLDS</h2>
-  <p>The Eclipse has begun.</p>
-</div>
-
-<!-- QUOTES -->
-<div class="page" id="quotes">
-  <h2>QUOTES</h2>
-  <p>"Darkness builds legends."</p>
+  <h2>WELCOME</h2>
+  <p>BLDS System Active</p>
 </div>
 
 <!-- MEMBER -->
 <div class="page" id="member">
-  <div class="grid">
-    <div class="card">MEMBERS: CLASSIFIED</div>
-    <div class="card">ACTIVE: 2024</div>
-    <div class="card">PROJECT: ONGOING</div>
-    <div class="card">STATUS: ALIVE</div>
-  </div>
+  <div class="card">MEMBERS: CLASSIFIED</div>
+  <div class="card">ACTIVE: 2024</div>
+  <div class="card">STATUS: ALIVE</div>
 </div>
 
 <!-- ARCHIVE -->
@@ -221,91 +185,74 @@ button:hover{
   <div class="card">BLDS BORN - 2024</div>
 </div>
 
-<!-- ORIGIN PAGE -->
-<div class="origin-box" id="origin">
-<h2>ORIGIN</h2>
+<!-- LORE -->
+<div class="lore" id="lore">
+
+<h2>THE ORIGIN OF BLDS</h2>
 
 <p>
-Klik 5x untuk unlock SECRET LORE
+Before BLDS had a name, before the symbol existed…<br><br>
+
+There were only individuals surviving darkness.<br><br>
+
+They failed, they fell, they were ignored…<br><br>
+
+But they kept moving.<br><br>
+
+That became BLDS.<br><br>
+
+Not a squad for fame.<br>
+But a dominion for those who refused to disappear.<br><br>
+
+THE CORE = inner purpose<br>
+THE ECLIPSE = the world
 </p>
-</div>
 
-<!-- SECRET -->
-<div class="secret" id="secret">
-<h2>THE FORGOTTEN ECLIPSE</h2>
-
-<p>
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br><br>
-
-there were only individuals trying to survive their own darkness.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-But a dominion built by those who refused to disappear.<br><br>
-
-The Core = inner purpose.<br>
-The Eclipse = the world & darkness.
-</p>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
 BLDS © 2026
-
-<a href="https://discord.gg/r4dM4QFteV" target="_blank">Discord</a>
-<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">WhatsApp</a>
-</div>
-
+<a href="https://discord.gg/r4dM4QFteV">Discord</a>
+<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">WhatsApp</a>
 </div>
 
 <script>
 
-let originClick = 0;
-
 /* MENU */
 function showMenu(){
   document.getElementById("menu").style.display="flex";
-  openPage('home');
 }
 
-/* PAGE */
+/* PAGE SYSTEM CLEAN */
 function openPage(id){
 
   document.querySelectorAll(".page").forEach(p=>{
     p.style.display="none";
   });
 
-  document.getElementById("origin").style.display="none";
-  document.getElementById("secret").style.display="none";
+  document.getElementById("lore").style.display="none";
 
   document.getElementById(id).style.display="block";
 }
 
-/* ORIGIN SYSTEM */
-function openOrigin(){
+/* LORE */
+function openLore(){
 
   document.querySelectorAll(".page").forEach(p=>{
     p.style.display="none";
   });
 
-  document.getElementById("origin").style.display="block";
-
-  originClick++;
-
-  if(originClick >= 5){
-    document.getElementById("origin").style.display="none";
-    document.getElementById("secret").style.display="block";
-  }
+  document.getElementById("lore").style.display="block";
 }
 
-/* MUSIC */
-function toggleMusic(){
-  const m = document.getElementById("music");
-  if(m.paused) m.play();
-  else m.pause();
+/* STARS */
+for(let i=0;i<120;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  document.getElementById("stars").appendChild(s);
 }
 
 </script>
