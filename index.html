@@ -9,35 +9,14 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
 body{
   background:#000;
   color:white;
-  font-family:'Poppins',sans-serif;
+  font-family:Poppins;
   overflow-x:hidden;
 }
 
-/* BACKGROUND */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle,rgba(255,255,255,0.08),transparent 40%);
-  z-index:-2;
-}
-
-/* STARS */
-.stars{position:fixed;inset:0;z-index:-1;}
-.star{
-  position:absolute;
-  width:2px;height:2px;
-  background:white;
-  border-radius:50%;
-  animation:blink 4s infinite;
-}
-@keyframes blink{0%,100%{opacity:0.2;}50%{opacity:1;}}
-
-/* LAYOUT */
+/* layout */
 .container{
   min-height:100vh;
   display:flex;
@@ -48,27 +27,31 @@ body::before{
   padding:30px;
 }
 
-/* LOGO */
-.eclipse{width:200px;height:200px;margin-bottom:20px;}
-.eclipse img{width:100%;height:100%;filter:drop-shadow(0 0 20px white);}
+/* logo */
+.logo{
+  width:200px;
+  margin-bottom:20px;
+}
+.logo img{
+  width:100%;
+  filter:drop-shadow(0 0 20px white);
+}
 
-/* TEXT */
+/* title */
 h1{
-  font-family:'Orbitron';
-  font-size:3rem;
+  font-family:Orbitron;
   letter-spacing:5px;
   text-shadow:0 0 20px white;
 }
-.subtitle{opacity:0.7;margin-bottom:20px;}
 
-/* BUTTON */
+/* button */
 button{
-  padding:12px 25px;
   margin:10px;
+  padding:12px 25px;
   border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:30px;
+  border-radius:25px;
   cursor:pointer;
   transition:0.3s;
 }
@@ -77,11 +60,15 @@ button:hover{
   color:black;
 }
 
-/* PAGES */
-.page{display:none;width:100%;max-width:900px;margin-top:20px;}
+/* pages */
+.page{
+  display:none;
+  max-width:900px;
+  width:100%;
+  margin-top:20px;
+}
 .active{display:block;}
 
-/* BOX */
 .box{
   background:rgba(255,255,255,0.03);
   padding:25px;
@@ -91,15 +78,19 @@ button:hover{
   line-height:1.8;
 }
 
-/* QUOTES */
-.quote{
+/* menu */
+.menu{
+  display:flex;
+  flex-direction:column;
+}
+
+/* archive cards */
+.card{
   margin:10px 0;
   padding:10px;
   border-left:2px solid white;
-  opacity:0.8;
 }
 
-/* FOOTER */
 footer{
   margin-top:40px;
   opacity:0.5;
@@ -109,75 +100,48 @@ footer{
 
 <body>
 
-<div class="stars" id="stars"></div>
-
 <div class="container">
 
-  <div class="eclipse">
+  <div class="logo">
     <img src="logo.png">
   </div>
 
   <h1>BLACKLIGHTDOMS</h1>
-  <div class="subtitle">THE ECLIPSE HAS BEGUN</div>
 
-  <!-- MAIN MENU -->
-  <div id="menu">
-    <button onclick="openPage('origin')">ENTER ECLIPSE</button>
-    <button onclick="openPage('lore')">LORE</button>
-    <button onclick="openPage('quotes')">QUOTES</button>
-    <button onclick="openPage('archive')">ARCHIVE</button>
+  <!-- ENTER -->
+  <div id="enterPage">
+    <button onclick="enter()">ENTER ECLIPSE</button>
   </div>
 
-  <!-- ORIGIN -->
-  <div id="origin" class="page">
-    <div class="box" onclick="secretClick()">
-      <h2>THE ORIGIN OF BLDS</h2>
-      <p>
-Before BLDS existed, there was only silence and struggle...
-A group of individuals lost in their own darkness, underestimated, ignored, and forgotten...
+  <!-- MENU -->
+  <div id="menuPage" class="page">
 
-They did not come from glory.
-They came from failure.
-
-Every setback shaped them.
-Every pain built them.
-
-BLDS was never created for fame.
-It was born from survival.
-
-It is not a group of winners.
-It is a dominion of those who refused to disappear.
-      </p>
-
-      <div id="secret" style="display:none;margin-top:20px;">
-        <h3>SECRET LORE</h3>
-        <p>
-Klik tidak cukup untuk memahami BLDS.
-Kebenaran hanya muncul bagi mereka yang bertahan cukup lama.
-        </p>
-      </div>
+    <div class="menu">
+      <button onclick="openPage('lore')">LORE</button>
+      <button onclick="openPage('quotes')">QUOTES</button>
+      <button onclick="openPage('archive')">ARCHIVE</button>
     </div>
+
   </div>
 
-  <!-- LORE + 10 FLAMES -->
+  <!-- LORE -->
   <div id="lore" class="page">
     <div class="box">
-      <h2>THE CORE & 10 FLAMES</h2>
+      <h2>BLDS LORE</h2>
+      <p>
+BLDS lahir dari kegelapan, bukan dari cahaya.
+Sebuah dominion bagi mereka yang tidak menyerah.
 
-      <b>Greater Flames</b><br>
-      Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
-
-      <b>Lesser Flames</b><br>
-      Hope, Awareness, Patience, Courage, Unity<br><br>
-
-      Every flame represents survival, growth, and the balance between darkness and purpose.
+Setiap kegagalan menjadi pondasi.
+Setiap rasa sakit menjadi kekuatan.
+      </p>
     </div>
   </div>
 
   <!-- QUOTES -->
   <div id="quotes" class="page">
     <div class="box">
-      <h2>BLDS QUOTES</h2>
+      <h2>QUOTES</h2>
       <div id="quoteBox"></div>
     </div>
   </div>
@@ -185,8 +149,19 @@ Kebenaran hanya muncul bagi mereka yang bertahan cukup lama.
   <!-- ARCHIVE -->
   <div id="archive" class="page">
     <div class="box">
-      <h2>BLDS ARCHIVE</h2>
-      <p>2024 - Birth<br>2025 - Growth<br>2026 - Eclipse Awakening</p>
+
+      <h2>ARCHIVE</h2>
+
+      <div class="card">Owner: Michael Lorenzo</div>
+      <div class="card">Right Hand: William Nayottama</div>
+      <div class="card">Left Hand: Felix</div>
+
+      <br>
+
+      <div class="card">05-03-2024 — BLDS Born</div>
+      <div class="card">15-05-2024 — Community Started</div>
+      <div class="card">2026 — Eclipse Era</div>
+
     </div>
   </div>
 
@@ -197,69 +172,54 @@ Kebenaran hanya muncul bagi mereka yang bertahan cukup lama.
 </div>
 
 <script>
-const pages = ["origin","lore","quotes","archive"];
 
+function enter(){
+  document.getElementById("enterPage").style.display="none";
+  document.getElementById("menuPage").classList.add("active");
+}
+
+/* PAGE SWITCH */
 function openPage(id){
-  pages.forEach(p=>document.getElementById(p).classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 
-  if(id === "quotes") loadQuotes();
+  if(id==="quotes") loadQuotes();
 }
 
-/* SECRET CLICK 5x */
-let count=0;
-function secretClick(){
-  count++;
-  if(count>=5){
-    document.getElementById("secret").style.display="block";
-  }
-}
-
-/* QUOTES 20 RANDOM */
-const quotes = [
-"Darkness is not the end, it is the beginning.",
-"BLDS never follows light, we become it.",
-"Fall seven times, rise eight.",
-"Power is built in silence.",
-"Not everyone survives the eclipse.",
-"Strength is forged in failure.",
-"Only the broken become stronger.",
-"Pain creates purpose.",
-"Fear is temporary, legacy is permanent.",
-"We are not chosen, we are built.",
-"Even stars die to become legends.",
-"Discipline is louder than talent.",
-"Survive first, shine later.",
-"The core never fades.",
-"Darkness reveals truth.",
-"Unity creates immortality.",
-"Every loss is a lesson.",
-"Rise beyond limits.",
-"Chaos builds kings.",
-"We are the eclipse itself."
+/* QUOTES 20 */
+const quotes=[
+"Darkness builds legends",
+"We are the eclipse",
+"Failure is fuel",
+"Strength comes from pain",
+"Rise beyond limits",
+"Silence creates power",
+"Only the strong remain",
+"Broken but evolving",
+"Fear is temporary",
+"Legacy is forever",
+"Light follows us",
+"Pain creates purpose",
+"Survive and dominate",
+"Born from chaos",
+"Never fade",
+"Stand as one",
+"Power is earned",
+"Fall. Rise. Repeat.",
+"Discipline wins",
+"BLDS never stops"
 ];
 
 function loadQuotes(){
   let box=document.getElementById("quoteBox");
   box.innerHTML="";
-  let shuffled=[...quotes].sort(()=>0.5-Math.random()).slice(0,20);
-  shuffled.forEach(q=>{
-    let div=document.createElement("div");
-    div.className="quote";
-    div.innerText=q;
-    box.appendChild(div);
+  quotes.sort(()=>0.5-Math.random()).slice(0,20).forEach(q=>{
+    let d=document.createElement("div");
+    d.innerHTML="• "+q;
+    box.appendChild(d);
   });
 }
 
-/* STARS */
-const stars=document.getElementById("stars");
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  stars.appendChild(s);
-}
 </script>
 
 </body>
