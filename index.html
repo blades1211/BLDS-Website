@@ -17,7 +17,6 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY */
 .sky{
   position:fixed;
   inset:0;
@@ -39,7 +38,6 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* ECLIPSE */
 .eclipse{
   position:fixed;
   top:50%;
@@ -64,7 +62,6 @@ body{
   50%{transform:translate(-50%,-50%) scale(1.3);}
 }
 
-/* FLASH */
 .portal{
   position:fixed;
   inset:0;
@@ -76,22 +73,6 @@ body{
 }
 .portal.active{opacity:1;}
 
-/* OVERLAY */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  transition:.6s;
-  z-index:9998;
-}
-.overlay.active{
-  opacity:1;
-  background:radial-gradient(circle, rgba(255,255,255,.2), black 70%);
-}
-
-/* CUTSCENE EFFECT */
 .cutscene{
   position:fixed;
   inset:0;
@@ -101,11 +82,9 @@ body{
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  text-align:center;
 }
 
 .cutscene h1{
-  font-size:22px;
   letter-spacing:6px;
   animation:glitch 1s infinite;
 }
@@ -116,7 +95,18 @@ body{
   100%{opacity:1;}
 }
 
-/* MAIN */
+.flame{
+  display:block;
+  text-shadow:0 0 10px white,0 0 25px white;
+  animation:flicker 1.2s infinite;
+  margin:6px 0;
+}
+
+@keyframes flicker{
+  0%,100%{opacity:1;}
+  50%{opacity:.6;}
+}
+
 .container{
   display:flex;
   flex-direction:column;
@@ -129,7 +119,6 @@ body{
   z-index:2;
 }
 
-/* LOGO */
 .logo{
   width:140px;
   filter:drop-shadow(0 0 12px white);
@@ -141,15 +130,12 @@ body{
   50%{transform:translateY(-6px);}
 }
 
-/* TITLE */
 .title{
   font-size:30px;
   letter-spacing:4px;
   margin-top:10px;
-  text-shadow:0 0 12px rgba(255,255,255,0.6);
 }
 
-/* BUTTONS */
 button{
   padding:12px 22px;
   margin:8px;
@@ -157,7 +143,6 @@ button{
   background:transparent;
   color:white;
   border-radius:20px;
-  cursor:pointer;
 }
 
 button:hover{
@@ -165,15 +150,9 @@ button:hover{
   color:black;
 }
 
-/* MENU */
 .menu{display:none;flex-direction:column;}
 
-/* PAGE */
-.page{
-  display:none;
-  max-width:900px;
-  margin-top:20px;
-}
+.page{display:none;max-width:900px;margin-top:20px;}
 
 .box{
   background:rgba(255,255,255,0.03);
@@ -183,8 +162,6 @@ button:hover{
   text-align:left;
   line-height:1.8;
 }
-
-.glow{text-shadow:0 0 10px white,0 0 25px white;}
 </style>
 </head>
 
@@ -193,12 +170,10 @@ button:hover{
 <div class="eclipse"></div>
 <div class="sky" id="sky"></div>
 <div class="portal" id="portal"></div>
-<div class="overlay" id="overlay"></div>
 
-<!-- CUTSCENE -->
 <div class="cutscene" id="cutscene">
   <h1>FORGOTTEN MEMORY DETECTED</h1>
-  <p style="opacity:0.6;margin-top:10px;">ECLIPSE PROTOCOL ACTIVATED</p>
+  <p style="opacity:0.6">ECLIPSE PROTOCOL ACTIVATED</p>
 </div>
 
 <div class="container">
@@ -210,80 +185,73 @@ button:hover{
 
 <div class="menu" id="menu">
 <button onclick="show('lore')">ORIGIN</button>
-<button onclick="show('quotes')">QUOTES</button>
-<button onclick="show('code')">CODE</button>
-<button onclick="show('archive')">ARCHIVE</button>
-<button onclick="show('secret')">???</button>
+<button onclick="show('secret')">FORGOTTEN</button>
 </div>
 
-<!-- ORIGIN (UNCHANGED LORE) -->
+<!-- LORE -->
 <div id="lore" class="page">
 <div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-Before BLDS had a name…<br>
-before the symbol existed…<br>
-before the Core awakened…<br><br>
+Before BLDS had a name… before the Core awakened…<br>
+only individuals survived their own darkness.<br><br>
 
-there were only individuals surviving their own darkness.<br><br>
-
-They were not chosen.<br>
-They were not born strong.<br>
-They were the ones who refused to disappear.<br><br>
-
-<b>True light is not born from brightness… but from absolute pressure of darkness.</b><br><br>
+<b>True light is born from pressure of absolute darkness.</b><br><br>
 
 <h3>THE BLACKLIGHT CORE</h3><br>
 
 The Core is persistence that refuses extinction.<br>
-It shines so nothing within disappears.<br><br>
+It exists so nothing within disappears.<br><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
-1. Vision<br>
-2. Discipline<br>
-3. Loyalty<br>
-4. Ambition<br>
-5. Resilience<br>
-6. Hope<br>
-7. Awareness<br>
-8. Patience<br>
-9. Courage<br>
-10. Unity<br>
+<span class="flame">1. Vision — perceiving beyond reality and illusion.</span><br>
+<span class="flame">2. Discipline — continuing even without motivation.</span><br>
+<span class="flame">3. Loyalty — remaining faithful even in isolation.</span><br>
+<span class="flame">4. Ambition — surpassing every internal limit.</span><br>
+<span class="flame">5. Resilience — rising after every collapse.</span><br>
+<span class="flame">6. Hope — the last light inside darkness.</span><br>
+<span class="flame">7. Awareness — understanding truth without illusion.</span><br>
+<span class="flame">8. Patience — enduring time without breaking.</span><br>
+<span class="flame">9. Courage — acting despite fear.</span><br>
+<span class="flame">10. Unity — strength born from connection.</span><br>
 
 </div>
 </div>
 
-<!-- SECRET -->
+<!-- FORGOTTEN -->
 <div id="secret" class="page">
 <div class="box">
 
 <h2>FORGOTTEN ECLIPSE</h2><br>
 
-Before BLDS… there was another existence.<br>
-A version erased from memory records.<br><br>
+Before BLDS… another system existed.<br>
+It contained more than ten flames.<br><br>
 
-They tried to build unity inside darkness.<br>
-But unity collapsed into ego.<br><br>
+The missing record was sealed after collapse.<br><br>
 
-Only one message survived:<br><br>
+<h3>THE 12 FLAMES PROTOCOL</h3><br>
 
-<b>“If the eclipse returns… do not let the Core repeat the past.”</b><br>
+<b>11 — SACRED FLAME</b><br>
+Memory of the origin before identity was formed.<br><br>
+
+<b>12 — HIDDEN FLAME</b><br>
+The observer beyond all existence.<br>
+It does not guide — it evaluates evolution itself.<br><br>
+
+When all 12 awaken… BLDS stops being a group<br>
+and becomes a living system.
 
 </div>
 </div>
-
-<div id="quotes" class="page"><div class="box glow">Quotes</div></div>
-<div id="code" class="page"><div class="box glow">Code</div></div>
-<div id="archive" class="page"><div class="box glow">Archive</div></div>
 
 </div>
 
 <script>
 
-/* SKY */
 const sky=document.getElementById("sky");
+
 for(let i=0;i<140;i++){
   let s=document.createElement("div");
   s.className="star";
@@ -293,12 +261,6 @@ for(let i=0;i<140;i++){
   sky.appendChild(s);
 }
 
-/* AUDIO AMBIENCE */
-const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
-audio.loop=true;
-audio.volume=0.25;
-
-/* ENTER */
 function enter(){
   document.getElementById("portal").classList.add("active");
 
@@ -309,7 +271,6 @@ function enter(){
   },800);
 }
 
-/* CUTSCENE TRIGGER */
 function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
@@ -317,17 +278,9 @@ function show(id){
   if(id==="secret"){
     const cut=document.getElementById("cutscene");
     cut.style.display="flex";
-
-    setTimeout(()=>{
-      cut.style.display="none";
-    },2000);
+    setTimeout(()=>cut.style.display="none",2000);
   }
 }
-
-/* SOUND START */
-document.body.addEventListener("click",()=>{
-  audio.play().catch(()=>{});
-},{once:true});
 
 </script>
 
