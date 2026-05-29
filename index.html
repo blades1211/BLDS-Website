@@ -9,29 +9,22 @@
 
 <style>
 
-/* ===== BASE ===== */
+/* ===== RESET ===== */
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
   background:#000;
   color:white;
   font-family:'Poppins',sans-serif;
   overflow-x:hidden;
+  text-align:center;
 }
 
-/* ===== STAR BACKGROUND ===== */
-#stars{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-2;
-}
-
-/* ===== GLITCH TITLE ===== */
+/* ===== TITLE ===== */
 .glitch{
   position:relative;
   font-family:'Orbitron';
-  font-size:3rem;
-  text-align:center;
+  font-size:clamp(1.8rem,4vw,3rem);
   margin-top:40px;
 }
 
@@ -39,7 +32,8 @@ body{
 .glitch::after{
   content:attr(data-text);
   position:absolute;
-  top:0;left:0;
+  left:0;
+  top:0;
   width:100%;
 }
 
@@ -65,15 +59,26 @@ body{
   50%{clip-path:inset(20% 0 20% 0);}
 }
 
+/* ===== LAYOUT ===== */
+.container{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
 /* ===== BUTTON ===== */
 button{
   cursor:pointer;
-  padding:12px 25px;
+  padding:14px 28px;
+  font-size:16px;
   border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:30px;
-  transition:.3s;
+  border-radius:999px;
+  transition:0.3s;
+  width:100%;
+  max-width:320px;
 }
 
 button:hover{
@@ -81,33 +86,37 @@ button:hover{
   color:black;
 }
 
-/* ===== LAYOUT ===== */
-.center{text-align:center;margin-top:40px;}
+/* tombol lebih besar di HP */
+@media(max-width:600px){
+  button{
+    padding:16px 20px;
+    font-size:15px;
+    max-width:90%;
+  }
+}
 
+/* ===== HUB ===== */
 #hub{
   display:none;
-  padding:30px;
-  text-align:center;
+  margin-top:30px;
 }
 
 .menu{
   display:flex;
   flex-direction:column;
   gap:12px;
-  margin-top:25px;
+  align-items:center;
 }
 
-/* ===== PAGE SYSTEM ===== */
+/* ===== PAGE ===== */
 .page{
   display:none;
-  max-width:900px;
-  margin:auto;
-  padding:25px;
-  animation:fade .5s ease;
+  margin-top:20px;
+  animation:fade 0.4s ease;
 }
 
 @keyframes fade{
-  from{opacity:0;transform:translateY(20px);}
+  from{opacity:0;transform:translateY(15px);}
   to{opacity:1;transform:translateY(0);}
 }
 
@@ -116,8 +125,10 @@ button:hover{
   background:#111;
   border:1px solid #333;
   padding:15px;
-  margin-top:10px;
-  border-radius:10px;
+  border-radius:12px;
+  margin:10px auto;
+  max-width:700px;
+  text-align:left;
 }
 
 /* ===== MEMBER GRID ===== */
@@ -125,13 +136,19 @@ button:hover{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:10px;
+  max-width:800px;
+  margin:auto;
 }
 
 /* ===== SECRET ===== */
 #secret{
   display:none;
-  padding:40px;
-  text-align:center;
+  padding:30px;
+}
+
+/* ===== START SCREEN ===== */
+#start{
+  margin-top:60px;
 }
 
 /* ===== LOADING ===== */
@@ -158,144 +175,101 @@ button:hover{
 
 <div id="loading">ENTERING THE ECLIPSE...</div>
 
-<div id="stars"></div>
-
 <h1 class="glitch" data-text="BLACKLIGHTDOMINION">BLACKLIGHTDOMINION</h1>
 
-<div class="center" id="start">
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<div class="container">
+
+<div id="start">
+  <button onclick="enter()">ENTER THE ECLIPSE</button>
 </div>
 
-<!-- HUB -->
 <div id="hub">
 
-<h2>BLACKLIGHT HUB</h2>
+  <h2>HUB</h2>
 
-<div class="menu">
+  <div class="menu">
 
-<button onclick="openPage('origin')">ORIGIN</button>
-<button onclick="openPage('core')">BLACKLIGHT CORE</button>
-<button onclick="openPage('eclipse')">THE ECLIPSE</button>
-<button onclick="openPage('meaning')">MEANING</button>
-<button onclick="openPage('quotes')">QUOTES</button>
-<button onclick="openPage('member')">MEMBER</button>
-<button onclick="openPage('archive')">ARCHIVE</button>
+    <button onclick="openPage('origin')">ORIGIN</button>
+    <button onclick="openPage('core')">CORE</button>
+    <button onclick="openPage('eclipse')">ECLIPSE</button>
+    <button onclick="openPage('meaning')">MEANING</button>
+    <button onclick="openPage('quotes')">QUOTES</button>
+    <button onclick="openPage('member')">MEMBER</button>
+    <button onclick="openPage('archive')">ARCHIVE</button>
+
+  </div>
 
 </div>
 
-</div>
-
-<!-- ORIGIN -->
+<!-- PAGES -->
 <div class="page" id="origin">
 <h2>ORIGIN</h2>
-<p>
-before BLDS had a name...<br><br>
-individuals survived their own darkness...<br>
-ignored and underestimated...<br><br>
-this is where BLDS began.
-</p>
-
-<br>
-<button onclick="originClick()">tap ORIGIN (x5 unlock)</button>
+<div class="card">
+Before BLDS had a name… people survived their own darkness.
+</div>
+<button onclick="originClick()">tap 5x unlock secret</button>
 </div>
 
-<!-- CORE -->
 <div class="page" id="core">
-<h2>BLACKLIGHT CORE</h2>
-<div class="card">
-Inner light. Inner purpose.<br>
-Never given — always discovered.
-</div>
+<div class="card">CORE = inner purpose</div>
 </div>
 
-<!-- ECLIPSE -->
 <div class="page" id="eclipse">
-<h2>THE ECLIPSE</h2>
-<div class="card">
-Darkness. Pressure. Failure.<br>
-Where most stop — BLDS continues.
-</div>
+<div class="card">ECLIPSE = challenges & darkness</div>
 </div>
 
-<!-- MEANING -->
 <div class="page" id="meaning">
-<h2>MEANING</h2>
-<div class="card">
-CORE = inner light<br>
-ECLIPSE = challenges of life
-</div>
+<div class="card">CORE = light / ECLIPSE = darkness</div>
 </div>
 
-<!-- QUOTES -->
 <div class="page" id="quotes">
-<h2>QUOTES</h2>
 <div class="card">“Only those who survive the eclipse understand the light.”</div>
 </div>
 
-<!-- MEMBER -->
 <div class="page member-grid" id="member">
-<div class="card">MEMBERS: CLASSIFIED</div>
-<div class="card">ACTIVE: 2024</div>
-<div class="card">STATUS: ALIVE</div>
-<div class="card">PROJECT: ONGOING</div>
+<div class="card">MEMBERS</div>
+<div class="card">ACTIVE 2024</div>
+<div class="card">STATUS ALIVE</div>
+<div class="card">PROJECT ONGOING</div>
 </div>
 
-<!-- ARCHIVE -->
 <div class="page" id="archive">
-<h2>ARCHIVE</h2>
 <div class="card">BLDS BORN - 2024</div>
 </div>
 
-<!-- SECRET -->
 <div id="secret">
-<h2>THE FORGOTTEN ECLIPSE</h2>
-<p>
-You unlocked the hidden layer of BLDS.<br>
-Not everyone reaches this point.
-</p>
+<h2>SECRET UNLOCKED</h2>
+<p>You reached the hidden layer of the Eclipse.</p>
+</div>
+
 </div>
 
 <script>
 
-let originCount = 0;
+let count=0;
 
-/* ENTER */
 function enter(){
   document.getElementById("start").style.display="none";
   document.getElementById("hub").style.display="block";
 }
 
-/* PAGE SYSTEM */
 function openPage(id){
 
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display="none";
+  });
+
   document.getElementById("secret").style.display="none";
 
   document.getElementById(id).style.display="block";
 }
 
-/* SECRET ORIGIN */
 function originClick(){
-  originCount++;
-  if(originCount>=5){
+  count++;
+  if(count>=5){
     document.querySelectorAll(".page").forEach(p=>p.style.display="none");
     document.getElementById("secret").style.display="block";
   }
-}
-
-/* STARS */
-const starBox=document.getElementById("stars");
-
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.style.position="absolute";
-  s.style.width="2px";
-  s.style.height="2px";
-  s.style.background="white";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  s.style.opacity=Math.random();
-  starBox.appendChild(s);
 }
 
 </script>
