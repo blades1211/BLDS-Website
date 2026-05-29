@@ -73,6 +73,8 @@ body{
   justify-content:center;
   text-align:center;
   padding:30px;
+  position:relative;
+  z-index:2;
 }
 
 .menu{display:none;flex-direction:column}
@@ -88,7 +90,13 @@ button{
 }
 button:hover{background:white;color:black}
 
-.page{display:none;max-width:900px;margin-top:20px}
+/* PAGE FIX (INI BIANG BUG KAMU) */
+.page{
+  display:none;
+  max-width:900px;
+  margin-top:20px;
+  z-index:3;
+}
 
 .box{
   background:rgba(255,255,255,0.03);
@@ -99,7 +107,35 @@ button:hover{background:white;color:black}
   line-height:1.8;
 }
 
-/* OVERLAY */
+/* LOGO GLOW */
+.logo-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.logo{
+  width:140px;
+  filter: drop-shadow(0 0 10px white)
+          drop-shadow(0 0 25px #6cf)
+          drop-shadow(0 0 40px #00f0ff);
+  animation:floatGlow 3s ease-in-out infinite;
+}
+
+@keyframes floatGlow{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+
+.title{
+  margin-top:10px;
+  font-size:30px;
+  letter-spacing:4px;
+  text-shadow:0 0 10px #00f0ff;
+}
+
+/* OVERLAY FIXED */
 .overlay{
   position:fixed;
   inset:0;
@@ -114,26 +150,6 @@ button:hover{background:white;color:black}
   background:radial-gradient(circle, rgba(255,0,0,.35), black 70%);
 }
 
-/* LOGO FIX (PNG) */
-.logo{
-  width:140px;
-  height:auto;
-  margin-bottom:10px;
-  opacity:0;
-  animation:logoIn 1.2s ease forwards;
-}
-
-.logo-wrap{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-@keyframes logoIn{
-  from{opacity:0; transform:translateY(-20px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
 footer{
   margin-top:40px;
   font-size:.9rem;
@@ -141,51 +157,6 @@ footer{
   text-align:center;
 }
 footer a{color:white;text-decoration:none;}
-
-/* LOGO GLOW */
-.logo{
-  width:140px;
-  filter: drop-shadow(0 0 10px white)
-          drop-shadow(0 0 25px #6cf)
-          drop-shadow(0 0 40px #00f0ff);
-  animation: floatGlow 3s ease-in-out infinite;
-}
-
-@keyframes floatGlow{
-  0%,100%{transform:translateY(0); filter:drop-shadow(0 0 10px white) drop-shadow(0 0 25px #6cf);}
-  50%{transform:translateY(-6px); filter:drop-shadow(0 0 20px white) drop-shadow(0 0 50px #00f0ff);}
-}
-
-/* TEKS GLOW */
-.title{
-  margin-top:10px;
-  font-size:32px;
-  letter-spacing:4px;
-  color:white;
-  text-shadow:
-    0 0 5px white,
-    0 0 15px #00f0ff,
-    0 0 30px #0066ff;
-  animation:textGlow 2.5s infinite alternate;
-}
-
-@keyframes textGlow{
-  from{
-    text-shadow:0 0 5px white, 0 0 15px #00f0ff;
-  }
-  to{
-    text-shadow:0 0 10px white, 0 0 25px #00f0ff, 0 0 40px #0066ff;
-  }
-}
-
-/* WRAPPER CENTER */
-.logo-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:10px;
-}
 
 </style>
 </head>
@@ -198,10 +169,10 @@ footer a{color:white;text-decoration:none;}
 
 <div class="container">
 
-<!-- LOGO FIX -->
+<!-- LOGO -->
 <div class="logo-wrap">
-  <img src="logo.png" class="logo" alt="BLDS Logo">
-<h1 class="title">BLACKLIGHTDOMS</h1>
+  <img src="logo.png" class="logo">
+  <div class="title">BLACKLIGHTDOMS</div>
 </div>
 
 <h1>BLACKLIGHTDOMS</h1>
@@ -215,9 +186,7 @@ footer a{color:white;text-decoration:none;}
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<!-- ORIGIN -->
-<div id="lore" class="page">
-<div class="box">
+<!-- ORIGIN (FIX FIX FIX) -->
 <div id="lore" class="page">
 <div class="box">
 
@@ -227,68 +196,29 @@ before BLDS had a name,<br>
 before the symbol existed,<br>
 before the squad was formed…<br><br>
 
-there were only individuals trying to survive their own darkness.<br><br>
+there were only individuals surviving darkness.<br><br>
 
 Some were ignored.<br>
 Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
+Some kept failing until they stopped expecting anything.<br><br>
 
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br>
-But a dominion built by those who refused to disappear.<br>
+That realization became BLDS.<br><br>
 
 <hr><br>
 
 <h3>THE BLACKLIGHT CORE</h3><br>
-
-At the center of BLDS lies the Core.<br>
-A single light that continues to exist even in absolute darkness.<br><br>
-
-The Core represents the inner purpose of every member of BLDS.<br><br>
-
-Not given by the world.<br>
-Not created by attention.<br>
-But forged through pain, failure, and survival.<br><br>
-
-It is the reminder that even when everything collapses…<br>
-even when no one is watching…<br>
-your inner light still matters.<br><br>
-
-BLDS believes the strongest are not those who never fall,<br>
-but those who continue rising after every fall.<br>
+A light that never dies even in darkness.<br>
+Forged from pain, failure, survival.<br><br>
 
 <hr><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
 <b>Greater Flames</b><br>
-I. Vision — The ability to see direction even when others are lost.<br>
-II. Discipline — To continue growing even when nobody is watching.<br>
-III. Loyalty — To stand together through victory and defeat.<br>
-IV. Ambition — The desire to surpass limits and continue evolving.<br>
-V. Resilience — The strength to rise again after every fall.<br><br>
+Vision — Discipline — Loyalty — Ambition — Resilience<br><br>
 
 <b>Lesser Flames</b><br>
-I. Hope — The light that remains during difficult times.<br>
-II. Awareness — The ability to stay conscious and understand reality.<br>
-III. Patience — Growth takes time and endurance.<br>
-IV. Courage — The will to move forward despite fear.<br>
-V. Unity — The bond that turns individuals into something greater.<br><br>
-
-Though smaller, these flames are just as important.<br>
-Because even the brightest Core will fade without what supports it.
+Hope — Awareness — Patience — Courage — Unity<br>
 
 </div>
 </div>
@@ -318,8 +248,7 @@ Because even the brightest Core will fade without what supports it.
 <b>LEFT HAND:</b> Felix<br><br>
 
 05-03-2024 — BLDS Born<br>
-15-05-2024 - WhatsApp Community Created<br>
-12-09-2024 — Discord Server Created<br>
+15-05-2024 — Community Created<br>
 05-03-2026 — Eclipse Era
 </div>
 </div>
