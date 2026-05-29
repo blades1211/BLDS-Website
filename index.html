@@ -23,7 +23,6 @@ body{
   inset:0;
   background:linear-gradient(#000,#02040f);
   z-index:-2;
-  overflow:hidden;
 }
 
 .star{
@@ -40,7 +39,7 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* PORTAL */
+/* PORTAL (FIX → WHITE ONLY) */
 .portal{
   position:fixed;
   inset:0;
@@ -55,7 +54,6 @@ body{
 /* ERROR */
 .error{
   animation:shake .3s;
-  background:rgba(255,0,0,0.25);
 }
 
 @keyframes shake{
@@ -73,8 +71,6 @@ body{
   justify-content:center;
   text-align:center;
   padding:30px;
-  position:relative;
-  z-index:2;
 }
 
 .menu{display:none;flex-direction:column}
@@ -90,12 +86,11 @@ button{
 }
 button:hover{background:white;color:black}
 
-/* PAGE FIX (INI BIANG BUG KAMU) */
+/* PAGE */
 .page{
   display:none;
   max-width:900px;
   margin-top:20px;
-  z-index:3;
 }
 
 .box{
@@ -107,7 +102,7 @@ button:hover{background:white;color:black}
   line-height:1.8;
 }
 
-/* LOGO GLOW */
+/* LOGO */
 .logo-wrap{
   display:flex;
   flex-direction:column;
@@ -117,9 +112,10 @@ button:hover{background:white;color:black}
 
 .logo{
   width:140px;
-  filter: drop-shadow(0 0 10px white)
-          drop-shadow(0 0 25px #6cf)
-          drop-shadow(0 0 40px #00f0ff);
+  filter:
+    drop-shadow(0 0 10px white)
+    drop-shadow(0 0 25px white)
+    drop-shadow(0 0 40px white);
   animation:floatGlow 3s ease-in-out infinite;
 }
 
@@ -128,14 +124,19 @@ button:hover{background:white;color:black}
   50%{transform:translateY(-6px);}
 }
 
+/* TITLE (FIX → WHITE ONLY) */
 .title{
   margin-top:10px;
   font-size:30px;
   letter-spacing:4px;
-  text-shadow:0 0 10px #00f0ff;
+  color:white;
+  text-shadow:
+    0 0 5px white,
+    0 0 15px white,
+    0 0 30px white;
 }
 
-/* OVERLAY FIXED */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -145,11 +146,14 @@ button:hover{background:white;color:black}
   transition:.6s;
   z-index:9998;
 }
+
+/* FORGOTTEN TRANSITION (FIX → WHITE, NO RED) */
 .overlay.active{
   opacity:1;
-  background:radial-gradient(circle, rgba(255,0,0,.35), black 70%);
+  background:radial-gradient(circle, rgba(255,255,255,0.25), black 70%);
 }
 
+/* FOOTER */
 footer{
   margin-top:40px;
   font-size:.9rem;
@@ -157,7 +161,6 @@ footer{
   text-align:center;
 }
 footer a{color:white;text-decoration:none;}
-
 </style>
 </head>
 
@@ -175,8 +178,6 @@ footer a{color:white;text-decoration:none;}
   <div class="title">BLACKLIGHTDOMS</div>
 </div>
 
-<h1>BLACKLIGHTDOMS</h1>
-
 <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
@@ -186,40 +187,26 @@ footer a{color:white;text-decoration:none;}
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<!-- ORIGIN (FIX FIX FIX) -->
+<!-- ORIGIN -->
 <div id="lore" class="page">
 <div class="box">
-
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br><br>
-
+before BLDS had a name…<br>
 there were only individuals surviving darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some kept failing until they stopped expecting anything.<br><br>
 
 That realization became BLDS.<br><br>
 
-<hr><br>
+<hr>
 
-<h3>THE BLACKLIGHT CORE</h3><br>
-A light that never dies even in darkness.<br>
-Forged from pain, failure, survival.<br><br>
+<h3>THE BLACKLIGHT CORE</h3>
+A light that never dies in darkness.<br><br>
 
-<hr><br>
+<hr>
 
-<h3>TEN FLAMES OF BLDS</h3><br>
-
-<b>Greater Flames</b><br>
-Vision — Discipline — Loyalty — Ambition — Resilience<br><br>
-
-<b>Lesser Flames</b><br>
-Hope — Awareness — Patience — Courage — Unity<br>
-
+<h3>TEN FLAMES</h3>
+Vision — Discipline — Loyalty — Ambition — Resilience<br>
+Hope — Awareness — Patience — Courage — Unity
 </div>
 </div>
 
@@ -248,7 +235,6 @@ Hope — Awareness — Patience — Courage — Unity<br>
 <b>LEFT HAND:</b> Felix<br><br>
 
 05-03-2024 — BLDS Born<br>
-15-05-2024 — Community Created<br>
 05-03-2026 — Eclipse Era
 </div>
 </div>
@@ -262,8 +248,8 @@ If the eclipse returns… do not repeat the past.
 </div>
 
 <footer>
-<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">WhatsApp</a> |
-<a href="https://discord.gg/r4dM4QFteV">Discord</a><br>
+<a href="#">WhatsApp</a> |
+<a href="#">Discord</a><br>
 BLACKLIGHTDOMS © 2026
 </footer>
 
@@ -326,7 +312,7 @@ function check(){
     setTimeout(()=>{
       overlay.classList.remove("active");
       show('forgotten');
-    },1600);
+    },1400);
   } else {
     val.classList.add("error");
   }
