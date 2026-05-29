@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   background:#000;
-  color:white;
+  color:#fff;
   font-family:Poppins,sans-serif;
   min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   text-align:center;
-  overflow-x:hidden;
+  overflow:hidden;
 }
 
 /* SKY + STARS */
@@ -63,17 +65,18 @@ body{
   50%{transform:translate(-50%,-50%) scale(1.3);}
 }
 
-/* UI */
+/* CONTAINER */
 .container{
   width:100%;
   max-width:900px;
   padding:20px;
 }
 
+/* LOGO */
 .logo{
   width:130px;
+  animation:float 4s ease-in-out infinite;
   filter:drop-shadow(0 0 12px white);
-  animation:float 4s infinite ease-in-out;
 }
 
 @keyframes float{
@@ -81,15 +84,15 @@ body{
   50%{transform:translateY(-6px);}
 }
 
+/* BUTTON */
 button{
-  padding:10px 18px;
+  padding:10px 16px;
   margin:6px;
   border:1px solid white;
   background:transparent;
   color:white;
   border-radius:12px;
   cursor:pointer;
-  transition:.3s;
 }
 
 button:hover{
@@ -97,19 +100,18 @@ button:hover{
   color:black;
 }
 
+/* MENU */
 .menu{
   display:none;
   flex-direction:column;
   margin-top:10px;
-  animation:fade .5s ease;
 }
 
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
+/* PAGE */
+.page{
+  display:none;
+  margin-top:20px;
 }
-
-.page{display:none;margin-top:20px;}
 
 .box{
   background:rgba(255,255,255,.03);
@@ -117,7 +119,7 @@ button:hover{
   padding:20px;
   border-radius:16px;
   text-align:left;
-  line-height:1.8;
+  line-height:1.7;
 }
 
 /* FLAMES */
@@ -134,7 +136,7 @@ button:hover{
   transform:translateY(0);
 }
 
-/* CUTSCENES */
+/* CUTSCENE */
 .cutscene{
   position:fixed;
   inset:0;
@@ -144,16 +146,6 @@ button:hover{
   align-items:center;
   flex-direction:column;
   z-index:9999;
-  text-align:center;
-}
-
-.glitch{
-  animation:glitch .2s infinite;
-}
-
-@keyframes glitch{
-  0%,100%{opacity:1;}
-  50%{opacity:.4;}
 }
 
 .bigLogo{
@@ -164,6 +156,16 @@ button:hover{
 }
 
 .show{opacity:1;}
+
+/* FADE */
+.fadeIn{
+  animation:fade .6s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
 </style>
 </head>
 
@@ -177,92 +179,51 @@ button:hover{
 <img src="logo.png" class="logo">
 <h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<button onclick="enter()">ENTER ECLIPSE</button>
 
 <div class="menu" id="menu">
 <button onclick="show('origin')">ORIGIN</button>
-<button onclick="show('core')">BLACKLIGHT CORE</button>
-<button onclick="show('forgot')">FORGOTTEN</button>
 <button onclick="show('code')">CODE</button>
 </div>
 
-<!-- ORIGIN FULL -->
+<!-- ORIGIN -->
 <div id="origin" class="page">
-<div class="box">
+<div class="box fadeIn">
 
 <h2>THE ORIGIN OF BLDS</h2><br>
+Before BLDS, there was only silence.<br>
+A world without identity… only survival.<br><br>
 
-Before BLDS existed, there was only silence and survival.<br>
-No identity. No purpose. Only fragments of consciousness drifting in darkness.<br><br>
+Those who remained were not chosen.<br>
+They simply refused to disappear.<br><br>
 
-Those who survived were not chosen.<br>
-They were not strong.<br>
-They simply refused to vanish.<br><br>
-
-Every collapse shaped awareness.<br>
-Every failure created resistance.<br><br>
-
-<b>True light is not born from brightness… but from absolute pressure of darkness.</b><br><br>
-
-From that pressure… BLDS was formed.
-
-</div>
-</div>
-
-<!-- CORE FULL -->
-<div id="core" class="page">
-<div class="box">
-
-<h2>BLACKLIGHT CORE</h2><br>
-
-The Core is not power.<br>
-It is persistence encoded into existence itself.<br>
-It exists so nothing within disappears.<br><br>
-
-<h3>10 FLAMES OF BLDS</h3><br>
-
-<span class="flame">1. Vision — sees beyond illusion</span>
-<span class="flame">2. Discipline — acts without motivation</span>
-<span class="flame">3. Loyalty — remains even in isolation</span>
-<span class="flame">4. Ambition — surpasses all limits</span>
-<span class="flame">5. Resilience — rises after collapse</span>
-<span class="flame">6. Hope — survives darkness</span>
-<span class="flame">7. Awareness — understands truth</span>
-<span class="flame">8. Patience — endures time itself</span>
-<span class="flame">9. Courage — acts despite fear</span>
-<span class="flame">10. Unity — becomes one force</span>
+<b>True light is born from absolute darkness pressure.</b>
 
 <br><br>
 
-<h3>12 FLAMES PROTOCOL</h3><br>
+<h3>10 FLAMES</h3><br>
 
-<b>11 — SACRED FLAME</b><br>
-Memory of origin before identity was formed.<br><br>
-
-<b>12 — HIDDEN FLAME</b><br>
-Observer beyond existence itself.<br>
-It does not guide… it evaluates all evolution.
+<span class="flame">1. Vision</span>
+<span class="flame">2. Discipline</span>
+<span class="flame">3. Loyalty</span>
+<span class="flame">4. Ambition</span>
+<span class="flame">5. Resilience</span>
+<span class="flame">6. Hope</span>
+<span class="flame">7. Awareness</span>
+<span class="flame">8. Patience</span>
+<span class="flame">9. Courage</span>
+<span class="flame">10. Unity</span>
 
 </div>
 </div>
 
-<!-- FORGOTTEN FULL -->
-<div id="forgot" class="page">
-<div class="box">
+<!-- CODE -->
+<div id="code" class="page">
+<div class="box fadeIn">
 
-<h2>FORGOTTEN ECLIPSE</h2><br>
-
-Before BLDS, there was another system.<br>
-A civilization built on unity… that collapsed from within.<br><br>
-
-Unity turned into ego.<br>
-Ego turned into control.<br>
-Control turned into destruction.<br>
-And destruction turned into silence.<br><br>
-
-All records were erased except one fragment:<br><br>
-
-<b>“If the Eclipse returns… do not awaken the Core again.”</b>
+<h2>CODE INPUT</h2>
+<input id="inp" placeholder="enter code">
+<button onclick="check()">UNLOCK</button>
 
 </div>
 </div>
@@ -271,18 +232,19 @@ All records were erased except one fragment:<br><br>
 
 <!-- CUTSCENES -->
 <div class="cutscene" id="cutForgot">
-<h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
+<h1>FORGOTTEN MEMORY DETECTED</h1>
 </div>
 
 <div class="cutscene" id="cutFlame">
-<img src="logo.png" id="bigLogo" class="bigLogo">
+<img src="logo.png" class="bigLogo" id="bigLogo">
 </div>
 
 <script>
 
-/* STAR GENERATOR FIX */
+/* STARS */
 const sky=document.getElementById("sky");
-for(let i=0;i<140;i++){
+
+for(let i=0;i<120;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
@@ -291,36 +253,36 @@ for(let i=0;i<140;i++){
   sky.appendChild(s);
 }
 
-/* MENU */
+/* MENU FIX */
 function enter(){
   document.getElementById("menu").style.display="flex";
 }
 
-/* NAV */
+/* PAGE SWITCH */
 function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
 
-  if(id==="core"){
+  if(id==="origin"){
     flameSequence();
   }
 }
 
-/* FLAMES SEQUENCE */
+/* FLAME ANIMATION */
 function flameSequence(){
-  let flames=document.querySelectorAll(".flame");
+  let f=document.querySelectorAll(".flame");
   let i=0;
 
   let t=setInterval(()=>{
-    if(i<flames.length){
-      flames[i].classList.add("active");
+    if(i<f.length){
+      f[i].classList.add("active");
       i++;
-    } else clearInterval(t);
-  },180);
+    }else clearInterval(t);
+  },200);
 }
 
 /* 12 FLAMES CUTSCENE */
-function twelveFlames(){
+function twelve(){
   let cut=document.getElementById("cutFlame");
   let logo=document.getElementById("bigLogo");
 
@@ -340,25 +302,30 @@ function twelveFlames(){
   },4500);
 }
 
-/* FORGOTTEN CINEMATIC */
+/* FORGOTTEN CUTSCENE */
 function forgotten(){
   let cut=document.getElementById("cutForgot");
   cut.style.display="flex";
 
-  setTimeout(()=>{
-    cut.style.display="none";
-  },2200);
+  setTimeout(()=>cut.style.display="none",2200);
 }
 
-/* CODE INPUT */
-document.addEventListener("keydown",(e)=>{
-  if(e.key==="Enter"){
-    let v=document.querySelector("input")?.value?.toLowerCase();
+/* CODE */
+function check(){
+  let v=document.getElementById("inp").value.toLowerCase();
 
-    if(v==="forgotten") forgotten();
-    if(v==="12flames" || v==="12 flames") twelveFlames();
-  }
-});
+  if(v==="forgotten") forgotten();
+  if(v==="12flames" || v==="12 flames") twelve();
+}
+
+/* AUTO AUDIO */
+const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
+audio.loop=true;
+audio.volume=0.3;
+
+document.body.addEventListener("click",()=>{
+  audio.play().catch(()=>{});
+},{once:true});
 
 </script>
 
