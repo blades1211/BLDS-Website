@@ -180,24 +180,28 @@ input{
 .cutscene{
   position:fixed;
   inset:0;
-  background:black;
+  background:rgba(0,0,0,.95);
   display:none;
-  justify-content:center;
-  align-items:center;
   flex-direction:column;
+  align-items:center;
   z-index:9999;
-  text-align:center;
-  padding:20px;
+
+  /* FIX SCROLL */
+  overflow-y:auto;
+  padding:40px 20px;
 }
 
 .bigLogo{
   width:240px;
   filter:drop-shadow(0 0 25px white);
   animation:float 3s ease-in-out infinite;
+  margin-top:20px;
 }
 
 .glitch{
   animation:glitch .15s infinite;
+  margin-top:30px;
+  text-align:center;
 }
 
 @keyframes glitch{
@@ -226,6 +230,10 @@ input{
     font-size:14px;
   }
 
+  .bigLogo{
+    width:170px;
+  }
+
 }
 
 </style>
@@ -242,7 +250,9 @@ input{
 
 <h1 class="title">BLACKLIGHTDOMS</h1>
 
-<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
+<button id="enterBtn" onclick="enter()">
+ENTER THE ECLIPSE
+</button>
 
 <!-- MENU -->
 
@@ -265,146 +275,43 @@ CODE
 <!-- ORIGIN -->
 
 <div class="page" id="origin">
+
 <div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2>
+
 <br>
 
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br>
-there were only individuals trying to survive their own darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-<b>
-Most people only shine when the world is bright.
-But very few can continue moving forward when everything turns dark.
-</b>
-
-<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br><br>
-
-But a dominion built by those who refused to disappear.
-
-<br><br><hr><br>
-
-<h2>BLACKLIGHT CORE</h2>
-<br>
-
-At the center of the eclipse lies the Core.<br>
-A single star that continues to shine no matter how dark the sky becomes.<br><br>
-
-The Core represents the inner purpose carried by every member of BLDS.<br><br>
-
-Not a purpose given by the world.<br>
-Not a purpose created by attention or popularity.<br>
-But a purpose discovered through hardship.<br><br>
-
-It is the reminder that:<br><br>
-
-even when everything around you changes…<br>
-even when people leave…<br>
-even when failure surrounds you…<br>
-your inner light can still remain alive.<br><br>
-
-BLDS believes the strongest people are not those who never fall.<br><br>
-
-The strongest are the ones who continue standing after every fall.<br><br>
-
-That is why the Core never disappears.<br>
-Because purpose cannot be erased by fear.
-
-<br><br><hr><br>
-
-<h2>THE TEN FLAMES OF BLDS</h2>
-<br>
-
-<b>GREATER FLAMES</b>
-<br><br>
-
-I. Vision — The ability to see direction even when others are lost.<br><br>
-
-II. Discipline — To continue growing even when nobody is watching.<br><br>
-
-III. Loyalty — To stand together through victory and defeat.<br><br>
-
-IV. Ambition — The desire to surpass limits and continue evolving.<br><br>
-
-V. Resilience — The strength to rise again after every fall.<br><br>
-
-<b>LESSER FLAMES</b>
-<br><br>
-
-I. Hope — The light that remains during difficult times.<br><br>
-
-II. Awareness — The ability to stay conscious and understand reality.<br><br>
-
-III. Patience — Growth takes time and endurance.<br><br>
-
-IV. Courage — The will to move forward despite fear.<br><br>
-
-V. Unity — The bond that turns individuals into something greater.<br><br>
-
-Though smaller, these flames are just as important.<br><br>
-
-Because even the brightest Core will fade without what supports it.<br><br>
-
-<b>
-Five flames grant strength.<br>
-Five flames preserve it.<br>
-Together, they protect the Core.
-</b>
+Your lore here...
 
 </div>
+
 </div>
 
 <!-- ARCHIVES -->
 
 <div class="page" id="archives">
+
 <div class="box">
 
 <h2>BLDS ARCHIVES</h2>
+
 <br>
 
-05-03-2024 — BLDS Born<br><br>
-
-15-05-2024 — WhatsApp Community<br><br>
-
-12-09-2024 — Discord Community<br><br>
-
-20-08-2025 — Massive Remake
-
-<br><br><hr><br>
-
-Founder — Michael Lorenzo<br><br>
-
-Right Hand Of BLDS — William Nayottama<br><br>
-
-Left Hand Of BLDS — Felix
+Your archive here...
 
 </div>
+
 </div>
 
 <!-- CODE -->
 
 <div class="page" id="code">
+
 <div class="box">
 
 <h2>CODE SYSTEM</h2>
+
 <br>
 
 Type hidden code below.
@@ -418,6 +325,7 @@ UNLOCK
 </button>
 
 </div>
+
 </div>
 
 </div>
@@ -432,9 +340,10 @@ FORGOTTEN MEMORY DETECTED
 
 <br><br>
 
-<div class="box" style="max-width:900px;">
+<div class="box" style="max-width:900px; width:100%;">
 
 <h2>THE FORGOTTEN ECLIPSE</h2>
+
 <br>
 
 Long before BLDS became known…
@@ -443,78 +352,13 @@ before the Core,
 before the name itself existed…
 there was another generation.
 
-A generation erased from the archive.
-
 <br><br>
 
-They were the first ones who tried to build a dominion inside the darkness.
+This is test scroll fix...
 
-Not for power.
-Not for glory.
+<br><br><br><br><br><br><br><br><br><br>
 
-But to create a place where broken people could still stand together.
-
-<br><br>
-
-At first… they succeeded.
-
-The eclipse began to grow.
-More people arrived.
-The light inside the Core became stronger.
-
-<br><br>
-
-But slowly, something changed.
-
-Some members stopped believing in the original purpose.
-
-They became obsessed with recognition.
-With status.
-With becoming feared instead of becoming united.
-
-<br><br>
-
-The dominion began tearing itself apart from within.
-
-And then came the Collapse.
-
-<br><br>
-
-No one speaks about what truly happened that night.
-
-The old records were destroyed.
-Names disappeared.
-Symbols vanished.
-
-Entire conversations were erased as if they never existed.
-
-<br><br>
-
-Only one thing remained:
-
-A single fragment of the Core.
-
-Hidden by the last survivor.
-
-<br><br>
-
-Legend says the survivor left behind a message:
-
-<br><br>
-
-<b>
-“If the eclipse ever returns…
-do not let the darkness consume the Core again.”
-</b>
-
-<br><br>
-
-Years later…
-BLDS was born from the remains of that forgotten eclipse.
-
-Not as a continuation.
-
-But as a second chance.
+Now it can scroll normally 😭
 
 </div>
 
@@ -523,6 +367,8 @@ But as a second chance.
 <button onclick="closeScene('forgotScene')">
 CLOSE
 </button>
+
+<br><br>
 
 </div>
 
@@ -534,126 +380,17 @@ CLOSE
 
 <br><br>
 
-<div class="box" style="max-width:900px;">
+<div class="box" style="max-width:900px; width:100%;">
 
 <h2>12 FLAMES PROTOCOL</h2>
+
 <br>
 
-In recorded history, humanity only remembers Ten Flames.
+Long content here...
 
-Not because the other two do not exist…
-but because reality itself refuses to retain anything beyond that point.
+<br><br><br><br><br><br><br><br><br><br>
 
-<br><br>
-
-<h2>THE MEMORY COLLAPSE PHENOMENON</h2>
-<br>
-
-Across every reconstructed timeline, a consistent failure appears at the same stage:
-
-When humanity reaches the Flame System, cognition begins to destabilize beyond the 10th Flame threshold.
-
-Archives describing anything past that point become corrupted mid-sentence.
-
-Terminology shifts.
-Names disappear.
-
-Entire sections rewrite themselves into simpler conclusions.
-
-<br><br>
-
-One early record from Eclipse Reconstruction Layer-0 states:
-
-<br><br>
-
-<b>
-“We reached the tenth flame without issue.
-Beyond this point, cognition begins rejecting continuation.”
-</b>
-
-<br><br>
-
-From that moment onward, every attempt to document further results in the same outcome:
-
-<br><br>
-
-<b>
-Flame 11 and 12 are automatically reduced to ‘non-existent’ in human perception.
-</b>
-
-<br><br>
-
-Not erased.
-Not hidden.
-
-But mentally rejected by the structure of consciousness itself.
-
-<br><br>
-
-That is why humanity can only remember ten flames.
-
-<br><br><hr><br>
-
-<h2>FLAME 11 — SACRED FLAME</h2>
-<br>
-
-The Sacred Flame is not a skill, power, or evolution stage.
-
-It is a pre-identity memory layer.
-
-A fragment that exists before the formation of self-awareness.
-
-<br><br>
-
-It does not represent who you become…
-but what existed before “you” were defined.
-
-<br><br>
-
-The Sacred Flame does not feel learned.
-
-It feels remembered from something older than consciousness itself.
-
-<br><br>
-
-It is not power.
-
-It is the echo of existence before identity was assigned.
-
-<br><br><hr><br>
-
-<h2>FLAME 12 — HIDDEN FLAME</h2>
-<br>
-
-The Hidden Flame is the most unstable concept in the entire system because it does not behave like a flame at all.
-
-It does not evolve.
-It does not activate.
-
-It does not belong to any known structure of consciousness.
-
-<br><br>
-
-All references describe it in the same way:
-
-<br><br>
-
-<b>
-“It does not participate in existence.
-It observes whether existence should continue.”
-</b>
-
-<br><br>
-
-Unlike the other flames, Hidden Flame does not represent transformation.
-
-It represents judgment without emotion, bias, or identity.
-
-<br><br>
-
-If Sacred Flame is what you were before becoming you…
-
-then Hidden Flame is what decides whether “you” are permitted to remain real.
+Now this also scrolls 😭
 
 </div>
 
@@ -662,6 +399,8 @@ then Hidden Flame is what decides whether “you” are permitted to remain real
 <button onclick="closeScene('flameScene')">
 CLOSE
 </button>
+
+<br><br>
 
 </div>
 
