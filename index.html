@@ -1,92 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BLDS</title>
+<title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
+  font-family:Poppins,sans-serif;
   background:#000;
   color:white;
-  font-family:Poppins,sans-serif;
-  min-height:100vh;
-  overflow-y:auto;   /* ✅ FIX SCROLL */
   overflow-x:hidden;
 }
 
-/* SKY + STARS */
+/* CENTER FIX */
+.container{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  position:relative;
+  z-index:2;
+}
+
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle,#0a0f1f,#000);
+  background:linear-gradient(#000,#02040f);
   z-index:-3;
 }
 
+/* STAR */
 .star{
   position:absolute;
   width:2px;
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.8;
+  opacity:.7;
   animation:fall linear infinite;
 }
-
 @keyframes fall{
   from{transform:translateY(-10vh);}
   to{transform:translateY(110vh);}
 }
 
-/* CENTER WRAPPER */
-.wrapper{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:40px 20px;
+/* ECLIPSE */
+.eclipse{
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:320px;
+  height:320px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
+  opacity:.15;
+  animation:move 10s infinite ease-in-out;
+  z-index:-2;
 }
-
-/* CONTAINER */
-.container{
-  width:100%;
-  max-width:700px;
-  text-align:center;
+@keyframes move{
+  0%,100%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.3);}
 }
 
 /* LOGO */
 .logo{
-  width:120px;
-  filter:drop-shadow(0 0 10px white);
+  width:130px;
   animation:float 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 10px white);
 }
-
 @keyframes float{
   0%,100%{transform:translateY(0);}
   50%{transform:translateY(-6px);}
 }
 
-/* TITLE */
-h2{
-  letter-spacing:4px;
-  margin:10px 0;
-}
-
 /* BUTTON */
 button{
-  padding:10px 16px;
+  padding:10px 18px;
   margin:6px;
   border:1px solid white;
   background:transparent;
   color:white;
   border-radius:12px;
   cursor:pointer;
+  transition:.3s;
 }
-
 button:hover{
   background:white;
   color:black;
@@ -96,33 +103,33 @@ button:hover{
 .menu{
   display:none;
   flex-direction:column;
-  margin-top:20px;
+  margin-top:15px;
 }
 
 /* PAGE */
 .page{
   display:none;
+  max-width:800px;
   margin-top:20px;
-  text-align:left;
 }
 
 .box{
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.1);
-  padding:18px;
-  border-radius:14px;
-  line-height:1.7;
+  padding:20px;
+  border-radius:16px;
+  text-align:left;
+  line-height:1.8;
 }
 
-/* FLAMES */
+/* FLAME */
 .flame{
   display:block;
   opacity:0;
   transform:translateY(10px);
   transition:.4s;
-  text-shadow:0 0 10px orange;
+  text-shadow:0 0 10px orange,0 0 25px red;
 }
-
 .flame.active{
   opacity:1;
   transform:translateY(0);
@@ -136,19 +143,30 @@ button:hover{
   display:none;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
   z-index:9999;
   text-align:center;
-  flex-direction:column;
 }
 
-/* FADE */
-.fade{
-  animation:fade .5s ease;
+.glitch{
+  animation:glitch .2s infinite;
+}
+@keyframes glitch{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
 }
 
-@keyframes fade{
-  from{opacity:0;transform:scale(.95);}
-  to{opacity:1;transform:scale(1);}
+.bigLogo{
+  width:220px;
+  opacity:0;
+  transition:1s;
+  filter:drop-shadow(0 0 25px white);
+}
+.show{opacity:1;}
+
+.fadeOut{
+  opacity:0;
+  transition:1s;
 }
 </style>
 </head>
@@ -156,111 +174,147 @@ button:hover{
 <body>
 
 <div class="sky" id="sky"></div>
+<div class="eclipse" id="eclipse"></div>
 
-<div class="wrapper">
-
-<div class="container fade">
+<div class="container" id="main">
 
 <img src="logo.png" class="logo">
 <h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER ECLIPSE</button>
+<button onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
 <button onclick="show('origin')">ORIGIN</button>
+<button onclick="show('forgot')">FORGOTTEN</button>
 <button onclick="show('code')">CODE</button>
 </div>
 
 <!-- ORIGIN -->
 <div id="origin" class="page">
 <div class="box">
+<h2>THE ORIGIN</h2><br>
+BLDS lahir dari kegelapan absolut.<br>
+Mereka yang bertahan bukan yang terkuat… tapi yang tidak menghilang.
+</div>
+</div>
 
-<h2>ORIGIN</h2><br>
-
-Before BLDS, only silence existed.<br>
-No identity. No meaning.<br><br>
-
-They survived not because they were strong…<br>
-but because they refused to disappear.<br><br>
-
-<b>True light is born from darkness pressure.</b>
-
+<!-- FORGOTTEN -->
+<div id="forgot" class="page">
+<div class="box">
+<h2>FORGOTTEN ECLIPSE</h2><br>
+Sistem lama runtuh karena kesadaran terlalu dalam.<br><br>
+<b>“Jangan ulangi Core.”</b>
 </div>
 </div>
 
 <!-- CODE -->
 <div id="code" class="page">
 <div class="box">
-
 <h2>CODE</h2>
 <input id="inp" placeholder="type code">
-<br>
-<button onclick="check()">UNLOCK</button>
-
 </div>
 </div>
 
-</div>
 </div>
 
 <!-- CUTSCENES -->
 <div class="cutscene" id="cutForgot">
-<h1>FORGOTTEN MEMORY</h1>
+<h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
 </div>
 
 <div class="cutscene" id="cutFlame">
-<h1>12 FLAMES ACTIVATED</h1>
+<img src="logo.png" class="bigLogo" id="bigLogo">
 </div>
+
+<audio id="bgm" loop>
+<source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3">
+</audio>
 
 <script>
 
-/* STAR FIX */
+/* STARS */
 const sky=document.getElementById("sky");
-
-for(let i=0;i<100;i++){
+for(let i=0;i<140;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
   s.style.top=Math.random()*-100+"vh";
-  s.style.animationDuration=(3+Math.random()*6)+"s";
+  s.style.animationDuration=(3+Math.random()*5)+"s";
   sky.appendChild(s);
 }
 
-/* MENU */
+/* ENTER FIX */
 function enter(){
   document.getElementById("menu").style.display="flex";
+  document.querySelector("button").style.display="none";
+  document.getElementById("eclipse").style.opacity="0.05";
 }
 
-/* PAGE */
+/* NAV */
 function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
 }
 
-/* CODE */
-function check(){
-  let v=document.getElementById("inp").value.toLowerCase();
+/* AUDIO */
+const bgm=document.getElementById("bgm");
 
-  if(v==="forgotten"){
-    let c=document.getElementById("cutForgot");
-    c.style.display="flex";
-    setTimeout(()=>c.style.display="none",2000);
-  }
+/* FLAME SOUND */
+const sfx=new Audio("https://cdn.pixabay.com/audio/2021/08/04/audio_5c0d7a4b6a.mp3");
 
-  if(v==="12flames"){
-    let c=document.getElementById("cutFlame");
-    c.style.display="flex";
-    setTimeout(()=>c.style.display="none",2000);
-  }
+/* FLAMES */
+function flameSequence(){
+  const flames=document.querySelectorAll(".flame");
+  let i=0;
+
+  let t=setInterval(()=>{
+    if(i<flames.length){
+      flames[i].classList.add("active");
+      sfx.currentTime=0;
+      sfx.play().catch(()=>{});
+      i++;
+    } else clearInterval(t);
+  },250);
 }
 
-/* AUDIO FIX */
-const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
-audio.loop=true;
+/* 12 FLAMES CUTSCENE */
+function twelveFlames(){
+  const cut=document.getElementById("cutFlame");
+  const logo=document.getElementById("bigLogo");
 
-document.body.addEventListener("click",()=>{
-  audio.play().catch(()=>{});
-},{once:true});
+  cut.style.display="flex";
+  bgm.play().catch(()=>{});
+
+  setTimeout(()=>{
+    logo.classList.add("show");
+    flameSequence();
+  },800);
+
+  setTimeout(()=>{
+    cut.style.display="none";
+    logo.classList.remove("show");
+  },6000);
+}
+
+/* FORGOTTEN CINEMATIC */
+function forgotten(){
+  const cut=document.getElementById("cutForgot");
+  cut.style.display="flex";
+
+  setTimeout(()=>{
+    cut.style.display="none";
+  },2200);
+}
+
+/* CODE */
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    const v=document.getElementById("inp").value.toLowerCase();
+
+    if(v==="forgotten") forgotten();
+    if(v==="12flames"||v==="12 flames") twelveFlames();
+  }
+});
 
 </script>
 
