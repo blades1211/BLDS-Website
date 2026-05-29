@@ -17,7 +17,31 @@ body{
   overflow-x:hidden;
 }
 
-/* FADE EFFECT */
+/* SKY BACKGROUND (MOVING STARS) */
+.sky{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(#000,#02040f);
+  overflow:hidden;
+  z-index:-2;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation:moveStars linear infinite;
+  opacity:0.8;
+}
+
+@keyframes moveStars{
+  from{transform:translateY(0);}
+  to{transform:translateY(100vh);}
+}
+
+/* FADE */
 .fade{
   position:fixed;
   inset:0;
@@ -41,14 +65,8 @@ body{
 }
 
 /* LOGO */
-.logo{
-  width:200px;
-  margin-bottom:15px;
-}
-.logo img{
-  width:100%;
-  filter:drop-shadow(0 0 20px white);
-}
+.logo{width:200px;margin-bottom:15px;}
+.logo img{width:100%;filter:drop-shadow(0 0 20px white);}
 
 /* TITLE */
 h1{
@@ -68,10 +86,7 @@ button{
   cursor:pointer;
   transition:0.3s;
 }
-button:hover{
-  background:white;
-  color:black;
-}
+button:hover{background:white;color:black;}
 
 /* PAGES */
 .page{display:none;max-width:900px;width:100%;margin-top:20px;}
@@ -89,24 +104,29 @@ button:hover{
 /* QUOTES */
 .quote{
   margin:8px 0;
-  padding-left:10px;
   border-left:2px solid white;
+  padding-left:10px;
 }
 
 /* ARCHIVE */
 .card{
-  margin:10px 0;
+  margin:8px 0;
   padding:10px;
   border-left:2px solid white;
 }
+
+/* ENTER SCREEN */
+#menuPage{display:none;}
 </style>
 </head>
 
 <body>
 
+<!-- SKY -->
+<div class="sky" id="sky"></div>
+
 <div class="fade" id="fade"></div>
 
-<!-- AUDIO -->
 <audio id="bgMusic" loop>
   <source src="freesound_community-space-ambience-56265.mp3">
 </audio>
@@ -117,38 +137,34 @@ button:hover{
 
 <div class="container">
 
-  <div class="logo">
-    <img src="logo.png">
-  </div>
+<div class="logo">
+  <img src="logo.png">
+</div>
 
-  <h1>BLACKLIGHTDOMS</h1>
+<h1>BLACKLIGHTDOMS</h1>
 
-  <!-- ENTER -->
-  <div id="enterScreen">
-    <button onclick="enter()">ENTER ECLIPSE</button>
-  </div>
+<!-- ENTER -->
+<div id="enterScreen">
+  <button onclick="enter()">ENTER ECLIPSE</button>
+</div>
 
-  <!-- MENU -->
-  <div id="menuPage" style="display:none;">
-    <button onclick="openPage('lore')">LORE</button>
-    <button onclick="openPage('quotes')">QUOTES</button>
-    <button onclick="openPage('archive')">ARCHIVE</button>
-  </div>
+<!-- MENU -->
+<div id="menuPage">
+  <button onclick="openPage('lore')">LORE</button>
+  <button onclick="openPage('quotes')">QUOTES</button>
+  <button onclick="openPage('archive')">ARCHIVE</button>
+</div>
 
-  <!-- LORE -->
-  <div id="lore" class="page">
-    <div class="box">
+<!-- LORE -->
+<div id="lore" class="page">
+<div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2>
-
 Before BLDS had a name...<br>
-Before the symbol existed...<br>
-Before the eclipse began...<br><br>
+Before the eclipse...<br><br>
 
-BLDS was born from struggle, not glory.<br>
+BLDS was born from struggle, not light.<br>
 From failure, not victory.<br><br>
-
-A dominion built by those who refused to disappear.<br><br>
 
 <hr><br>
 
@@ -159,37 +175,36 @@ Inner purpose that never fades even in darkness.<br><br>
 
 <h2>THE 10 FLAMES OF BLDS</h2>
 
-<b>GREATER FLAMES</b><br>
-I. Vision → See direction even in darkness<br>
-II. Discipline → Keep growing unseen<br>
-III. Loyalty → Stand together<br>
-IV. Ambition → Surpass limits<br>
-V. Resilience → Rise after every fall<br><br>
+<b>GREATER</b><br>
+I. Vision — see direction in darkness<br>
+II. Discipline — grow unseen<br>
+III. Loyalty — stay together<br>
+IV. Ambition — surpass limits<br>
+V. Resilience — rise again<br><br>
 
-<b>LESSER FLAMES</b><br>
-I. Hope → Light in darkness<br>
-II. Awareness → Understand reality<br>
-III. Patience → Growth takes time<br>
-IV. Courage → Move despite fear<br>
-V. Unity → Become stronger together<br><br>
+<b>LESSER</b><br>
+I. Hope — light in darkness<br>
+II. Awareness — understand reality<br>
+III. Patience — growth takes time<br>
+IV. Courage — move despite fear<br>
+V. Unity — become stronger together<br><br>
 
-Though smaller, these flames are essential.<br>
-Without them, even the Core will fade.
+Without these flames, even the Core will fade.
 
-    </div>
-  </div>
+</div>
+</div>
 
-  <!-- QUOTES -->
-  <div id="quotes" class="page">
-    <div class="box">
-      <h2>QUOTES</h2>
-      <div id="quoteBox"></div>
-    </div>
-  </div>
+<!-- QUOTES -->
+<div id="quotes" class="page">
+<div class="box">
+<h2>QUOTES</h2>
+<div id="quoteBox"></div>
+</div>
+</div>
 
-  <!-- ARCHIVE -->
-  <div id="archive" class="page">
-    <div class="box">
+<!-- ARCHIVE (FULL COMPLETE) -->
+<div id="archive" class="page">
+<div class="box">
 
 <h2>ARCHIVE</h2>
 
@@ -200,20 +215,34 @@ Without them, even the Core will fade.
 <br>
 
 <div class="card">05-03-2024 — BLDS Born</div>
-<div class="card">2026 — Eclipse Era</div>
+<div class="card">15-05-2024 — WhatsApp Community</div>
+<div class="card">12-09-2024 — Discord Community</div>
+<div class="card">05-03-2025 — First Evolution</div>
+<div class="card">20-08-2025 — Massive Remake</div>
+<div class="card">05-03-2026 — Eclipse Era Begins</div>
 
-    </div>
-  </div>
+</div>
+</div>
 
 </div>
 
 <script>
 
-/* START MUSIC AFTER CLICK (browser fix) */
+/* SKY GENERATOR */
+const sky=document.getElementById("sky");
+
+for(let i=0;i<120;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  s.style.animationDuration=(5+Math.random()*10)+"s";
+  sky.appendChild(s);
+}
+
+/* ENTER */
 function enter(){
-
   playClick();
-
   document.getElementById("fade").classList.add("active");
 
   setTimeout(()=>{
@@ -231,34 +260,29 @@ function enter(){
 
 /* PAGE SWITCH */
 function openPage(id){
-
   playClick();
 
   const fade=document.getElementById("fade");
   fade.classList.add("active");
 
   setTimeout(()=>{
-
-    document.querySelectorAll(".page")
-    .forEach(p=>p.classList.remove("active"));
-
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 
     if(id==="quotes") loadQuotes();
 
     fade.classList.remove("active");
-
   },400);
 }
 
 /* CLICK SOUND */
 function playClick(){
-  const click=document.getElementById("clickSound");
-  click.currentTime=0;
-  click.play();
+  const c=document.getElementById("clickSound");
+  c.currentTime=0;
+  c.play();
 }
 
-/* 20 QUOTES */
+/* 20 QUOTES RANDOM */
 const quotes=[
 "Darkness builds legends",
 "We are the eclipse",
@@ -285,8 +309,7 @@ const quotes=[
 function loadQuotes(){
   let box=document.getElementById("quoteBox");
   box.innerHTML="";
-  quotes.sort(()=>Math.random()-0.5)
-  .slice(0,20)
+  [...quotes].sort(()=>Math.random()-0.5)
   .forEach(q=>{
     let d=document.createElement("div");
     d.className="quote";
@@ -294,6 +317,9 @@ function loadQuotes(){
     box.appendChild(d);
   });
 }
+
+/* LOAD FIRST TIME */
+loadQuotes();
 
 </script>
 
