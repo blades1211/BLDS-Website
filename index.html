@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -13,14 +13,15 @@
 body{
   font-family:Poppins,sans-serif;
   background:#000;
-  color:#fff;
+  color:white;
   overflow:hidden;
 }
 
-/* STAR BACKGROUND */
-#stars{
+/* BACKGROUND */
+#sky{
   position:fixed;
   inset:0;
+  background:radial-gradient(circle at center,#0a0f2a,#000);
   z-index:-3;
 }
 
@@ -29,6 +30,7 @@ body{
   width:2px;
   height:2px;
   background:white;
+  border-radius:50%;
   opacity:.6;
   animation:fall linear infinite;
 }
@@ -38,47 +40,38 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* ECLIPSE */
-.eclipse{
-  position:fixed;
-  width:350px;
-  height:350px;
-  border-radius:50%;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
-  opacity:.12;
-  animation:pulse 10s infinite;
-  z-index:-2;
-}
-
-@keyframes pulse{
-  0%,100%{transform:translate(-50%,-50%) scale(1);}
-  50%{transform:translate(-50%,-50%) scale(1.4);}
-}
-
-/* LAYOUT */
-.center{
+/* CENTER UI */
+.container{
   height:100vh;
   display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
   flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
   padding:20px;
 }
 
+/* LOGO */
 .logo{
   width:120px;
-  filter:drop-shadow(0 0 20px white);
+  animation:float 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 15px white);
 }
 
-h1{letter-spacing:3px;margin-top:10px}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
 
+h1{
+  letter-spacing:4px;
+  margin:10px 0;
+}
+
+/* BUTTONS */
 button{
-  margin:6px;
   padding:10px 16px;
+  margin:6px;
   border:1px solid white;
   background:transparent;
   color:white;
@@ -96,36 +89,31 @@ button:hover{
 .menu{
   display:none;
   flex-direction:column;
-  margin-top:20px;
+  margin-top:15px;
 }
 
-/* PAGES */
+/* PAGE */
 .page{
   display:none;
-  max-width:800px;
+  max-width:900px;
   margin-top:20px;
-  animation:fade .5s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
 }
 
 .box{
   background:rgba(255,255,255,.04);
-  padding:20px;
-  border-radius:16px;
   border:1px solid rgba(255,255,255,.1);
+  padding:20px;
+  border-radius:14px;
   text-align:left;
-  line-height:1.7;
+  line-height:1.8;
 }
 
-/* FLAME */
+/* FLAMES */
 .flame{
   opacity:0;
   transform:translateY(10px);
   transition:.4s;
+  display:block;
 }
 
 .flame.active{
@@ -140,10 +128,10 @@ button:hover{
   inset:0;
   background:black;
   display:none;
-  justify-content:center;
   align-items:center;
-  z-index:9999;
+  justify-content:center;
   flex-direction:column;
+  z-index:999;
 }
 
 .glitch{
@@ -151,97 +139,127 @@ button:hover{
 }
 
 @keyframes glitch{
-  0%,100%{opacity:1}
-  50%{opacity:.3}
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
+}
+
+/* QUOTES */
+#quoteBox{
+  margin-top:10px;
+  font-size:14px;
+  opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
-<div id="stars"></div>
-<div class="eclipse"></div>
+<div id="sky"></div>
 
-<!-- MAIN -->
-<div class="center" id="home">
-  <img src="logo.png" class="logo">
-  <h1>BLACKLIGHTDOMS</h1>
+<div class="container">
 
-  <button onclick="enter()">ENTER</button>
+<img src="logo.png" class="logo">
+<h1>BLACKLIGHTDOMS</h1>
 
-  <div class="menu" id="menu">
-    <button onclick="openPage('origin')">ORIGIN</button>
-    <button onclick="openPage('quotes')">QUOTES</button>
-    <button onclick="openPage('archives')">ARCHIVES</button>
-    <button onclick="openPage('code')">CODE</button>
-  </div>
+<button onclick="enter()">ENTER ECLIPSE</button>
 
-  <!-- ORIGIN -->
-  <div class="page" id="origin">
-    <div class="box">
-      <h2>ORIGIN OF BLDS</h2><br>
-      BLDS lahir dari tekanan kegelapan.<br><br>
-      10 Flames adalah pondasi manusia yang tidak mau hilang.<br><br>
+<div class="menu" id="menu">
 
-      <b>CORE 10 FLAMES:</b><br>
-      Vision, Discipline, Loyalty, Ambition, Resilience,<br>
-      Hope, Awareness, Patience, Courage, Unity
-    </div>
-  </div>
+<button onclick="openPage('origin')">ORIGIN</button>
+<button onclick="openPage('core')">CORE (10+12 FLAMES)</button>
+<button onclick="openPage('quotes')">QUOTES</button>
+<button onclick="openPage('archives')">ARCHIVES</button>
+<button onclick="openPage('code')">CODE</button>
 
-  <!-- QUOTES -->
-  <div class="page" id="quotes">
-    <div class="box">
-      <h2>QUOTES SYSTEM</h2><br>
-      <div id="quoteBox">Tekan refresh</div><br>
-      <button onclick="newQuote()">REFRESH</button>
-    </div>
-  </div>
+</div>
 
-  <!-- ARCHIVES -->
-  <div class="page" id="archives">
-    <div class="box">
-      <h2>ARCHIVES</h2><br>
+<div id="quoteBox"></div>
 
-      05-03-2024 — BLDS Born<br>
-      15-05-2024 — WhatsApp Community<br>
-      12-09-2024 — Discord Community<br>
-      20-08-2025 — Massive Remake<br><br>
+<!-- ORIGIN -->
+<div id="origin" class="page">
+<div class="box">
+<h2>ORIGIN</h2><br>
+BLDS lahir dari kegagalan sistem lama.<br>
+Dari manusia yang tidak dipilih dunia.<br><br>
+<b>“Light is not given. It is forced from darkness.”</b>
+</div>
+</div>
 
-      Michael Lorenzo — Founder<br>
-      William Nayottama — Right Hand<br>
-      Felix — Left Hand
-    </div>
-  </div>
+<!-- CORE -->
+<div id="core" class="page">
+<div class="box">
+<h2>BLACKLIGHT CORE</h2><br>
 
-  <!-- CODE -->
-  <div class="page" id="code">
-    <div class="box">
-      <h2>ACCESS CODE</h2><br>
-      <input id="codeInput" placeholder="enter code">
-      <button onclick="check()">UNLOCK</button>
-    </div>
-  </div>
+<h3>10 FLAMES</h3>
+<span class="flame">1 Vision</span>
+<span class="flame">2 Discipline</span>
+<span class="flame">3 Loyalty</span>
+<span class="flame">4 Ambition</span>
+<span class="flame">5 Resilience</span>
+<span class="flame">6 Hope</span>
+<span class="flame">7 Awareness</span>
+<span class="flame">8 Patience</span>
+<span class="flame">9 Courage</span>
+<span class="flame">10 Unity</span>
+
+<br>
+<h3>12TH FLAMES</h3>
+<span class="flame">11 Sacred Flame</span>
+<span class="flame">12 Hidden Flame</span>
+
+</div>
+</div>
+
+<!-- QUOTES -->
+<div id="quotes" class="page">
+<div class="box">
+<h2>QUOTES</h2>
+<p id="quoteText">Click refresh...</p>
+<button onclick="newQuote()">REFRESH</button>
+</div>
+</div>
+
+<!-- ARCHIVES -->
+<div id="archives" class="page">
+<div class="box">
+<h2>ARCHIVES</h2><br>
+05-03-2024 BLDS Born<br>
+15-05-2024 WhatsApp Community<br>
+12-09-2024 Discord Community<br>
+20-08-2025 Massive Remake<br><br>
+
+<b>Founder:</b> Michael Lorenzo<br>
+<b>Right Hand:</b> William Nayottama<br>
+<b>Left Hand:</b> Felix
+</div>
+</div>
+
+<!-- CODE -->
+<div id="code" class="page">
+<div class="box">
+<h2>CODE SYSTEM</h2>
+<input id="inp" placeholder="enter code">
+</div>
+</div>
 
 </div>
 
 <!-- CUTSCENE -->
 <div class="cutscene" id="cut">
-  <h1 class="glitch">UNLOCKING...</h1>
+<h1 class="glitch" id="cutText"></h1>
 </div>
-
-<audio id="beep" src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a0.mp3"></audio>
 
 <script>
 
-/* STAR GEN */
-const stars=document.getElementById("stars");
+/* STAR BG */
+const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
-  s.style.animationDuration=(2+Math.random()*5)+"s";
-  stars.appendChild(s);
+  s.style.top=Math.random()*-100+"vh";
+  s.style.animationDuration=(3+Math.random()*5)+"s";
+  sky.appendChild(s);
 }
 
 /* ENTER */
@@ -255,62 +273,54 @@ function openPage(id){
   document.getElementById(id).style.display="block";
 }
 
-/* QUOTES (20 RANDOM) */
+/* QUOTES */
 const quotes=[
-"Light is born from pressure",
-"Darkness is a teacher",
-"Failure builds system",
-"Pain creates evolution",
-"Silence is data",
-"Broken becomes code",
-"Truth hides in chaos",
-"Fear is just delay",
-"Endure or disappear",
-"Reality is not stable",
-"BLDS never resets",
-"Control your collapse",
-"Eyes open in void",
-"System learns pain",
-"Shadow builds strength",
-"Lost becomes found",
-"Nothing is wasted",
-"Core remembers all",
-"You are still loading",
-"Exist or vanish"
+"Even darkness obeys persistence",
+"BLDS is not born, it is awakened",
+"Failure is ignition",
+"Light is forged, not found",
+"Silence is the loudest system"
 ];
 
 function newQuote(){
-  document.getElementById("quoteBox").innerText =
+  document.getElementById("quoteText").innerText=
   quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-/* CODE SECRET (FALLBACK FOR 12 FLAMES + FORGOTTEN) */
-function check(){
-  let v=document.getElementById("codeInput").value.toLowerCase();
+/* CODE SYSTEM */
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    let v=document.getElementById("inp")?.value?.toLowerCase();
 
-  if(v==="forgotten"){
-    showCut();
-    setTimeout(()=>alert("FORGOTTEN: SYSTEM ERASED"),1500);
-  }
+    if(v==="forgotten"){
+      cutscene("FORGOTTEN MEMORY DETECTED");
+    }
 
-  if(v==="12flames" || v==="12 flames"){
-    showCut();
-    setTimeout(()=>alert("12 FLAMES PROTOCOL UNLOCKED"),1500);
+    if(v==="12flames"){
+      startFlames();
+    }
   }
+});
+
+/* FLAMES */
+function startFlames(){
+  let flames=document.querySelectorAll(".flame");
+  let i=0;
+  let t=setInterval(()=>{
+    if(i<flames.length){
+      flames[i].classList.add("active");
+      i++;
+    } else clearInterval(t);
+  },200);
 }
 
 /* CUTSCENE */
-function showCut(){
+function cutscene(text){
   let c=document.getElementById("cut");
+  document.getElementById("cutText").innerText=text;
   c.style.display="flex";
   setTimeout(()=>c.style.display="none",2000);
 }
-
-/* SOUND */
-document.addEventListener("click",()=>{
-  document.getElementById("beep").play();
-},{once:true});
-
 </script>
 
 </body>
