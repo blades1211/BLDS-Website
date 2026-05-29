@@ -8,21 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
 
 body{
-  font-family:Poppins,sans-serif;
   background:#000;
   color:white;
-  overflow:hidden;
+  overflow-x:hidden;
 }
 
-/* BACKGROUND */
-.sky{
+/* STAR BACKGROUND */
+#stars{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle at center,#0a0f1f,#000);
   z-index:-3;
+  background:black;
 }
 
 .star{
@@ -31,7 +30,7 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.6;
+  opacity:.7;
   animation:fall linear infinite;
 }
 
@@ -40,32 +39,13 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* ECLIPSE */
-.eclipse{
-  position:fixed;
-  width:300px;
-  height:300px;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
-  opacity:.15;
-  animation:pulse 10s infinite;
-  z-index:-2;
-}
-
-@keyframes pulse{
-  0%,100%{transform:translate(-50%,-50%) scale(1);}
-  50%{transform:translate(-50%,-50%) scale(1.4);}
-}
-
-/* CONTAINER */
+/* CENTER UI */
 .container{
-  height:100vh;
+  min-height:100vh;
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   text-align:center;
   padding:20px;
 }
@@ -73,22 +53,17 @@ body{
 /* LOGO */
 .logo{
   width:120px;
-  animation:float 4s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-8px);}
+  filter:drop-shadow(0 0 15px white);
 }
 
 /* BUTTON */
 button{
-  padding:10px 16px;
   margin:6px;
+  padding:10px 16px;
   border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
   transition:.3s;
 }
@@ -101,8 +76,15 @@ button:hover{
 /* MENU */
 .menu{
   display:none;
+  margin-top:15px;
   flex-direction:column;
-  margin-top:10px;
+}
+
+/* PAGE TRANSITION */
+.page{
+  display:none;
+  max-width:800px;
+  margin-top:20px;
   animation:fade .4s ease;
 }
 
@@ -111,31 +93,23 @@ button:hover{
   to{opacity:1;transform:translateY(0);}
 }
 
-/* PAGE */
-.page{
-  display:none;
-  max-width:900px;
-  width:100%;
-  margin-top:20px;
-}
-
 .box{
-  background:rgba(255,255,255,.03);
+  background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
   padding:20px;
-  border-radius:15px;
+  border-radius:16px;
   text-align:left;
   line-height:1.8;
 }
 
-/* FLAME */
+/* FLAMES */
 .flame{
   opacity:0;
   transform:translateY(10px);
-  transition:.4s;
   display:block;
+  transition:.4s;
+  text-shadow:0 0 10px orange,0 0 20px red;
 }
-
 .flame.active{
   opacity:1;
   transform:translateY(0);
@@ -147,11 +121,19 @@ button:hover{
   inset:0;
   background:black;
   display:none;
-  justify-content:center;
   align-items:center;
-  z-index:9999;
+  justify-content:center;
   flex-direction:column;
-  text-align:center;
+  z-index:9999;
+}
+
+.glitch{
+  animation:glitch .2s infinite;
+}
+
+@keyframes glitch{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
 }
 
 /* QUOTES */
@@ -160,45 +142,49 @@ button:hover{
   font-style:italic;
 }
 
-/* MOBILE FIX */
-@media(max-width:600px){
-  .box{font-size:14px;}
-  .logo{width:100px;}
+/* INPUT */
+input{
+  padding:10px;
+  border-radius:10px;
+  border:1px solid white;
+  background:black;
+  color:white;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<div class="sky" id="sky"></div>
-<div class="eclipse"></div>
+<div id="stars"></div>
 
 <div class="container">
 
 <img src="logo.png" class="logo">
 <h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER ECLIPSE</button>
+<button onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
-<button onclick="show('origin')">ORIGIN</button>
-<button onclick="show('core')">CORE</button>
-<button onclick="show('archives')">ARCHIVES</button>
-<button onclick="show('quotes')">QUOTES</button>
-<button onclick="show('code')">CODE</button>
+<button onclick="openPage('origin')">ORIGIN</button>
+<button onclick="openPage('core')">CORE</button>
+<button onclick="openPage('quotes')">QUOTES</button>
+<button onclick="openPage('archives')">ARCHIVES</button>
+<button onclick="openPage('code')">CODE</button>
 </div>
 
 <!-- ORIGIN -->
-<div id="origin" class="page">
+<div class="page" id="origin">
 <div class="box">
 <h2>ORIGIN</h2>
-Before BLDS, only darkness existed.
-Survival was the only identity.
+Before BLDS, there was nothing but silence.  
+From collapse, awareness was born.  
+From darkness, identity formed.
 </div>
 </div>
 
 <!-- CORE -->
-<div id="core" class="page">
+<div class="page" id="core">
 <div class="box">
 <h2>BLACKLIGHT CORE</h2>
 
@@ -218,109 +204,117 @@ Survival was the only identity.
 <h3>12 FLAMES</h3>
 <span class="flame">Sacred Flame</span>
 <span class="flame">Hidden Flame</span>
-</div>
-</div>
-
-<!-- ARCHIVES -->
-<div id="archives" class="page">
-<div class="box">
-<h2>ARCHIVES</h2>
-05-03-2024 BLDS Born<br>
-15-05-2024 WhatsApp Community<br>
-12-09-2024 Discord Community<br>
-20-08-2025 Massive Remake<br><br>
-
-Michael Lorenzo — Founder<br>
-William Nayottama — Right Hand<br>
-Felix — Left Hand
+<span class="flame">Observer Flame</span>
+<span class="flame">Judgment Flame</span>
+<span class="flame">Void Flame</span>
+<span class="flame">Echo Flame</span>
 </div>
 </div>
 
 <!-- QUOTES -->
-<div id="quotes" class="page">
+<div class="page" id="quotes">
 <div class="box">
 <h2>QUOTES</h2>
-<div id="quoteBox">Klik refresh</div>
+<div id="quoteBox">Click refresh...</div>
 <button onclick="newQuote()">REFRESH</button>
 </div>
 </div>
 
+<!-- ARCHIVES -->
+<div class="page" id="archives">
+<div class="box">
+<h2>ARCHIVES</h2>
+<ul>
+<li>05-03-2024 — BLDS Born</li>
+<li>15-05-2024 — WhatsApp Community</li>
+<li>12-09-2024 — Discord Community</li>
+<li>20-08-2025 — Massive Remake</li>
+</ul>
+<br>
+<b>Founders:</b><br>
+Michael Lorenzo<br>
+William Nayottama<br>
+Felix
+</div>
+</div>
+
 <!-- CODE -->
-<div id="code" class="page">
+<div class="page" id="code">
 <div class="box">
 <h2>CODE</h2>
-<input id="inp" placeholder="enter code">
+<input id="input" placeholder="enter code">
+<button onclick="check()">UNLOCK</button>
 </div>
 </div>
 
 </div>
 
-<!-- CUTSCENES -->
-<div class="cutscene" id="cutForgot">
-<h1>FORGOTTEN MEMORY</h1>
-</div>
-
-<div class="cutscene" id="cutEclipse">
-<h1>ECLIPSE ACTIVATED</h1>
+<!-- CUTSCENE -->
+<div class="cutscene" id="forgotCut">
+<h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
 </div>
 
 <script>
 
-/* STAR */
-const sky=document.getElementById("sky");
+/* STAR GENERATOR */
+const stars=document.getElementById("stars");
 for(let i=0;i<120;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
   s.style.top=Math.random()*-100+"vh";
-  s.style.animationDuration=(3+Math.random()*5)+"s";
-  sky.appendChild(s);
+  s.style.animationDuration=(2+Math.random()*5)+"s";
+  stars.appendChild(s);
 }
 
-/* ENTER FIX (HILANG TOTAL DARI UI) */
+/* ENTER MENU */
 function enter(){
   document.getElementById("menu").style.display="flex";
-  document.querySelector("button").style.display="none";
 }
 
-/* PAGE */
-function show(id){
+/* NAV */
+function openPage(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
+
+  if(id==="core") startFlames();
+}
+
+/* FLAMES */
+function startFlames(){
+  let flames=document.querySelectorAll(".flame");
+  let i=0;
+  let t=setInterval(()=>{
+    if(i<flames.length){
+      flames[i].classList.add("active");
+      i++;
+    }else clearInterval(t);
+  },120);
 }
 
 /* QUOTES */
 const quotes=[
-"Darkness builds legends.",
-"Pain is a blueprint.",
-"BLDS never collapses.",
-"Light is pressure, not gift.",
-"Survive, then evolve."
+"Even darkness becomes data.",
+"BLDS is not a team, it's evolution.",
+"From collapse, we rise.",
+"The Eclipse never ends.",
+"Memory is the true weapon."
 ];
 
 function newQuote(){
-  document.getElementById("quoteBox").innerText =
+  document.getElementById("quoteBox").innerText=
   quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-/* CODE */
-document.addEventListener("keydown",(e)=>{
-  if(e.key==="Enter"){
-    let v=document.getElementById("inp")?.value?.toLowerCase();
+/* CODE SYSTEM */
+function check(){
+  let v=document.getElementById("input").value.toLowerCase();
 
-    if(v==="forgotten"){
-      let c=document.getElementById("cutForgot");
-      c.style.display="flex";
-      setTimeout(()=>c.style.display="none",2000);
-    }
-
-    if(v==="eclipse"){
-      let c=document.getElementById("cutEclipse");
-      c.style.display="flex";
-      setTimeout(()=>c.style.display="none",2500);
-    }
+  if(v==="forgotten"){
+    document.getElementById("forgotCut").style.display="flex";
+    setTimeout(()=>document.getElementById("forgotCut").style.display="none",2000);
   }
-});
+}
 
 </script>
 
