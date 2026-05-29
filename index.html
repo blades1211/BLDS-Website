@@ -481,8 +481,37 @@ h1{
 
 /* QUOTES */
 
-.quote-box{
+.page-section{
+
+  min-height:100vh;
+
+  width:100%;
+
   display:none;
+
+  justify-content:center;
+  align-items:center;
+
+  flex-direction:column;
+
+  animation:pageFade 0.8s ease;
+
+  padding:40px 20px;
+
+}
+
+@keyframes pageFade{
+
+  from{
+    opacity:0;
+    transform:translateY(25px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
 }
 
 .quote-text{
@@ -656,7 +685,7 @@ h1{
 
 <!-- QUOTES -->
 
-<div class="quote-box" id="quoteBox">
+<div class="page-section quote-box" id="quoteBox">
 
   <h2 class="section-title">
     RANDOM QUOTE
@@ -668,7 +697,7 @@ h1{
 
 <!-- MEMBER -->
 
-<div class="member-grid" id="memberSection" style="display:none;">
+<div class="page-section member-grid" id="memberSection"
 
   <div class="member-card">
     <h3>MEMBERS</h3>
@@ -694,7 +723,7 @@ h1{
 
 <!-- SECRET -->
 
-<div class="secret-box" id="secretLore">
+<div class="page-section secret-box" id="secretLore">
 
 <h2 class="section-title">
 THE FORGOTTEN ECLIPSE
@@ -727,7 +756,7 @@ Waiting.
 
 <!-- TIMELINE -->
 
-<div class="timeline" id="timeline">
+<div class="page-section timeline" id="timeline">
 
 <h2 class="section-title">
 BLDS ARCHIVE
@@ -880,43 +909,6 @@ quotes[Math.floor(Math.random()*quotes.length)];
 document.getElementById("quoteText")
 .innerHTML = `"${randomQuote}"`;
 
-function hideAll(){
-
-  document.getElementById("quoteBox")
-  .style.display = "none";
-
-  document.getElementById("memberSection")
-  .style.display = "none";
-
-  document.getElementById("timeline")
-  .style.display = "none";
-
-}
-
-function openQuotes(){
-
-  hideAll();
-
-  document.getElementById("quoteBox")
-  .style.display = "block";
-
-}
-
-function openMembers(){
-
-  hideAll();
-
-  document.getElementById("memberSection")
-  .style.display = "grid";
-
-}
-
-function openTimeline(){
-
-  hideAll();
-
-  document.getElementById("timeline")
-  .style.display = "block";
 
 }
 
