@@ -71,25 +71,39 @@ input{
   50%{transform:translateX(10px)}
 }
 
-/* PORTAL */
-.portal{
+/* WHITE ENTER EFFECT */
+.white-flash{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle, rgba(255,0,0,0.25), transparent 60%);
+  background:white;
   opacity:0;
-  transform:scale(1.2);
   pointer-events:none;
+  z-index:9998;
   transition:.6s;
 }
-.portal.active{
+.white-flash.active{
   opacity:1;
-  transform:scale(1);
 }
 
-/* GLITCH GLOBAL */
+/* GLITCH */
 .glitch-shake{
-  animation:shake .15s infinite;
-  filter:contrast(2) hue-rotate(-20deg);
+  animation:shake .1s infinite;
+  filter:contrast(2) hue-rotate(-30deg);
+}
+
+/* RED OVERLAY */
+.forgot-overlay{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  z-index:9999;
+  transition:.8s;
+}
+.forgot-overlay.active{
+  opacity:1;
+  background:radial-gradient(circle, rgba(255,0,0,0.35), black 70%);
 }
 
 /* MAIN */
@@ -103,10 +117,8 @@ input{
   padding:30px;
 }
 
-/* MENU */
 .menu{display:none;flex-direction:column}
 
-/* BUTTON */
 button{
   padding:12px 25px;
   margin:10px;
@@ -125,6 +137,7 @@ button:hover{background:white;color:black}
   margin-top:20px;
   animation:fade .4s ease;
 }
+
 @keyframes fade{
   from{opacity:0;transform:translateY(10px)}
   to{opacity:1;transform:translateY(0)}
@@ -156,29 +169,13 @@ footer{
   text-align:center;
 }
 footer a{color:white;text-decoration:none;}
-
-/* FORGOTTEN OVERLAY */
-.forgot-overlay{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  transition:.6s;
-  z-index:9999;
-}
-.forgot-overlay.active{
-  opacity:1;
-  background:radial-gradient(circle, rgba(255,0,0,0.25), black 70%);
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="sky" id="sky"></div>
-<div class="portal" id="portal"></div>
+<div class="white-flash" id="whiteFlash"></div>
 <div class="forgot-overlay" id="forgotOverlay"></div>
 
 <!-- LOGIN -->
@@ -207,7 +204,7 @@ footer a{color:white;text-decoration:none;}
 
 <button class="backBtn" onclick="back()">BACK</button>
 
-<!-- LORE -->
+<!-- LORE (FIXED FULL) -->
 <div id="lore" class="page">
 <div class="box">
 
@@ -236,60 +233,36 @@ That realization became the beginning of BLDS.<br><br>
 
 Not a squad created for fame.<br>
 Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br>
 But a dominion built by those who refused to disappear.<br>
 
 <hr><br>
 
 <h3>THE BLACKLIGHT CORE</h3><br>
 
-At the center of BLDS lies the Core.<br>
-A single light that continues to exist even in absolute darkness.<br><br>
+At the center lies the Core.<br>
+A light that never disappears even in total darkness.<br><br>
 
-The Core represents the inner purpose of every member of BLDS.<br><br>
+It is not given.<br>
+It is forged through pain, failure, and survival.<br><br>
 
-Not given by the world.<br>
-Not created by attention.<br>
-But forged through pain, failure, and survival.<br><br>
-
-It is the reminder that even when everything collapses…<br>
-even when no one is watching…<br>
-your inner light still matters.<br><br>
-
-BLDS believes the strongest are not those who never fall,<br>
-but those who continue rising after every fall.<br>
+The Core = inner purpose that keeps you moving forward.<br>
 
 <hr><br>
 
 <h3>MEANING</h3><br>
 
-The Eclipse → Darkness, pressure, failure, the world itself<br>
-The Core → Inner purpose, identity, and will to survive<br><br>
+Eclipse = pressure, darkness, the world<br>
+Core = identity, purpose, will to survive<br><br>
 
 It is not about avoiding darkness.<br>
-It is about not letting darkness consume you.<br>
+It is about surviving inside it.<br>
 
 <hr><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
-<b>Greater Flames</b><br>
-I. Vision — Seeing direction even in chaos<br>
-II. Discipline — Staying consistent when no one watches<br>
-III. Loyalty — Standing together through every collapse<br>
-IV. Ambition — Breaking limits beyond fear<br>
-V. Resilience — Rising again after every defeat<br><br>
-
-<b>Lesser Flames</b><br>
-I. Hope — The last light that never fully dies<br>
-II. Awareness — Understanding reality without illusion<br>
-III. Patience — Surviving the slow path of growth<br>
-IV. Courage — Moving forward despite fear<br>
-V. Unity — Turning individuals into one force<br><br>
-
-Even the Core cannot survive without the Flames.<br>
-Because strength is not one light…<br>
-it is the combination of all of them.<br>
+Vision, Discipline, Loyalty, Ambition, Resilience<br>
+Hope, Awareness, Patience, Courage, Unity<br>
 
 </div>
 </div>
@@ -311,8 +284,6 @@ it is the combination of all of them.<br>
 <input id="forgotInput" placeholder="Enter Code..." style="width:100%;padding:10px;">
 <button onclick="checkForgotten()">UNLOCK</button>
 
-<p id="codeMsg" style="margin-top:10px;opacity:0.7"></p>
-
 </div>
 </div>
 
@@ -322,16 +293,15 @@ it is the combination of all of them.<br>
 
 <h2>THE FORGOTTEN ECLIPSE</h2><br>
 
-Long before BLDS existed…<br>
+Long before BLDS became known…<br>
 there was a generation erased from the archive.<br><br>
 
 They built the first dominion inside darkness.<br>
 But it collapsed from within.<br><br>
 
-Names were erased. Records lost.<br><br>
+Only fragments remain.<br><br>
 
-Only one message remained:<br>
-“If the eclipse returns… don’t repeat the past.”<br><br>
+“If the eclipse returns… do not repeat the past.”<br><br>
 
 BLDS is not continuation.<br>
 It is a second chance.
@@ -356,8 +326,6 @@ It is a second chance.
 </div>
 
 <footer>
-<a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR">WhatsApp</a> |
-<a href="https://discord.gg/r4dM4QFteV">Discord</a><br>
 BLACKLIGHTDOMS © 2026
 </footer>
 
@@ -371,8 +339,21 @@ for(let i=0;i<120;i++){
  let s=document.createElement("div");
  s.className="star";
  s.style.left=Math.random()*100+"%";
- s.style.top=Math.random()*100+"%";
  sky.appendChild(s);
+}
+
+/* ENTER (WHITE FLASH) */
+function enter(){
+ document.getElementById("whiteFlash").classList.add("active");
+
+ setTimeout(()=>{
+   document.getElementById("login").style.display="none";
+   document.getElementById("main").style.display="flex";
+   document.getElementById("menu").style.display="flex";
+   document.getElementById("enterBtn").style.display="none";
+   document.getElementById("bgMusic").play();
+   document.getElementById("whiteFlash").classList.remove("active");
+ },900);
 }
 
 /* LOGIN */
@@ -387,15 +368,11 @@ function checkCode(){
  }
 }
 
-/* ENTER */
-function enter(){
- document.getElementById("portal").classList.add("active");
-
- setTimeout(()=>{
-   document.getElementById("enterBtn").style.display="none";
-   document.getElementById("menu").style.display="flex";
-   document.getElementById("bgMusic").play();
- },700);
+/* SHOW */
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+ document.getElementById(id).style.display="block";
+ if(id==="quotes") newQuote();
 }
 
 /* BACK */
@@ -404,31 +381,29 @@ function back(){
  document.getElementById("menu").style.display="flex";
 }
 
-/* SHOW */
-function show(id){
- document.querySelectorAll(".page").forEach(p=>p.style.display="none");
- document.getElementById(id).style.display="block";
- if(id==="quotes") newQuote();
-}
-
 /* QUOTES */
-const quotes=["Darkness builds legends","Rise beyond limits","Core never fades","Survive and evolve"];
+const quotes=[
+"Darkness builds legends",
+"Rise beyond limits",
+"Core never fades",
+"Survive and evolve"
+];
+
 function newQuote(){
  document.getElementById("quote").innerText=
  quotes[Math.floor(Math.random()*quotes.length)];
 }
 newQuote();
 
-/* FORGOTTEN CODE */
+/* FORGOTTEN GLITCH */
 function checkForgotten(){
  const val=document.getElementById("forgotInput");
  const overlay=document.getElementById("forgotOverlay");
- const msg=document.getElementById("codeMsg");
 
  if(val.value.toLowerCase()==="forgotten"){
 
-   overlay.classList.add("active");
    document.body.classList.add("glitch-shake");
+   overlay.classList.add("active");
 
    setTimeout(()=>{
      document.body.classList.remove("glitch-shake");
@@ -436,18 +411,15 @@ function checkForgotten(){
 
      document.querySelectorAll(".page").forEach(p=>p.style.display="none");
      document.getElementById("forgotLore").style.display="block";
-   },1800);
+   },2000);
 
  } else {
    val.classList.add("error");
-   document.body.classList.add("glitch-shake");
    overlay.classList.add("active");
-
    setTimeout(()=>{
      val.classList.remove("error");
-     document.body.classList.remove("glitch-shake");
      overlay.classList.remove("active");
-   },1200);
+   },1000);
  }
 }
 
