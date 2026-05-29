@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
 
@@ -9,11 +9,11 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
+html{scroll-behavior:smooth;}
 body{
-  font-family:'Poppins',sans-serif;
   background:#000;
   color:white;
+  font-family:'Poppins',sans-serif;
   overflow-x:hidden;
 }
 
@@ -22,256 +22,244 @@ body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:
-    radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 35%),
-    radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 40%);
+  background:radial-gradient(circle,rgba(255,255,255,0.08),transparent 40%);
   z-index:-2;
 }
 
+/* STARS */
+.stars{position:fixed;inset:0;z-index:-1;}
+.star{
+  position:absolute;
+  width:2px;height:2px;
+  background:white;
+  border-radius:50%;
+  animation:blink 4s infinite;
+}
+@keyframes blink{0%,100%{opacity:0.2;}50%{opacity:1;}}
+
 /* LAYOUT */
-.center{
+.container{
   min-height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
   text-align:center;
-  padding:25px;
+  padding:30px;
 }
 
+/* LOGO */
+.eclipse{width:200px;height:200px;margin-bottom:20px;}
+.eclipse img{width:100%;height:100%;filter:drop-shadow(0 0 20px white);}
+
+/* TEXT */
 h1{
   font-family:'Orbitron';
-  letter-spacing:4px;
   font-size:3rem;
-  margin-bottom:10px;
+  letter-spacing:5px;
+  text-shadow:0 0 20px white;
 }
-
-.sub{opacity:0.7;margin-bottom:25px}
+.subtitle{opacity:0.7;margin-bottom:20px;}
 
 /* BUTTON */
-.btn{
-  padding:14px 28px;
-  border:2px solid white;
+button{
+  padding:12px 25px;
+  margin:10px;
+  border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:999px;
+  border-radius:30px;
   cursor:pointer;
   transition:0.3s;
-  font-family:'Orbitron';
 }
-
-.btn:hover{
+button:hover{
   background:white;
   color:black;
-  transform:scale(1.05);
 }
 
-/* MENU */
-.menu{
-  display:none;
-  flex-direction:column;
-  gap:15px;
-  margin-top:25px;
-}
-
-/* PAGE */
-.page{
-  display:none;
-  padding:30px;
-  max-width:900px;
-  margin:auto;
-}
+/* PAGES */
+.page{display:none;width:100%;max-width:900px;margin-top:20px;}
+.active{display:block;}
 
 /* BOX */
 .box{
   background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.12);
   padding:25px;
   border-radius:20px;
-  margin-top:20px;
+  border:1px solid rgba(255,255,255,0.1);
+  text-align:left;
+  line-height:1.8;
 }
 
-/* TITLE */
-.title{
-  font-family:'Orbitron';
-  margin-bottom:15px;
-  text-align:center;
+/* QUOTES */
+.quote{
+  margin:10px 0;
+  padding:10px;
+  border-left:2px solid white;
+  opacity:0.8;
 }
 
 /* FOOTER */
 footer{
-  text-align:center;
-  padding:30px;
+  margin-top:40px;
   opacity:0.5;
-  font-size:0.9rem;
-}
-
-/* SOCIAL */
-.social{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:20px;
-}
-.social img{
-  width:45px;
-  filter:drop-shadow(0 0 10px white);
-}
-
-/* RESPONSIVE */
-@media(max-width:700px){
-  h1{font-size:2rem;}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
-<div id="home" class="center">
-  <h1>BLACKLIGHTDOMINION</h1>
-  <div class="sub">THE ECLIPSE HAS BEGUN</div>
+<div class="stars" id="stars"></div>
 
-  <button class="btn" onclick="enter()">ENTER THE ECLIPSE</button>
+<div class="container">
 
-  <div class="menu" id="menu">
-    <button class="btn" onclick="go('origin')">ORIGIN</button>
-    <button class="btn" onclick="go('quotes')">QUOTES</button>
-    <button class="btn" onclick="go('archive')">ARCHIVE</button>
+  <div class="eclipse">
+    <img src="logo.png">
   </div>
+
+  <h1>BLACKLIGHTDOMS</h1>
+  <div class="subtitle">THE ECLIPSE HAS BEGUN</div>
+
+  <!-- MAIN MENU -->
+  <div id="menu">
+    <button onclick="openPage('origin')">ENTER ECLIPSE</button>
+    <button onclick="openPage('lore')">LORE</button>
+    <button onclick="openPage('quotes')">QUOTES</button>
+    <button onclick="openPage('archive')">ARCHIVE</button>
+  </div>
+
+  <!-- ORIGIN -->
+  <div id="origin" class="page">
+    <div class="box" onclick="secretClick()">
+      <h2>THE ORIGIN OF BLDS</h2>
+      <p>
+Before BLDS existed, there was only silence and struggle...
+A group of individuals lost in their own darkness, underestimated, ignored, and forgotten...
+
+They did not come from glory.
+They came from failure.
+
+Every setback shaped them.
+Every pain built them.
+
+BLDS was never created for fame.
+It was born from survival.
+
+It is not a group of winners.
+It is a dominion of those who refused to disappear.
+      </p>
+
+      <div id="secret" style="display:none;margin-top:20px;">
+        <h3>SECRET LORE</h3>
+        <p>
+Klik tidak cukup untuk memahami BLDS.
+Kebenaran hanya muncul bagi mereka yang bertahan cukup lama.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LORE + 10 FLAMES -->
+  <div id="lore" class="page">
+    <div class="box">
+      <h2>THE CORE & 10 FLAMES</h2>
+
+      <b>Greater Flames</b><br>
+      Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
+
+      <b>Lesser Flames</b><br>
+      Hope, Awareness, Patience, Courage, Unity<br><br>
+
+      Every flame represents survival, growth, and the balance between darkness and purpose.
+    </div>
+  </div>
+
+  <!-- QUOTES -->
+  <div id="quotes" class="page">
+    <div class="box">
+      <h2>BLDS QUOTES</h2>
+      <div id="quoteBox"></div>
+    </div>
+  </div>
+
+  <!-- ARCHIVE -->
+  <div id="archive" class="page">
+    <div class="box">
+      <h2>BLDS ARCHIVE</h2>
+      <p>2024 - Birth<br>2025 - Growth<br>2026 - Eclipse Awakening</p>
+    </div>
+  </div>
+
+  <footer>
+    BLACKLIGHTDOMINIONS © 2026
+  </footer>
+
 </div>
-
-<!-- ORIGIN -->
-<div class="page" id="origin">
-  <h2 class="title" onclick="secretClick()">THE ORIGIN</h2>
-
-  <div class="box">
-    Before BLDS had a name...<br><br>
-
-    Before the symbol existed.<br>
-    Before the squad was formed.<br>
-    Before the eclipse began...<br><br>
-
-    There were only individuals trying to survive their own darkness.<br><br>
-
-    Some were ignored.<br>
-    Some were underestimated.<br>
-    Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-    They watched others rise faster.<br>
-    Watched others gain recognition.<br>
-    Watched people quit the moment things became difficult.<br><br>
-
-    Most people only shine when the world is bright.<br>
-    But very few can continue moving forward when everything turns dark.<br><br>
-
-    That realization became the beginning of BLDS.<br><br>
-
-    Not a squad for fame.<br>
-    Not a kingdom for arrogance.<br>
-    But a dominion built by those who refused to disappear.<br><br>
-
-    <hr><br>
-
-    <b>THE CORE</b><br><br>
-
-    A single star that never dies.<br>
-    Inner purpose that survives everything.<br><br>
-
-    Strength is not never falling.<br>
-    But always standing after falling.<br>
-  </div>
-
-  <div class="box">
-    <b>10 FLAMES OF BLDS</b><br><br>
-
-    Greater:<br>
-    Vision • Discipline • Loyalty • Ambition • Resilience<br><br>
-
-    Lesser:<br>
-    Hope • Awareness • Patience • Courage • Unity
-  </div>
-</div>
-
-<!-- QUOTES -->
-<div class="page" id="quotes">
-  <h2 class="title">QUOTES</h2>
-  <div class="box" id="quoteBox"></div>
-</div>
-
-<!-- ARCHIVE -->
-<div class="page" id="archive">
-  <h2 class="title">ARCHIVE</h2>
-
-  <div class="box">
-    2024 - BLDS BORN<br>
-    2024 - COMMUNITY BUILT<br>
-    2025 - GROWTH ERA<br>
-    2026 - THE ECLIPSE CONTINUES
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <img src="logo.png" width="40"><br>
-  BLACKLIGHTDOMINION © 2026
-
-  <div class="social">
-    <a href="https://discord.gg/r4dM4QFteV"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"></a>
-    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png"></a>
-  </div>
-</footer>
 
 <script>
+const pages = ["origin","lore","quotes","archive"];
 
-/* ENTER */
-function enter(){
-  document.getElementById("menu").style.display="flex";
+function openPage(id){
+  pages.forEach(p=>document.getElementById(p).classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  if(id === "quotes") loadQuotes();
 }
 
-/* NAV */
-function go(id){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-  document.getElementById("home").style.display="none";
-  document.getElementById(id).style.display="block";
-}
-
-/* QUOTES 20 RANDOM */
-const quotes=[
-"Darkness builds legends.",
-"Only the eclipse survives the storm.",
-"Power is forged in silence.",
-"Fall once, rise infinite.",
-"Light fears nothing more than the void.",
-"Broken minds build stronger empires.",
-"The Core never dies.",
-"Discipline is silent power.",
-"Even shadows learn to fight.",
-"We are what survives the fall.",
-"Pain is data, not defeat.",
-"The weak fade, the Core remains.",
-"Ambition burns brighter in darkness.",
-"Unity turns fear into force.",
-"No light without shadow.",
-"Failure is training.",
-"The eclipse chooses the strong.",
-"Survival is a mindset.",
-"Darkness is not the enemy.",
-"Rise until nothing can push you down."
-];
-
-document.getElementById("quoteBox").innerText =
-quotes[Math.floor(Math.random()*quotes.length)];
-
-/* SECRET CLICK */
-let c=0;
+/* SECRET CLICK 5x */
+let count=0;
 function secretClick(){
-  c++;
-  if(c>=5){
-    alert("...");
+  count++;
+  if(count>=5){
+    document.getElementById("secret").style.display="block";
   }
 }
 
+/* QUOTES 20 RANDOM */
+const quotes = [
+"Darkness is not the end, it is the beginning.",
+"BLDS never follows light, we become it.",
+"Fall seven times, rise eight.",
+"Power is built in silence.",
+"Not everyone survives the eclipse.",
+"Strength is forged in failure.",
+"Only the broken become stronger.",
+"Pain creates purpose.",
+"Fear is temporary, legacy is permanent.",
+"We are not chosen, we are built.",
+"Even stars die to become legends.",
+"Discipline is louder than talent.",
+"Survive first, shine later.",
+"The core never fades.",
+"Darkness reveals truth.",
+"Unity creates immortality.",
+"Every loss is a lesson.",
+"Rise beyond limits.",
+"Chaos builds kings.",
+"We are the eclipse itself."
+];
+
+function loadQuotes(){
+  let box=document.getElementById("quoteBox");
+  box.innerHTML="";
+  let shuffled=[...quotes].sort(()=>0.5-Math.random()).slice(0,20);
+  shuffled.forEach(q=>{
+    let div=document.createElement("div");
+    div.className="quote";
+    div.innerText=q;
+    box.appendChild(div);
+  });
+}
+
+/* STARS */
+const stars=document.getElementById("stars");
+for(let i=0;i<120;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  stars.appendChild(s);
+}
 </script>
 
 </body>
