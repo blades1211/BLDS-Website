@@ -17,46 +17,79 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY BACKGROUND (MOVING STARS) */
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(#000,#02040f);
-  overflow:hidden;
   z-index:-2;
 }
 
 .star{
   position:absolute;
-  width:2px;
-  height:2px;
+  width:2px;height:2px;
   background:white;
   border-radius:50%;
-  animation:moveStars linear infinite;
-  opacity:0.8;
+  animation:move 10s linear infinite;
 }
 
-@keyframes moveStars{
+@keyframes move{
   from{transform:translateY(0);}
   to{transform:translateY(100vh);}
 }
 
-/* FADE */
-.fade{
+/* LOGIN */
+#login{
   position:fixed;
   inset:0;
   background:black;
-  opacity:0;
-  pointer-events:none;
-  transition:0.5s;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
   z-index:999;
 }
-.fade.active{opacity:1;}
 
-/* LAYOUT */
+#login input{
+  padding:12px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  text-align:center;
+  border-radius:10px;
+}
+
+.error{
+  animation:shake .3s;
+  background:rgba(255,0,0,0.2);
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-10px)}
+  50%{transform:translateX(10px)}
+}
+
+/* PORTAL */
+.portal{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle, rgba(255,255,255,0.2), transparent 60%);
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+  transform:scale(1.2);
+}
+
+.portal.active{
+  opacity:1;
+  transform:scale(1);
+}
+
+/* MAIN */
 .container{
+  display:none;
   min-height:100vh;
-  display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
@@ -64,35 +97,25 @@ body{
   padding:30px;
 }
 
-/* LOGO */
-.logo{width:200px;margin-bottom:15px;}
-.logo img{width:100%;filter:drop-shadow(0 0 20px white);}
-
-/* TITLE */
-h1{
-  font-family:Orbitron;
-  letter-spacing:5px;
-  text-shadow:0 0 20px white;
-}
-
 /* BUTTON */
 button{
-  margin:10px;
   padding:12px 25px;
+  margin:10px;
   border:1px solid white;
   background:transparent;
   color:white;
-  border-radius:25px;
+  border-radius:30px;
   cursor:pointer;
-  transition:0.3s;
+  transition:.3s;
 }
-button:hover{background:white;color:black;}
+button:hover{background:white;color:black}
 
-/* PAGES */
-.page{display:none;max-width:900px;width:100%;margin-top:20px;}
-.active{display:block;}
+/* MENU */
+.menu{display:none;flex-direction:column}
 
+/* BOX */
 .box{
+  max-width:900px;
   background:rgba(255,255,255,0.03);
   padding:25px;
   border-radius:20px;
@@ -101,22 +124,17 @@ button:hover{background:white;color:black;}
   line-height:1.8;
 }
 
-/* QUOTES */
-.quote{
-  margin:8px 0;
-  border-left:2px solid white;
-  padding-left:10px;
+/* QUOTE */
+#quote{
+  font-size:1.3rem;
+  padding:30px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
 }
 
-/* ARCHIVE */
-.card{
-  margin:8px 0;
-  padding:10px;
-  border-left:2px solid white;
-}
+/* PAGE */
+.page{display:none;margin-top:20px}
 
-/* ENTER SCREEN */
-#menuPage{display:none;}
 </style>
 </head>
 
@@ -125,159 +143,99 @@ button:hover{background:white;color:black;}
 <!-- SKY -->
 <div class="sky" id="sky"></div>
 
-<div class="fade" id="fade"></div>
+<!-- PORTAL EFFECT -->
+<div class="portal" id="portal"></div>
+
+<!-- LOGIN -->
+<div id="login">
+  <h2>ENTER ACCESS CODE</h2>
+  <input id="code" placeholder="Type: Dominion">
+  <button onclick="checkCode()">ENTER</button>
+</div>
 
 <audio id="bgMusic" loop>
-  <source src="freesound_community-space-ambience-56265.mp3">
+<source src="freesound_community-space-ambience-56265.mp3">
 </audio>
 
-<audio id="clickSound">
-  <source src="https://www.myinstants.com/media/sounds/button-click.mp3">
-</audio>
-
-<div class="container">
-
-<div class="logo">
-  <img src="logo.png">
-</div>
+<div class="container" id="main">
 
 <h1>BLACKLIGHTDOMS</h1>
 
-<!-- ENTER -->
-<div id="enterScreen">
-  <button onclick="enter()">ENTER ECLIPSE</button>
-</div>
+<button onclick="enter()">ENTER THE ECLIPSE</button>
 
-<!-- MENU -->
-<div id="menuPage">
-  <button onclick="openPage('lore')">LORE</button>
-  <button onclick="openPage('quotes')">QUOTES</button>
-  <button onclick="openPage('archive')">ARCHIVE</button>
+<div class="menu" id="menu">
+<button onclick="show('lore')">ORIGIN</button>
+<button onclick="show('quotes')">QUOTES</button>
+<button onclick="show('archive')">ARCHIVE</button>
 </div>
 
 <!-- LORE -->
-<div class="section" id="lore">
+<div id="lore" class="page">
 <div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-<pre style="white-space:pre-wrap;line-height:1.9;font-family:Poppins;color:rgba(255,255,255,0.85)">
+before BLDS had a name,<br>
+before the symbol existed,<br>
+before the squad was formed…<br><br>
 
-before BLDS had a name,
-before the symbol existed,
-before the squad was formed…
-there were only individuals trying to survive their own darkness.
+there were only individuals trying to survive their own darkness.<br><br>
 
-Some were ignored.
-Some were underestimated.
-Some failed over and over again until they stopped expecting anyone to believe in them.
+Some were ignored.<br>
+Some were underestimated.<br>
+Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
 
-They watched others rise faster.
-Watched others gain recognition.
-Watched people quit the moment things became difficult.
+They watched others rise faster.<br>
+Watched others gain recognition.<br>
+Watched people quit the moment things became difficult.<br><br>
 
-And slowly, they realized something:
+And slowly, they realized something:<br><br>
 
-Most people only shine when the world is bright.
-But very few can continue moving forward when everything turns dark.
+Most people only shine when the world is bright.<br>
+But very few can continue moving forward when everything turns dark.<br><br>
 
-That realization became the beginning of BLDS.
+That realization became the beginning of BLDS.<br><br>
 
-Not a squad created for fame.
-Not a kingdom built on arrogance.
-Not a place for people searching only for victory.
-But a dominion built by those who refused to disappear.
+Not a squad created for fame.<br>
+Not a kingdom built on arrogance.<br>
+Not a place for people searching only for victory.<br><br>
 
+But a dominion built by those who refused to disappear.<br><br>
 
-━━━━━━━━━━━━━━━━━━━━━━
+<hr><br>
 
+<h3>THE BLACK LIGHT CORE</h3><br>
 
-<h3>THE BLACK LIGHT CORE</h3>
+At the center of the eclipse lies the Core.<br><br>
 
-At the center of the eclipse lies the Core.
+A single star that continues to shine no matter how dark the sky becomes.<br><br>
 
-A single star that continues to shine no matter how dark the sky becomes.
+The Core represents purpose, not given by the world… but discovered through hardship.<br><br>
 
-The Core represents the inner purpose carried by every member of BLDS.
+Even when everything changes…<br>
+Even when people leave…<br>
+Even when failure surrounds you…<br><br>
 
-Not a purpose given by the world.
-Not a purpose created by attention or popularity.
-But a purpose discovered through hardship.
+your inner light still remains.<br><br>
 
-It is the reminder that:
+The strongest are not those who never fall,<br>
+but those who always rise again.<br><br>
 
-even when everything around you changes…
-even when people leave…
-even when failure surrounds you…
-your inner light can still remain alive.
-
-BLDS believes the strongest people are not those who never fall.
-The strongest are the ones who continue standing after every fall.
-
-That is why the Core never disappears.
-Because purpose cannot be erased by fear.
-
-
-━━━━━━━━━━━━━━━━━━━━━━
-
+<hr><br>
 
 <h3>MEANING</h3>
+The Eclipse = World, darkness, struggle<br>
+The Core = Purpose, inner light, strength<br><br>
 
-The eclipse:
-The world. The darkness. The challenges we face every day.
+<hr><br>
 
-The core:
-Our purpose. Our inner light.
-The source of our strength.
+<h3>TEN FLAMES</h3>
 
+<b>Greater</b><br>
+Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
 
-━━━━━━━━━━━━━━━━━━━━━━
-
-
-<h3>TEN FLAMES MEANING</h3>
-
-<b>Greater</b><br><br>
-
-I. Vision  
-The ability to see direction even when others are lost.
-
-II. Discipline  
-To continue growing even when nobody is watching.
-
-III. Loyalty  
-To stand together through victory and defeat.
-
-IV. Ambition  
-The desire to surpass limits and continue evolving.
-
-V. Resilience  
-The strength to rise again after every fall.
-
-
-<br><b>Lesser</b><br><br>
-
-I. Hope  
-The light that remains during difficult times.
-
-II. Awareness  
-The ability to stay conscious and understand reality.
-
-III. Patience  
-Growth takes time and endurance.
-
-IV. Courage  
-The will to move forward despite fear.
-
-V. Unity  
-The bond that turns individuals into something greater.
-
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-Though smaller, these flames are just as important.
-Because even the brightest Core will fade without what supports it.
-
-</pre>
+<b>Lesser</b><br>
+Hope, Awareness, Patience, Courage, Unity<br><br>
 
 </div>
 </div>
@@ -285,29 +243,25 @@ Because even the brightest Core will fade without what supports it.
 <!-- QUOTES -->
 <div id="quotes" class="page">
 <div class="box">
-<h2>QUOTES</h2>
-<div id="quoteBox"></div>
+<div id="quote"></div>
+<button onclick="newQuote()">Refresh Quote</button>
 </div>
 </div>
 
-<!-- ARCHIVE (FULL COMPLETE) -->
+<!-- ARCHIVE -->
 <div id="archive" class="page">
 <div class="box">
 
-<h2>ARCHIVE</h2>
+<b>OWNER:</b> Michael Lorenzo<br>
+<b>RIGHT HAND:</b> William Nayottama<br>
+<b>LEFT HAND:</b> Felix<br><br>
 
-<div class="card">Owner: Michael Lorenzo</div>
-<div class="card">Right Hand: William Nayottama</div>
-<div class="card">Left Hand: Felix</div>
-
-<br>
-
-<div class="card">05-03-2024 — BLDS Born</div>
-<div class="card">15-05-2024 — WhatsApp Community</div>
-<div class="card">12-09-2024 — Discord Community</div>
-<div class="card">05-03-2025 — First Evolution</div>
-<div class="card">20-08-2025 — Massive Remake</div>
-<div class="card">05-03-2026 — Eclipse Era Begins</div>
+BLDS Born - 05/03/2024<br>
+WhatsApp Community<br>
+Discord Community<br>
+Anniversary 2025<br>
+Remake Update<br>
+Anniversary 2026<br>
 
 </div>
 </div>
@@ -316,98 +270,68 @@ Because even the brightest Core will fade without what supports it.
 
 <script>
 
-/* SKY GENERATOR */
+/* SKY */
 const sky=document.getElementById("sky");
-
 for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  s.style.animationDuration=(5+Math.random()*10)+"s";
-  sky.appendChild(s);
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=Math.random()*100+"%";
+ sky.appendChild(s);
 }
 
-/* ENTER */
+/* LOGIN CHECK */
+function checkCode(){
+ const val=document.getElementById("code");
+ if(val.value==="Dominion"){
+   document.getElementById("login").style.display="none";
+   document.getElementById("main").style.display="flex";
+ } else {
+   val.classList.add("error");
+   setTimeout(()=>val.classList.remove("error"),300);
+ }
+}
+
+/* ENTER PORTAL */
 function enter(){
-  playClick();
-  document.getElementById("fade").classList.add("active");
+ document.getElementById("portal").classList.add("active");
 
-  setTimeout(()=>{
-    document.getElementById("enterScreen").style.display="none";
-    document.getElementById("menuPage").style.display="block";
+ setTimeout(()=>{
+   document.getElementById("menu").style.display="flex";
+   document.getElementById("portal").classList.remove("active");
 
-    document.getElementById("fade").classList.remove("active");
-
-    const music=document.getElementById("bgMusic");
-    music.volume=0.3;
-    music.play();
-
-  },600);
+   document.getElementById("bgMusic").play();
+ },600);
 }
 
-/* PAGE SWITCH */
-function openPage(id){
-  playClick();
+/* SHOW PAGE */
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+ document.getElementById(id).style.display="block";
 
-  const fade=document.getElementById("fade");
-  fade.classList.add("active");
-
-  setTimeout(()=>{
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-
-    if(id==="quotes") loadQuotes();
-
-    fade.classList.remove("active");
-  },400);
+ if(id==="quotes") newQuote();
 }
 
-/* CLICK SOUND */
-function playClick(){
-  const c=document.getElementById("clickSound");
-  c.currentTime=0;
-  c.play();
-}
-
-/* 20 QUOTES RANDOM */
+/* QUOTES */
 const quotes=[
 "Darkness builds legends",
-"We are the eclipse",
-"Failure is fuel",
 "Rise beyond limits",
 "Pain creates purpose",
-"Only the strong remain",
-"Born from chaos",
-"Discipline wins",
-"Legacy is forever",
+"Core never fades",
 "Fear is temporary",
-"Stand as one",
-"Power is earned",
+"Stand after every fall",
 "Survive and evolve",
-"Never fade",
-"Strength is built",
-"Light follows us",
-"Broken but rising",
-"Chaos creates kings",
-"We endure everything",
-"BLDS never falls"
+"Becoming unstoppable",
+"Shadows shape warriors",
+"Nothing is wasted"
 ];
 
-function loadQuotes(){
-  let box=document.getElementById("quoteBox");
-  box.innerHTML="";
-  [...quotes].sort(()=>Math.random()-0.5)
-  .forEach(q=>{
-    let d=document.createElement("div");
-    d.className="quote";
-    d.innerText="• "+q;
-    box.appendChild(d);
-  });
+function newQuote(){
+ document.getElementById("quote").innerText =
+ quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-/* LOAD FIRST TIME */
-loadQuotes();
+newQuote();
 
 </script>
 
