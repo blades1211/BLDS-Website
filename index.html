@@ -17,6 +17,7 @@ body{
   overflow-x:hidden;
 }
 
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
@@ -63,6 +64,7 @@ body{
   50%{transform:translate(-50%,-50%) scale(1.3);}
 }
 
+/* FLASH */
 .portal{
   position:fixed;
   inset:0;
@@ -74,6 +76,7 @@ body{
 }
 .portal.active{opacity:1;}
 
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -88,6 +91,32 @@ body{
   background:radial-gradient(circle, rgba(255,255,255,.2), black 70%);
 }
 
+/* CUTSCENE EFFECT */
+.cutscene{
+  position:fixed;
+  inset:0;
+  background:black;
+  z-index:10000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.cutscene h1{
+  font-size:22px;
+  letter-spacing:6px;
+  animation:glitch 1s infinite;
+}
+
+@keyframes glitch{
+  0%{opacity:1;}
+  50%{opacity:.3;}
+  100%{opacity:1;}
+}
+
+/* MAIN */
 .container{
   display:flex;
   flex-direction:column;
@@ -100,6 +129,7 @@ body{
   z-index:2;
 }
 
+/* LOGO */
 .logo{
   width:140px;
   filter:drop-shadow(0 0 12px white);
@@ -111,6 +141,7 @@ body{
   50%{transform:translateY(-6px);}
 }
 
+/* TITLE */
 .title{
   font-size:30px;
   letter-spacing:4px;
@@ -118,6 +149,7 @@ body{
   text-shadow:0 0 12px rgba(255,255,255,0.6);
 }
 
+/* BUTTONS */
 button{
   padding:12px 22px;
   margin:8px;
@@ -133,8 +165,10 @@ button:hover{
   color:black;
 }
 
+/* MENU */
 .menu{display:none;flex-direction:column;}
 
+/* PAGE */
 .page{
   display:none;
   max-width:900px;
@@ -161,6 +195,12 @@ button:hover{
 <div class="portal" id="portal"></div>
 <div class="overlay" id="overlay"></div>
 
+<!-- CUTSCENE -->
+<div class="cutscene" id="cutscene">
+  <h1>FORGOTTEN MEMORY DETECTED</h1>
+  <p style="opacity:0.6;margin-top:10px;">ECLIPSE PROTOCOL ACTIVATED</p>
+</div>
+
 <div class="container">
 
 <img src="logo.png" class="logo">
@@ -176,7 +216,7 @@ button:hover{
 <button onclick="show('secret')">???</button>
 </div>
 
-<!-- ORIGIN (FULL COMPLETE) -->
+<!-- ORIGIN (UNCHANGED LORE) -->
 <div id="lore" class="page">
 <div class="box">
 
@@ -192,47 +232,30 @@ They were not chosen.<br>
 They were not born strong.<br>
 They were the ones who refused to disappear.<br><br>
 
-Every failure carved their existence deeper into reality.<br>
-Every silence became fuel for survival.<br><br>
-
 <b>True light is not born from brightness… but from absolute pressure of darkness.</b><br><br>
-
-That was the moment BLDS became real.
-
-<hr><br>
 
 <h3>THE BLACKLIGHT CORE</h3><br>
 
-The Blacklight Core is not power.<br>
-It is persistence that refuses extinction.<br><br>
-
-It does not shine to be seen.<br>
-It shines so nothing within it disappears.<br><br>
-
-The Core is not a place of perfection…<br>
-it is a place where broken things continue existing.<br><br>
-
-<b>You are not required to be whole. Only to remain.</b>
-
-<hr><br>
+The Core is persistence that refuses extinction.<br>
+It shines so nothing within disappears.<br><br>
 
 <h3>TEN FLAMES OF BLDS</h3><br>
 
-1. Vision — see beyond darkness<br>
-2. Discipline — move without needing validation<br>
-3. Loyalty — stand even when alone<br>
-4. Ambition — surpass limits continuously<br>
-5. Resilience — rise after every fall<br>
-6. Hope — survive emotional collapse<br>
-7. Awareness — understand reality as it is<br>
-8. Patience — endure time itself<br>
-9. Courage — act despite fear<br>
-10. Unity — strength born from connection<br>
+1. Vision<br>
+2. Discipline<br>
+3. Loyalty<br>
+4. Ambition<br>
+5. Resilience<br>
+6. Hope<br>
+7. Awareness<br>
+8. Patience<br>
+9. Courage<br>
+10. Unity<br>
 
 </div>
 </div>
 
-<!-- SECRET + FORGOTTEN + 12 FLAMES -->
+<!-- SECRET -->
 <div id="secret" class="page">
 <div class="box">
 
@@ -242,36 +265,15 @@ Before BLDS… there was another existence.<br>
 A version erased from memory records.<br><br>
 
 They tried to build unity inside darkness.<br>
-But unity slowly turned into ego.<br><br>
-
-The dominion collapsed from within.<br>
-Names disappeared.<br>
-Records were burned.<br><br>
+But unity collapsed into ego.<br><br>
 
 Only one message survived:<br><br>
 
-<b>“If the eclipse returns… do not let the Core repeat the past.”</b><br><br>
-
-<hr><br>
-
-<h3>THE 12 FLAMES ANOMALY</h3><br>
-
-The Core was never complete with ten flames.<br><br>
-
-<b>11 — SACRED FLAME</b><br>
-Memory of what BLDS was before identity was formed.<br><br>
-
-<b>12 — HIDDEN FLAME</b><br>
-The observer of all existence.<br>
-It does not guide… it judges evolution itself.<br><br>
-
-When all 12 awaken… BLDS stops being a group.<br>
-It becomes a system of consciousness.
+<b>“If the eclipse returns… do not let the Core repeat the past.”</b><br>
 
 </div>
 </div>
 
-<!-- PLACEHOLDER -->
 <div id="quotes" class="page"><div class="box glow">Quotes</div></div>
 <div id="code" class="page"><div class="box glow">Code</div></div>
 <div id="archive" class="page"><div class="box glow">Archive</div></div>
@@ -282,7 +284,6 @@ It becomes a system of consciousness.
 
 /* SKY */
 const sky=document.getElementById("sky");
-
 for(let i=0;i<140;i++){
   let s=document.createElement("div");
   s.className="star";
@@ -292,6 +293,12 @@ for(let i=0;i<140;i++){
   sky.appendChild(s);
 }
 
+/* AUDIO AMBIENCE */
+const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
+audio.loop=true;
+audio.volume=0.25;
+
+/* ENTER */
 function enter(){
   document.getElementById("portal").classList.add("active");
 
@@ -302,10 +309,25 @@ function enter(){
   },800);
 }
 
+/* CUTSCENE TRIGGER */
 function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
+
+  if(id==="secret"){
+    const cut=document.getElementById("cutscene");
+    cut.style.display="flex";
+
+    setTimeout(()=>{
+      cut.style.display="none";
+    },2000);
+  }
 }
+
+/* SOUND START */
+document.body.addEventListener("click",()=>{
+  audio.play().catch(()=>{});
+},{once:true});
 
 </script>
 
