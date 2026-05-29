@@ -6,571 +6,129 @@
 
 <title>BLDS | The Eclipse</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
+/* BASE */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 
 body{
   background:#000;
   color:white;
-  overflow-x:hidden;
   font-family:'Poppins',sans-serif;
-  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* GLITCH EFFECT */
+.glitch{
   position:relative;
+  display:inline-block;
 }
 
-/* LOADING */
-
-#loadingScreen{
-  position:fixed;
-  inset:0;
-  background:black;
-  z-index:99999;
-
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-
-  animation:fadeOut 1.5s forwards;
-  animation-delay:2.2s;
-}
-
-.loading-core{
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:white;
-
-  box-shadow:
-  0 0 15px white,
-  0 0 40px white,
-  0 0 80px rgba(255,255,255,0.6);
-
-  animation:pulse 2s infinite;
-}
-
-.loading-text{
-  margin-top:25px;
-  font-family:'Orbitron',sans-serif;
-  letter-spacing:4px;
-  color:rgba(255,255,255,0.75);
-}
-
-@keyframes fadeOut{
-  to{
-    opacity:0;
-    visibility:hidden;
-  }
-}
-
-@keyframes pulse{
-  0%{
-    transform:scale(0.7);
-    opacity:0.5;
-  }
-
-  50%{
-    transform:scale(1.4);
-    opacity:1;
-  }
-
-  100%{
-    transform:scale(0.7);
-    opacity:0.5;
-  }
-}
-
-/* BACKGROUND */
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-
-  background:
-  radial-gradient(circle at center,
-  rgba(255,255,255,0.09),
-  transparent 30%),
-
-  radial-gradient(circle at top,
-  rgba(255,255,255,0.05),
-  transparent 40%);
-
-  z-index:-5;
-}
-
-/* PARTICLES */
-
-.nebula{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:-4;
-}
-
-.fog{
+.glitch::before,
+.glitch::after{
+  content:attr(data-text);
   position:absolute;
-  width:600px;
-  height:600px;
-  border-radius:50%;
-
-  background:
-  radial-gradient(circle,
-  rgba(255,255,255,0.06),
-  transparent 70%);
-
-  filter:blur(40px);
-
-  animation:fogMove 18s infinite alternate ease-in-out;
-}
-
-.fog:nth-child(1){
-  top:-100px;
-  left:-100px;
-}
-
-.fog:nth-child(2){
-  bottom:-200px;
-  right:-100px;
-  animation-duration:22s;
-}
-
-@keyframes fogMove{
-  from{
-    transform:translate(0,0) scale(1);
-  }
-
-  to{
-    transform:translate(60px,-30px) scale(1.1);
-  }
-}
-
-/* STARS */
-
-.stars{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  z-index:-3;
-  pointer-events:none;
-}
-
-.star{
-  position:absolute;
-  width:2px;
-  height:2px;
-  background:white;
-  border-radius:50%;
-  animation:blink 4s infinite;
-}
-
-@keyframes blink{
-
-  0%,100%{
-    opacity:0.2;
-  }
-
-  50%{
-    opacity:1;
-  }
-
-}
-
-/* MUSIC BUTTON */
-
-.music-toggle{
-  position:fixed;
-  top:20px;
-  right:20px;
-
-  width:50px;
-  height:50px;
-
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,0.25);
-
-  background:rgba(255,255,255,0.06);
-
-  color:white;
-
-  cursor:pointer;
-
-  backdrop-filter:blur(10px);
-
-  z-index:999;
-
-  transition:0.3s;
-}
-
-.music-toggle:hover{
-  transform:scale(1.08);
-
-  box-shadow:
-  0 0 20px rgba(255,255,255,0.4);
-}
-
-/* MAIN */
-
-.container{
-  min-height:100vh;
-
-  display:flex;
-  flex-direction:column;
-
-  justify-content:center;
-  align-items:center;
-
-  text-align:center;
-
-  padding:30px;
-}
-
-/* ECLIPSE CORE */
-
-.core-visual{
-  position:absolute;
-  width:420px;
-  height:420px;
-
-  border-radius:50%;
-
-  background:
-  radial-gradient(circle,
-  rgba(255,255,255,0.15),
-  transparent 60%);
-
-  filter:blur(20px);
-
-  animation:corePulse 5s infinite;
-  z-index:-1;
-}
-
-@keyframes corePulse{
-
-  0%{
-    transform:scale(1);
-    opacity:0.5;
-  }
-
-  50%{
-    transform:scale(1.08);
-    opacity:1;
-  }
-
-  100%{
-    transform:scale(1);
-    opacity:0.5;
-  }
-
-}
-
-/* LOGO */
-
-.eclipse{
-  width:220px;
-  height:220px;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  margin-bottom:30px;
-
-  animation:floating 6s ease-in-out infinite;
-}
-
-.eclipse img{
+  left:0;
+  top:0;
   width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
-
-  filter:
-  drop-shadow(0 0 10px white)
-  drop-shadow(0 0 25px rgba(255,255,255,0.8))
-  drop-shadow(0 0 70px rgba(255,255,255,0.35));
+  overflow:hidden;
+  color:white;
 }
 
-@keyframes floating{
+.glitch::before{
+  left:2px;
+  text-shadow:-2px 0 red;
+  animation:glitch1 2s infinite linear alternate-reverse;
+}
 
-  0%{
-    transform:translateY(0px);
-  }
+.glitch::after{
+  left:-2px;
+  text-shadow:2px 0 cyan;
+  animation:glitch2 2s infinite linear alternate-reverse;
+}
 
-  50%{
-    transform:translateY(-10px);
-  }
+@keyframes glitch1{
+  0%{clip-path:inset(0 0 80% 0);}
+  50%{clip-path:inset(20% 0 20% 0);}
+  100%{clip-path:inset(80% 0 0 0);}
+}
 
-  100%{
-    transform:translateY(0px);
-  }
-
+@keyframes glitch2{
+  0%{clip-path:inset(80% 0 0 0);}
+  50%{clip-path:inset(20% 0 20% 0);}
+  100%{clip-path:inset(0 0 80% 0);}
 }
 
 /* TITLE */
-
 h1{
-  font-family:'Orbitron',sans-serif;
+  font-family:'Orbitron';
+  text-align:center;
   font-size:3rem;
-  letter-spacing:5px;
-  margin-bottom:10px;
-
-  text-shadow:
-  0 0 10px white,
-  0 0 30px rgba(255,255,255,0.5);
-}
-
-.subtitle{
-  color:rgba(255,255,255,0.7);
-  letter-spacing:2px;
-  margin-bottom:35px;
-  min-height:30px;
+  margin-top:20px;
+  text-shadow:0 0 20px white;
 }
 
 /* BUTTON */
-
-.enter-btn,
-.menu-btn{
-
-  padding:15px 35px;
-
-  border:2px solid white;
-
-  background:transparent;
-
-  color:white;
-
-  border-radius:50px;
-
+button{
   cursor:pointer;
-
-  font-family:'Orbitron',sans-serif;
-
-  letter-spacing:2px;
-
-  transition:0.4s;
-}
-
-.enter-btn:hover,
-.menu-btn:hover{
-
-  background:white;
-  color:black;
-
-  transform:scale(1.05);
-
-  box-shadow:
-  0 0 20px white,
-  0 0 50px rgba(255,255,255,0.5);
 }
 
 /* MENU */
-
 .menu-buttons{
-
   display:none;
-
   flex-direction:column;
-
-  gap:20px;
-
-  margin-bottom:40px;
+  gap:15px;
+  align-items:center;
+  margin-top:20px;
 }
 
-/* SOCIAL UNDER BUTTON */
+.menu-btn{
+  padding:12px 25px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  border-radius:30px;
+}
 
-.mini-social{
-  margin-top:-10px;
-  margin-bottom:10px;
+/* PAGE */
+.page{
+  display:none;
+  padding:30px;
+}
 
-  display:flex;
-  justify-content:center;
+/* MEMBER GRID FIX */
+.member-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:15px;
 }
 
-.mini-social img{
-  width:28px;
-  height:28px;
-
-  transition:0.3s;
-
-  opacity:0.8;
+/* CARD */
+.card{
+  padding:15px;
+  border:1px solid #333;
+  border-radius:10px;
+  background:#111;
 }
 
-.mini-social img:hover{
-  transform:scale(1.15);
-  opacity:1;
-}
-
-/* CARDS */
-
-.card,
-.member-card,
-.quote-box,
-.secret-box{
-
-  border:1px solid rgba(255,255,255,0.12);
-
-  background:rgba(255,255,255,0.03);
-
-  backdrop-filter:blur(10px);
-
-  padding:20px;
-
-  border-radius:20px;
-
-  margin-bottom:20px;
-
-  width:100%;
-  max-width:900px;
-
-  animation:fadeUp 1s ease;
-}
-
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(40px);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
-.section-title{
-  font-family:'Orbitron',sans-serif;
-  margin-bottom:25px;
-  letter-spacing:3px;
-}
-
-/* MEMBER */
-
-.member-grid{
-  width:100%;
-  max-width:900px;
-
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-}
-
-.member-card h3{
-  margin-bottom:10px;
-  font-family:'Orbitron',sans-serif;
-}
-
-.member-card p{
-  color:rgba(255,255,255,0.7);
-}
-
-/* QUOTES */
-
-.page-section{
-
-  min-height:100vh;
-
-  width:100%;
-
-  display:none;
-
+/* LOADING */
+#loading{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
   justify-content:center;
   align-items:center;
-
-  flex-direction:column;
-
-  animation:pageFade 0.8s ease;
-
-  padding:40px 20px;
-
+  z-index:9999;
+  animation:fadeOut 2s forwards;
+  animation-delay:2s;
 }
 
-@keyframes pageFade{
-
-  from{
-    opacity:0;
-    transform:translateY(25px);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-
-}
-
-.quote-text{
-  font-size:1.2rem;
-  line-height:2;
-  color:rgba(255,255,255,0.85);
-}
-
-/* SECRET */
-
-.secret-box{
-  display:none;
-  text-align:left;
-}
-
-.secret-box p{
-  line-height:2;
-  color:rgba(255,255,255,0.8);
-}
-
-/* TIMELINE */
-
-.timeline{
-  width:100%;
-  max-width:900px;
-  display:none;
-}
-
-.date{
-  font-family:'Orbitron',sans-serif;
-  color:rgba(255,255,255,0.6);
-  margin-bottom:8px;
-}
-
-.event{
-  font-size:1.1rem;
-  font-weight:600;
-}
-
-/* FOOTER */
-
-.footer{
-  margin-top:40px;
-  color:rgba(255,255,255,0.4);
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-  h1{
-    font-size:2rem;
-  }
-
-  .eclipse{
-    width:170px;
-    height:170px;
-  }
-
+@keyframes fadeOut{
+  to{opacity:0;visibility:hidden;}
 }
 
 </style>
@@ -578,420 +136,59 @@ h1{
 
 <body>
 
-<!-- LOADING -->
+<div id="loading">LOADING...</div>
 
-<div id="loadingScreen">
+<h1 class="glitch" data-text="BLACKLIGHTDOMINION">BLACKLIGHTDOMINION</h1>
 
-  <div class="loading-core"></div>
-
-  <div class="loading-text">
-    ENTERING THE ECLIPSE...
-  </div>
-
+<div style="text-align:center;">
+<button onclick="showMenu()">ENTER THE ECLIPSE</button>
 </div>
 
-<!-- MUSIC -->
+<div class="menu-buttons" id="menu">
 
-<audio id="bgMusic" loop>
-  <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
-</audio>
-
-<button class="music-toggle" onclick="toggleMusic()" id="musicBtn">
-🔊
-</button>
-
-<!-- NEBULA -->
-
-<div class="nebula">
-  <div class="fog"></div>
-  <div class="fog"></div>
-</div>
-
-<!-- STARS -->
-
-<div class="stars" id="stars"></div>
-
-<!-- MAIN -->
-
-<div class="container">
-
-<div class="core-visual"></div>
-
-<!-- LOGO -->
-
-<div class="eclipse">
-  <img src="logo.png" alt="BLDS Logo">
-</div>
-
-<h1>BLACKLIGHTDOMS</h1>
-
-<p class="subtitle" id="typingText"></p>
-
-<button class="enter-btn" onclick="showMenu()">
-  ENTER THE ECLIPSE
-</button>
-
-<!-- MENU -->
-
-<div class="menu-buttons" id="menuButtons">
-
-  <button class="menu-btn" onclick="openOrigin()">
-    ORIGIN
-  </button>
-
-  <div class="mini-social">
-    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
-    </a>
-
-    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-    </a>
-  </div>
-
-  <button class="menu-btn" onclick="openQuotes()">
-    QUOTES
-  </button>
-
-  <div class="mini-social">
-    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
-    </a>
-
-    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-    </a>
-  </div>
-
-  <button class="menu-btn" onclick="openMembers()">
-    MEMBER COUNT
-  </button>
-
-  <div class="mini-social">
-    <a href="https://discord.gg/r4dM4QFteV" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
-    </a>
-
-    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-    </a>
-  </div>
-
-  <button class="menu-btn" onclick="openTimeline()">
-    BLDS ARCHIVE
-  </button>
+<button class="menu-btn" onclick="openPage('quotes')">QUOTES</button>
+<button class="menu-btn" onclick="openPage('member')">MEMBER</button>
+<button class="menu-btn" onclick="openPage('timeline')">ARCHIVE</button>
 
 </div>
 
 <!-- QUOTES -->
-
-<div class="page-section quote-box" id="quoteBox">
-
-  <h2 class="section-title">
-    RANDOM QUOTE
-  </h2>
-
-  <div class="quote-text" id="quoteText"></div>
-
+<div class="page" id="quotes">
+<h2>QUOTES</h2>
+<p>"Darkness builds legends."</p>
 </div>
 
 <!-- MEMBER -->
+<div class="page member-grid" id="member">
 
-<div class="page-section member-grid" id="memberSection">
-
-  <div class="member-card">
-    <h3>MEMBERS</h3>
-    <p>CLASSIFIED</p>
-  </div>
-
-  <div class="member-card">
-    <h3>ACTIVE SINCE</h3>
-    <p>2024</p>
-  </div>
-
-  <div class="member-card">
-    <h3>PROJECTS</h3>
-    <p>ONGOING</p>
-  </div>
-
-  <div class="member-card">
-    <h3>STATUS</h3>
-    <p>THE CORE IS STILL ALIVE 🔥</p>
-  </div>
-
-</div>
-
-<!-- SECRET -->
-
-<div class="page-section secret-box" id="secretLore">
-
-<h2 class="section-title">
-THE FORGOTTEN ECLIPSE
-</h2>
-
-<p>
-Long before BLDS became known…<br><br>
-
-before the symbol,<br>
-before the Core,<br>
-before the name itself existed…<br><br>
-
-there was another generation.<br><br>
-
-A generation erased from the archive.<br><br>
-
-They were the first ones who tried to build a dominion inside the darkness.<br><br>
-
-Not for power.<br>
-Not for glory.<br><br>
-
-But to create a place where broken people could still stand together.<br><br>
-
-And somewhere… buried beneath forgotten archives and erased memories… the remains of the first eclipse still exist.<br><br>
-
-Waiting.
-</p>
+<div class="card">MEMBERS: CLASSIFIED</div>
+<div class="card">ACTIVE: 2024</div>
+<div class="card">PROJECT: ONGOING</div>
+<div class="card">STATUS: ALIVE</div>
 
 </div>
 
 <!-- TIMELINE -->
-
-<div class="page-section timeline" id="timeline">
-
-<h2 class="section-title">
-BLDS ARCHIVE
-</h2>
-
-<div class="card">
-  <div class="date">05-03-2024</div>
-  <div class="event">BLDS Born</div>
-</div>
-
-<div class="card">
-  <div class="date">15-05-2024</div>
-  <div class="event">WhatsApp Community</div>
-</div>
-
-<div class="card">
-  <div class="date">12-09-2024</div>
-  <div class="event">Discord Community</div>
-</div>
-
-<div class="card">
-  <div class="date">05-03-2025</div>
-  <div class="event">BLDS Anniversary</div>
-</div>
-
-<div class="card">
-  <div class="date">20-08-2025</div>
-  <div class="event">Massive Remake</div>
-</div>
-
-<div class="card">
-  <div class="date">05-03-2026</div>
-  <div class="event">BLDS Anniversary</div>
-</div>
-
-<div class="footer">
-BLACKLIGHTDOMINIONS © 2026
-</div>
-
-</div>
-
+<div class="page" id="timeline">
+<h2>ARCHIVE</h2>
+<div class="card">BLDS BORN - 2024</div>
 </div>
 
 <script>
 
-/* TYPING EFFECT */
-
-const text =
-"THE ECLIPSE HAS BEGUN";
-
-let i = 0;
-
-function typing(){
-
-  if(i < text.length){
-
-    document.getElementById("typingText")
-    .innerHTML += text.charAt(i);
-
-    i++;
-
-    setTimeout(typing,80);
-
-  }
-
-}
-
-typing();
-
 /* MENU */
-
 function showMenu(){
-
-  document.querySelector(".enter-btn")
-  .style.display = "none";
-
-  document.getElementById("menuButtons")
-  .style.display = "flex";
-
-  playMusic();
-
+  document.getElementById("menu").style.display="flex";
 }
 
-/* MUSIC */
+/* PAGE SWITCH */
+function openPage(id){
 
-let musicPlaying = true;
-
-function playMusic(){
-
-  const music =
-  document.getElementById("bgMusic");
-
-  music.volume = 0.25;
-
-  music.play().catch(() => {});
-
-}
-
-function toggleMusic(){
-
-  const music =
-  document.getElementById("bgMusic");
-
-  const btn =
-  document.getElementById("musicBtn");
-
-  if(music.paused){
-
-    music.play();
-    btn.innerHTML = "🔊";
-
-  }else{
-
-    music.pause();
-    btn.innerHTML = "🔇";
-
-  }
-
-}
-
-/* RANDOM QUOTES */
-
-const quotes = [
-
-"The eclipse was never meant to hide the light. It was meant to reveal who could survive without it.",
-
-"BLDS was built from broken nights and unfinished dreams.",
-
-"Some chase glory. We chase purpose.",
-
-"Only those who endure the darkness can understand the Core.",
-
-"The world fears the eclipse because it cannot control it.",
-
-"Legends are not born in comfort. They are forged in silence.",
-
-"The Core never fades, even when the world does.",
-
-"Most people shine in daylight. Few survive in eternal night.",
-
-"Darkness was never our enemy. It became our home.",
-
-"We do not fear the void. We walk through it."
-
-];
-
-const randomQuote =
-quotes[Math.floor(Math.random()*quotes.length)];
-
-function hideAllPages(){
-
-  const pages =
-  document.querySelectorAll(".page-section");
-
-  pages.forEach(page => {
-
-    page.style.display = "none";
-
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display="none";
   });
 
-}
-
-function openQuotes(){
-
-  hideAllPages();
-
-  document.getElementById("quoteBox")
-  .style.display = "flex";
-
-}
-
-function openMembers(){
-
-  hideAllPages();
-
-  document.getElementById("memberSection")
-  .style.display = "grid";
-
-}
-
-function openTimeline(){
-
-  hideAllPages();
-
-  document.getElementById("timeline")
-  .style.display = "flex";
-
-}
-
-function openOrigin(){
-
-  hideAllPages();
-
-  originClick++;
-
-  document.getElementById("secretLore")
-  .style.display = "flex";
-
-}
-
-document.getElementById("quoteText")
-.innerHTML = `"${randomQuote}"`;
-
-
-/* SECRET CLICK */
-
-let originClick = 0;
-
-
-/* STARS */
-
-const starsContainer =
-document.getElementById("stars");
-
-for(let i = 0; i < 160; i++){
-
-  const star =
-  document.createElement("div");
-
-  star.classList.add("star");
-
-  star.style.left =
-  Math.random() * 100 + "vw";
-
-  star.style.top =
-  Math.random() * 100 + "vh";
-
-  star.style.opacity =
-  Math.random();
-
-  star.style.animationDelay =
-  Math.random() * 5 + "s";
-
-  starsContainer.appendChild(star);
-
+  document.getElementById(id).style.display="block";
 }
 
 </script>
