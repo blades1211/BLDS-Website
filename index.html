@@ -13,22 +13,24 @@
 body{
   font-family:Poppins,sans-serif;
   background:#000;
-  color:white;
+  color:#fff;
   overflow-x:hidden;
 }
 
-/* BACKGROUND */
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
-  background:linear-gradient(#000,#050814);
+  background:linear-gradient(#000,#050816);
   z-index:-3;
 }
 
+/* STAR */
 .star{
   position:absolute;
-  width:2px;height:2px;
-  background:white;
+  width:2px;
+  height:2px;
+  background:#fff;
   border-radius:50%;
   opacity:.7;
   animation:fall linear infinite;
@@ -39,13 +41,16 @@ body{
   to{transform:translateY(110vh);}
 }
 
+/* ECLIPSE */
 .eclipse{
   position:fixed;
-  top:50%;left:50%;
-  width:320px;height:320px;
+  top:50%;
+  left:50%;
+  width:340px;
+  height:340px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
+  background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);
   opacity:.12;
   animation:move 10s infinite ease-in-out;
   z-index:-2;
@@ -71,7 +76,7 @@ body{
 .logo{
   width:120px;
   animation:float 4s infinite ease-in-out;
-  filter:drop-shadow(0 0 10px white);
+  filter:drop-shadow(0 0 12px white);
 }
 
 @keyframes float{
@@ -85,15 +90,15 @@ button{
   margin:6px;
   border:1px solid white;
   background:transparent;
-  color:white;
+  color:#fff;
   border-radius:12px;
   cursor:pointer;
   transition:.3s;
 }
 
 button:hover{
-  background:white;
-  color:black;
+  background:#fff;
+  color:#000;
 }
 
 /* MENU */
@@ -108,7 +113,7 @@ button:hover{
   display:none;
   max-width:900px;
   margin-top:20px;
-  animation:fade .5s ease;
+  animation:fade .4s ease;
 }
 
 @keyframes fade{
@@ -143,7 +148,7 @@ button:hover{
 .cutscene{
   position:fixed;
   inset:0;
-  background:black;
+  background:#000;
   display:none;
   justify-content:center;
   align-items:center;
@@ -161,10 +166,19 @@ button:hover{
   50%{opacity:.3;}
 }
 
-/* QUOTES */
+/* QUOTE */
 .quoteBox{
   font-size:18px;
-  padding:20px;
+}
+
+/* INPUT */
+input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #333;
+  background:#000;
+  color:#fff;
 }
 </style>
 </head>
@@ -191,9 +205,37 @@ button:hover{
 <!-- ORIGIN -->
 <div id="origin" class="page">
 <div class="box">
-<h2>ORIGIN</h2>
-Before BLDS, only darkness existed.
-They survived not because they were strong, but because they refused to vanish.
+
+<h2>ORIGIN OF BLDS</h2><br>
+
+Before BLDS existed, there was only silence and survival.<br>
+Those who remained were not chosen… they refused to disappear.<br><br>
+
+Every collapse formed evolution.<br>
+Every failure built awareness.<br><br>
+
+<b>Light is born from darkness pressure.</b><br><br>
+
+<hr>
+
+<h3>BLACKLIGHT CORE</h3><br>
+
+It is not power.<br>
+It is persistence encoded into existence.<br><br>
+
+<h3>10 FLAMES</h3>
+
+<span class="flame">1 Vision</span>
+<span class="flame">2 Discipline</span>
+<span class="flame">3 Loyalty</span>
+<span class="flame">4 Ambition</span>
+<span class="flame">5 Resilience</span>
+<span class="flame">6 Hope</span>
+<span class="flame">7 Awareness</span>
+<span class="flame">8 Patience</span>
+<span class="flame">9 Courage</span>
+<span class="flame">10 Unity</span>
+
 </div>
 </div>
 
@@ -201,91 +243,107 @@ They survived not because they were strong, but because they refused to vanish.
 <div id="quotes" class="page">
 <div class="box quoteBox">
 <div id="quoteText"></div>
-<button onclick="newQuote()">Refresh Quote</button>
+<button onclick="newQuote()">Refresh</button>
 </div>
 </div>
 
 <!-- ARCHIVES -->
 <div id="archives" class="page">
 <div class="box">
+
 <h2>ARCHIVES</h2><br>
+
 05-03-2024 — BLDS Born<br>
 15-05-2024 — WhatsApp Community<br>
 12-09-2024 — Discord Community<br>
 20-08-2025 — Massive Remake<br><br>
 
-Michael Lorenzo — Founder<br>
-William Nayottama — Right Hand<br>
-Felix — Left Hand
+<b>Michael Lorenzo</b> — Founder<br>
+<b>William Nayottama</b> — Right Hand<br>
+<b>Felix</b> — Left Hand
+
 </div>
 </div>
 
 <!-- CODE -->
 <div id="code" class="page">
 <div class="box">
-<h2>CODE</h2>
+
+<h2>CODE</h2><br>
+
 <input id="inp" placeholder="enter code">
+<br><br>
+<button onclick="checkCode()">UNLOCK</button>
+
 </div>
 </div>
 
 </div>
 
-<!-- CUTSCENES -->
+<!-- CUTSCENE -->
 <div class="cutscene" id="cutForgot">
 <h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
 </div>
 
-<div class="cutscene" id="cutFlame">
-<h1>12 FLAMES ACTIVATED</h1>
-</div>
-
 <script>
 
-/* SKY */
+/* STAR */
 const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*-100+"vh";
-  s.style.animationDuration=(3+Math.random()*5)+"s";
+  s.style.animationDuration=(2+Math.random()*5)+"s";
   sky.appendChild(s);
 }
 
-/* MENU */
+/* ENTER */
 function enter(){
   document.getElementById("menu").style.display="flex";
   document.getElementById("enterBtn").style.display="none";
 }
 
-/* PAGE SWITCH */
+/* PAGE */
 function show(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
+
+  if(id==="origin"){
+    let flames=document.querySelectorAll(".flame");
+    flames.forEach(f=>f.classList.remove("active"));
+
+    let i=0;
+    let t=setInterval(()=>{
+      if(i<flames.length){
+        flames[i].classList.add("active");
+        i++;
+      }else clearInterval(t);
+    },150);
+  }
 }
 
 /* QUOTES */
 const quotes=[
-"True light is born from darkness.",
-"Pain creates evolution.",
-"Silence is also a weapon.",
-"Not everyone is meant to survive.",
-"Strength is built in isolation.",
-"Collapse is part of awakening.",
-"Fear is proof of life.",
-"Only the persistent remain.",
-"Every fall is a rewrite.",
-"Darkness is not enemy.",
-"Power is patience.",
-"Broken minds build new worlds.",
-"Survival is rebellion.",
-"Identity is earned, not given.",
-"Void teaches clarity.",
-"Chaos builds order.",
-"Nothing is permanent.",
-"Awareness breaks illusion.",
-"Loss creates depth.",
-"You are not lost. You are becoming."
+"Light is born from darkness",
+"Pain creates evolution",
+"Silence is power",
+"Collapse builds strength",
+"Fear is data",
+"Void teaches clarity",
+"Nothing is final",
+"Survive. Adapt. Evolve.",
+"Memory defines existence",
+"BLDS never breaks",
+"Truth exists beyond sight",
+"Darkness is origin",
+"Awareness is weapon",
+"Pressure creates form",
+"Lost becomes found",
+"End is illusion",
+"System rebuilds itself",
+"Identity is built",
+"Chaos is order",
+"Become the eclipse"
 ];
 
 function newQuote(){
@@ -294,20 +352,24 @@ function newQuote(){
 }
 newQuote();
 
-/* CODE */
+/* CODE ONLY FORGOTTEN */
+function checkCode(){
+  let v=document.getElementById("inp").value.toLowerCase().trim();
+
+  if(v==="forgotten"){
+    let cut=document.getElementById("cutForgot");
+    cut.style.display="flex";
+
+    setTimeout(()=>{
+      cut.style.display="none";
+    },2200);
+  }
+}
+
+/* ENTER KEY */
 document.addEventListener("keydown",(e)=>{
   if(e.key==="Enter"){
-    let v=document.getElementById("inp").value.toLowerCase();
-
-    if(v==="forgotten"){
-      document.getElementById("cutForgot").style.display="flex";
-      setTimeout(()=>document.getElementById("cutForgot").style.display="none",2000);
-    }
-
-    if(v==="12flames"){
-      document.getElementById("cutFlame").style.display="flex";
-      setTimeout(()=>document.getElementById("cutFlame").style.display="none",3000);
-    }
+    checkCode();
   }
 });
 </script>
