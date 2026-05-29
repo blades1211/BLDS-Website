@@ -122,6 +122,19 @@ footer{
   text-align:center;
 }
 footer a{color:white;text-decoration:none;}
+
+.logo{
+  font-size:40px;
+  letter-spacing:6px;
+  margin-bottom:10px;
+  opacity:0;
+  animation:logoIn 1.2s ease forwards;
+}
+
+@keyframes logoIn{
+  to{opacity:1; transform:translateY(0);}
+}
+
 </style>
 </head>
 
@@ -133,6 +146,7 @@ footer a{color:white;text-decoration:none;}
 
 <div class="container">
 
+<div class="logo">BLDS</div>
 <h1>BLACKLIGHTDOMS</h1>
 
 <button onclick="enter()">ENTER THE ECLIPSE</button>
@@ -274,6 +288,11 @@ function enter(){
 
  setTimeout(()=>{
   document.getElementById("portal").classList.remove("active");
+
+  // HAPUS ENTER BUTTON (FIX BUG KAMU)
+  document.querySelector("button[onclick='enter()']").style.display="none";
+
+  // TAMPILKAN MENU
   document.getElementById("menu").style.display="flex";
  },700);
 }
