@@ -9,6 +9,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
   background:#000;
   color:white;
@@ -16,7 +17,19 @@ body{
   overflow-x:hidden;
 }
 
-/* layout */
+/* FADE EFFECT */
+.fade{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  transition:0.5s;
+  z-index:999;
+}
+.fade.active{opacity:1;}
+
+/* LAYOUT */
 .container{
   min-height:100vh;
   display:flex;
@@ -27,24 +40,24 @@ body{
   padding:30px;
 }
 
-/* logo */
+/* LOGO */
 .logo{
   width:200px;
-  margin-bottom:20px;
+  margin-bottom:15px;
 }
 .logo img{
   width:100%;
   filter:drop-shadow(0 0 20px white);
 }
 
-/* title */
+/* TITLE */
 h1{
   font-family:Orbitron;
   letter-spacing:5px;
   text-shadow:0 0 20px white;
 }
 
-/* button */
+/* BUTTON */
 button{
   margin:10px;
   padding:12px 25px;
@@ -60,13 +73,8 @@ button:hover{
   color:black;
 }
 
-/* pages */
-.page{
-  display:none;
-  max-width:900px;
-  width:100%;
-  margin-top:20px;
-}
+/* PAGES */
+.page{display:none;max-width:900px;width:100%;margin-top:20px;}
 .active{display:block;}
 
 .box{
@@ -78,27 +86,34 @@ button:hover{
   line-height:1.8;
 }
 
-/* menu */
-.menu{
-  display:flex;
-  flex-direction:column;
+/* QUOTES */
+.quote{
+  margin:8px 0;
+  padding-left:10px;
+  border-left:2px solid white;
 }
 
-/* archive cards */
+/* ARCHIVE */
 .card{
   margin:10px 0;
   padding:10px;
   border-left:2px solid white;
 }
-
-footer{
-  margin-top:40px;
-  opacity:0.5;
-}
 </style>
 </head>
 
 <body>
+
+<div class="fade" id="fade"></div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="freesound_community-space-ambience-56265.mp3">
+</audio>
+
+<audio id="clickSound">
+  <source src="https://www.myinstants.com/media/sounds/button-click.mp3">
+</audio>
 
 <div class="container">
 
@@ -109,32 +124,58 @@ footer{
   <h1>BLACKLIGHTDOMS</h1>
 
   <!-- ENTER -->
-  <div id="enterPage">
+  <div id="enterScreen">
     <button onclick="enter()">ENTER ECLIPSE</button>
   </div>
 
   <!-- MENU -->
-  <div id="menuPage" class="page">
-
-    <div class="menu">
-      <button onclick="openPage('lore')">LORE</button>
-      <button onclick="openPage('quotes')">QUOTES</button>
-      <button onclick="openPage('archive')">ARCHIVE</button>
-    </div>
-
+  <div id="menuPage" style="display:none;">
+    <button onclick="openPage('lore')">LORE</button>
+    <button onclick="openPage('quotes')">QUOTES</button>
+    <button onclick="openPage('archive')">ARCHIVE</button>
   </div>
 
   <!-- LORE -->
   <div id="lore" class="page">
     <div class="box">
-      <h2>BLDS LORE</h2>
-      <p>
-BLDS lahir dari kegelapan, bukan dari cahaya.
-Sebuah dominion bagi mereka yang tidak menyerah.
 
-Setiap kegagalan menjadi pondasi.
-Setiap rasa sakit menjadi kekuatan.
-      </p>
+<h2>THE ORIGIN OF BLDS</h2>
+
+Before BLDS had a name...<br>
+Before the symbol existed...<br>
+Before the eclipse began...<br><br>
+
+BLDS was born from struggle, not glory.<br>
+From failure, not victory.<br><br>
+
+A dominion built by those who refused to disappear.<br><br>
+
+<hr><br>
+
+<h2>THE CORE</h2>
+Inner purpose that never fades even in darkness.<br><br>
+
+<hr><br>
+
+<h2>THE 10 FLAMES OF BLDS</h2>
+
+<b>GREATER FLAMES</b><br>
+I. Vision → See direction even in darkness<br>
+II. Discipline → Keep growing unseen<br>
+III. Loyalty → Stand together<br>
+IV. Ambition → Surpass limits<br>
+V. Resilience → Rise after every fall<br><br>
+
+<b>LESSER FLAMES</b><br>
+I. Hope → Light in darkness<br>
+II. Awareness → Understand reality<br>
+III. Patience → Growth takes time<br>
+IV. Courage → Move despite fear<br>
+V. Unity → Become stronger together<br><br>
+
+Though smaller, these flames are essential.<br>
+Without them, even the Core will fade.
+
     </div>
   </div>
 
@@ -150,72 +191,106 @@ Setiap rasa sakit menjadi kekuatan.
   <div id="archive" class="page">
     <div class="box">
 
-      <h2>ARCHIVE</h2>
+<h2>ARCHIVE</h2>
 
-      <div class="card">Owner: Michael Lorenzo</div>
-      <div class="card">Right Hand: William Nayottama</div>
-      <div class="card">Left Hand: Felix</div>
+<div class="card">Owner: Michael Lorenzo</div>
+<div class="card">Right Hand: William Nayottama</div>
+<div class="card">Left Hand: Felix</div>
 
-      <br>
+<br>
 
-      <div class="card">05-03-2024 — BLDS Born</div>
-      <div class="card">15-05-2024 — Community Started</div>
-      <div class="card">2026 — Eclipse Era</div>
+<div class="card">05-03-2024 — BLDS Born</div>
+<div class="card">2026 — Eclipse Era</div>
 
     </div>
   </div>
-
-  <footer>
-    BLACKLIGHTDOMINIONS © 2026
-  </footer>
 
 </div>
 
 <script>
 
+/* START MUSIC AFTER CLICK (browser fix) */
 function enter(){
-  document.getElementById("enterPage").style.display="none";
-  document.getElementById("menuPage").classList.add("active");
+
+  playClick();
+
+  document.getElementById("fade").classList.add("active");
+
+  setTimeout(()=>{
+    document.getElementById("enterScreen").style.display="none";
+    document.getElementById("menuPage").style.display="block";
+
+    document.getElementById("fade").classList.remove("active");
+
+    const music=document.getElementById("bgMusic");
+    music.volume=0.3;
+    music.play();
+
+  },600);
 }
 
 /* PAGE SWITCH */
 function openPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
 
-  if(id==="quotes") loadQuotes();
+  playClick();
+
+  const fade=document.getElementById("fade");
+  fade.classList.add("active");
+
+  setTimeout(()=>{
+
+    document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+    if(id==="quotes") loadQuotes();
+
+    fade.classList.remove("active");
+
+  },400);
 }
 
-/* QUOTES 20 */
+/* CLICK SOUND */
+function playClick(){
+  const click=document.getElementById("clickSound");
+  click.currentTime=0;
+  click.play();
+}
+
+/* 20 QUOTES */
 const quotes=[
 "Darkness builds legends",
 "We are the eclipse",
 "Failure is fuel",
-"Strength comes from pain",
 "Rise beyond limits",
-"Silence creates power",
-"Only the strong remain",
-"Broken but evolving",
-"Fear is temporary",
-"Legacy is forever",
-"Light follows us",
 "Pain creates purpose",
-"Survive and dominate",
+"Only the strong remain",
 "Born from chaos",
-"Never fade",
+"Discipline wins",
+"Legacy is forever",
+"Fear is temporary",
 "Stand as one",
 "Power is earned",
-"Fall. Rise. Repeat.",
-"Discipline wins",
-"BLDS never stops"
+"Survive and evolve",
+"Never fade",
+"Strength is built",
+"Light follows us",
+"Broken but rising",
+"Chaos creates kings",
+"We endure everything",
+"BLDS never falls"
 ];
 
 function loadQuotes(){
   let box=document.getElementById("quoteBox");
   box.innerHTML="";
-  quotes.sort(()=>0.5-Math.random()).slice(0,20).forEach(q=>{
+  quotes.sort(()=>Math.random()-0.5)
+  .slice(0,20)
+  .forEach(q=>{
     let d=document.createElement("div");
-    d.innerHTML="• "+q;
+    d.className="quote";
+    d.innerText="• "+q;
     box.appendChild(d);
   });
 }
