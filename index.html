@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>BLDS | The Eclipse</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -12,19 +11,20 @@
 
 /* BASE */
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-
 body{
   background:#000;
   color:white;
   font-family:'Poppins',sans-serif;
-  overflow-x:hidden;
 }
 
-/* GLITCH EFFECT */
+/* TITLE GLITCH */
 .glitch{
   position:relative;
   display:inline-block;
+  font-family:'Orbitron';
+  font-size:3rem;
+  text-align:center;
+  margin:20px auto;
 }
 
 .glitch::before,
@@ -34,50 +34,48 @@ body{
   left:0;
   top:0;
   width:100%;
-  overflow:hidden;
-  color:white;
 }
 
 .glitch::before{
-  left:2px;
-  text-shadow:-2px 0 red;
-  animation:glitch1 2s infinite linear alternate-reverse;
+  color:red;
+  transform:translate(2px,0);
+  animation:gl1 2s infinite;
 }
 
 .glitch::after{
-  left:-2px;
-  text-shadow:2px 0 cyan;
-  animation:glitch2 2s infinite linear alternate-reverse;
+  color:cyan;
+  transform:translate(-2px,0);
+  animation:gl2 2s infinite;
 }
 
-@keyframes glitch1{
-  0%{clip-path:inset(0 0 80% 0);}
+@keyframes gl1{
+  0%,100%{clip-path:inset(0 0 80% 0);}
   50%{clip-path:inset(20% 0 20% 0);}
-  100%{clip-path:inset(80% 0 0 0);}
 }
 
-@keyframes glitch2{
-  0%{clip-path:inset(80% 0 0 0);}
+@keyframes gl2{
+  0%,100%{clip-path:inset(80% 0 0 0);}
   50%{clip-path:inset(20% 0 20% 0);}
-  100%{clip-path:inset(0 0 80% 0);}
-}
-
-/* TITLE */
-h1{
-  font-family:'Orbitron';
-  text-align:center;
-  font-size:3rem;
-  margin-top:20px;
-  text-shadow:0 0 20px white;
 }
 
 /* BUTTON */
 button{
   cursor:pointer;
+  padding:12px 20px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  border-radius:25px;
+  transition:0.3s;
+}
+
+button:hover{
+  background:white;
+  color:black;
 }
 
 /* MENU */
-.menu-buttons{
+.menu{
   display:none;
   flex-direction:column;
   gap:15px;
@@ -85,33 +83,41 @@ button{
   margin-top:20px;
 }
 
-.menu-btn{
-  padding:12px 25px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  border-radius:30px;
-}
-
 /* PAGE */
 .page{
   display:none;
-  padding:30px;
-}
-
-/* MEMBER GRID FIX */
-.member-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
+  padding:20px;
 }
 
 /* CARD */
 .card{
-  padding:15px;
-  border:1px solid #333;
-  border-radius:10px;
   background:#111;
+  border:1px solid #333;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+}
+
+/* MEMBER GRID */
+.member-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+
+/* SECRET */
+#secret{
+  display:none;
+  padding:20px;
+  text-align:center;
+  color:rgba(255,255,255,0.8);
+}
+
+/* ORIGIN BOX */
+#origin{
+  display:none;
+  padding:20px;
+  text-align:center;
 }
 
 /* LOADING */
@@ -122,12 +128,12 @@ button{
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:9999;
-  animation:fadeOut 2s forwards;
-  animation-delay:2s;
+  z-index:999;
+  animation:fade 2s forwards;
+  animation-delay:1.5s;
 }
 
-@keyframes fadeOut{
+@keyframes fade{
   to{opacity:0;visibility:hidden;}
 }
 
@@ -144,12 +150,26 @@ button{
 <button onclick="showMenu()">ENTER THE ECLIPSE</button>
 </div>
 
-<div class="menu-buttons" id="menu">
+<!-- MENU -->
+<div class="menu" id="menu">
 
-<button class="menu-btn" onclick="openPage('quotes')">QUOTES</button>
-<button class="menu-btn" onclick="openPage('member')">MEMBER</button>
-<button class="menu-btn" onclick="openPage('timeline')">ARCHIVE</button>
+<button onclick="openPage('quotes')">QUOTES</button>
+<button onclick="openPage('member')">MEMBER</button>
+<button onclick="openPage('timeline')">ARCHIVE</button>
+<button onclick="openOrigin()">ORIGIN</button>
 
+</div>
+
+<!-- ORIGIN PAGE -->
+<div id="origin">
+  <h2>ORIGIN</h2>
+  <p>Klik ORIGIN 5x untuk unlock SECRET LORE</p>
+</div>
+
+<!-- SECRET -->
+<div id="secret">
+  <h2>THE FORGOTTEN ECLIPSE</h2>
+  <p>Something buried inside the core...</p>
 </div>
 
 <!-- QUOTES -->
@@ -160,12 +180,10 @@ button{
 
 <!-- MEMBER -->
 <div class="page member-grid" id="member">
-
 <div class="card">MEMBERS: CLASSIFIED</div>
 <div class="card">ACTIVE: 2024</div>
 <div class="card">PROJECT: ONGOING</div>
 <div class="card">STATUS: ALIVE</div>
-
 </div>
 
 <!-- TIMELINE -->
@@ -176,19 +194,43 @@ button{
 
 <script>
 
+let originClick = 0;
+
 /* MENU */
 function showMenu(){
   document.getElementById("menu").style.display="flex";
 }
 
-/* PAGE SWITCH */
+/* PAGE SYSTEM */
 function openPage(id){
 
   document.querySelectorAll(".page").forEach(p=>{
     p.style.display="none";
   });
 
+  document.getElementById("origin").style.display="none";
+  document.getElementById("secret").style.display="none";
+
   document.getElementById(id).style.display="block";
+}
+
+/* ORIGIN CLICK SYSTEM */
+function openOrigin(){
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display="none";
+  });
+
+  document.getElementById("secret").style.display="none";
+
+  document.getElementById("origin").style.display="block";
+
+  originClick++;
+
+  if(originClick >= 5){
+    document.getElementById("origin").style.display="none";
+    document.getElementById("secret").style.display="block";
+  }
 }
 
 </script>
