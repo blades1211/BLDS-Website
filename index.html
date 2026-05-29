@@ -3,25 +3,23 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BLDS | BlackLightDoms</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>BLDS</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
 body{
-  background:#000;
+  background:black;
   color:white;
-  overflow-x:hidden;
+  overflow:hidden;
+  text-align:center;
 }
 
 /* STAR BACKGROUND */
-#stars{
+#bg{
   position:fixed;
   inset:0;
-  z-index:-3;
-  background:black;
+  z-index:-2;
 }
 
 .star{
@@ -31,143 +29,52 @@ body{
   background:white;
   border-radius:50%;
   opacity:.7;
-  animation:fall linear infinite;
 }
 
-@keyframes fall{
-  from{transform:translateY(-10vh);}
-  to{transform:translateY(110vh);}
-}
-
-/* CENTER UI */
+/* CENTER */
 .container{
-  min-height:100vh;
+  height:100vh;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
-  text-align:center;
-  padding:20px;
-}
-
-/* LOGO */
-.logo{
-  width:120px;
-  filter:drop-shadow(0 0 15px white);
-}
-
-/* BUTTON */
-button{
-  margin:6px;
-  padding:10px 16px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.3s;
-}
-
-button:hover{
-  background:white;
-  color:black;
+  align-items:center;
 }
 
 /* MENU */
-.menu{
-  display:none;
-  margin-top:15px;
-  flex-direction:column;
-}
-
-/* PAGE TRANSITION */
-.page{
-  display:none;
-  max-width:800px;
-  margin-top:20px;
-  animation:fade .4s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-.box{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  padding:20px;
-  border-radius:16px;
-  text-align:left;
-  line-height:1.8;
-}
-
-/* FLAMES */
-.flame{
-  opacity:0;
-  transform:translateY(10px);
-  display:block;
-  transition:.4s;
-  text-shadow:0 0 10px orange,0 0 20px red;
-}
-.flame.active{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* CUTSCENE */
-.cutscene{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:9999;
-}
-
-.glitch{
-  animation:glitch .2s infinite;
-}
-
-@keyframes glitch{
-  0%,100%{opacity:1;}
-  50%{opacity:.3;}
-}
-
-/* QUOTES */
-#quoteBox{
-  margin-top:15px;
-  font-style:italic;
-}
-
-/* INPUT */
-input{
+.menu{display:none;margin-top:10px;}
+button{
+  margin:5px;
   padding:10px;
-  border-radius:10px;
   border:1px solid white;
-  background:black;
+  background:transparent;
   color:white;
-  text-align:center;
+  cursor:pointer;
 }
+
+/* PAGE */
+.page{display:none;margin-top:15px;max-width:500px;}
+.box{
+  border:1px solid white;
+  padding:15px;
+}
+
+/* HIDE ENTER AFTER CLICK */
+.hide{display:none;}
 </style>
 </head>
 
 <body>
 
-<div id="stars"></div>
+<div id="bg"></div>
 
 <div class="container">
 
-<img src="logo.png" class="logo">
 <h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<button id="enterBtn" onclick="enter()">ENTER</button>
 
 <div class="menu" id="menu">
 <button onclick="openPage('origin')">ORIGIN</button>
-<button onclick="openPage('core')">CORE</button>
 <button onclick="openPage('quotes')">QUOTES</button>
 <button onclick="openPage('archives')">ARCHIVES</button>
 <button onclick="openPage('code')">CODE</button>
@@ -176,129 +83,72 @@ input{
 <!-- ORIGIN -->
 <div class="page" id="origin">
 <div class="box">
-<h2>ORIGIN</h2>
-Before BLDS, there was nothing but silence.  
-From collapse, awareness was born.  
-From darkness, identity formed.
-</div>
-</div>
-
-<!-- CORE -->
-<div class="page" id="core">
-<div class="box">
-<h2>BLACKLIGHT CORE</h2>
-
-<h3>10 FLAMES</h3>
-<span class="flame">Vision</span>
-<span class="flame">Discipline</span>
-<span class="flame">Loyalty</span>
-<span class="flame">Ambition</span>
-<span class="flame">Resilience</span>
-<span class="flame">Hope</span>
-<span class="flame">Awareness</span>
-<span class="flame">Patience</span>
-<span class="flame">Courage</span>
-<span class="flame">Unity</span>
-
-<br>
-<h3>12 FLAMES</h3>
-<span class="flame">Sacred Flame</span>
-<span class="flame">Hidden Flame</span>
-<span class="flame">Observer Flame</span>
-<span class="flame">Judgment Flame</span>
-<span class="flame">Void Flame</span>
-<span class="flame">Echo Flame</span>
+BLDS lahir dari kegelapan dan kegagalan.
 </div>
 </div>
 
 <!-- QUOTES -->
 <div class="page" id="quotes">
-<div class="box">
-<h2>QUOTES</h2>
-<div id="quoteBox">Click refresh...</div>
+<div class="box" id="quoteBox">Klik refresh</div>
 <button onclick="newQuote()">REFRESH</button>
-</div>
 </div>
 
 <!-- ARCHIVES -->
 <div class="page" id="archives">
 <div class="box">
-<h2>ARCHIVES</h2>
-<ul>
-<li>05-03-2024 — BLDS Born</li>
-<li>15-05-2024 — WhatsApp Community</li>
-<li>12-09-2024 — Discord Community</li>
-<li>20-08-2025 — Massive Remake</li>
-</ul>
-<br>
-<b>Founders:</b><br>
-Michael Lorenzo<br>
-William Nayottama<br>
-Felix
+BLDS Born 2024<br>
+Community Started 2024<br>
+Massive Remake 2025
 </div>
 </div>
 
 <!-- CODE -->
 <div class="page" id="code">
 <div class="box">
-<h2>CODE</h2>
-<input id="input" placeholder="enter code">
-<button onclick="check()">UNLOCK</button>
+<input id="codeInput" placeholder="code">
+<button onclick="checkCode()">OK</button>
 </div>
 </div>
 
 </div>
 
-<!-- CUTSCENE -->
-<div class="cutscene" id="forgotCut">
-<h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
+<!-- FORGOTTEN -->
+<div id="forgotten" style="display:none;position:fixed;inset:0;background:black;align-items:center;justify-content:center;font-size:20px;">
+FORGOTTEN MEMORY DETECTED
 </div>
 
 <script>
 
-/* STAR GENERATOR */
-const stars=document.getElementById("stars");
-for(let i=0;i<120;i++){
+/* STAR */
+const bg=document.getElementById("bg");
+
+for(let i=0;i<80;i++){
   let s=document.createElement("div");
   s.className="star";
   s.style.left=Math.random()*100+"%";
-  s.style.top=Math.random()*-100+"vh";
-  s.style.animationDuration=(2+Math.random()*5)+"s";
-  stars.appendChild(s);
+  s.style.top=Math.random()*100+"%";
+  bg.appendChild(s);
 }
 
-/* ENTER MENU */
+/* ENTER */
 function enter(){
-  document.getElementById("menu").style.display="flex";
+  document.getElementById("menu").style.display="block";
+  document.getElementById("enterBtn").classList.add("hide");
 }
 
 /* NAV */
 function openPage(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
-
-  if(id==="core") startFlames();
-}
-
-/* FLAMES */
-function startFlames(){
-  let flames=document.querySelectorAll(".flame");
-  let i=0;
-  let t=setInterval(()=>{
-    if(i<flames.length){
-      flames[i].classList.add("active");
-      i++;
-    }else clearInterval(t);
-  },120);
 }
 
 /* QUOTES */
 const quotes=[
-"Even darkness becomes data.",
-"BLDS is not a team, it's evolution.",
-"From collapse, we rise.",
-"The Eclipse never ends.",
-"Memory is the true weapon."
+"BLDS never breaks.",
+"From darkness we rise.",
+"Memory defines us.",
+"Eclipse continues.",
+"Survive and evolve."
 ];
 
 function newQuote(){
@@ -306,13 +156,15 @@ function newQuote(){
   quotes[Math.floor(Math.random()*quotes.length)];
 }
 
-/* CODE SYSTEM */
-function check(){
-  let v=document.getElementById("input").value.toLowerCase();
+/* CODE */
+function checkCode(){
+  let v=document.getElementById("codeInput").value.toLowerCase();
 
   if(v==="forgotten"){
-    document.getElementById("forgotCut").style.display="flex";
-    setTimeout(()=>document.getElementById("forgotCut").style.display="none",2000);
+    document.getElementById("forgotten").style.display="flex";
+    setTimeout(()=>{
+      document.getElementById("forgotten").style.display="none";
+    },2000);
   }
 }
 
