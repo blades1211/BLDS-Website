@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
@@ -17,12 +15,11 @@ body{
   overflow-x:hidden;
 }
 
-/* SKY FIX (NO LINE BUG) */
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(#000,#02040f);
-  overflow:hidden;
   z-index:-2;
 }
 
@@ -32,7 +29,6 @@ body{
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.8;
   animation:fall linear infinite;
 }
 
@@ -41,31 +37,22 @@ body{
   to{transform:translateY(110vh);}
 }
 
-/* LOGIN */
-#login{
+/* PORTAL */
+.portal{
   position:fixed;
   inset:0;
-  background:black;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+  background:white;
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+  z-index:999;
 }
+.portal.active{opacity:1}
 
-input{
-  padding:12px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  text-align:center;
-  border-radius:10px;
-  outline:none;
-}
-
-.error{
-  animation:shake .3s;
-  background:rgba(255,0,0,0.25);
+/* GLITCH */
+.glitch{
+  animation:shake .08s infinite;
+  filter:contrast(2) brightness(.6);
 }
 
 @keyframes shake{
@@ -74,37 +61,18 @@ input{
   50%{transform:translateX(10px)}
 }
 
-/* WHITE FLASH ENTER */
-.portal{
-  position:fixed;
-  inset:0;
-  background:white;
-  opacity:0;
-  pointer-events:none;
-  transition:.6s;
-  z-index:9998;
-}
-
-.portal.active{opacity:1;}
-
-/* GLITCH */
-.glitch{
-  animation:shake .08s infinite;
-  filter:contrast(2) brightness(.6) hue-rotate(-20deg);
-}
-
 /* MAIN */
 .container{
-  display:none;
-  min-height:100vh;
+  display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  min-height:100vh;
   text-align:center;
-  padding:30px;
+  padding:20px;
 }
 
-.menu{display:none;flex-direction:column}
+.menu{display:flex;flex-direction:column}
 
 button{
   padding:12px 25px;
@@ -115,37 +83,28 @@ button{
   border-radius:30px;
   cursor:pointer;
 }
-
 button:hover{background:white;color:black}
 
-.page{
-  display:none;
-  max-width:900px;
-  margin-top:20px;
-}
-
+/* PAGE */
+.page{display:none;margin-top:20px;max-width:800px}
 .box{
   background:rgba(255,255,255,0.03);
-  padding:25px;
-  border-radius:20px;
+  padding:20px;
+  border-radius:15px;
   border:1px solid rgba(255,255,255,0.1);
-  text-align:left;
-  line-height:1.8;
+  line-height:1.7;
 }
 
-/* OVERLAY FOR FORGOTTEN */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle, rgba(255,0,0,0.3), black 70%);
-  opacity:0;
-  pointer-events:none;
-  transition:.5s;
-  z-index:9997;
+/* INPUT */
+input{
+  padding:10px;
+  width:100%;
+  margin-top:10px;
+  background:transparent;
+  border:1px solid white;
+  color:white;
+  text-align:center;
 }
-
-.overlay.active{opacity:1;}
-
 </style>
 </head>
 
@@ -153,22 +112,12 @@ button:hover{background:white;color:black}
 
 <div class="sky" id="sky"></div>
 <div class="portal" id="portal"></div>
-<div class="overlay" id="overlay"></div>
 
-<!-- LOGIN -->
-<div id="login">
-  <h2>ENTER ACCESS CODE</h2>
-  <input id="code" placeholder="••••••••">
-  <button onclick="checkCode()">ENTER</button>
-</div>
-
-<div class="container" id="main">
+<div class="container">
 
 <h1>BLACKLIGHTDOMS</h1>
 
-<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
-
-<div class="menu" id="menu">
+<div class="menu">
 <button onclick="show('lore')">ORIGIN</button>
 <button onclick="show('quotes')">QUOTES</button>
 <button onclick="show('code')">CODE</button>
@@ -178,44 +127,23 @@ button:hover{background:white;color:black}
 <!-- LORE -->
 <div id="lore" class="page">
 <div class="box">
-
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br><br>
+before BLDS had a name...<br>
+there were only people surviving darkness.<br><br>
 
-there were only individuals trying to survive their own darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over…<br><br>
-
-That realization became BLDS.<br>
+BLDS was born from struggle, not glory.<br>
 
 <hr>
 
 <h3>BLACKLIGHT CORE</h3>
-A light that never disappears even in darkness.
+Inner light that never disappears.
 
 <hr>
 
-<h3>TEN FLAMES OF BLDS</h3>
-
-<b>Greater:</b><br>
-I. Vision<br>
-II. Discipline<br>
-III. Loyalty<br>
-IV. Ambition<br>
-V. Resilience<br><br>
-
-<b>Lesser:</b><br>
-I. Hope<br>
-II. Awareness<br>
-III. Patience<br>
-IV. Courage<br>
-V. Unity
-
+<h3>TEN FLAMES</h3>
+Vision, Discipline, Loyalty, Ambition, Resilience<br>
+Hope, Awareness, Patience, Courage, Unity
 </div>
 </div>
 
@@ -231,40 +159,37 @@ V. Unity
 <div id="code" class="page">
 <div class="box">
 
-<h2>FORGOTTEN ACCESS</h2><br>
+<h2>FORGOTTEN ACCESS</h2>
 
-<input id="forgotInput" placeholder="Enter Code..." style="width:100%;padding:10px;">
-<button onclick="forgotCheck()">UNLOCK</button>
+<input id="codeInput" placeholder="Enter Code...">
+<button onclick="checkCode()">UNLOCK</button>
 
 </div>
 </div>
 
 <!-- FORGOTTEN -->
-<div id="forgotLore" class="page">
+<div id="forgot" class="page">
 <div class="box">
 
 <h2>THE FORGOTTEN ECLIPSE</h2><br>
 
-Long before BLDS existed…<br>
-there was a generation erased from the archive.<br><br>
+Before BLDS existed…<br>
+there was only silence in the archive.<br><br>
 
-They built the first dominion.<br>
-Then it collapsed.<br><br>
-
-“If the eclipse returns… don’t repeat the past.”
+“If the eclipse returns… do not repeat the past.”
 
 </div>
 </div>
 
-<!-- ARCHIVE -->
+<!-- ARCHIVE (FIX SIMPLE) -->
 <div id="archive" class="page">
 <div class="box">
 
-<b>OWNER:</b> Michael Lorenzo<br>
-<b>RIGHT HAND:</b> William Nayottama<br>
-<b>LEFT HAND:</b> Felix<br><br>
-
-BLDS Timeline restored.
+<b>05-03-2024</b> — BLDS Born<br>
+<b>15-05-2024</b> — Community Created<br>
+<b>12-09-2024</b> — Expansion<br>
+<b>05-03-2025</b> — First Evolution<br>
+<b>05-03-2026</b> — Eclipse Era
 
 </div>
 </div>
@@ -273,43 +198,16 @@ BLDS Timeline restored.
 
 <script>
 
-/* SKY FIX */
+/* SKY */
 const sky=document.getElementById("sky");
 
-for(let i=0;i<120;i++){
+for(let i=0;i<100;i++){
  let s=document.createElement("div");
  s.className="star";
  s.style.left=Math.random()*100+"%";
  s.style.top=(-Math.random()*100)+"vh";
  s.style.animationDuration=(5+Math.random()*10)+"s";
  sky.appendChild(s);
-}
-
-/* LOGIN */
-function checkCode(){
- const v=document.getElementById("code").value;
- if(v==="Dominion"){
-   document.getElementById("login").style.display="none";
-   document.getElementById("main").style.display="flex";
- }
-}
-
-/* ENTER WHITE FLASH */
-function enter(){
- let p=document.getElementById("portal");
- p.classList.add("active");
-
- setTimeout(()=>{
-   p.classList.remove("active");
-   document.getElementById("enterBtn").style.display="none";
-   document.getElementById("menu").style.display="flex";
- },700);
-}
-
-/* SHOW */
-function show(id){
- document.querySelectorAll(".page").forEach(p=>p.style.display="none");
- document.getElementById(id).style.display="block";
 }
 
 /* QUOTES */
@@ -325,27 +223,33 @@ function newQuote(){
  document.getElementById("quote").innerText=
  quotes[Math.floor(Math.random()*quotes.length)];
 }
-newQuote();
 
-/* FORGOTTEN */
-function forgotCheck(){
- const v=document.getElementById("forgotInput").value;
- const o=document.getElementById("overlay");
+/* SHOW PAGE */
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+ document.getElementById(id).style.display="block";
+}
 
- if(v.toLowerCase()==="forgotten"){
-   o.classList.add("active");
-   document.body.classList.add("glitch");
+/* CODE SYSTEM FIX */
+function checkCode(){
+ let v=document.getElementById("codeInput").value;
+
+ if(v==="Forgotten"){
+   document.getElementById("portal").classList.add("active");
 
    setTimeout(()=>{
-     document.body.classList.remove("glitch");
-     o.classList.remove("active");
-     show("forgotLore");
-   },1500);
+     document.getElementById("portal").classList.remove("active");
+     show("forgot");
+   },700);
+
  } else {
    document.body.classList.add("glitch");
    setTimeout(()=>document.body.classList.remove("glitch"),300);
  }
 }
+
+/* INIT */
+newQuote();
 
 </script>
 
