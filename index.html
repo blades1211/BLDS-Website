@@ -17,7 +17,7 @@ body{
   overflow:hidden;
 }
 
-/* SKY */
+/* STAR BACKGROUND */
 .sky{
   position:fixed;
   inset:0;
@@ -25,14 +25,13 @@ body{
   z-index:-3;
 }
 
-/* STAR */
 .star{
   position:absolute;
   width:2px;
   height:2px;
   background:white;
   border-radius:50%;
-  opacity:.7;
+  opacity:.8;
   animation:fall linear infinite;
 }
 
@@ -50,7 +49,7 @@ body{
   height:320px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.8),transparent 70%);
+  background:radial-gradient(circle,rgba(255,255,255,.7),transparent 70%);
   opacity:.12;
   animation:move 10s infinite ease-in-out;
   z-index:-2;
@@ -61,7 +60,7 @@ body{
   50%{transform:translate(-50%,-50%) scale(1.4);}
 }
 
-/* CONTAINER */
+/* MAIN */
 .container{
   height:100vh;
   display:flex;
@@ -75,7 +74,7 @@ body{
 /* LOGO */
 .logo{
   width:120px;
-  animation:float 4s infinite ease-in-out;
+  animation:float 4s ease-in-out infinite;
   filter:drop-shadow(0 0 15px white);
 }
 
@@ -132,7 +131,7 @@ button:hover{
   line-height:1.7;
 }
 
-/* FLAME */
+/* FLAMES */
 .flame{
   opacity:0;
   transform:translateY(8px);
@@ -157,8 +156,9 @@ button:hover{
   z-index:9999;
 }
 
+/* GLITCH */
 .glitch{
-  animation:glitch .3s infinite;
+  animation:glitch .25s infinite;
 }
 
 @keyframes glitch{
@@ -181,34 +181,30 @@ button:hover{
 <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
 <div class="menu" id="menu">
-
 <button onclick="openPage('origin')">ORIGIN</button>
 <button onclick="openPage('core')">CORE</button>
 <button onclick="openPage('quotes')">QUOTES</button>
 <button onclick="openPage('archive')">ARCHIVE</button>
 <button onclick="openPage('code')">CODE</button>
-
 </div>
 
 <!-- ORIGIN -->
 <div id="origin" class="page">
 <div class="box">
 <h2>ORIGIN</h2>
-Before BLDS existed, only void remained.
-Those who survived were not chosen — they refused extinction.
-
-<b>BLDS was born from pressure of absolute darkness.</b>
+Before BLDS, only void existed.  
+Those who survived were not chosen—they refused to disappear.  
+<b>BLDS was born from absolute darkness pressure.</b>
 </div>
 </div>
 
-<!-- CORE + 12 FLAMES -->
+<!-- CORE -->
 <div id="core" class="page">
 <div class="box">
 
 <h2>BLACKLIGHT CORE</h2><br>
-Persistence encoded into existence.
 
-<br><br><h3>12 FLAMES</h3><br>
+<h3>12 FLAMES</h3><br>
 
 <span class="flame">1. Vision — sees beyond illusion</span>
 <span class="flame">2. Discipline — acts without motivation</span>
@@ -221,7 +217,7 @@ Persistence encoded into existence.
 <span class="flame">9. Courage — faces fear</span>
 <span class="flame">10. Unity — becomes one</span>
 <span class="flame">11. Sacrifice — loses self for truth</span>
-<span class="flame">12. Eclipse Core — observer of all existence</span>
+<span class="flame">12. Eclipse Core — observer of existence</span>
 
 </div>
 </div>
@@ -230,9 +226,9 @@ Persistence encoded into existence.
 <div id="quotes" class="page">
 <div class="box">
 <h2>QUOTES</h2>
-“Even in void, light remembers its name.”<br>
-“Eclipse is not end, it is reset.”<br>
-“Silence is where BLDS begins.”
+“Light remembers even in void.”<br>
+“Eclipse is not end, it is return.”<br>
+“BLDS exists where silence begins.”
 </div>
 </div>
 
@@ -240,9 +236,9 @@ Persistence encoded into existence.
 <div id="archive" class="page">
 <div class="box">
 <h2>ARCHIVE</h2>
-System logs corrupted.<br>
-Only fragments remain.<br><br>
-<b>WARNING: MEMORY FRAGMENT ACTIVE</b>
+System corrupted…  
+Fragments detected only.  
+<b>Memory unstable.</b>
 </div>
 </div>
 
@@ -261,12 +257,11 @@ Only fragments remain.<br><br>
 <h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
 </div>
 
-<!-- SOUND -->
 <audio id="flameSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7c6b7c.mp3"></audio>
 
 <script>
 
-/* STAR FIX */
+/* STAR */
 const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
   let s=document.createElement("div");
@@ -277,24 +272,24 @@ for(let i=0;i<120;i++){
   sky.appendChild(s);
 }
 
-/* STATE FIX */
+/* STATE */
 function enter(){
   document.getElementById("menu").style.display="flex";
   document.getElementById("enterBtn").style.display="none";
 }
 
-/* NAV FIX */
+/* NAV */
 function openPage(id){
   document.querySelectorAll(".page").forEach(p=>p.style.display="none");
   document.getElementById(id).style.display="block";
 
-  if(id==="core") playFlames();
+  if(id==="core") startFlames();
 }
 
 /* FLAMES + SOUND */
 const sound=document.getElementById("flameSound");
 
-function playFlames(){
+function startFlames(){
   let f=document.querySelectorAll(".flame");
   let i=0;
 
@@ -305,7 +300,7 @@ function playFlames(){
       sound.play().catch(()=>{});
       i++;
     }else clearInterval(t);
-  },250);
+  },220);
 }
 
 /* CODE */
@@ -315,7 +310,7 @@ document.addEventListener("keydown",(e)=>{
 
     if(v==="forgotten"){
       document.getElementById("cutForgot").style.display="flex";
-      setTimeout(()=>document.getElementById("cutForgot").style.display="none",2000);
+      setTimeout(()=>document.getElementById("cutForgot").style.display="none",2200);
     }
   }
 });
