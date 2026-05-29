@@ -50,6 +50,7 @@ body{
   z-index:999;
 }
 
+/* INPUT */
 input{
   padding:12px;
   border:1px solid white;
@@ -112,12 +113,15 @@ button{
 }
 button:hover{background:white;color:black}
 
-/* PAGE */
-.page{display:none;margin-top:20px}
+/* PAGE FIX IMPORTANT */
+.page{
+  display:none;
+  margin-top:20px;
+  max-width:900px;
+}
 
 /* BOX */
 .box{
-  max-width:900px;
   background:rgba(255,255,255,0.03);
   padding:25px;
   border-radius:20px;
@@ -134,11 +138,12 @@ button:hover{background:white;color:black}
   border-radius:20px;
 }
 
-/* TRANSITION FADE */
-.fade{
-  opacity:0;
-  transform:translateY(10px);
-  transition:.3s;
+/* BACK BTN */
+.backBtn{
+  position:fixed;
+  top:20px;
+  left:20px;
+  display:none;
 }
 
 /* FOOTER */
@@ -151,13 +156,6 @@ footer{
 footer a{
   color:white;
   text-decoration:none;
-}
-
-.backBtn{
-  position:fixed;
-  top:20px;
-  left:20px;
-  display:none;
 }
 
 </style>
@@ -192,16 +190,15 @@ footer a{
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<!-- BACK BUTTON -->
 <button class="backBtn" id="backBtn" onclick="back()">BACK</button>
 
-<!-- LORE -->
+<!-- LORE FULL CINEMATIC -->
 <div id="lore" class="page">
 <div class="box">
 
 <h2>THE ORIGIN OF BLDS</h2><br>
 
-before BLDS had a name,<br>
+Before BLDS had a name,<br>
 before the symbol existed,<br>
 before the squad was formed…<br><br>
 
@@ -209,27 +206,64 @@ there were only individuals trying to survive their own darkness.<br><br>
 
 Some were ignored.<br>
 Some were underestimated.<br>
-Some failed over and over again…<br><br>
+Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
+
+They watched others rise faster.<br>
+Watched others gain recognition.<br>
+Watched people quit the moment things became difficult.<br><br>
+
+And slowly, they realized something:<br><br>
 
 Most people only shine when the world is bright.<br>
-But BLDS was born from darkness itself.<br><br>
+But very few can continue moving forward when everything turns dark.<br><br>
+
+That realization became the beginning of BLDS.<br><br>
+
+Not a squad created for fame.<br>
+Not a kingdom built on arrogance.<br>
+Not a place for people searching only for victory.<br>
+But a dominion built by those who refused to disappear.<br><br>
 
 <hr><br>
 
 <h3>THE BLACK LIGHT CORE</h3><br>
 
-At the center lies the Core.<br>
-A light that never disappears.<br><br>
+At the center of the eclipse lies the Core.<br>
+A single star that continues to shine no matter how dark the sky becomes.<br><br>
 
-Strength is not never falling,<br>
-but always rising again.<br><br>
+The Core represents the inner purpose carried by every member of BLDS.<br><br>
+
+Not a purpose given by the world.<br>
+Not a purpose created by attention or popularity.<br>
+But a purpose discovered through hardship.<br><br>
+
+Even when everything changes…<br>
+Even when people leave…<br>
+Even when failure surrounds you…<br>
+your inner light still remains alive.<br><br>
+
+The strongest are not those who never fall.<br>
+But those who always rise again.<br><br>
 
 <hr><br>
 
-<h3>TEN FLAMES</h3>
+<h3>MEANING</h3>
 
-Vision, Discipline, Loyalty, Ambition, Resilience<br>
-Hope, Awareness, Patience, Courage, Unity
+The eclipse = world, darkness, challenge<br>
+The core = purpose, inner light, strength<br><br>
+
+<hr><br>
+
+<h3>TEN FLAMES OF BLDS</h3>
+
+<b>Greater Flames</b><br>
+Vision, Discipline, Loyalty, Ambition, Resilience<br><br>
+
+<b>Lesser Flames</b><br>
+Hope, Awareness, Patience, Courage, Unity<br><br>
+
+Though smaller, these flames are just as important.<br>
+Because even the Core will fade without them.
 
 </div>
 </div>
@@ -270,7 +304,6 @@ BLACKLIGHTDOMS © 2026
 
 <script>
 
-/* SKY */
 const sky=document.getElementById("sky");
 for(let i=0;i<120;i++){
  let s=document.createElement("div");
@@ -314,14 +347,8 @@ function back(){
 
 /* SHOW */
 function show(id){
- document.querySelectorAll(".page").forEach(p=>{
-   p.style.display="none";
-   p.classList.remove("fade");
- });
-
- let el=document.getElementById(id);
- el.style.display="block";
- el.classList.add("fade");
+ document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+ document.getElementById(id).style.display="block";
 
  if(id==="quotes") newQuote();
 }
@@ -347,7 +374,6 @@ function newQuote(){
 
 newQuote();
 
-/* AUTO MUSIC */
 window.addEventListener("click",()=>{
  document.getElementById("bgMusic").play();
 },{once:true});
