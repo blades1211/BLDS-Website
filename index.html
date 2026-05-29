@@ -50,7 +50,6 @@ body{
   z-index:999;
 }
 
-/* INPUT */
 input{
   padding:12px;
   border:1px solid white;
@@ -60,11 +59,10 @@ input{
   border-radius:10px;
 }
 
-/* WRONG GLITCH */
+/* ERROR */
 .error{
   animation:shake .3s;
   background:rgba(255,0,0,0.25);
-  box-shadow:0 0 20px red;
 }
 
 @keyframes shake{
@@ -77,7 +75,7 @@ input{
 .portal{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
+  background:radial-gradient(circle, rgba(255,0,0,0.25), transparent 60%);
   opacity:0;
   transform:scale(1.2);
   pointer-events:none;
@@ -86,6 +84,12 @@ input{
 .portal.active{
   opacity:1;
   transform:scale(1);
+}
+
+/* GLITCH GLOBAL */
+.glitch-shake{
+  animation:shake .15s infinite;
+  filter:contrast(2) hue-rotate(-20deg);
 }
 
 /* MAIN */
@@ -111,7 +115,6 @@ button{
   color:white;
   border-radius:30px;
   cursor:pointer;
-  transition:.3s;
 }
 button:hover{background:white;color:black}
 
@@ -122,7 +125,6 @@ button:hover{background:white;color:black}
   margin-top:20px;
   animation:fade .4s ease;
 }
-
 @keyframes fade{
   from{opacity:0;transform:translateY(10px)}
   to{opacity:1;transform:translateY(0)}
@@ -136,14 +138,6 @@ button:hover{background:white;color:black}
   border:1px solid rgba(255,255,255,0.1);
   text-align:left;
   line-height:1.8;
-}
-
-/* QUOTE */
-#quote{
-  font-size:1.3rem;
-  padding:30px;
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:20px;
 }
 
 /* BACK BTN */
@@ -161,9 +155,21 @@ footer{
   opacity:.7;
   text-align:center;
 }
-footer a{
-  color:white;
-  text-decoration:none;
+footer a{color:white;text-decoration:none;}
+
+/* FORGOTTEN OVERLAY */
+.forgot-overlay{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  transition:.6s;
+  z-index:9999;
+}
+.forgot-overlay.active{
+  opacity:1;
+  background:radial-gradient(circle, rgba(255,0,0,0.25), black 70%);
 }
 
 </style>
@@ -173,6 +179,7 @@ footer a{
 
 <div class="sky" id="sky"></div>
 <div class="portal" id="portal"></div>
+<div class="forgot-overlay" id="forgotOverlay"></div>
 
 <!-- LOGIN -->
 <div id="login">
@@ -198,33 +205,15 @@ footer a{
 <button onclick="show('archive')">ARCHIVE</button>
 </div>
 
-<button class="backBtn" id="backBtn" onclick="back()">BACK</button>
+<button class="backBtn" onclick="back()">BACK</button>
 
 <!-- LORE -->
 <div id="lore" class="page">
 <div class="box">
-
 <h2>THE ORIGIN OF BLDS</h2><br>
-
 Before BLDS had a name...<br>
-before the symbol existed...<br>
-before the squad was formed…<br><br>
-
-There were only individuals trying to survive darkness.<br><br>
-
-Most people shine in light.<br>
-But BLDS was born in the eclipse.<br><br>
-
-<hr><br>
-
-<h3>THE CORE</h3><br>
-
-A light that never disappears.<br>
-Purpose that survives everything.<br><br>
-
-The strongest are not those who never fall,<br>
-but those who always rise again.<br>
-
+Born in the eclipse...<br>
+A dominion of survivors.<br>
 </div>
 </div>
 
@@ -236,17 +225,39 @@ but those who always rise again.<br>
 </div>
 </div>
 
-<!-- SECRET CODE PAGE -->
+<!-- CODE -->
 <div id="code" class="page">
 <div class="box">
 
 <h2>FORGOTTEN ACCESS</h2><br>
 
-<input id="forgotInput" placeholder="Enter Code..." style="width:100%;margin-top:10px;"><br>
-
+<input id="forgotInput" placeholder="Enter Code..." style="width:100%;padding:10px;">
 <button onclick="checkForgotten()">UNLOCK</button>
 
 <p id="codeMsg" style="margin-top:10px;opacity:0.7"></p>
+
+</div>
+</div>
+
+<!-- FORGOTTEN LORE -->
+<div id="forgotLore" class="page">
+<div class="box">
+
+<h2>THE FORGOTTEN ECLIPSE</h2><br>
+
+Long before BLDS existed…<br>
+there was a generation erased from the archive.<br><br>
+
+They built the first dominion inside darkness.<br>
+But it collapsed from within.<br><br>
+
+Names were erased. Records lost.<br><br>
+
+Only one message remained:<br>
+“If the eclipse returns… don’t repeat the past.”<br><br>
+
+BLDS is not continuation.<br>
+It is a second chance.
 
 </div>
 </div>
@@ -259,16 +270,10 @@ but those who always rise again.<br>
 <b>RIGHT HAND:</b> William Nayottama<br>
 <b>LEFT HAND:</b> Felix<br><br>
 
-━━━━━━━━━━━━━━━━━━<br><br>
-
-<b>BLDS TIMELINE</b><br><br>
-
 05-03-2024 — BLDS Born<br>
-15-05-2024 — WhatsApp Community Created<br>
-12-09-2024 — Discord Community Established<br>
-05-03-2025 — First Anniversary<br>
-20-08-2025 — Massive Remake Update<br>
-05-03-2026 — Eclipse Era Expansion<br>
+15-05-2024 — Community Created<br>
+05-03-2025 — First Evolution<br>
+05-03-2026 — Eclipse Era
 
 </div>
 </div>
@@ -312,9 +317,6 @@ function enter(){
  setTimeout(()=>{
    document.getElementById("enterBtn").style.display="none";
    document.getElementById("menu").style.display="flex";
-   document.getElementById("backBtn").style.display="block";
-   document.getElementById("portal").classList.remove("active");
-
    document.getElementById("bgMusic").play();
  },700);
 }
@@ -329,33 +331,48 @@ function back(){
 function show(id){
  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
  document.getElementById(id).style.display="block";
-
  if(id==="quotes") newQuote();
 }
 
 /* QUOTES */
-const quotes=[
-"Darkness builds legends",
-"Rise beyond limits",
-"Core never fades",
-"Fear is temporary",
-"Stand after every fall",
-"Survive and evolve",
-"Become unstoppable",
-"Nothing is wasted"
-];
-
+const quotes=["Darkness builds legends","Rise beyond limits","Core never fades","Survive and evolve"];
 function newQuote(){
  document.getElementById("quote").innerText=
  quotes[Math.floor(Math.random()*quotes.length)];
 }
-
 newQuote();
 
-/* MUSIC */
-window.addEventListener("click",()=>{
- document.getElementById("bgMusic").play();
-},{once:true});
+/* FORGOTTEN CODE */
+function checkForgotten(){
+ const val=document.getElementById("forgotInput");
+ const overlay=document.getElementById("forgotOverlay");
+ const msg=document.getElementById("codeMsg");
+
+ if(val.value.toLowerCase()==="forgotten"){
+
+   overlay.classList.add("active");
+   document.body.classList.add("glitch-shake");
+
+   setTimeout(()=>{
+     document.body.classList.remove("glitch-shake");
+     overlay.classList.remove("active");
+
+     document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+     document.getElementById("forgotLore").style.display="block";
+   },1800);
+
+ } else {
+   val.classList.add("error");
+   document.body.classList.add("glitch-shake");
+   overlay.classList.add("active");
+
+   setTimeout(()=>{
+     val.classList.remove("error");
+     document.body.classList.remove("glitch-shake");
+     overlay.classList.remove("active");
+   },1200);
+ }
+}
 
 </script>
 
