@@ -697,7 +697,7 @@ h1{
 
 <!-- MEMBER -->
 
-<div class="page-section member-grid" id="memberSection"
+<div class="page-section member-grid" id="memberSection">
 
   <div class="member-card">
     <h3>MEMBERS</h3>
@@ -906,28 +906,65 @@ const quotes = [
 const randomQuote =
 quotes[Math.floor(Math.random()*quotes.length)];
 
+function hideAllPages(){
+
+  const pages =
+  document.querySelectorAll(".page-section");
+
+  pages.forEach(page => {
+
+    page.style.display = "none";
+
+  });
+
+}
+
+function openQuotes(){
+
+  hideAllPages();
+
+  document.getElementById("quoteBox")
+  .style.display = "flex";
+
+}
+
+function openMembers(){
+
+  hideAllPages();
+
+  document.getElementById("memberSection")
+  .style.display = "grid";
+
+}
+
+function openTimeline(){
+
+  hideAllPages();
+
+  document.getElementById("timeline")
+  .style.display = "flex";
+
+}
+
+function openOrigin(){
+
+  hideAllPages();
+
+  originClick++;
+
+  document.getElementById("secretLore")
+  .style.display = "flex";
+
+}
+
 document.getElementById("quoteText")
 .innerHTML = `"${randomQuote}"`;
 
-
-}
 
 /* SECRET CLICK */
 
 let originClick = 0;
 
-function openOrigin(){
-
-  originClick++;
-
-  if(originClick >= 5){
-
-    document.getElementById("secretLore")
-    .style.display = "block";
-
-  }
-
-}
 
 /* STARS */
 
