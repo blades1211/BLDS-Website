@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 body{
   background:#000;
   color:white;
+  font-family:Poppins,sans-serif;
   overflow-x:hidden;
 }
 
-/* BACKGROUND */
+/* SKY */
+
 .sky{
   position:fixed;
   inset:0;
-  background:radial-gradient(circle,#0a0f1f,#000);
+  background:linear-gradient(to bottom,#000,#050816);
   z-index:-3;
 }
 
@@ -35,38 +42,84 @@ body{
 }
 
 @keyframes fall{
-  from{transform:translateY(-10vh);}
-  to{transform:translateY(110vh);}
+  from{
+    transform:translateY(-10vh);
+  }
+  to{
+    transform:translateY(110vh);
+  }
 }
 
-/* CONTAINER */
+/* ECLIPSE */
+
+.eclipse{
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:320px;
+  height:320px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,
+  rgba(255,255,255,.7),
+  rgba(255,255,255,.08),
+  transparent 70%);
+  opacity:.15;
+  z-index:-2;
+  animation:eclipse 8s ease-in-out infinite;
+}
+
+@keyframes eclipse{
+  0%,100%{
+    transform:translate(-50%,-50%) scale(1);
+  }
+  50%{
+    transform:translate(-50%,-50%) scale(1.2);
+  }
+}
+
+/* MAIN */
+
 .container{
+  width:100%;
+  max-width:950px;
+  margin:auto;
   min-height:100vh;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   text-align:center;
-  padding:20px;
+  padding:25px;
 }
 
-/* LOGO FLOAT */
+/* LOGO */
+
 .logo{
   width:140px;
-  animation:float 3.5s ease-in-out infinite;
   filter:drop-shadow(0 0 15px white);
+  animation:float 4s ease-in-out infinite;
 }
 
 @keyframes float{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-10px);}
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-10px);
+  }
 }
 
-h2{letter-spacing:4px;margin-top:10px;}
+.title{
+  margin-top:12px;
+  letter-spacing:4px;
+  font-size:28px;
+}
 
 /* BUTTON */
+
 button{
-  padding:10px 18px;
+  padding:11px 20px;
   margin:6px;
   border:1px solid white;
   background:transparent;
@@ -82,35 +135,48 @@ button:hover{
 }
 
 /* MENU */
+
 .menu{
   display:none;
   flex-direction:column;
-  margin-top:15px;
+  margin-top:18px;
+  width:100%;
+  max-width:320px;
 }
 
-/* PAGE TRANSITION */
+/* PAGE */
+
 .page{
   display:none;
-  max-width:900px;
-  margin-top:20px;
-  animation:fade .5s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
+  width:100%;
+  margin-top:25px;
 }
 
 .box{
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
-  padding:20px;
-  border-radius:15px;
+  padding:25px;
+  border-radius:18px;
   text-align:left;
-  line-height:1.8;
+  line-height:1.9;
+  backdrop-filter:blur(5px);
+}
+
+/* INPUT */
+
+input{
+  width:100%;
+  padding:12px;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:12px;
+  color:white;
+  margin-top:10px;
+  outline:none;
 }
 
 /* CUTSCENE */
+
 .cutscene{
   position:fixed;
   inset:0;
@@ -120,184 +186,570 @@ button:hover{
   align-items:center;
   flex-direction:column;
   z-index:9999;
+  text-align:center;
+  padding:20px;
 }
 
-/* LOGO BIG */
 .bigLogo{
-  width:220px;
-  opacity:0;
-  transition:1s;
+  width:240px;
   filter:drop-shadow(0 0 25px white);
+  animation:float 3s ease-in-out infinite;
 }
 
-.show{opacity:1;}
-
-/* GLITCH */
 .glitch{
   animation:glitch .15s infinite;
 }
 
 @keyframes glitch{
-  0%,100%{opacity:1;}
-  50%{opacity:.2;}
+  0%,100%{
+    opacity:1;
+  }
+  50%{
+    opacity:.3;
+  }
 }
 
-/* INPUT */
-input{
-  padding:10px;
-  border-radius:10px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  text-align:center;
+/* MOBILE */
+
+@media(max-width:700px){
+
+  .logo{
+    width:120px;
+  }
+
+  .title{
+    font-size:22px;
+  }
+
+  .box{
+    padding:20px;
+    font-size:14px;
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="sky" id="sky"></div>
+<div class="eclipse"></div>
 
 <div class="container">
 
 <img src="logo.png" class="logo">
-<h2>BLACKLIGHTDOMS</h2>
 
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<h1 class="title">BLACKLIGHTDOMS</h1>
+
+<button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
+
+<!-- MENU -->
 
 <div class="menu" id="menu">
 
-<button onclick="show('origin')">ORIGIN</button>
-<button onclick="show('core')">BLACKLIGHT CORE</button>
-<button onclick="show('quotes')">QUOTES</button>
-<button onclick="show('archives')">ARCHIVES</button>
-<button onclick="show('code')">CODE</button>
+<button onclick="showPage('origin')">
+ORIGIN
+</button>
+
+<button onclick="showPage('archives')">
+ARCHIVES
+</button>
+
+<button onclick="showPage('code')">
+CODE
+</button>
 
 </div>
 
 <!-- ORIGIN -->
-<div id="origin" class="page">
-<div class="box">
-<h2>ORIGIN</h2><br>
-Before BLDS had a name, there were only individuals surviving darkness.<br><br>
-They were ignored, underestimated, and forgotten.<br>
-But they never stopped moving forward.<br><br>
-<b>BLDS was born from those who refused to disappear.</b>
-</div>
-</div>
 
-<!-- CORE -->
-<div id="core" class="page">
+<div class="page" id="origin">
 <div class="box">
-<h2>BLACKLIGHT CORE</h2><br>
-A purpose born from darkness, not from fame.<br>
-The Core is inner light that never disappears.<br>
-Even when everything fades… it remains.
-</div>
-</div>
 
-<!-- QUOTES -->
-<div id="quotes" class="page">
-<div class="box">
-<h2>QUOTES</h2><br>
-<div id="quoteText">Click refresh</div>
+<h2>THE ORIGIN OF BLDS</h2>
 <br>
-<button onclick="newQuote()">REFRESH</button>
+
+before BLDS had a name,<br>
+before the symbol existed,<br>
+before the squad was formed…<br>
+there were only individuals trying to survive their own darkness.<br><br>
+
+Some were ignored.<br>
+Some were underestimated.<br>
+Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
+
+They watched others rise faster.<br>
+Watched others gain recognition.<br>
+Watched people quit the moment things became difficult.<br><br>
+
+And slowly, they realized something:<br><br>
+
+<b>
+Most people only shine when the world is bright.
+But very few can continue moving forward when everything turns dark.
+</b>
+
+<br><br>
+
+That realization became the beginning of BLDS.<br><br>
+
+Not a squad created for fame.<br>
+Not a kingdom built on arrogance.<br>
+Not a place for people searching only for victory.<br><br>
+
+But a dominion built by those who refused to disappear.
+
+<br><br><hr><br>
+
+<h2>BLACKLIGHT CORE</h2>
+<br>
+
+At the center of the eclipse lies the Core.<br>
+A single star that continues to shine no matter how dark the sky becomes.<br><br>
+
+The Core represents the inner purpose carried by every member of BLDS.<br><br>
+
+Not a purpose given by the world.<br>
+Not a purpose created by attention or popularity.<br>
+But a purpose discovered through hardship.<br><br>
+
+It is the reminder that:<br><br>
+
+even when everything around you changes…<br>
+even when people leave…<br>
+even when failure surrounds you…<br>
+your inner light can still remain alive.<br><br>
+
+BLDS believes the strongest people are not those who never fall.<br><br>
+
+The strongest are the ones who continue standing after every fall.<br><br>
+
+That is why the Core never disappears.<br>
+Because purpose cannot be erased by fear.
+
+<br><br><hr><br>
+
+<h2>THE TEN FLAMES OF BLDS</h2>
+<br>
+
+<b>GREATER FLAMES</b>
+<br><br>
+
+I. Vision — The ability to see direction even when others are lost.<br><br>
+
+II. Discipline — To continue growing even when nobody is watching.<br><br>
+
+III. Loyalty — To stand together through victory and defeat.<br><br>
+
+IV. Ambition — The desire to surpass limits and continue evolving.<br><br>
+
+V. Resilience — The strength to rise again after every fall.<br><br>
+
+<b>LESSER FLAMES</b>
+<br><br>
+
+I. Hope — The light that remains during difficult times.<br><br>
+
+II. Awareness — The ability to stay conscious and understand reality.<br><br>
+
+III. Patience — Growth takes time and endurance.<br><br>
+
+IV. Courage — The will to move forward despite fear.<br><br>
+
+V. Unity — The bond that turns individuals into something greater.<br><br>
+
+Though smaller, these flames are just as important.<br><br>
+
+Because even the brightest Core will fade without what supports it.<br><br>
+
+<b>
+Five flames grant strength.<br>
+Five flames preserve it.<br>
+Together, they protect the Core.
+</b>
+
 </div>
 </div>
 
 <!-- ARCHIVES -->
-<div id="archives" class="page">
-<div class="box">
-<h2>ARCHIVES</h2><br>
-05-03-2024 — BLDS Born<br>
-15-05-2024 — WhatsApp Community<br>
-12-09-2024 — Discord Community<br>
-20-08-2025 — Massive Remake<br><br>
 
-Founder: Michael Lorenzo<br>
-Right Hand: William Nayottama<br>
-Left Hand: Felix
+<div class="page" id="archives">
+<div class="box">
+
+<h2>BLDS ARCHIVES</h2>
+<br>
+
+05-03-2024 — BLDS Born<br><br>
+
+15-05-2024 — WhatsApp Community<br><br>
+
+12-09-2024 — Discord Community<br><br>
+
+20-08-2025 — Massive Remake
+
+<br><br><hr><br>
+
+Founder — Michael Lorenzo<br><br>
+
+Right Hand Of BLDS — William Nayottama<br><br>
+
+Left Hand Of BLDS — Felix
+
 </div>
 </div>
 
 <!-- CODE -->
-<div id="code" class="page">
+
+<div class="page" id="code">
 <div class="box">
-<h2>CODE SYSTEM</h2><br>
-<input id="inp" placeholder="enter code"><br><br>
-<button onclick="checkCode()">UNLOCK</button>
+
+<h2>CODE SYSTEM</h2>
+<br>
+
+Type hidden code below.
+
+<input type="text" id="codeInput" placeholder="enter code">
+
+<br><br>
+
+<button onclick="unlockCode()">
+UNLOCK
+</button>
+
 </div>
 </div>
 
 </div>
 
-<!-- CUTSCENES -->
-<div class="cutscene" id="forgotCut">
-<h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
+<!-- FORGOTTEN -->
+
+<div class="cutscene" id="forgotScene">
+
+<h1 class="glitch">
+FORGOTTEN MEMORY DETECTED
+</h1>
+
+<br><br>
+
+<div class="box" style="max-width:900px;">
+
+<h2>THE FORGOTTEN ECLIPSE</h2>
+<br>
+
+Long before BLDS became known…
+before the symbol,
+before the Core,
+before the name itself existed…
+there was another generation.
+
+A generation erased from the archive.
+
+<br><br>
+
+They were the first ones who tried to build a dominion inside the darkness.
+
+Not for power.
+Not for glory.
+
+But to create a place where broken people could still stand together.
+
+<br><br>
+
+At first… they succeeded.
+
+The eclipse began to grow.
+More people arrived.
+The light inside the Core became stronger.
+
+<br><br>
+
+But slowly, something changed.
+
+Some members stopped believing in the original purpose.
+
+They became obsessed with recognition.
+With status.
+With becoming feared instead of becoming united.
+
+<br><br>
+
+The dominion began tearing itself apart from within.
+
+And then came the Collapse.
+
+<br><br>
+
+No one speaks about what truly happened that night.
+
+The old records were destroyed.
+Names disappeared.
+Symbols vanished.
+
+Entire conversations were erased as if they never existed.
+
+<br><br>
+
+Only one thing remained:
+
+A single fragment of the Core.
+
+Hidden by the last survivor.
+
+<br><br>
+
+Legend says the survivor left behind a message:
+
+<br><br>
+
+<b>
+“If the eclipse ever returns…
+do not let the darkness consume the Core again.”
+</b>
+
+<br><br>
+
+Years later…
+BLDS was born from the remains of that forgotten eclipse.
+
+Not as a continuation.
+
+But as a second chance.
+
 </div>
 
-<div class="cutscene" id="flameCut">
-<img src="logo.png" id="bigLogo" class="bigLogo">
+<br>
+
+<button onclick="closeScene('forgotScene')">
+CLOSE
+</button>
+
+</div>
+
+<!-- 12 FLAMES -->
+
+<div class="cutscene" id="flameScene">
+
+<img src="logo.png" class="bigLogo">
+
+<br><br>
+
+<div class="box" style="max-width:900px;">
+
+<h2>12 FLAMES PROTOCOL</h2>
+<br>
+
+In recorded history, humanity only remembers Ten Flames.
+
+Not because the other two do not exist…
+but because reality itself refuses to retain anything beyond that point.
+
+<br><br>
+
+<h2>THE MEMORY COLLAPSE PHENOMENON</h2>
+<br>
+
+Across every reconstructed timeline, a consistent failure appears at the same stage:
+
+When humanity reaches the Flame System, cognition begins to destabilize beyond the 10th Flame threshold.
+
+Archives describing anything past that point become corrupted mid-sentence.
+
+Terminology shifts.
+Names disappear.
+
+Entire sections rewrite themselves into simpler conclusions.
+
+<br><br>
+
+One early record from Eclipse Reconstruction Layer-0 states:
+
+<br><br>
+
+<b>
+“We reached the tenth flame without issue.
+Beyond this point, cognition begins rejecting continuation.”
+</b>
+
+<br><br>
+
+From that moment onward, every attempt to document further results in the same outcome:
+
+<br><br>
+
+<b>
+Flame 11 and 12 are automatically reduced to ‘non-existent’ in human perception.
+</b>
+
+<br><br>
+
+Not erased.
+Not hidden.
+
+But mentally rejected by the structure of consciousness itself.
+
+<br><br>
+
+That is why humanity can only remember ten flames.
+
+<br><br><hr><br>
+
+<h2>FLAME 11 — SACRED FLAME</h2>
+<br>
+
+The Sacred Flame is not a skill, power, or evolution stage.
+
+It is a pre-identity memory layer.
+
+A fragment that exists before the formation of self-awareness.
+
+<br><br>
+
+It does not represent who you become…
+but what existed before “you” were defined.
+
+<br><br>
+
+The Sacred Flame does not feel learned.
+
+It feels remembered from something older than consciousness itself.
+
+<br><br>
+
+It is not power.
+
+It is the echo of existence before identity was assigned.
+
+<br><br><hr><br>
+
+<h2>FLAME 12 — HIDDEN FLAME</h2>
+<br>
+
+The Hidden Flame is the most unstable concept in the entire system because it does not behave like a flame at all.
+
+It does not evolve.
+It does not activate.
+
+It does not belong to any known structure of consciousness.
+
+<br><br>
+
+All references describe it in the same way:
+
+<br><br>
+
+<b>
+“It does not participate in existence.
+It observes whether existence should continue.”
+</b>
+
+<br><br>
+
+Unlike the other flames, Hidden Flame does not represent transformation.
+
+It represents judgment without emotion, bias, or identity.
+
+<br><br>
+
+If Sacred Flame is what you were before becoming you…
+
+then Hidden Flame is what decides whether “you” are permitted to remain real.
+
+</div>
+
+<br>
+
+<button onclick="closeScene('flameScene')">
+CLOSE
+</button>
+
 </div>
 
 <script>
 
 /* STARS */
+
 const sky=document.getElementById("sky");
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"%";
-  s.style.animationDuration=(3+Math.random()*5)+"s";
-  sky.appendChild(s);
+
+for(let i=0;i<150;i++){
+
+let star=document.createElement("div");
+
+star.className="star";
+
+star.style.left=Math.random()*100+"%";
+
+star.style.top=Math.random()*-100+"vh";
+
+star.style.animationDuration=(3+Math.random()*6)+"s";
+
+sky.appendChild(star);
+
 }
+
+/* BACKSOUND */
+
+const audio=new Audio("https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b8b1d3.mp3");
+
+audio.loop=true;
+audio.volume=0.35;
+
+document.body.addEventListener("click",()=>{
+
+audio.play().catch(()=>{});
+
+},{once:true});
 
 /* ENTER */
+
 function enter(){
-  document.getElementById("menu").style.display="flex";
+
+document.getElementById("enterBtn").style.display="none";
+
+document.getElementById("menu").style.display="flex";
+
 }
 
-/* PAGE TRANSITION */
-function show(id){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-  document.getElementById(id).style.display="block";
-}
+/* PAGE */
 
-/* QUOTES */
-const quotes=[
-"Even in darkness, BLDS stands.",
-"Pain builds purpose.",
-"Silence creates strength.",
-"Light is born from pressure.",
-"Failure is just training.",
-"Only the persistent survive.",
-"True power is consistency.",
-"Darkness is not the end.",
-"Become the eclipse.",
-"Stand even when broken."
-];
+function showPage(id){
 
-function newQuote(){
-  document.getElementById("quoteText").innerText =
-  quotes[Math.floor(Math.random()*quotes.length)];
+document.querySelectorAll(".page").forEach(p=>{
+
+p.style.display="none";
+
+});
+
+document.getElementById(id).style.display="block";
+
 }
 
 /* CODE */
-function checkCode(){
-  let v=document.getElementById("inp").value.toLowerCase();
 
-  if(v==="forgotten"){
-    document.getElementById("forgotCut").style.display="flex";
-    setTimeout(()=>forgotCut.style.display="none",2000);
-  }
+function unlockCode(){
 
-  if(v==="12 flames"||v==="12flames"){
-    document.getElementById("flameCut").style.display="flex";
-    setTimeout(()=>{
-      document.getElementById("flameCut").style.display="none";
-    },4000);
-  }
+let v=document.getElementById("codeInput").value.toLowerCase();
+
+if(v==="forgotten"){
+
+document.getElementById("forgotScene").style.display="flex";
+
+}
+
+if(v==="12 flames" || v==="12flames"){
+
+document.getElementById("flameScene").style.display="flex";
+
+}
+
+}
+
+/* CLOSE */
+
+function closeScene(id){
+
+document.getElementById(id).style.display="none";
+
 }
 
 </script>
