@@ -3,94 +3,40 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BLDS | THE ECLIPSE SYSTEM</title>
+<title>BLDS | ECLIPSE SYSTEM</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
-/* ========== BASE ========== */
+/* ===== BASE ===== */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-  background:#000;
+  background:black;
   color:white;
   font-family:Poppins;
-  overflow-x:hidden;
 }
 
-/* ========== LOADING ========== */
-#loading{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
+/* ===== PAGES ===== */
+.page{
+  display:none;
+  min-height:100vh;
   justify-content:center;
   align-items:center;
-  z-index:9999;
-  font-family:Orbitron;
-  letter-spacing:3px;
-  animation:fadeOut 2s forwards;
-  animation-delay:2s;
+  flex-direction:column;
 }
 
-@keyframes fadeOut{
-  to{opacity:0;visibility:hidden;}
+/* ===== LANDING ===== */
+#landing{
+  display:flex;
 }
 
-/* ========== STAR BACKGROUND ========== */
-.star{
-  position:fixed;
-  width:2px;
-  height:2px;
-  background:white;
-  opacity:0.5;
-  animation:blink 3s infinite;
+/* ===== HUB ===== */
+#hub{
+  padding:30px;
 }
 
-@keyframes blink{
-  50%{opacity:1;}
-}
-
-/* ========== GLITCH TITLE ========== */
-.glitch{
-  position:relative;
-  font-family:Orbitron;
-  font-size:3rem;
-  text-align:center;
-  margin-top:20px;
-}
-
-.glitch::before,
-.glitch::after{
-  content:attr(data-text);
-  position:absolute;
-  left:0;
-  top:0;
-}
-
-.glitch::before{
-  color:red;
-  transform:translate(2px);
-  animation:g1 2s infinite;
-}
-
-.glitch::after{
-  color:cyan;
-  transform:translate(-2px);
-  animation:g2 2s infinite;
-}
-
-@keyframes g1{
-  0%,100%{clip-path:inset(0 0 80% 0);}
-  50%{clip-path:inset(30% 0 30% 0);}
-}
-
-@keyframes g2{
-  0%,100%{clip-path:inset(80% 0 0 0);}
-  50%{clip-path:inset(20% 0 40% 0);}
-}
-
-/* ========== UI BUTTON ========== */
+/* ===== BUTTON ===== */
 button{
   padding:12px 20px;
   border:1px solid white;
@@ -98,6 +44,7 @@ button{
   color:white;
   border-radius:20px;
   cursor:pointer;
+  margin:5px;
   transition:0.3s;
 }
 
@@ -106,58 +53,37 @@ button:hover{
   color:black;
 }
 
-/* ========== MENU ========== */
-.menu{
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;
-  margin-top:20px;
-}
-
-/* ========== PAGE SYSTEM ========== */
-.page{
-  display:none;
-  padding:20px;
-}
-
-/* ========== CARD ========== */
-.card{
-  background:#111;
-  border:1px solid #333;
-  padding:15px;
-  margin:10px 0;
-  border-radius:10px;
-}
-
-/* ========== GRID ========== */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:10px;
-}
-
-/* ========== SECTIONS ========== */
-.section{
-  display:none;
-  padding:20px;
-}
-
-/* ========== ORIGIN / SECRET ========== */
-#origin,#secret{
-  display:none;
-  padding:20px;
+/* ===== TITLE ===== */
+h1{
+  font-family:Orbitron;
+  font-size:3rem;
   text-align:center;
 }
 
-/* ========== TRANSITION ========== */
-.fade{
-  animation:fadeIn 0.5s ease;
+/* ===== HUB GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+  width:100%;
+  max-width:800px;
+  margin-top:20px;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
+/* ===== CARD ===== */
+.card{
+  border:1px solid #333;
+  background:#111;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+}
+
+/* ===== SECRET ===== */
+#secret{
+  display:none;
+  padding:20px;
+  text-align:center;
 }
 
 </style>
@@ -165,112 +91,116 @@ button:hover{
 
 <body>
 
-<div id="loading">INITIALIZING ECLIPSE...</div>
-
-<h1 class="glitch" data-text="BLACKLIGHTDOMINION">BLACKLIGHTDOMINION</h1>
-
-<div style="text-align:center;">
-<button onclick="enter()">ENTER THE ECLIPSE</button>
+<!-- LANDING -->
+<div id="landing" class="page" style="display:flex;">
+  <div style="text-align:center;">
+    <h1>BLACKLIGHTDOMINION</h1>
+    <button onclick="enter()">ENTER THE ECLIPSE</button>
+  </div>
 </div>
 
-<div class="menu" id="menu">
+<!-- HUB -->
+<div id="hub" class="page">
 
-<button onclick="openPage('quotes')">QUOTES</button>
-<button onclick="openPage('member')">MEMBER</button>
-<button onclick="openPage('timeline')">ARCHIVE</button>
-<button onclick="openOrigin()">ORIGIN</button>
+  <h1>ECLIPSE HUB</h1>
+
+  <div class="grid">
+
+    <div class="card">
+      <button onclick="openOrigin()">ORIGIN</button>
+    </div>
+
+    <div class="card">
+      <button onclick="openPage('lore')">LORE DATABASE</button>
+    </div>
+
+    <div class="card">
+      <button onclick="openPage('archive')">ARCHIVE</button>
+    </div>
+
+    <div class="card">
+      <button onclick="openPage('quotes')">QUOTES</button>
+    </div>
+
+    <div class="card">
+      <button onclick="openPage('status')">STATUS</button>
+    </div>
+
+  </div>
 
 </div>
 
 <!-- ORIGIN -->
-<div id="origin">
-<h2>ORIGIN NODE</h2>
-<p>Klik 5x untuk unlock SECRETS</p>
+<div id="origin" class="page">
+  <h2>ORIGIN NODE</h2>
+  <p>Klik 5x untuk unlock SECRET</p>
+  <button onclick="originClick()">CLICK</button>
 </div>
 
 <!-- SECRET -->
-<div id="secret">
-<h2>THE FORGOTTEN ECLIPSE</h2>
-<p>The core remembers everything...</p>
+<div id="secret" class="page">
+  <h2>THE FORGOTTEN ECLIPSE</h2>
+  <p>The system remembers what was erased...</p>
+</div>
+
+<!-- LORE -->
+<div id="lore" class="page">
+  <h2>LORE DATABASE</h2>
+  <p>Ancient BLDS data stored in the Core.</p>
+</div>
+
+<!-- ARCHIVE -->
+<div id="archive" class="page">
+  <h2>ARCHIVE</h2>
+  <p>Timeline history BLDS.</p>
 </div>
 
 <!-- QUOTES -->
-<div class="section" id="quotes">
-<h2>QUOTES</h2>
-<p id="quote"></p>
+<div id="quotes" class="page">
+  <h2>QUOTES</h2>
+  <p>"Darkness builds legends."</p>
 </div>
 
-<!-- MEMBER -->
-<div class="section grid" id="member">
-<div class="card">MEMBERS: CLASSIFIED</div>
-<div class="card">ACTIVE: 2024</div>
-<div class="card">PROJECT: ONGOING</div>
-<div class="card">STATUS: ALIVE</div>
-</div>
-
-<!-- TIMELINE -->
-<div class="section" id="timeline">
-<div class="card">BLDS BORN - 2024</div>
+<!-- STATUS -->
+<div id="status" class="page">
+  <h2>SYSTEM STATUS</h2>
+  <p>CORE: ACTIVE</p>
 </div>
 
 <script>
 
-/* STAR GENERATOR */
-for(let i=0;i<120;i++){
-  let s=document.createElement("div");
-  s.className="star";
-  s.style.left=Math.random()*100+"vw";
-  s.style.top=Math.random()*100+"vh";
-  document.body.appendChild(s);
-}
+let originCount = 0;
 
-/* MENU */
+/* ENTER */
 function enter(){
-  document.getElementById("menu").style.display="flex";
+  switchPage("hub");
 }
 
-/* PAGE CONTROL */
+/* PAGE SWITCH */
+function switchPage(id){
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display="none";
+  });
+  document.getElementById(id).style.display="flex";
+}
+
+/* OPEN PAGE FROM HUB */
 function openPage(id){
-
-  document.querySelectorAll(".section").forEach(e=>{
-    e.style.display="none";
-  });
-
-  document.getElementById("origin").style.display="none";
-  document.getElementById("secret").style.display="none";
-
-  document.getElementById(id).style.display="block";
+  switchPage(id);
 }
 
-/* ORIGIN SYSTEM */
-let originClick=0;
-
+/* ORIGIN */
 function openOrigin(){
+  switchPage("origin");
+}
 
-  document.querySelectorAll(".section").forEach(e=>{
-    e.style.display="none";
-  });
+function originClick(){
+  originCount++;
 
-  document.getElementById("origin").style.display="block";
-
-  originClick++;
-
-  if(originClick>=5){
-    document.getElementById("origin").style.display="none";
-    document.getElementById("secret").style.display="block";
+  if(originCount >= 5){
+    switchPage("secret");
   }
 }
-
-/* QUOTE SYSTEM */
-const quotes=[
-"The eclipse never lies.",
-"Darkness is not absence of light.",
-"BLDS is not a name, it's a system.",
-"Only the core remembers."
-];
-
-document.getElementById("quote").innerText =
-quotes[Math.floor(Math.random()*quotes.length)];
 
 </script>
 
