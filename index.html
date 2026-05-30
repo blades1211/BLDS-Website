@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -27,6 +27,12 @@ body{
   flex-direction:column;
   min-height:100vh;
   position: relative;
+  transition: filter 0.5s ease;
+}
+
+/* CLASS UNTUK CODE "BLACK" (FULL INVERSI) */
+body.full-invert {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 .sky{
@@ -262,7 +268,6 @@ button:disabled {
   to{ opacity:1; transform:translateY(0); }
 }
 
-/* PERBAIKAN STYLING KONTEN BOX HALAMAN */
 .box{
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
@@ -282,7 +287,6 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-/* KUSTOMISASI KONTEN LORE ORIGIN */
 .lore-text {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.85);
@@ -297,7 +301,38 @@ button:disabled {
   color: rgba(255,255,255,0.6);
 }
 
-/* LAYOUT KARTU ACHIEVEMENT BARU */
+/* PROGRESS BAR UNTUK HALAMAN ACHIEVEMENT AWAL */
+.achievement-progress-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  height: 20px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 25px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.achievement-progress-bar {
+  background: linear-gradient(90deg, #555, #fff);
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.achievement-progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
 .achievement-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -314,8 +349,8 @@ button:disabled {
 }
 
 .achievement-card.unlocked {
-  border-color: rgba(0, 243, 255, 0.4);
-  background: rgba(0, 243, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .ach-badge {
@@ -334,12 +369,11 @@ button:disabled {
 }
 
 .ach-badge.unlocked-badge {
-  background: #00f3ff;
+  background: #fff;
   color: #000;
-  box-shadow: 0 0 10px rgba(0,243,255,0.5);
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-/* LAYOUT ARCHIVES LOG */
 .archive-log {
   margin-bottom: 15px;
   padding-bottom: 15px;
@@ -348,7 +382,7 @@ button:disabled {
 
 .archive-date {
   font-size: 11px;
-  color: #00f3ff;
+  color: #fff;
   font-family: monospace;
 }
 
@@ -437,6 +471,56 @@ input, select {
 
 @keyframes spin{ to{ transform:rotate(360deg); } }
 
+/* OVERLAY UNTUK CODE "BLDS" (SETENGAH INVERSI KANAN) */
+.split-cutscene-container {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  pointer-events: none;
+}
+
+.split-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+}
+
+.split-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  backdrop-filter: invert(1) hue-rotate(180deg);
+  -webkit-backdrop-filter: invert(1) hue-rotate(180deg);
+  border-left: 2px dashed rgba(255,255,255,0.3);
+}
+
+.cutscene-hud-alert {
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9);
+  border: 1px solid #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 10005;
+  letter-spacing: 2px;
+  font-size: 12px;
+  animation: pulseGlow 2s infinite ease-in-out;
+  display: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
+}
+
 footer {
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
@@ -468,6 +552,15 @@ footer {
 </head>
 
 <body>
+
+<div class="split-cutscene-container" id="splitOverlay">
+  <div class="split-left"></div>
+  <div class="split-right"></div>
+</div>
+
+<div class="cutscene-hud-alert" id="cutsceneAlert">
+  CORE SIGNATURE INJECTED // CALIBRATION PROTOCOL ACTIVE
+</div>
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
@@ -561,9 +654,11 @@ footer {
   <div class="page" id="achievement">
     <div class="box">
       <h2>RESONANCE ACHIEVEMENTS</h2>
-      <p style="font-size: 12px; color:rgba(255,255,255,0.5); margin-bottom: 20px;">
-        Core node evaluation engine status: <span style="color:#00f3ff;">ONLINE</span>. Badges sync instantly with your active peak matrix streak.
-      </p>
+      
+      <div class="achievement-progress-container">
+        <div class="achievement-progress-bar" id="achProgressBar"></div>
+        <div class="achievement-progress-text" id="achProgressText">0 / 4 BADGES UNLOCKED</div>
+      </div>
       
       <div class="achievement-grid">
         <div class="achievement-card" id="ach1">
@@ -658,7 +753,7 @@ footer {
       <a href="https://discord.gg/r4dM4QFteV" target="_blank">DISCORD</a>
       <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">WHATSAPP</a>
     </div>
-    <div style="font-size: 11px; color: rgba(255,255,255,0.3);">© 2026 BLACKLIGHTDOMS.</div>
+    <div style="font-size: 11px; color: rgba(255, 255, 255, 0.3);">© 2026 BLACKLIGHTDOMS.</div>
   </div>
 </footer>
 
@@ -712,10 +807,10 @@ const DEFAULT_LEADERBOARD = [
 
 function getPetSvg(type, highestStreak) {
   let color = "#ffffff";
-  if (highestStreak >= 100) color = "#00f3ff";
-  else if (highestStreak >= 50) color = "#ff003c";
-  else if (highestStreak >= 30) color = "#7800ff";
-  else if (highestStreak >= 7) color = "#0096ff";
+  if (highestStreak >= 100) color = "#ffffff";
+  else if (highestStreak >= 50) color = "#ffffff";
+  else if (highestStreak >= 30) color = "#ffffff";
+  else if (highestStreak >= 7) color = "#ffffff";
 
   if (type === "dragon") {
     return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
@@ -769,35 +864,30 @@ function closeCollapseModal() {
 function getPetEvolutionEngine(highestStreak, type) {
   let stageText = "";
   let rank = "VOID WALKER";
-  let glow = "0 0 10px #fff";
+  let glow = "0 0 10px rgba(255,255,255,0.3)";
 
   if (highestStreak >= 100) {
     rank = "THE ETERNAL CORE";
-    glow = "0 0 25px #00f3ff";
     if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon";
     else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan";
     else stageText = "Fase 5: Fenrir God of the Void";
   } else if (highestStreak >= 50) {
     rank = "DOMINION VANGUARD";
-    glow = "0 0 20px #ff003c";
     if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
     else if (type === "fish") stageText = "Fase 4: Abyssal Dark Leviathan";
     else stageText = "Fase 4: Alpha Cosmic Fenrir";
   } else if (highestStreak >= 30) {
     rank = "RESONANCE KEEPER";
-    glow = "0 0 15px #7800ff";
     if (type === "dragon") stageText = "Fase 3: Lightning Void Drake";
     else if (type === "fish") stageText = "Fase 3: Neon Serpent Fish";
     else stageText = "Fase 3: Twilight Shadow Wolf";
   } else if (highestStreak >= 7) {
     rank = "ECLIPSE SYNCHRONIZER";
-    glow = "0 0 12px #0096ff";
     if (type === "dragon") stageText = "Fase 2: Void Dragon Hatchling";
     else if (type === "fish") stageText = "Fase 2: Abyss Angler Whelp";
     else stageText = "Fase 2: Shadow Wolf Pup";
   } else {
     rank = "VOID WALKER";
-    glow = "0 0 8px rgba(255,255,255,0.3)";
     if (type === "dragon") stageText = "Fase 1: Anomaly Dragon Egg";
     else if (type === "fish") stageText = "Fase 1: Biolume Aquatic Egg";
     else stageText = "Fase 1: Shadow Spirit Egg";
@@ -806,42 +896,52 @@ function getPetEvolutionEngine(highestStreak, type) {
   return { stage: stageText, rank: rank, glow: glow };
 }
 
-/* FIX LOGIKA: UPDATE BADGES ACHIEVEMENT SECARA REAL-TIME SEIRING BERUBAHNYA STREAK KODE */
 function updateAchievementsUI(highestStreak) {
-  // Achievement 1: Berhasil masuk & calibrasi pertama kali
+  let unlockedCount = 0;
+
   const ach1 = document.getElementById("ach1");
   const ach1B = document.getElementById("ach1Badge");
   if(highestStreak >= 1) {
-    ach1.classList.add("unlocked"); ach1B.className = "ach-badge unlocked-badge"; ach1B.innerHTML = " Unlocked";
+    ach1.classList.add("unlocked"); ach1B.className = "ach-badge unlocked-badge"; ach1B.innerHTML = "Unlocked";
+    unlockedCount++;
   } else {
     ach1.classList.remove("unlocked"); ach1B.className = "ach-badge locked-badge"; ach1B.innerHTML = "🔒 Locked";
   }
 
-  // Achievement 2: Streak >= 7 Hari
   const ach2 = document.getElementById("ach2");
   const ach2B = document.getElementById("ach2Badge");
   if(highestStreak >= 7) {
-    ach2.classList.add("unlocked"); ach2B.className = "ach-badge unlocked-badge"; ach2B.innerHTML = " Unlocked";
+    ach2.classList.add("unlocked"); ach2B.className = "ach-badge unlocked-badge"; ach2B.innerHTML = "Unlocked";
+    unlockedCount++;
   } else {
     ach2.classList.remove("unlocked"); ach2B.className = "ach-badge locked-badge"; ach2B.innerHTML = "🔒 Locked";
   }
 
-  // Achievement 3: Streak >= 50 Hari
   const ach3 = document.getElementById("ach3");
   const ach3B = document.getElementById("ach3Badge");
   if(highestStreak >= 50) {
-    ach3.classList.add("unlocked"); ach3B.className = "ach-badge unlocked-badge"; ach3B.innerHTML = " Unlocked";
+    ach3.classList.add("unlocked"); ach3B.className = "ach-badge unlocked-badge"; ach3B.innerHTML = "Unlocked";
+    unlockedCount++;
   } else {
     ach3.classList.remove("unlocked"); ach3B.className = "ach-badge locked-badge"; ach3B.innerHTML = "🔒 Locked";
   }
 
-  // Achievement 4: Streak >= 100 Hari
   const ach4 = document.getElementById("ach4");
   const ach4B = document.getElementById("ach4Badge");
   if(highestStreak >= 100) {
-    ach4.classList.add("unlocked"); ach4B.className = "ach-badge unlocked-badge"; ach4B.innerHTML = " Unlocked";
+    ach4.classList.add("unlocked"); ach4B.className = "ach-badge unlocked-badge"; ach4B.innerHTML = "Unlocked";
+    unlockedCount++;
   } else {
     ach4.classList.remove("unlocked"); ach4B.className = "ach-badge locked-badge"; ach4B.innerHTML = "🔒 Locked";
+  }
+
+  // UPDATE PROGRESS BAR AWAL SECARA DINAMIS
+  const progressBar = document.getElementById("achProgressBar");
+  const progressText = document.getElementById("achProgressText");
+  if (progressBar && progressText) {
+    let pct = (unlockedCount / 4) * 100;
+    progressBar.style.width = pct + "%";
+    progressText.innerHTML = `${unlockedCount} / 4 BADGES UNLOCKED`;
   }
 }
 
@@ -862,8 +962,6 @@ function updateWidgetDynamicUI() {
       frame.style.filter = `drop-shadow(${engine.glow})`;
     }
   }
-  
-  // Pemicu update sistem kartu pencapaian
   updateAchievementsUI(streakData.highestCount);
 }
 
@@ -875,7 +973,6 @@ function renderLeaderboard() {
 
   if (streakData.dominionName) {
     const currentEngine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
-    
     const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
     if (existingIndex !== -1) {
       list[existingIndex].streak = streakData.count;
@@ -902,7 +999,7 @@ function renderLeaderboard() {
     htmlString += `
       <tr ${rowStyle}>
         <td ${rankClass}>#${position}</td>
-        <td>${user.name} ${isMe ? " <span style='font-size:9px; color:#00f3ff;'>(YOU)</span>" : ""}</td>
+        <td>${user.name} ${isMe ? " <span style='font-size:9px; color:#fff;'>(YOU)</span>" : ""}</td>
         <td>${user.streak} Days</td>
         <td>${user.petLabel}</td>
       </tr>
@@ -1000,6 +1097,32 @@ function showPage(id){
   }
 }
 
+/* LOGIKA PEMROSESAN VISUAL INVERSI KODE */
+function applyVisualMode(mode) {
+  const splitOverlay = document.getElementById("splitOverlay");
+  const alertHud = document.getElementById("cutsceneAlert");
+  
+  document.body.classList.remove("full-invert");
+  splitOverlay.style.display = "none";
+  alertHud.style.display = "none";
+
+  if (mode === "split") {
+    splitOverlay.style.display = "block";
+    alertHud.innerHTML = "CODE 'BLDS' ACTIVATED // RIGHT CORE INVERTED // +5 STREAK";
+    alertHud.style.display = "block";
+  } 
+  else if (mode === "full") {
+    document.body.classList.add("full-invert");
+    alertHud.innerHTML = "CODE 'BLACK' ACTIVATED // OVERALL SCREEN INVERTED // +5 STREAK";
+    alertHud.style.display = "block";
+  } 
+  else if (mode === "normal") {
+    alertHud.innerHTML = "CODE 'WHITE' ACTIVATED // FRAMEWORK RE-CALIBRATED TO NORMAL";
+    alertHud.style.display = "block";
+    setTimeout(() => { alertHud.style.display = "none"; }, 4000);
+  }
+}
+
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
@@ -1008,30 +1131,26 @@ function unlockCode(){
     return;
   }
 
-  if (v === "lorenzo") {
-    streakData.count += 50;
+  if (v === "blds") {
+    streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Streak & Wujud Pet / Achievements Berevolusi!");
+    applyVisualMode("split");
+    alert("⚡ KODE BLDS BERHASIL: +5 Streak & Split-Inversion Kanan Aktif!");
   } 
-  else if (v === "nayottama") {
-    streakData.count += 30;
+  else if (v === "black") {
+    streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Streak & Wujud Pet / Achievements Berevolusi!");
+    applyVisualMode("full");
+    alert("💀 KODE BLACK BERHASIL: +5 Streak & Full Screen Inverted!");
   } 
-  else if (v === "prince") {
-    streakData.count += 20;
+  else if (v === "white") {
+    applyVisualMode("normal");
+    alert("🔄 KODE WHITE BERHASIL: Sistem dibersihkan, visual kembali normal!");
+  } 
+  else if (v === "lorenzo" || v === "nayottama" || v === "prince") {
+    streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Streak & Wujud Pet / Achievements Berevolusi!");
-  } 
-  else if (v === "blds") {
-    streakData.count += 10;
-    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Streak & Wujud Pet / Achievements Berevolusi!");
-  } 
-  else if (v === "white" || v === "black") {
-    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Sinkronisasi visual sukses!`);
-    document.getElementById("codeInput").value = "";
-    return;
+    alert(`⚡ KODE CRITICAL ${v.toUpperCase()} BERHASIL: +5 Streak ditambahkan ke core node!`);
   } 
   else {
     alert("❌ INVALID CODE: Signature core tidak dikenali.");
@@ -1041,7 +1160,6 @@ function unlockCode(){
   saveState();
   updateWidgetDynamicUI(); 
   renderLeaderboard();    
-  
   document.getElementById("codeInput").value = "";
 }
 
