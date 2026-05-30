@@ -647,6 +647,108 @@ footer {
   border-radius: 8px;
   margin-right: 8px;
 }
+
+/* =======================================================
+   ⚡ STYLING TAMBAHAN UNTUK ADMIN PANEL INTERFACE ⚡
+   ======================================================= */
+.admin-floating-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 340px;
+  max-height: 80vh;
+  background: rgba(5, 5, 8, 0.95);
+  border: 2px solid #ff0055;
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.4);
+  border-radius: 16px;
+  z-index: 99999;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: pageFade 0.4s ease;
+}
+
+.admin-header {
+  background: #ff0055;
+  color: #000;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-body {
+  padding: 15px;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 12px;
+}
+
+.admin-section {
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.admin-section h4 {
+  color: #ff0055;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.admin-body label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  display: block;
+  margin-top: 8px;
+}
+
+.admin-body input, .admin-body select {
+  padding: 8px;
+  margin-top: 4px;
+  border-color: rgba(255, 0, 85, 0.3);
+}
+
+.admin-body input:focus, .admin-body select:focus {
+  border-color: #ff0055;
+}
+
+.admin-btn {
+  background: #ff0055 !important;
+  color: #000 !important;
+  border: none !important;
+  font-weight: 600;
+  padding: 8px 12px;
+  width: 100%;
+  margin: 10px 0 0 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.admin-btn:hover {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.code-list-box {
+  background: rgba(0,0,0,0.5);
+  border: 1px dashed rgba(255,255,255,0.2);
+  padding: 8px;
+  border-radius: 8px;
+  max-height: 90px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 11px;
+  color: #00ffcc;
+  margin-top: 5px;
+}
 </style>
 </head>
 
@@ -950,6 +1052,76 @@ footer {
   </div>
 </div>
 
+<div class="admin-floating-panel" id="adminPanel">
+  <div class="admin-header">
+    <span>🛡️ BLDS ADMIN MATRIX</span>
+    <span style="cursor:pointer; font-weight:bold;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span>
+  </div>
+  <div class="admin-body">
+    
+    <div class="admin-section">
+      <h4>1. Core User Modification</h4>
+      <label>Dominion Name:</label>
+      <input type="text" id="admDomName">
+      
+      <label>Streak Count (Days):</label>
+      <input type="number" id="admStreak">
+      
+      <label>Highest Streak (For Badges):</label>
+      <input type="number" id="admHighStreak">
+      
+      <label>Core Path / Pet Type:</label>
+      <select id="admPetType">
+        <option value="dragon">Dragon (Void)</option>
+        <option value="fish">Fish (Abyss)</option>
+        <option value="wolf">Wolf (Shadow)</option>
+      </select>
+      
+      <label>Pet Custom Nickname:</label>
+      <input type="text" id="admPetNick">
+      
+      <button class="admin-btn" onclick="executeAdminUserUpdate()">APPLY USER CHANGES</button>
+    </div>
+
+    <div class="admin-section">
+      <h4>2. Override Global Rank Title</h4>
+      <label>Custom Force Rank Title:</label>
+      <input type="text" id="admForceRank" placeholder="Contoh: GOD OF THE ECLIPSE">
+      <button class="admin-btn" onclick="executeAdminRankOverride()">OVERRIDE RANK</button>
+    </div>
+
+    <div class="admin-section">
+      <h4>3. Edit Leaderboard Data</h4>
+      <label>Select Target Leaderboard Slot:</label>
+      <select id="admLbIndex" onchange="loadTargetLbSlotData()"></select>
+      
+      <label>Edit Name In Slot:</label>
+      <input type="text" id="admLbName">
+      
+      <label>Edit Streak In Slot:</label>
+      <input type="number" id="admLbStreak">
+      
+      <label>Edit Pet/Stage Label:</label>
+      <input type="text" id="admLbLabel">
+      
+      <button class="admin-btn" onclick="executeAdminLbUpdate()">MUTATE LEADERBOARD SLOT</button>
+    </div>
+
+    <div class="admin-section">
+      <h4>4. Core System Code List</h4>
+      <div class="code-list-box">
+        - - - ACTIVE CORE CODES - - -<br>
+        • blds : Inverted split cinematic<br>
+        • black : Full filter screen inverted<br>
+        • white : Normal visual calibration<br>
+        • -OWNER_ONLY- : Trigger Admin Board<br>
+        • lorenzo / nayottama / prince : Core system activation signatures
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <footer>
   <div class="footer-content">
     <div class="footer-links">
@@ -988,10 +1160,12 @@ let streakData = {
     dragon: false,
     fish: false,
     wolf: false
-  }
+  },
+  forcedRankTitle: "" // Penambahan variabel untuk admin override rank
 };
 
-const DEFAULT_LEADERBOARD = [
+// Ubah ke let agar data leaderboard default bisa dimanipulasi admin secara realtime
+let DEFAULT_LEADERBOARD = [
   { name: "Michael Lorenzo", streak: 152, petLabel: "Fase 5: Overlord Cosmic Dragon" },
   { name: "William Nayottama", streak: 121, petLabel: "Fase 5: Fenrir God of the Void" },
   { name: "Prince Felix", streak: 98, petLabel: "Fase 4: Obsidian Eclipse Dragon" },
@@ -1008,7 +1182,7 @@ const DEFAULT_LEADERBOARD = [
   { name: "Gani Galaxy", streak: 19, petLabel: "Fase 2: Shadow Wolf Pup" },
   { name: "Edo Zero", streak: 14, petLabel: "Fase 2: Void Dragon Hatchling" },
   { name: "Tio Matrix", streak: 11, petLabel: "Fase 2: Abyss Angler Whelp" },
-  { name: "Riko Titan", streak: 9, petLabel: "Fase 2: Void Dragon Hatchling" },
+  { name: "Riko Titan", streak: 9, merge: true, petLabel: "Fase 2: Void Dragon Hatchling" },
   { name: "Andi Nova", streak: 6, petLabel: "Fase 1: Shadow Spirit Egg" },
   { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
 ];
@@ -1045,6 +1219,7 @@ function getPetSvg(type, count) {
 
 function saveState() {
   localStorage.setItem("BLDS_STR_FINAL_v2", JSON.stringify(streakData));
+  localStorage.setItem("BLDS_ADM_LB_OVERRIDE", JSON.stringify(DEFAULT_LEADERBOARD));
 }
 
 function loadState() {
@@ -1056,6 +1231,11 @@ function loadState() {
     }
   }
 
+  const savedLb = localStorage.getItem("BLDS_ADM_LB_OVERRIDE");
+  if(savedLb) {
+    DEFAULT_LEADERBOARD = JSON.parse(savedLb);
+  }
+
   if (streakData.count >= 100) {
     streakData.unlockedPermanently[streakData.petType] = true;
   }
@@ -1063,6 +1243,7 @@ function loadState() {
   checkStreakValidity();
   updateWidgetDynamicUI();
   renderLeaderboard();
+  populateAdminPanelDropdowns();
 }
 
 function checkStreakValidity() {
@@ -1090,16 +1271,12 @@ function closeResetModal() {
   document.getElementById("resetConfirmModal").style.display = "none";
 }
 
-/* INTERAKSI MODAL YES BERHASIL: RESET STREAK + TRIGGER PEMILIHAN PET BARU */
 function confirmResetStreak() {
   streakData.count = 0;
   streakData.lastCalibratedTimestamp = null;
   saveState();
-
-  // Tutup panel konfirmasi
   closeResetModal();
 
-  // Set judul modal registrasi biar dinamis & langsung nampilin pemilihan pet
   document.getElementById("modalRegTitle").innerHTML = "CHOOSE NEW CORE PATHWAY";
   document.getElementById("dominionNameInput").value = streakData.dominionName || "";
   document.getElementById("nameModal").style.display = "flex";
@@ -1138,6 +1315,11 @@ function getPetEvolutionEngine(count, type) {
     if (type === "dragon") stageText = "Fase 1: Anomaly Dragon Egg";
     else if (type === "fish") stageText = "Fase 1: Biolume Aquatic Egg";
     else stageText = "Fase 1: Shadow Spirit Egg";
+  }
+
+  // Jika ada forcedRankTitle dari Admin, override text rank aslinya
+  if(streakData.forcedRankTitle) {
+    rank = streakData.forcedRankTitle;
   }
 
   return { stage: stageText, rank: rank, glow: glow };
@@ -1418,26 +1600,34 @@ function applyVisualMode(mode) {
 }
 
 function unlockCode() {
-  let v = document.getElementById("codeInput").value.toLowerCase().trim();
+  let v = document.getElementById("codeInput").value.trim();
 
   if (!v) {
     alert("KODE TIDAK BOLEH KOSONG!");
     return;
   }
 
-  if (v === "blds") {
+  // Pengecekan Admin Code Khusus
+  if (v === "-OWNER_ONLY-") {
+    openAdminMatrixPanel();
+    document.getElementById("codeInput").value = "";
+    return;
+  }
+
+  let lowerV = v.toLowerCase();
+  if (lowerV === "blds") {
     runBldsCinematicCutscene();
   } 
-  else if (v === "black") {
+  else if (lowerV === "black") {
     applyVisualMode("full");
     alert("💀 KODE BLACK BERHASIL: Full Screen Inverted!");
   } 
-  else if (v === "white") {
+  else if (lowerV === "white") {
     applyVisualMode("normal");
-    alert("🔄 KODE WHITE BERHASIL: Sistem dibersihkan, visual kembali normal!");
+    alert("🔄 KODE WHITE BERHASIL: Visual kembali normal!");
   } 
-  else if (v === "lorenzo" || v === "nayottama" || v === "prince") {
-    alert(`⚡ CORE CODENODE SIGNATURE ${v.toUpperCase()} AKTIF!`);
+  else if (lowerV === "lorenzo" || lowerV === "nayottama" || lowerV === "prince") {
+    alert(`⚡ CORE CODENODE SIGNATURE ${lowerV.toUpperCase()} AKTIF!`);
   } 
   else {
     alert("❌ INVALID CODE: Signature core tidak dikenali.");
@@ -1445,6 +1635,81 @@ function unlockCode() {
   }
 
   document.getElementById("codeInput").value = "";
+}
+
+/* =======================================================
+   ⚡ CORE ENGINE ENGINE UNTUK MODUL ADMIN TOOLS ⚡
+   ======================================================= */
+function openAdminMatrixPanel() {
+  document.getElementById("adminPanel").style.display = "flex";
+  
+  // Ambil value stat user saat ini & pasang di form admin
+  document.getElementById("admDomName").value = streakData.dominionName || "";
+  document.getElementById("admStreak").value = streakData.count;
+  document.getElementById("admHighStreak").value = streakData.highestCount;
+  document.getElementById("admPetType").value = streakData.petType;
+  document.getElementById("admPetNick").value = streakData.petCustomName || "";
+  document.getElementById("admForceRank").value = streakData.forcedRankTitle || "";
+  
+  loadTargetLbSlotData();
+  alert("🛡️ ACCESS GRANTED: Admin Control Injected Successfully!");
+}
+
+function populateAdminPanelDropdowns() {
+  const select = document.getElementById("admLbIndex");
+  if(!select) return;
+  select.innerHTML = "";
+  DEFAULT_LEADERBOARD.forEach((user, idx) => {
+    let opt = document.createElement("option");
+    opt.value = idx;
+    opt.innerHTML = `Slot #${idx+1} - ${user.name}`;
+    select.appendChild(opt);
+  });
+}
+
+function loadTargetLbSlotData() {
+  const idx = document.getElementById("admLbIndex").value;
+  if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
+  
+  const target = DEFAULT_LEADERBOARD[idx];
+  document.getElementById("admLbName").value = target.name;
+  document.getElementById("admLbStreak").value = target.streak;
+  document.getElementById("admLbLabel").value = target.petLabel;
+}
+
+function executeAdminUserUpdate() {
+  streakData.dominionName = document.getElementById("admDomName").value.trim();
+  streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
+  streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
+  streakData.petType = document.getElementById("admPetType").value;
+  streakData.petCustomName = document.getElementById("admPetNick").value.trim();
+  
+  saveState();
+  updateWidgetDynamicUI();
+  renderLeaderboard();
+  populateAdminPanelDropdowns();
+  alert("✨ Admin Node: Core User Data Updated!");
+}
+
+function executeAdminRankOverride() {
+  streakData.forcedRankTitle = document.getElementById("admForceRank").value.trim();
+  saveState();
+  updateWidgetDynamicUI();
+  alert("✨ Admin Node: Rank Title Overridden!");
+}
+
+function executeAdminLbUpdate() {
+  const idx = document.getElementById("admLbIndex").value;
+  if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
+  
+  DEFAULT_LEADERBOARD[idx].name = document.getElementById("admLbName").value.trim();
+  DEFAULT_LEADERBOARD[idx].streak = parseInt(document.getElementById("admLbStreak").value) || 0;
+  DEFAULT_LEADERBOARD[idx].petLabel = document.getElementById("admLbLabel").value.trim();
+  
+  saveState();
+  renderLeaderboard();
+  populateAdminPanelDropdowns();
+  alert(`✨ Admin Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
