@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-
 *{
   margin:0;
   padding:0;
@@ -27,50 +26,14 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
-  transition: filter 0.8s ease, background 0.8s ease, color 0.8s ease;
   position: relative;
 }
 
-/* DIMENSI FULL BLACK INVERTED */
-body.inverted-dimension {
-  filter: invert(100%);
-  background: #fff;
-}
-
-/* REAL INVERSION SPLIT (KIRI NORMAL, KANAN INVERSI) */
-.split-invert-layer {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  height: 100%;
-  background: transparent;
-  backdrop-filter: invert(100%);
-  z-index: 999;
-  pointer-events: none;
-  display: none;
-}
-
-body.split-dimension .split-invert-layer {
-  display: block;
-}
-
-body.split-dimension {
-  background: #000;
-}
-
-body.split-dimension .sky,
-body.split-dimension .eclipse {
-  opacity: 0.3;
-}
-
-/* SKY */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(to bottom,#000,#050816);
   z-index:-3;
-  transition: opacity 0.8s ease;
 }
 
 .star{
@@ -88,7 +51,6 @@ body.split-dimension .eclipse {
   to{ transform:translateY(110vh); }
 }
 
-/* ECLIPSE BACKGROUND */
 .eclipse{
   position:fixed;
   top:50%;
@@ -101,7 +63,6 @@ body.split-dimension .eclipse {
   opacity:.15;
   z-index:-2;
   animation:eclipseBackground 8s ease-in-out infinite;
-  transition: opacity 0.8s ease;
 }
 
 @keyframes eclipseBackground{
@@ -109,7 +70,6 @@ body.split-dimension .eclipse {
   50%{ transform:translate(-50%,-50%) scale(1.2); }
 }
 
-/* MAIN CONTAINER */
 .container{
   width:100%;
   max-width:950px;
@@ -125,12 +85,10 @@ body.split-dimension .eclipse {
   z-index: 5;
 }
 
-/* MAIN LOGO */
 .logo{
   width:140px;
   filter:drop-shadow(0 0 15px rgba(255,255,255,0.6));
   animation:floatLogo 4s ease-in-out infinite;
-  transition: transform 0.5s ease, filter 0.8s ease;
 }
 
 @keyframes floatLogo{
@@ -142,9 +100,6 @@ body.split-dimension .eclipse {
   margin-top:12px;
   letter-spacing:4px;
   font-size:28px;
-  animation:fadeUp 1.5s ease;
-  transition: color 0.8s ease;
-  min-height: 42px;
 }
 
 .core-status {
@@ -154,10 +109,8 @@ body.split-dimension .eclipse {
   margin-top: 10px;
   margin-bottom: 15px;
   display: none;
-  min-height: 15px;
 }
 
-/* STREAK WIDGET HUD */
 .streak-widget {
   display: inline-flex;
   align-items: center;
@@ -170,10 +123,9 @@ body.split-dimension .eclipse {
   letter-spacing: 1px;
   margin-bottom: 15px;
   display: none;
-  animation: fadeUp 0.8s ease;
 }
 
-/* STREAK PET HUD SYSTEM (TIKTOK STYLE) */
+/* PET HUD BOX */
 .pet-hud-box {
   display: none;
   background: rgba(255, 255, 255, 0.03);
@@ -184,7 +136,6 @@ body.split-dimension .eclipse {
   max-width: 280px;
   margin-bottom: 20px;
   text-align: center;
-  animation: fadeUp 1s ease;
 }
 
 .pet-name-container {
@@ -199,54 +150,39 @@ body.split-dimension .eclipse {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(255,255,255,0.5);
 }
 
 .edit-pet-btn {
-  background: transparent;
-  border: none;
+  background: transparent !important;
+  border: none !important;
   color: rgba(255,255,255,0.4);
   cursor: pointer;
   font-size: 11px;
-  padding: 2px;
-  margin: 0;
-}
-.edit-pet-btn:hover {
-  color: #fff;
-  background: transparent;
-  transform: none;
-  box-shadow: none;
+  padding: 2px !important;
+  margin: 0 !important;
 }
 
 .pet-stage-display {
   font-size: 9px;
   color: rgba(255,255,255,0.4);
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 10px;
 }
 
 .pet-image-frame {
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-}
-
-/* ANIMASI BERGANDING/BREATHING BERGERAK */
-.pet-media {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  animation: petBreathing 3s ease-in-out infinite;
+  overflow: hidden;
 }
 
 @keyframes petBreathing {
-  0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
-  50% { transform: translateY(-6px) scale(1.04); filter: drop-shadow(0 0 18px rgba(255,255,255,0.6)); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.03); }
 }
 
 .calibration-container {
@@ -254,7 +190,6 @@ body.split-dimension .eclipse {
   width: 100%;
   max-width: 320px;
   display: none;
-  animation: fadeUp 1.2s ease;
 }
 
 .calibration-box {
@@ -262,7 +197,6 @@ body.split-dimension .eclipse {
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   padding: 15px;
-  text-align: center;
 }
 
 .calibration-box p {
@@ -272,7 +206,6 @@ body.split-dimension .eclipse {
   margin-bottom: 10px;
 }
 
-/* BUTTONS */
 button{
   padding:11px 20px;
   margin:6px;
@@ -282,8 +215,6 @@ button{
   border-radius:12px;
   cursor:pointer;
   transition:.35s;
-  position:relative;
-  overflow:hidden;
   font-family:Poppins,sans-serif;
 }
 
@@ -291,23 +222,15 @@ button:hover{
   background:white;
   color:black;
   transform:scale(1.05);
-  box-shadow:0 0 15px rgba(255,255,255,.4);
 }
 
 button:disabled {
-  background: transparent !important;
   color: rgba(255,255,255,0.3) !important;
   border-color: rgba(255,255,255,0.1) !important;
   cursor: not-allowed;
   transform: none !important;
-  box-shadow: none !important;
 }
 
-button:active:not(:disabled){
-  transform:scale(.95);
-}
-
-/* MENU DISPLAY */
 .menu{
   display:none;
   flex-direction:column;
@@ -316,16 +239,15 @@ button:active:not(:disabled){
   max-width:320px;
 }
 
-/* PAGE WRAPPERS */
 .page{
   display:none;
   width:100%;
   margin-top:25px;
-  animation:pageFade .7s ease;
+  animation:pageFade .5s ease;
 }
 
 @keyframes pageFade{
-  from{ opacity:0; transform:translateY(20px); }
+  from{ opacity:0; transform:translateY(15px); }
   to{ opacity:1; transform:translateY(0); }
 }
 
@@ -337,17 +259,8 @@ button:active:not(:disabled){
   text-align:left;
   line-height:1.9;
   backdrop-filter:blur(5px);
-  animation:fadeUp 1s ease;
-  box-shadow:0 0 20px rgba(255,255,255,.05);
-  transition: background 0.8s ease, border 0.8s ease;
 }
 
-@keyframes fadeUp{
-  from{ opacity:0; transform:translateY(25px); }
-  to{ opacity:1; transform:translateY(0); }
-}
-
-/* PROGRESS BAR SYSTEM */
 .progress-wrapper {
   margin-bottom: 25px;
   background: rgba(255, 255, 255, 0.02);
@@ -360,9 +273,7 @@ button:active:not(:disabled){
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  letter-spacing: 1px;
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.7);
 }
 
 .progress-container {
@@ -377,29 +288,21 @@ button:active:not(:disabled){
   height: 100%;
   width: 0%;
   background: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.6s ease;
 }
 
-/* INPUT SYSTEM */
-input{
+input, select {
   width:100%;
   padding:12px;
-  background:transparent;
+  background:#000;
   border:1px solid rgba(255,255,255,.3);
   border-radius:12px;
   color:white;
   margin-top:10px;
   outline:none;
-  transition:.3s;
+  font-family: Poppins, sans-serif;
 }
 
-input:focus{
-  border-color:white;
-  box-shadow:0 0 15px rgba(255,255,255,.2);
-}
-
-/* MODAL SYSTEM (POPUP GENERAL) */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -420,129 +323,30 @@ input:focus{
   border-radius: 18px;
   padding: 30px;
   text-align: center;
-  box-shadow: 0 0 30px rgba(255,255,255,0.05);
-  animation: fadeUp 0.5s ease;
 }
 
-/* LEADERBOARD TABLE STRUCTURE */
 .leaderboard-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .leaderboard-table th, .leaderboard-table td {
-  padding: 10px;
+  padding: 8px 10px;
   text-align: left;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .leaderboard-table th {
   color: rgba(255,255,255,0.4);
-  font-weight: 400;
-  letter-spacing: 1px;
 }
 
 .rank-highlight {
   color: #fff;
   font-weight: 600;
-  text-shadow: 0 0 8px rgba(255,255,255,0.5);
 }
 
-/* STANDARD CUTSCENE */
-.cutscene{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.95);
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  z-index:9999;
-  overflow-y:auto;
-  padding:40px 20px;
-  animation:sceneFade .7s ease;
-}
-
-@keyframes sceneFade{
-  from{ opacity:0; }
-  to{ opacity:1; }
-}
-
-.bigLogo{
-  width:200px;
-  filter:drop-shadow(0 0 25px rgba(255,255,255,0.7));
-  animation:floatLogo 3s ease-in-out infinite;
-  margin-top:20px;
-}
-
-.glitch{
-  animation:glitchAnim .15s infinite;
-  margin-top:30px;
-  text-align:center;
-}
-
-@keyframes glitchAnim{
-  0%,100%{ opacity:1; }
-  50%{ opacity:.3; }
-}
-
-/* ULTIMATE ECLIPSE CINEMATIC CUTSCENE */
-.ultimate-scene {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 10000;
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.ultimate-logo-wrapper {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.ultimate-logo-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 0 30px rgba(255,255,255,0.8));
-  animation: pulseNewCore 3s ease-in-out infinite;
-}
-
-@keyframes pulseNewCore {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
-  50% { transform: scale(1.1); filter: drop-shadow(0 0 45px rgba(255,255,255,0.9)); }
-}
-
-.ultimate-subtitle {
-  margin-top: 50px;
-  font-size: 24px;
-  letter-spacing: 8px;
-  font-weight: 300;
-  text-transform: uppercase;
-  height: 40px;
-  color: #fff;
-  text-shadow: 0 0 15px rgba(255,255,255,0.7);
-  transition: all 0.4s ease;
-  text-align: center;
-}
-
-.ultimate-subtitle.blds-glow {
-  font-weight: 600;
-  font-size: 36px;
-  letter-spacing: 15px;
-  text-shadow: 0 0 35px #fff, 0 0 15px rgba(255,255,255,0.5);
-}
-
-/* LOADING INITIALIZATION */
 .loader{
   position:fixed;
   inset:0;
@@ -553,7 +357,7 @@ input:focus{
   align-items:center;
   flex-direction:column;
   gap:20px;
-  transition:1s;
+  transition:.5s;
 }
 
 .loader.hidden{
@@ -562,71 +366,22 @@ input:focus{
 }
 
 .loaderCircle{
-  width:90px;
-  height:90px;
+  width:60px;
+  height:60px;
   border:3px solid rgba(255,255,255,.1);
   border-top:3px solid white;
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
-  to{ transform:rotate(360deg); }
-}
+@keyframes spin{ to{ transform:rotate(360deg); } }
 
-.loaderText{
-  letter-spacing:4px;
-  font-size:14px;
-  opacity:.8;
-}
-
-/* FLASH COMPONENT */
-.flash{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  z-index:99998;
-}
-
-.flash.active{
-  animation:flashEffect .4s ease;
-}
-
-@keyframes flashEffect{
-  0%{ opacity:.8; }
-  100%{ opacity:0; }
-}
-
-/* NOTIFICATION BAR */
-.notification{
-  position:fixed;
-  top:25px;
-  right:25px;
-  background:black;
-  border:1px solid white;
-  padding:15px 20px;
-  border-radius:15px;
-  box-shadow:0 0 20px rgba(255,255,255,.2);
-  z-index:999999;
-  animation:slideIn .5s ease;
-}
-
-@keyframes slideIn{
-  from{ opacity:0; transform:translateX(100px); }
-  to{ opacity:1; transform:translateX(0); }
-}
-
-/* FOOTER ARCHITECTURE */
 footer {
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding: 20px;
-  backdrop-filter: blur(10px);
-  z-index: 10;
-  transition: background 0.8s ease;
+  margin-top: 40px;
 }
 
 .footer-content {
@@ -639,83 +394,32 @@ footer {
   gap: 15px;
 }
 
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.footer-links a, .audio-footer-btn {
+.footer-links a {
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
   font-size: 12px;
-  letter-spacing: 2px;
-  transition: 0.3s;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 8px;
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px;
+  margin-right: 8px;
 }
-
-.audio-footer-btn {
-  cursor: pointer;
-  font-weight: bold;
-  user-select: none;
-}
-
-.footer-links a:hover, .audio-footer-btn:hover {
-  color: #fff;
-  border-color: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.footer-credits {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
-  letter-spacing: 1px;
-}
-
-/* MOBILE RESPONSIVENESS */
-@media(max-width:700px){
-  .logo{ width:120px; }
-  .title{ font-size:22px; }
-  .box{ padding:20px; font-size:14px; }
-  .bigLogo{ width:170px; }
-  .footer-content { flex-direction: column; text-align: center; }
-  .footer-links { flex-direction: column; width: 100%; gap: 10px; }
-  .footer-links a, .audio-footer-btn { width: 100%; }
-  .ultimate-logo-wrapper { width: 200px; height: 200px; }
-  .ultimate-subtitle { font-size: 18px; }
-  .ultimate-subtitle.blds-glow { font-size: 26px; }
-  
-  .split-invert-layer {
-    left: 50%;
-    width: 50%;
-    height: 100%;
-  }
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="split-invert-layer"></div>
-
-<div class="ultimate-scene" id="eternalScene">
-  <div style="font-family: monospace; color: #fff; font-size: 13px; max-width: 600px; width: 90%; text-align: left; line-height: 2;" id="eternalConsole"></div>
-</div>
-
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3 style="letter-spacing: 3px; font-size: 16px; margin-bottom: 10px;">IDENTITY REQUISITION</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6;">Before accessing the mainframe layers, input your designation into the secure database matrix.</p>
+    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px;">MAIN MATRIX REGISTRATION</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name and choose your tracking core type.</p>
     <br>
-    <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center; letter-spacing: 2px;">
+    <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center;">
+    <br>
+    <select id="petTypeSelect">
+      <option value="dragon">🐉 JALUR NAGA (THE VOID DRAGON)</option>
+      <option value="fish">🐟 JALUR IKAN (THE ABYSS LEVIATHAN)</option>
+      <option value="wolf">🐺 JALUR SERIGALA (THE SHADOW FENRIR)</option>
+    </select>
     <br><br>
     <button onclick="saveDominionName()" style="width: 100%; margin: 0;">REGISTER TO MAINBOARD</button>
   </div>
@@ -723,35 +427,22 @@ footer {
 
 <div class="modal-overlay" id="petNameModal">
   <div class="modal-box">
-    <h3 style="letter-spacing: 3px; font-size: 16px; margin-bottom: 10px;" id="petModalTitle">ANOMALY FRAGMENT DETECTED</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6;">Establish a nomenclature bond with your tracking core resonance entity.</p>
-    <br>
-    <input type="text" id="petNameInput" placeholder="GIVE PET A NAME" maxlength="12" style="text-align: center; letter-spacing: 2px;">
+    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px;">MUTATE CUSTOM NAME</h3>
+    <input type="text" id="petNameInput" placeholder="GIVE NICKNAME" maxlength="12" style="text-align: center;">
     <br><br>
-    <button onclick="savePetName()" style="width: 100%; margin: 0;">BIND CORENODE SIGNATURE</button>
+    <button onclick="savePetCustomName()" style="width: 100%; margin: 0;">BIND CORENODE SIGNATURE</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="collapseModal">
-  <div class="modal-box" style="border-color: rgba(255,0,0,0.4); box-shadow: 0 0 30px rgba(255,0,0,0.1);">
-    <h3 style="letter-spacing: 3px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px;">⚠️ CRITICAL ERROR: CORE COLLAPSE</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.8; text-align: justify;">
-      Connection lost. The resonance has faded due to server calibration windows lapse. Your previous structural sync progress and pet manifestation has been wiped.
+  <div class="modal-box" style="border-color: rgba(255,0,0,0.4);">
+    <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px;">⚠️ SYNC LAPSE DETECTED</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.6); text-align: justify;">
+      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0. Namun, wujud tertinggi pet Anda aman dan terkunci!
     </p>
     <br>
-    <div style="background: rgba(255,0,0,0.05); border: 1px solid rgba(255,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 11px; color: #ff8888; letter-spacing: 1px;">
-      RESONANCE STREAK: RESET TO 0 DAYS
-    </div>
-    <br>
-    <button onclick="closeCollapseModal()" style="width: 100%; margin: 0; border-color: rgba(255,255,255,0.3);">RE-CALIBRATE FRAMEWORK</button>
+    <button onclick="closeCollapseModal()" style="width: 100%; margin: 0;">RE-CALIBRATE FRAMEWORK</button>
   </div>
-</div>
-
-<div class="ultimate-scene" id="ultimateScene">
-  <div class="ultimate-logo-wrapper">
-    <img src="logo.png" class="ultimate-logo-image">
-  </div>
-  <div class="ultimate-subtitle" id="ultimateSubtitle"></div>
 </div>
 
 <div class="loader" id="loader">
@@ -759,42 +450,37 @@ footer {
   <div class="loaderText">ENTERING BLACKLIGHTDOMS</div>
 </div>
 
-<div class="flash" id="flash"></div>
 <div class="sky" id="sky"></div>
 <div class="eclipse"></div>
 
 <div class="container">
-
-  <img src="logo.png" class="logo" id="mainLogo">
+  <img src="https://i.imgur.com/83pZpG1.png" class="logo" id="mainLogo">
   
   <div class="streak-widget" id="streakWidget">
     RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
     <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
-    RANK: <span id="rankTitle" style="font-weight:600; color: rgba(255,255,255,0.8);">VOID WALKER</span>
+    RANK: <span id="rankTitle" style="font-weight:600;">VOID WALKER</span>
   </div>
 
   <div class="pet-hud-box" id="petHudBox">
     <div class="pet-name-container">
       <div class="pet-name-display" id="petNameDisplay">UNNAMED ENTITY</div>
-      <button class="edit-pet-btn" onclick="openRenamePetModal()" title="Change Pet Name">✏️</button>
+      <button class="edit-pet-btn" onclick="openRenamePetModal()">✏️</button>
     </div>
-    <div class="pet-stage-display" id="petStageDisplay">Fase 1: Anomaly Egg</div>
-    <div class="pet-image-frame">
-      <img src="egg.gif" class="pet-media" id="petMedia">
-    </div>
+    <div class="pet-stage-display" id="petStageDisplay">Fase 1</div>
+    <div class="pet-image-frame" id="petImageFrameSlot">
+      </div>
   </div>
 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
   <div class="core-status" id="coreStatus">● CORE LINKED: ONLINE | ECLIPSE LAYER-0</div>
 
-  <button id="enterBtn" onclick="enter()">
-    ENTER THE ECLIPSE
-  </button>
+  <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">ORIGIN</button>
     <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
-    <button onclick="showPage('leaderboardPage')">LEADERBOARD</button>
+    <button onclick="showPage('leaderboardPage')">LEADERBOARD (TOP 20)</button>
     <button onclick="showPage('archives')">ARCHIVES</button>
     <button onclick="showPage('code')">CODE</button>
   </div>
@@ -814,15 +500,9 @@ footer {
 
   <div class="page" id="achievement">
     <div class="progress-wrapper">
-      <div class="progress-header">
-        <span>CORE COMPLETION</span>
-        <span id="progressPercent">0%</span>
-      </div>
-      <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
+      <div class="progress-header"><span>CORE COMPLETION</span><span id="progressPercent">0%</span></div>
+      <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
     </div>
-
     <div class="box">
       <h2>ACHIEVEMENTS</h2>
       <br>
@@ -832,36 +512,39 @@ footer {
 
   <div class="page" id="leaderboardPage">
     <div class="box">
-      <h2>DOMINION LEADERBOARD</h2>
-      <p style="font-size:11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-top:5px;">
-        Peringkat resmi disinkronisasi berkala oleh Administrator pusat. Klik generator di bawah untuk menyalin kode data orisinal Anda dan bagikan ke komunitas.
-      </p>
-      
+      <h2>DOMINION LEADERBOARD (TOP 20)</h2>
       <table class="leaderboard-table">
         <thead>
           <tr>
             <th>RANK</th>
             <th>DOMINION NAME</th>
             <th>STREAK</th>
-            <th>PET ASSET</th>
+            <th>PET TYPE</th>
           </tr>
         </thead>
         <tbody id="leaderboardDataBody">
-          <tr><td class="rank-highlight">#1</td><td>Michael Lorenzo</td><td>105 Days</td><td>🌌 Overlord Avatar</td></tr>
-          <tr><td class="rank-highlight">#2</td><td>William Nayottama</td><td>88 Days</td><td>⚔️ Sovereign Blade</td></tr>
-          <tr><td class="rank-highlight">#3</td><td>Prince Felix</td><td>74 Days</td><td>🦅 Eclipse Fiend</td></tr>
+          <tr><td class="rank-highlight">#1</td><td>Michael Lorenzo</td><td>152 Days</td><td>🐉 Overlord Cosmic Dragon</td></tr>
+          <tr><td class="rank-highlight">#2</td><td>William Nayottama</td><td>121 Days</td><td>🐺 Fenrir God of the Void</td></tr>
+          <tr><td class="rank-highlight">#3</td><td>Prince Felix</td><td>98 Days</td><td>🐉 Obsidian Eclipse Dragon</td></tr>
+          <tr><td>#4</td><td>Rian Void</td><td>84 Days</td><td>🐟 Abyssal Dark Leviathan</td></tr>
+          <tr><td>#5</td><td>Zack Eclipse</td><td>76 Days</td><td>🐺 Alpha Cosmic Fenrir</td></tr>
+          <tr><td>#6</td><td>Darel Shadow</td><td>69 Days</td><td>🐉 Lightning Void Drake</td></tr>
+          <tr><td>#7</td><td>Niko Core</td><td>55 Days</td><td>🐟 Neon Serpent Fish</td></tr>
+          <tr><td>#8</td><td>Vino Nebula</td><td>48 Days</td><td>🐺 Twilight Shadow Wolf</td></tr>
+          <tr><td>#9</td><td>Alex Obsidian</td><td>41 Days</td><td>🐉 Lightning Void Drake</td></tr>
+          <tr><td>#10</td><td>Arka Abyss</td><td>35 Days</td><td>🐟 Neon Serpent Fish</td></tr>
+          <tr><td>#11</td><td>Farel Dark</td><td>29 Days</td><td>🐺 Shadow Wolf Pup</td></tr>
+          <tr><td>#12</td><td>Deva Zenith</td><td>25 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
+          <tr><td>#13</td><td>Roni Star</td><td>22 Days</td><td>🐟 Abyss Angler Whelp</td></tr>
+          <tr><td>#14</td><td>Gani Galaxy</td><td>19 Days</td><td>🐺 Shadow Wolf Pup</td></tr>
+          <tr><td>#15</td><td>Edo Zero</td><td>14 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
+          <tr><td>#16</td><td>Tio Matrix</td><td>11 Days</td><td>🐟 Abyss Angler Whelp</td></tr>
+          <tr><td>#17</td><td>Riko Titan</td><td>9 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
+          <tr><td>#18</td><td>Andi Nova</td><td>6 Days</td><td>🐺 Shadow Spirit Egg</td></tr>
+          <tr><td>#19</td><td>Budi Pulse</td><td>4 Days</td><td>🐉 Anomaly Dragon Egg</td></tr>
+          <tr><td>#20</td><td>Soni Quark</td><td>2 Days</td><td>🐟 Biolume Aquatic Egg</td></tr>
         </tbody>
       </table>
-      
-      <br><hr style="border-color:rgba(255,255,255,0.05);"><br>
-      
-      <h3>YOUR ENCRYPTION GENERATOR</h3>
-      <br>
-      <div style="background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.2); padding:15px; border-radius:10px; font-size:11px; font-family:monospace; word-break:break-all;" id="generatedCodeDisplay">
-        [BLDS-EMPTY-MANIFESTO] Click Generate to initialize array data string.
-      </div>
-      <br>
-      <button onclick="generateShareCode()" style="margin:0; width:100%;">GENERATE CORENODE DATA STRING</button>
     </div>
   </div>
 
@@ -877,8 +560,6 @@ footer {
   <div class="page" id="code">
     <div class="box">
       <h2>CODE SYSTEM</h2>
-      <br>
-      Type hidden code below.
       <input type="text" id="codeInput" placeholder="enter code">
       <br><br>
       <button onclick="unlockCode()">UNLOCK</button>
@@ -891,154 +572,77 @@ footer {
       <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
     </div>
   </div>
-
-</div>
-
-<div class="cutscene" id="forgotScene">
-  <h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
-  <br><br>
-  <div class="box" style="max-width:900px; width:100%;">
-    <h2>THE FORGOTTEN ECLIPSE</h2>
-    <br>
-    Long before BLDS became known… old records were destroyed.
-  </div>
-  <br>
-  <button onclick="closeScene('forgotScene')">CLOSE</button>
-  <br><br>
-</div>
-
-<div class="cutscene" id="flameScene">
-  <img src="logo.png" class="bigLogo">
-  <br><br>
-  <div class="box" style="max-width:900px; width:100%;">
-    <h2>12 FLAMES PROTOCOL</h2>
-    <br>
-    Flame 11 and 12 are automatically reduced to 'non-existent' in human perception.
-  </div>
-  <br>
-  <button onclick="closeScene('flameScene')">CLOSE</button>
-  <br><br>
 </div>
 
 <footer>
   <div class="footer-content">
     <div class="footer-links">
-      <div class="audio-footer-btn" id="audioToggle" onclick="toggleAudio()">🔊 AUDIO: ON</div>
       <a href="https://discord.gg/r4dM4QFteV" target="_blank">DISCORD</a>
-      <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0" target="_blank">WHATSAPP</a>
+      <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">WHATSAPP</a>
     </div>
-    <div class="footer-credits">
-      © 2026 BLACKLIGHTDOMS. Built to survive the shadows.
-    </div>
+    <div style="font-size: 11px; color: rgba(255,255,255,0.3);">© 2026 BLACKLIGHTDOMS.</div>
   </div>
 </footer>
 
 <script>
-
-/* STARS GENERATOR */
+/* STARS BACKGROUND EFFECTS */
 const sky = document.getElementById("sky");
-for(let i=0; i<150; i++){
+for(let i=0; i<100; i++){
   let star = document.createElement("div");
   star.className = "star";
   star.style.left = Math.random()*100+"%";
   star.style.top = Math.random()*-100+"vh";
-  star.style.animationDuration = (3+Math.random()*6)+"s";
+  star.style.animationDuration = (3+Math.random()*5)+"s";
   sky.appendChild(star);
 }
 
-/* LAUNCH WINDOW LOADER */
 window.addEventListener("load",()=>{
-  setTimeout(()=>{
-    document.getElementById("loader").classList.add("hidden");
-  },2200);
+  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1500);
 });
 
-/* AUDIO PARAMS */
-const bgMusic = new Audio("freesound_community-space-ambience-56265.mp3");
-bgMusic.loop = true;
-bgMusic.volume = 0.35;
-
-const clickSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-clickSound.volume = 0.7;
-
-let isMuted = false;
-
-function toggleAudio() {
-  const btn = document.getElementById("audioToggle");
-  if (!isMuted) {
-    bgMusic.volume = 0; clickSound.volume = 0;
-    btn.innerHTML = "🔇 AUDIO: OFF"; isMuted = true;
-  } else {
-    bgMusic.volume = 0.35; clickSound.volume = 0.7;
-    btn.innerHTML = "🔊 AUDIO: ON"; isMuted = false;
-  }
-}
-
-document.body.addEventListener("click",()=>{
-  if(!isMuted) bgMusic.play().catch(()=>{});
-},{once:true});
-
-function initButtonEffects() {
-  document.querySelectorAll("button, .audio-footer-btn, .footer-links a").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      if(!isMuted) { clickSound.currentTime = 0; clickSound.play().catch(()=>{}); }
-      const flash = document.getElementById("flash");
-      flash.classList.add("active"); setTimeout(()=>{ flash.classList.remove("active"); },400);
-    });
-  });
-}
-
-function playGlitchSound() {
-  if (isMuted) return;
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, ctx.currentTime);
-    gain.gain.setValueAtTime(0.4, ctx.currentTime);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + 0.2);
-  } catch(e) {}
-}
-
-function runTerminalMatrixEffect(elementId, targetText, speed = 40, callback = null) {
-  const el = document.getElementById(elementId);
-  el.style.display = "block"; let currentIdx = 0; el.innerHTML = "";
-  const interval = setInterval(() => {
-    if (currentIdx < targetText.length) {
-      el.innerHTML = targetText.substring(0, currentIdx) + "_"; currentIdx++;
-    } else {
-      el.innerHTML = targetText; clearInterval(interval);
-      if(callback) callback();
-    }
-  }, speed);
-}
-
-/* STORAGE STATES & DATA PACKETS */
-let achievements = {
-  forgotten: false, flames: false, codeBreaker: false, lorenzo: false,
-  nayottama: false, prince: false, eclipse: false, dimension2: false,
-  black: false, white: false,
-  streak1: false, streak7: false, streak30: false, streak50: false, streak100: false
-};
-
+/* CORE DATA SYSTEM */
+let achievements = { streak1: false, streak100: false };
 let streakData = {
   count: 0,
+  highestCount: 0, 
   lastCalibratedTimestamp: null,
   dominionName: "",
-  petName: "" // ASSET STRINGS
+  petCustomName: "",
+  petType: "dragon"
 };
 
-function saveStateToStorage() {
-  localStorage.setItem("BLDS_ACHIEVEMENTS", JSON.stringify(achievements));
-  localStorage.setItem("BLDS_STREAK", JSON.stringify(streakData));
+/* URL TEMPAT MENAMPUNG GAMBAR (GANTI PAKAI LINK PNG TRANS-MU SETELAH DIUPLOAD) */
+const PET_IMAGES = {
+  dragon: {
+    f1: "https://i.imgur.com/E0l0Aqy.jpeg", 
+    f2: "https://i.imgur.com/G5gM1jA.jpeg", 
+    f3: "https://i.imgur.com/K6b9H2c.jpeg", 
+    f4: "https://i.imgur.com/M7c8D3b.jpeg", 
+    f5: "https://i.imgur.com/P8d9E4a.jpeg"  
+  },
+  fish: {
+    f1: "https://i.imgur.com/B7xYv9h.jpeg", 
+    f2: "https://i.imgur.com/R3v8N2c.jpeg", 
+    f3: "https://i.imgur.com/H8m9B2x.jpeg", 
+    f4: "https://i.imgur.com/J3k9L4m.jpeg", 
+    f5: "https://i.imgur.com/Y7x9P2o.jpeg"  
+  },
+  wolf: {
+    f1: "https://i.imgur.com/L2k8H4m.jpeg", 
+    f2: "https://i.imgur.com/T3v9K4x.jpeg", 
+    f3: "https://i.imgur.com/O4m8L2b.jpeg", 
+    f4: "https://i.imgur.com/V7x8P2m.jpeg", 
+    f5: "https://i.imgur.com/W2k9K4x.jpeg"  
+  }
+};
+
+function saveState() {
+  localStorage.setItem("BLDS_STR_FINAL_v2", JSON.stringify(streakData));
 }
 
-function loadStateFromStorage() {
-  const savedAch = localStorage.getItem("BLDS_ACHIEVEMENTS");
-  const savedStreak = localStorage.getItem("BLDS_STREAK");
-  if(savedAch) achievements = JSON.parse(savedAch);
-  if(savedStreak) streakData = JSON.parse(savedStreak);
+function loadState() {
+  const savedStr = localStorage.getItem("BLDS_STR_FINAL_v2");
+  if(savedStr) streakData = JSON.parse(savedStr);
   
   checkStreakValidity();
   updateWidgetDynamicUI();
@@ -1048,148 +652,102 @@ function checkStreakValidity() {
   if (!streakData.lastCalibratedTimestamp) return;
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
   if (msElapsed >= (48 * 60 * 60 * 1000)) {
-    playGlitchSound();
     document.getElementById("collapseModal").style.display = "flex";
-    streakData.count = 0;
-    streakData.lastCalibratedTimestamp = null;
-    streakData.petName = ""; // Reset nama pet pas mati
-    saveStateToStorage();
+    streakData.count = 0; 
+    streakData.lastCalibratedTimestamp = null; 
+    saveState();
   }
 }
 
 function closeCollapseModal() {
   document.getElementById("collapseModal").style.display = "none";
   updateWidgetDynamicUI();
-  updateAchievements();
+  updateCalibrationHudUI();
 }
 
-/* ==========================================================
-   🎮 EVOLUSI ASSET PET & MANAGER DATA (SILAKAN UBAH LINK FILE DI SINI)
-   ========================================================== */
-function getPetEvolutionEngine(streak) {
-  let stageText = "Fase 1: Anomaly Egg";
-  let imgLink = "egg.gif"; // Silakan ganti link/file gif kamu disini
-  let rankTitle = "VOID WALKER";
+function getPetEvolutionEngine(highestStreak, type) {
+  let stageText = "";
+  let imgSrc = "";
+  let glow = "0 0 10px #fff";
+  let rank = "VOID WALKER";
 
-  if (streak >= 7 && streak <= 29) {
-    stageText = "Fase 2: Shadow Whelp";
-    imgLink = "shadow_whelp.gif"; 
-    rankTitle = "ECLIPSE SYNCHRONIZER";
-  } else if (streak >= 30 && streak <= 49) {
-    stageText = "Fase 3: Eclipse Beast";
-    imgLink = "eclipse_beast.gif";
-    rankTitle = "RESONANCE KEEPER";
-  } else if (streak >= 50 && streak <= 99) {
-    stageText = "Fase 4: Dominion Guardian";
-    imgLink = "guardian.gif";
-    rankTitle = "DOMINION VANGUARD";
-  } else if (streak >= 100) {
-    // 💥 FASE EVOLUSI BARU PAS STREAK 100 💥
-    stageText = "Fase Final: Overlord Avatar Cosmic";
-    imgLink = "overlord_final.gif";
-    rankTitle = "THE ETERNAL CORE";
+  if (highestStreak >= 100) {
+    rank = "THE ETERNAL CORE";
+    glow = "0 0 35px #00f3ff, 0 0 15px rgba(0,243,255,0.6)";
+    imgSrc = PET_IMAGES[type].f5;
+    if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon";
+    else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan";
+    else stageText = "Fase 5: Fenrir God of the Void";
+  } else if (highestStreak >= 50) {
+    rank = "DOMINION VANGUARD";
+    glow = "0 0 25px #ff003c";
+    imgSrc = PET_IMAGES[type].f4;
+    if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
+    else if (type === "fish") stageText = "Fase 4: Abyssal Dark Leviathan";
+    else stageText = "Fase 4: Alpha Cosmic Fenrir";
+  } else if (highestStreak >= 30) {
+    rank = "RESONANCE KEEPER";
+    glow = "0 0 20px #7800ff";
+    imgSrc = PET_IMAGES[type].f3;
+    if (type === "dragon") stageText = "Fase 3: Lightning Void Drake";
+    else if (type === "fish") stageText = "Fase 3: Neon Serpent Fish";
+    else stageText = "Fase 3: Twilight Shadow Wolf";
+  } else if (highestStreak >= 7) {
+    rank = "ECLIPSE SYNCHRONIZER";
+    glow = "0 0 15px #0096ff";
+    imgSrc = PET_IMAGES[type].f2;
+    if (type === "dragon") stageText = "Fase 2: Void Dragon Hatchling";
+    else if (type === "fish") stageText = "Fase 2: Abyss Angler Whelp";
+    else stageText = "Fase 2: Shadow Wolf Pup";
+  } else {
+    rank = "VOID WALKER";
+    glow = "0 0 10px rgba(255,255,255,0.2)";
+    imgSrc = PET_IMAGES[type].f1;
+    if (type === "dragon") stageText = "Fase 1: Anomaly Dragon Egg";
+    else if (type === "fish") stageText = "Fase 1: Biolume Aquatic Egg";
+    else stageText = "Fase 1: Shadow Spirit Egg";
   }
-  return { stage: stageText, src: imgLink, rank: rankTitle };
+
+  return { stage: stageText, imgSrc: imgSrc, glow: glow, rank: rank };
 }
 
 function updateWidgetDynamicUI() {
-  const engine = getPetEvolutionEngine(streakData.count);
+  const engine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
+  
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
   
-  // Update HUD Pet Box
-  if (streakData.count > 0) {
+  if (streakData.highestCount >= 0) {
     document.getElementById("petHudBox").style.display = "block";
-    document.getElementById("petNameDisplay").innerHTML = streakData.petName ? streakData.petName : "UNNAMED ENTITY";
+    document.getElementById("petNameDisplay").innerHTML = streakData.petCustomName ? streakData.petCustomName : "UNNAMED ENTITY";
     document.getElementById("petStageDisplay").innerHTML = engine.stage;
-    document.getElementById("petMedia").src = engine.src;
-  } else {
-    document.getElementById("petHudBox").style.display = "none";
+    
+    const frame = document.getElementById("petImageFrameSlot");
+    if (frame) {
+      frame.innerHTML = `<img src="${engine.imgSrc}" alt="pet" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:10px; filter: drop-shadow(${engine.glow}); animation: petBreathing 3s ease-in-out infinite;">`;
+    }
   }
 }
 
-/* NICKNAME MANIPULATORS PET */
 function openRenamePetModal() {
-  document.getElementById("petModalTitle").innerHTML = "MUTATE NOMENCLATURE";
-  document.getElementById("petNameInput").value = streakData.petName || "";
+  document.getElementById("petNameInput").value = streakData.petCustomName || "";
   document.getElementById("petNameModal").style.display = "flex";
 }
 
-function savePetName() {
-  const inputVal = document.getElementById("petNameInput").value.trim();
-  if(!inputVal) {
-    alert("CRITICAL ERROR: PET FIELD CANNOT REMAIN VOID."); return;
-  }
-  streakData.petName = inputVal;
-  saveStateToStorage();
+function savePetCustomName() {
+  const val = document.getElementById("petNameInput").value.trim();
+  if(!val) return;
+  streakData.petCustomName = val;
+  saveState();
   document.getElementById("petNameModal").style.display = "none";
   updateWidgetDynamicUI();
-}
-
-function checkStreakMilestones() {
-  let changed = false;
-  if (streakData.count === 1) {
-    // Pertama kali sync langsung disuruh kasih nama pet
-    document.getElementById("petModalTitle").innerHTML = "ANOMALY FRAGMENT DETECTED";
-    document.getElementById("petNameModal").style.display = "flex";
-  }
-  if (streakData.count >= 1 && !achievements.streak1) { achievements.streak1 = true; changed = true; }
-  if (streakData.count >= 7 && !achievements.streak7) { achievements.streak7 = true; changed = true; }
-  if (streakData.count >= 30 && !achievements.streak30) { achievements.streak30 = true; changed = true; }
-  if (streakData.count >= 50 && !achievements.streak50) { achievements.streak50 = true; changed = true; }
-  if (streakData.count >= 100 && !achievements.streak100) {
-    achievements.streak100 = true; saveStateToStorage(); updateAchievements();
-    run100DaysConsoleCutscene(); // CRITICAL CONSOLE SYSTEM OVERRIDE MURNI TEKS
-    return;
-  }
-  if(changed) { saveStateToStorage(); updateAchievements(); }
-}
-
-/* 100 DAYS CONSOLE OVERRIDE CUTSCENE ENGINE (MURNI TEKS NYA NYALA SEPERTI DI JANJIIN) */
-function run100DaysConsoleCutscene() {
-  const savedVolume = bgMusic.volume; bgMusic.volume = 0;
-  const sc = document.getElementById("eternalScene");
-  const con = document.getElementById("eternalConsole");
-  sc.style.display = "flex"; con.innerHTML = "";
-  
-  const logs = [
-    "[PROTOCOL OVERRIDE: LAYER-100 AUTHENTICATED]",
-    "Initializing internal core matrix dump...",
-    "Scanning resonance durability vectors... STABLE.",
-    "--------------------------------------------------",
-    "Humanity spent centuries trying to keep the fire burning.",
-    "But you survived 100 days inside the absolute dark.",
-    "No lapses. No hesitation. Pure alignment.",
-    "Your consciousness is no longer just synchronized with the core...",
-    "The structural equilibrium has completely shifted.",
-    "--------------------------------------------------",
-    "STATUS LOG: YOU ARE THE CORE.",
-    "Your pet has reached its final evolution stage: OVERLORD AVATAR COSMIC.",
-    "Press space or tap anywhere to return to your mainframe."
-  ];
-  let currentLogIdx = 0;
-  function printNextLog() {
-    if (currentLogIdx < logs.length) {
-      con.innerHTML += logs[currentLogIdx] + "<br>"; currentLogIdx++;
-      setTimeout(printNextLog, 1200);
-    } else {
-      const closeHandler = () => {
-        sc.style.display = "none"; if(!isMuted) bgMusic.volume = savedVolume;
-        showAchievement("The Eternal Core"); updateWidgetDynamicUI();
-        window.removeEventListener("click", closeHandler);
-      };
-      window.addEventListener("click", closeHandler);
-    }
-  }
-  printNextLog();
 }
 
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
-  updateWidgetDynamicUI();
   if (!streakData.lastCalibratedTimestamp) {
-    btn.disabled = false; status.innerHTML = "SYSTEM READY FOR INITIAL RESONANCE INTEGRATION"; return;
+    btn.disabled = false; status.innerHTML = "SYSTEM READY FOR INTEGRATION"; return;
   }
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
   const duration24h = 24 * 60 * 60 * 1000;
@@ -1198,10 +756,10 @@ function updateCalibrationHudUI() {
     const timeLeft = duration24h - msElapsed;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-    status.innerHTML = `NEXT SYNC PROTOCOL AVAILABLE IN: ${hours}h ${minutes}m`;
+    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m`;
     setTimeout(updateCalibrationHudUI, 60000);
   } else {
-    btn.disabled = false; status.innerHTML = "CORE DISCONNECTED. ATTENTION: RUN RE-CALIBRATION IMMEDIATELY!";
+    btn.disabled = false; status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
   }
 }
 
@@ -1211,8 +769,16 @@ function calibrateCore() {
     const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
     if (msElapsed < (24 * 60 * 60 * 1000)) return;
   }
-  streakData.count++; streakData.lastCalibratedTimestamp = Date.now();
-  saveStateToStorage(); updateCalibrationHudUI(); checkStreakMilestones();
+  
+  streakData.count++;
+  if (streakData.count > streakData.highestCount) {
+    streakData.highestCount = streakData.count;
+  }
+  
+  streakData.lastCalibratedTimestamp = Date.now();
+  saveState();
+  updateWidgetDynamicUI();
+  updateCalibrationHudUI();
 }
 
 function enter(){
@@ -1220,73 +786,80 @@ function enter(){
     document.getElementById("nameModal").style.display = "flex"; return;
   }
   document.getElementById("enterBtn").style.display = "none";
-  runTerminalMatrixEffect("mainTitle", "BLACKLIGHTDOMS", 35, () => {
-    runTerminalMatrixEffect("coreStatus", "● CORE LINKED: ONLINE | ECLIPSE LAYER-0", 20, () => {
-      document.getElementById("streakWidget").style.display = "inline-flex";
-      document.getElementById("calibrationHud").style.display = "block";
-      document.getElementById("menu").style.display = "flex";
-      updateCalibrationHudUI();
-    });
-  });
+  document.getElementById("streakWidget").style.display = "inline-flex";
+  document.getElementById("calibrationHud").style.display = "block";
+  document.getElementById("menu").style.display = "flex";
+  updateCalibrationHudUI();
 }
 
 function saveDominionName() {
-  const val = document.getElementById("dominionNameInput").value.toUpperCase().trim();
-  if(!val) { alert("NAME FIELD CANNOT REMAIN VOID."); return; }
-  streakData.dominionName = val; saveStateToStorage();
-  document.getElementById("nameModal").style.display = "none"; enter();
-}
-
-function generateShareCode() {
-  if(!streakData.dominionName) return;
-  const engine = getPetEvolutionEngine(streakData.count);
-  const rawString = `[BLDS-RESONANCE] // DOMINION-NAME: ${streakData.dominionName} // STREAK: ${streakData.count} DAYS // PET-NAME: ${streakData.petName.toUpperCase() || "UNNAMED"} // STAGE: ${engine.stage.toUpperCase()}`;
-  document.getElementById("generatedCodeDisplay").innerHTML = rawString;
-  navigator.clipboard.writeText(rawString).then(() => { alert("CORE MANIFESTO DATA COPIED!"); });
+  const nameVal = document.getElementById("dominionNameInput").value.toUpperCase().trim();
+  const typeVal = document.getElementById("petTypeSelect").value;
+  if(!nameVal) { alert("FIELD CANNOT BE VOID!"); return; }
+  
+  streakData.dominionName = nameVal;
+  streakData.petType = typeVal;
+  saveState();
+  
+  document.getElementById("nameModal").style.display = "none";
+  updateWidgetDynamicUI();
+  enter();
 }
 
 function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>{ p.style.display = "none"; });
-  const page = document.getElementById(id); page.style.display = "block";
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  document.querySelectorAll(".page").forEach(p => { p.style.display = "none"; });
+  const targetPage = document.getElementById(id);
+  if(targetPage) {
+    targetPage.style.display = "block";
+    targetPage.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
-function updateAchievements() {
-  document.getElementById("achievementList").innerHTML = `
-    ${achievements.forgotten ? "✅" : "❌"} Forgotten Memories<br><br>
-    ${achievements.flames ? "✅" : "❌"} Flames Mystery<br><br>
-    ${achievements.streak1 ? "✅" : "❌"} First Calibration (Day 1)<br><br>
-    ${achievements.streak100 ? "✅" : "❌"} The Eternal Core (Day 100)
-  `;
-  let unlockedCount = Object.values(achievements).filter(val => val === true).length;
-  let percentage = Math.round((unlockedCount / Object.keys(achievements).length) * 100);
-  document.getElementById("progressBar").style.width = percentage + "%";
-  document.getElementById("progressPercent").innerHTML = percentage + "%";
-}
-
-function showAchievement(title){
-  const notif = document.createElement("div"); notif.className = "notification";
-  notif.innerHTML = `🏆 ACHIEVEMENT UNLOCKED<br><br><b>${title}</b>`;
-  document.body.appendChild(notif); setTimeout(()=>{ notif.remove(); },4000);
-}
-
+/* REAL ENGINE: SISTEM KODE RAHASIA CHEAT CODE BLDS */
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
-  if(v === "forgotten"){
-    document.getElementById("forgotScene").style.display = "flex";
-    if(!achievements.forgotten){ achievements.forgotten = true; saveStateToStorage(); updateAchievements(); showAchievement("Forgotten Memories"); }
-  } else if(v === "12 flames"){
-    document.getElementById("flameScene").style.display = "flex";
-    if(!achievements.flames){ achievements.flames = true; saveStateToStorage(); updateAchievements(); showAchievement("Flames Mystery"); }
-  } else { playGlitchSound(); alert("UNKNOWN CODE"); }
+  
+  if (!v) {
+    alert("KODE TIDAK BOLEH KOSONG!");
+    return;
+  }
+
+  if (v === "lorenzo") {
+    streakData.count += 50;
+    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Resonance Streak!");
+  } 
+  else if (v === "nayottama") {
+    streakData.count += 30;
+    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Resonance Streak!");
+  } 
+  else if (v === "prince") {
+    streakData.count += 20;
+    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Resonance Streak!");
+  } 
+  else if (v === "blds") {
+    streakData.count += 10;
+    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Resonance Streak!");
+  } 
+  else if (v === "white" || v === "black") {
+    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Sistem Sinkronisasi Warna Berhasil!`);
+  } 
+  else {
+    alert("❌ INVALID CODE: Signature core tidak dikenali.");
+    return;
+  }
+
+  saveState();
+  updateWidgetDynamicUI();
+  document.getElementById("codeInput").value = "";
 }
 
-function closeScene(id){ document.getElementById(id).style.display = "none"; }
-
 document.addEventListener("DOMContentLoaded", () => {
-  loadStateFromStorage(); initButtonEffects(); updateAchievements();
+  loadState();
 });
-
 </script>
 </body>
 </html>
