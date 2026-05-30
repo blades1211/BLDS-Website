@@ -189,12 +189,6 @@ body.full-invert {
   border: 1px solid rgba(255,255,255,0.05);
 }
 
-.pet-placeholder-svg {
-  width: 70px;
-  height: 70px;
-  opacity: 0.7;
-}
-
 @keyframes petBreathing {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-4px) scale(1.04); }
@@ -993,46 +987,74 @@ let streakData = {
 };
 
 const DEFAULT_LEADERBOARD = [
-  { name: "Michael Lorenzo", streak: 152, petLabel: "🐉 Overlord Cosmic Dragon" },
-  { name: "William Nayottama", streak: 121, petLabel: "🐺 Fenrir God of the Void" },
-  { name: "Prince Felix", streak: 98, petLabel: "🐉 Obsidian Eclipse Dragon" },
-  { name: "Rian Void", streak: 84, petLabel: "🐟 Abyssal Dark Leviathan" },
-  { name: "Zack Eclipse", streak: 76, petLabel: "🐺 Alpha Cosmic Fenrir" },
-  { name: "Darel Shadow", streak: 69, petLabel: "🐉 Lightning Void Drake" },
-  { name: "Niko Core", streak: 55, petLabel: "🐟 Neon Serpent Fish" },
-  { name: "Vino Nebula", streak: 48, petLabel: "🐺 Twilight Shadow Wolf" },
-  { name: "Alex Obsidian", streak: 41, petLabel: "🐉 Lightning Void Drake" },
-  { name: "Arka Abyss", streak: 35, petLabel: "🐟 Neon Serpent Fish" },
-  { name: "Farel Dark", streak: 29, petLabel: "🐺 Shadow Wolf Pup" },
-  { name: "Deva Zenith", streak: 25, petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Roni Star", streak: 22, petLabel: "🐟 Abyss Angler Whelp" },
-  { name: "Gani Galaxy", streak: 19, petLabel: "🐺 Shadow Wolf Pup" },
-  { name: "Edo Zero", streak: 14, petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Tio Matrix", streak: 11, petLabel: "🐟 Abyss Angler Whelp" },
-  { name: "Riko Titan", streak: 9, petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Andi Nova", streak: 6, petLabel: "🐺 Shadow Spirit Egg" },
-  { name: "Budi Pulse", streak: 4, petLabel: "🐉 Anomaly Dragon Egg" }
+  { name: "Michael Lorenzo", streak: 152, petLabel: "Fase 5: Overlord Cosmic Dragon" },
+  { name: "William Nayottama", streak: 121, petLabel: "Fase 5: Fenrir God of the Void" },
+  { name: "Prince Felix", streak: 98, petLabel: "Fase 4: Obsidian Eclipse Dragon" },
+  { name: "Rian Void", streak: 84, petLabel: "Fase 4: Abyssal Dark Leviathan" },
+  { name: "Zack Eclipse", streak: 76, petLabel: "Fase 4: Alpha Cosmic Fenrir" },
+  { name: "Darel Shadow", streak: 69, petLabel: "Fase 3: Lightning Void Drake" },
+  { name: "Niko Core", streak: 55, petLabel: "Fase 3: Neon Serpent Fish" },
+  { name: "Vino Nebula", streak: 48, petLabel: "Fase 3: Twilight Shadow Wolf" },
+  { name: "Alex Obsidian", streak: 41, petLabel: "Fase 3: Lightning Void Drake" },
+  { name: "Arka Abyss", streak: 35, petLabel: "Fase 3: Neon Serpent Fish" },
+  { name: "Farel Dark", streak: 29, petLabel: "Fase 2: Shadow Wolf Pup" },
+  { name: "Deva Zenith", streak: 25, petLabel: "Fase 2: Void Dragon Hatchling" },
+  { name: "Roni Star", streak: 22, petLabel: "Fase 2: Abyss Angler Whelp" },
+  { name: "Gani Galaxy", streak: 19, petLabel: "Fase 2: Shadow Wolf Pup" },
+  { name: "Edo Zero", streak: 14, petLabel: "Fase 2: Void Dragon Hatchling" },
+  { name: "Tio Matrix", streak: 11, petLabel: "Fase 2: Abyss Angler Whelp" },
+  { name: "Riko Titan", streak: 9, petLabel: "Fase 2: Void Dragon Hatchling" },
+  { name: "Andi Nova", streak: 6, petLabel: "Fase 1: Shadow Spirit Egg" },
+  { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
 ];
 
+/* SISTEM MATRIKS AUTOMATIC EVOLUTION BERDASARKAN FILE STORAGE LU */
 function getPetSvg(type, highestStreak) {
-  let color = "#ffffff";
+  let fileName = "";
+
   if (type === "dragon") {
-    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
-      <path d="M50 15 L75 40 L60 45 L80 75 L50 60 L20 75 L40 45 L25 40 Z" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="50" cy="45" r="5" fill="${color}"/>
-    </svg>`;
-  } else if (type === "fish") {
-    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
-      <path d="M15 50 Q50 20 85 50 Q50 80 15 50 Z" fill="none" stroke="${color}" stroke-width="3"/>
-      <path d="M85 50 L95 35 L90 50 L95 65 Z" fill="none" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="35" cy="45" r="4" fill="${color}"/>
-    </svg>`;
-  } else {
-    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
-      <path d="M50 20 L65 45 L85 40 L70 65 L75 85 L50 70 L25 85 L30 65 L15 40 L35 45 Z" fill="none" stroke="${color}" stroke-width="3"/>
-      <circle cx="50" cy="52" r="6" fill="none" stroke="${color}" stroke-width="2"/>
-    </svg>`;
+    if (highestStreak >= 100) {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_an_ancient_Cosmic_Overlord_Dragon_body_made_of_pure_star_-0.png";
+    } else if (highestStreak >= 50) {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+    } else if (highestStreak >= 30) {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+    } else if (highestStreak >= 7) {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+    } else {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+    }
+  } 
+  
+  else if (type === "fish") {
+    if (highestStreak >= 100) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_an_ancient_Celestial_Astra_3.png";
+    } else if (highestStreak >= 50) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_an_adult_dark_Leviathan_fi_3.png";
+    } else if (highestStreak >= 30) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_teenage_abyss_serpent_fi_3.png";
+    } else if (highestStreak >= 7) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_cute_tiny_deepsea_baby_f_2.png";
+    } else {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_vibrant_glowing_aquatic__0.png";
+    }
+  } 
+  
+  else if (type === "wolf") {
+    if (highestStreak >= 100) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_Fenrir_God_of_the_Void_a_l_0.png";
+    } else if (highestStreak >= 50) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_Fenrir_God_of_the_Void_a_l_3.png";
+    } else if (highestStreak >= 30) {
+      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_teenage_shadow_wolf_with_2.png";
+    } else if (highestStreak >= 7) {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_cute_baby_shadow_wolf_pup_made_of_dark_smoke_and_void_a-0.png";
+    } else {
+      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_spiritual_beast_egg_covered_in_dark_fur-like_shadow_pat-0.png";
+    }
   }
+
+  return `<img src="${fileName}" alt="${type}" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">`;
 }
 
 function saveState() {
