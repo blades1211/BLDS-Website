@@ -41,13 +41,13 @@ body.inverted-dimension {
 .split-invert-layer {
   position: fixed;
   top: 0;
-  left: 50%; /* Mulai dari tengah (50%) ke arah kanan */
-  width: 50%; /* Lebar setengah layar kanan */
+  left: 50%;
+  width: 50%;
   height: 100%;
   background: transparent;
-  backdrop-filter: invert(100%); /* Efek pembalik warna otomatis */
-  z-index: 999; /* Berada di atas seluruh elemen visual */
-  pointer-events: none; /* Tombol di bawahnya tetap bisa diklik */
+  backdrop-filter: invert(100%);
+  z-index: 999;
+  pointer-events: none;
   display: none;
 }
 
@@ -145,6 +145,7 @@ body.split-dimension .eclipse {
   font-size:28px;
   animation:fadeUp 1.5s ease;
   transition: color 0.8s ease;
+  min-height: 42px;
 }
 
 .core-status {
@@ -154,7 +155,50 @@ body.split-dimension .eclipse {
   margin-top: 10px;
   margin-bottom: 15px;
   display: none;
-  animation: glitch .15s infinite;
+  min-height: 15px;
+}
+
+/* DAILY STREAK BOX & WIDGET */
+.streak-widget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  display: none;
+  animation: fadeUp 0.8s ease;
+}
+
+.streak-icon {
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.calibration-container {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 320px;
+  display: none;
+  animation: fadeUp 1.2s ease;
+}
+
+.calibration-box {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 15px;
+  text-align: center;
+}
+
+.calibration-box p {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 10px;
 }
 
 /* BUTTONS */
@@ -179,7 +223,16 @@ button:hover{
   box-shadow:0 0 15px rgba(255,255,255,.4);
 }
 
-button:active{
+button:disabled {
+  background: transparent !important;
+  color: rgba(255,255,255,0.3) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+button:active:not(:disabled){
   transform:scale(.95);
 }
 
@@ -190,7 +243,6 @@ button:active{
   margin-top:18px;
   width:100%;
   max-width:320px;
-  animation:fadeUp 1s ease;
 }
 
 /* PAGE WRAPPERS */
@@ -252,7 +304,7 @@ button:active{
 
 .progress-bar {
   height: 100%;
-  width: 0%; /* Diatur dinamis oleh JS */
+  width: 0%;
   background: #fff;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -328,12 +380,12 @@ input:focus{
 }
 
 .glitch{
-  animation:glitch .15s infinite;
+  animation:glitchAnim .15s infinite;
   margin-top:30px;
   text-align:center;
 }
 
-@keyframes glitch{
+@keyframes glitchAnim{
   0%,100%{ opacity:1; }
   50%{ opacity:.3; }
 }
@@ -543,7 +595,6 @@ footer {
   .ultimate-subtitle { font-size: 18px; }
   .ultimate-subtitle.blds-glow { font-size: 26px; }
   
-  /* DI HP TETAP KIRI KANAN KONSISTEN */
   .split-invert-layer {
     left: 50%;
     width: 50%;
@@ -577,7 +628,12 @@ footer {
 <div class="container">
 
   <img src="logo.png" class="logo" id="mainLogo">
-  <h1 class="title">BLACKLIGHTDOMS</h1>
+  
+  <div class="streak-widget" id="streakWidget">
+    <span class="streak-icon">🌑</span> RESONANCE STREAK: <b id="streakCount">0</b> DAYS
+  </div>
+
+  <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
   <div class="core-status" id="coreStatus">● CORE LINKED: ONLINE | ECLIPSE LAYER-0</div>
 
   <button id="enterBtn" onclick="enter()">
@@ -675,8 +731,7 @@ footer {
     <div class="box">
       <h2>ACHIEVEMENTS</h2>
       <br>
-      <div id="achievementList">
-        </div>
+      <div id="achievementList"></div>
     </div>
 
     <div class="box quote-container">
@@ -715,6 +770,13 @@ footer {
       <input type="text" id="codeInput" placeholder="enter code">
       <br><br>
       <button onclick="unlockCode()">UNLOCK</button>
+    </div>
+  </div>
+
+  <div class="calibration-container" id="calibrationHud">
+    <div class="calibration-box">
+      <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
+      <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
     </div>
   </div>
 
@@ -919,8 +981,6 @@ function playEffects() {
   flashEffect();
 }
 
-initButtonEffects();
-
 function flashEffect(){
   const flash = document.getElementById("flash");
   flash.classList.add("active");
@@ -929,13 +989,210 @@ function flashEffect(){
   },400);
 }
 
-/* PORTAL CONTROL */
+/* PROCEDURAL GLITCH SFX CHIP FOR ERROR CODES */
+function playGlitchSound() {
+  if (isMuted) return;
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    
+    // Node 1: Oscillator low frequency pitch drop
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(120, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.25);
+    
+    // Node 2: Noise buffer implementation for crackle effect
+    const bufferSize = ctx.sampleRate * 0.15;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.25, ctx.currentTime);
+    
+    gain.gain.setValueAtTime(0.5, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+    
+    osc.connect(gain);
+    noise.connect(noiseGain);
+    
+    gain.connect(ctx.destination);
+    noiseGain.connect(ctx.destination);
+    
+    osc.start();
+    noise.start();
+    osc.stop(ctx.currentTime + 0.25);
+    noise.stop(ctx.currentTime + 0.25);
+  } catch(e) {}
+}
+
+/* TERMINAL MATRIX WRITER ALGORITHM */
+function runTerminalMatrixEffect(elementId, targetText, speed = 40, callback = null) {
+  const el = document.getElementById(elementId);
+  el.style.display = "block";
+  let currentIdx = 0;
+  el.innerHTML = "";
+  
+  const chars = "X01_#$@&%<>*+=[]{}";
+  
+  const interval = setInterval(() => {
+    if (currentIdx < targetText.length) {
+      let glitchStr = "";
+      for(let i = 0; i < 2; i++) {
+        glitchStr += chars[Math.floor(Math.random() * chars.length)];
+      }
+      el.innerHTML = targetText.substring(0, currentIdx) + `<span style="color:#fff; opacity:0.8;">${glitchStr}</span>`;
+      currentIdx++;
+    } else {
+      el.innerHTML = targetText;
+      clearInterval(interval);
+      if(callback) callback();
+    }
+  }, speed);
+}
+
+/* LOCAL STORAGE DATA MATRIX HANDLER */
+let achievements = {
+  forgotten: false, flames: false, codeBreaker: false, lorenzo: false,
+  nayottama: false, prince: false, eclipse: false, dimension2: false,
+  black: false, white: false
+};
+
+let streakData = {
+  count: 0,
+  lastCalibratedTimestamp: null
+};
+
+function saveStateToStorage() {
+  localStorage.setItem("BLDS_ACHIEVEMENTS", JSON.stringify(achievements));
+  localStorage.setItem("BLDS_STREAK", JSON.stringify(streakData));
+}
+
+function loadStateFromStorage() {
+  const savedAch = localStorage.getItem("BLDS_ACHIEVEMENTS");
+  const savedStreak = localStorage.getItem("BLDS_STREAK");
+  
+  if(savedAch) achievements = JSON.parse(savedAch);
+  if(savedStreak) streakData = JSON.parse(savedStreak);
+  
+  checkStreakValidity();
+}
+
+/* STREAK VALIDITY CONTROLLER (24h Cooldown + 24h Window Tolerance) */
+function checkStreakValidity() {
+  if (!streakData.lastCalibratedTimestamp) return;
+  
+  const now = Date.now();
+  const lastTime = streakData.lastCalibratedTimestamp;
+  const msElapsed = now - lastTime;
+  
+  const duration24h = 24 * 60 * 60 * 1000;
+  const duration48h = 48 * 60 * 60 * 1000;
+  
+  if (msElapsed >= duration48h) {
+    // Toleransi habis, streak hangus ke-reset 0
+    streakData.count = 0;
+    streakData.lastCalibratedTimestamp = null;
+    saveStateToStorage();
+  }
+}
+
+function updateCalibrationHudUI() {
+  const btn = document.getElementById("calibrationBtn");
+  const status = document.getElementById("calibrationStatus");
+  document.getElementById("streakCount").innerHTML = streakData.count;
+  
+  if (!streakData.lastCalibratedTimestamp) {
+    btn.disabled = false;
+    status.innerHTML = "SYSTEM READY FOR INITIAL RESONANCE INTEGRATION";
+    return;
+  }
+  
+  const now = Date.now();
+  const msElapsed = now - streakData.lastCalibratedTimestamp;
+  const duration24h = 24 * 60 * 60 * 1000;
+  
+  if (msElapsed < duration24h) {
+    btn.disabled = true;
+    
+    // Jalankan hitung mundur sisa cooldown harian
+    const timeLeft = duration24h - msElapsed;
+    const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+    const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+    const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+    
+    status.innerHTML = `NEXT SYNC PROTOCOL AVAILABLE IN: ${hours}h ${minutes}m ${seconds}s`;
+    
+    setTimeout(updateCalibrationHudUI, 1000);
+  } else {
+    btn.disabled = false;
+    status.innerHTML = "CORE DISCONNECTED. ATTENTION: RUN RE-CALIBRATION IMMEDIATELY TO PRESERVE STREAK!";
+  }
+}
+
+function calibrateCore() {
+  checkStreakValidity();
+  const now = Date.now();
+  
+  if (streakData.lastCalibratedTimestamp) {
+    const msElapsed = now - streakData.lastCalibratedTimestamp;
+    const duration24h = 24 * 60 * 60 * 1000;
+    if (msElapsed < duration24h) return; // Proteksi ganda
+  }
+  
+  streakData.count++;
+  streakData.lastCalibratedTimestamp = now;
+  saveStateToStorage();
+  
+  // Suntik dynamic visual response berdasarkan level streak
+  adjustCoreStatusDisplayBasedOnStreak();
+  updateCalibrationHudUI();
+  
+  showAchievement(`Resonance Calibrated! Streak: ${streakData.count} Days`);
+}
+
+function adjustCoreStatusDisplayBasedOnStreak() {
+  const statusEl = document.getElementById("coreStatus");
+  if (document.body.classList.contains("split-dimension")) {
+    statusEl.innerHTML = `● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION (STREAK: ${streakData.count})`;
+  } else if (document.body.classList.contains("inverted-dimension")) {
+    statusEl.innerHTML = `● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION (STREAK: ${streakData.count})`;
+  } else {
+    if (streakData.count >= 10) {
+      statusEl.innerHTML = `● CORE LINKED: OVERCLOCKED | MAXIMUM RADIANCE SYNC (STREAK: ${streakData.count})`;
+    } else if (streakData.count >= 5) {
+      statusEl.innerHTML = `● CORE LINKED: STABILIZED | ECLIPSE LAYER-0 (STREAK: ${streakData.count})`;
+    } else {
+      statusEl.innerHTML = `● CORE LINKED: ONLINE | ECLIPSE LAYER-0 (STREAK: ${streakData.count})`;
+    }
+  }
+}
+
+/* PORTAL CONTROL WITH TERMINAL BOOTING */
 function enter(){
   document.getElementById("enterBtn").style.display = "none";
-  document.getElementById("coreStatus").style.display = "block";
-  const menu = document.getElementById("menu");
-  menu.style.display = "flex";
-  menu.style.animation = "pageFade .8s ease";
+  
+  // Matrix initialization sequence
+  runTerminalMatrixEffect("mainTitle", "BLACKLIGHTDOMS", 35, () => {
+    let baseStatus = "● CORE LINKED: ONLINE | ECLIPSE LAYER-0";
+    if(streakData.count > 0) baseStatus += ` (STREAK: ${streakData.count})`;
+    
+    runTerminalMatrixEffect("coreStatus", baseStatus, 20, () => {
+      document.getElementById("streakWidget").style.display = "inline-flex";
+      document.getElementById("calibrationHud").style.display = "block";
+      const menu = document.getElementById("menu");
+      menu.style.display = "flex";
+      menu.style.animation = "pageFade .8s ease";
+      updateCalibrationHudUI();
+      adjustCoreStatusDisplayBasedOnStreak();
+    });
+  });
 }
 
 function showPage(id){
@@ -951,20 +1208,6 @@ function showPage(id){
     behavior: "smooth"
   });
 }
-
-/* DATA ARCHIVE STATE */
-let achievements = {
-  forgotten: false,
-  flames: false,
-  codeBreaker: false,
-  lorenzo: false,
-  nayottama: false,
-  prince: false,
-  eclipse: false,
-  dimension2: false,
-  black: false,
-  white: false
-};
 
 /* SISTER HUB: UPDATE LIST & CALCULATE PROGRESS BAR */
 function updateAchievements() {
@@ -1000,14 +1243,10 @@ function updateAchievements() {
     <small>Discover the White Eclipse Dimension</small>
   `;
 
-  // Hitung jumlah achievement yang bernilai true
-  let totalKeys = Object.keys(achievements).length; // Totalnya ada 10
+  let totalKeys = Object.keys(achievements).length;
   let unlockedCount = Object.values(achievements).filter(val => val === true).length;
-  
-  // Konversi ke persentase %
   let percentage = Math.round((unlockedCount / totalKeys) * 100);
   
-  // Suntik manipulasi ke komponen Progress Bar
   document.getElementById("progressBar").style.width = percentage + "%";
   document.getElementById("progressPercent").innerHTML = percentage + "%";
 }
@@ -1029,12 +1268,13 @@ function showAchievement(title){
 function checkCodeBreaker(){
   if(achievements.forgotten && achievements.flames && achievements.lorenzo && achievements.nayottama && achievements.prince && achievements.eclipse && achievements.dimension2 && achievements.black && achievements.white && !achievements.codeBreaker){
     achievements.codeBreaker = true;
+    saveStateToStorage();
     updateAchievements();
     showAchievement("Code Breaker");
   }
 }
 
-/* RUN ULTIMATE CINEMATIC ECLIPSE (PURE TEXT & MUTED EFFECT) */
+/* RUN ULTIMATE CINEMATIC ECLIPSE */
 function runUltimateCinematic() {
   const savedVolume = bgMusic.volume;
   bgMusic.volume = 0;
@@ -1060,10 +1300,10 @@ function runUltimateCinematic() {
             scene.style.display = "none";
             if(!isMuted) bgMusic.volume = savedVolume;
             
-            /* SINKRONISASI AKTIFKAN REAL INVERSION SPLIT LAYER */
             document.body.classList.remove("inverted-dimension");
             document.body.classList.add("split-dimension");
-            document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION";
+            saveStateToStorage();
+            adjustCoreStatusDisplayBasedOnStreak();
 
             let delay = 0;
             if(!achievements.eclipse){
@@ -1076,6 +1316,7 @@ function runUltimateCinematic() {
               setTimeout(() => { showAchievement("2 Dimension"); }, delay);
             }
             
+            saveStateToStorage();
             updateAchievements();
             setTimeout(checkCodeBreaker, 2000);
 
@@ -1094,6 +1335,7 @@ function unlockCode(){
     document.getElementById("forgotScene").style.display = "flex";
     if(!achievements.forgotten){
       achievements.forgotten = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Forgotten Memories");
       checkCodeBreaker();
@@ -1103,6 +1345,7 @@ function unlockCode(){
     document.getElementById("flameScene").style.display = "flex";
     if(!achievements.flames){
       achievements.flames = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Flames Mystery");
       checkCodeBreaker();
@@ -1111,6 +1354,7 @@ function unlockCode(){
   else if(v === "lorenzo"){
     if(!achievements.lorenzo){
       achievements.lorenzo = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Lorenzo");
       checkCodeBreaker();
@@ -1120,6 +1364,7 @@ function unlockCode(){
   else if(v === "nayottama"){
     if(!achievements.nayottama){
       achievements.nayottama = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Nayottama");
       checkCodeBreaker();
@@ -1129,6 +1374,7 @@ function unlockCode(){
   else if(v === "prince"){
     if(!achievements.prince){
       achievements.prince = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Prince");
       checkCodeBreaker();
@@ -1141,10 +1387,12 @@ function unlockCode(){
   else if(v === "black"){
     document.body.classList.remove("split-dimension");
     document.body.classList.add("inverted-dimension");
-    document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION";
+    saveStateToStorage();
+    adjustCoreStatusDisplayBasedOnStreak();
     
     if(!achievements.black){
       achievements.black = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("Black");
       checkCodeBreaker();
@@ -1154,10 +1402,12 @@ function unlockCode(){
   else if(v === "white"){
     document.body.classList.remove("inverted-dimension");
     document.body.classList.remove("split-dimension");
-    document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | ECLIPSE LAYER-0";
+    saveStateToStorage();
+    adjustCoreStatusDisplayBasedOnStreak();
     
     if(!achievements.white){
       achievements.white = true;
+      saveStateToStorage();
       updateAchievements();
       showAchievement("White");
       checkCodeBreaker();
@@ -1165,6 +1415,8 @@ function unlockCode(){
     alert("WHITE ECLIPSE PROTOCOL RESTORED");
   }
   else{
+    // TRIGGER GLITCH AUDIO FEEDBACK ON INCORRECT CODES
+    playGlitchSound();
     alert("UNKNOWN CODE");
   }
 }
@@ -1216,10 +1468,10 @@ function generateDynamicQuote(){
   }, 150);
 }
 
-// Jalankan fungsi inisialisasi awal saat dokumen ter-load
 document.addEventListener("DOMContentLoaded", () => {
+  loadStateFromStorage(); // Muat progress simpanan dari local storage
   initButtonEffects();
-  updateAchievements(); // Trigger progress bar di awal (0%)
+  updateAchievements(); // Sinkronisasi kalkulasi progress bar pertama kali
 });
 
 </script>
