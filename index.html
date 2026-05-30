@@ -668,7 +668,7 @@ footer {
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MAIN MATRIX REGISTRATION</h3>
+    <h3 id="modalRegTitle" style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MAIN MATRIX REGISTRATION</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name and choose your tracking core type.</p>
     <br>
     <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center;">
@@ -696,7 +696,7 @@ footer {
   <div class="modal-box" style="border-color: rgba(255,0,0,0.4);">
     <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">⚠️ SYNC LAPSE DETECTED</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.6); text-align: justify;">
-      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0. Namun, wujud tertinggi pet Anda aman dan terkunci!
+      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0. Jika Anda belum pernah mencapai 100 streak, wujud pet akan kembali ke fase awal (telur).
     </p>
     <br>
     <button onclick="closeCollapseModal()" style="width: 100%; margin: 0;">RE-CALIBRATE FRAMEWORK</button>
@@ -705,8 +705,8 @@ footer {
 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box" style="border-color: rgba(255,74,74,0.4);">
-    <h3 style="letter-spacing: 1px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">Are you sure dominioners?</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Tindakan ini akan mengembalikan hitungan streak Anda menjadi 0.</p>
+    <h3 style="letter-spacing: 1px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">Reset Streak & Ganti Pet?</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Hitungan streak saat ini akan kembali ke 0, dan Anda bisa memilih ulang pet baru.</p>
     <div class="modal-btn-group">
       <button onclick="confirmResetStreak()" style="background:#ff4a4a; border-color:#ff4a4a; color:#000; font-weight:600;">Yes</button>
       <button onclick="closeResetModal()">No</button>
@@ -923,9 +923,9 @@ footer {
       </div>
 
       <div class="archive-log">
-        <div class="archive-date">> VERSION 2.5.0 [CURRENT_TIMESTAMP_2026]</div>
+        <div class="archive-date">> VERSION 2.6.0 [PERMANENT_EVO_STABILIZED_2026]</div>
         <p style="font-size:13px; color:rgba(255,255,255,0.8);">
-          System state stabilized. Local client media fallback asset links assigned to <code>logo.png</code> bypassing legacy cloud errors.
+          Sistem state diperbarui. Level evolusi pet sekarang sinkron sepenuhnya dengan streak berjalan, kecuali jika pencapaian 100 hari telah dicapai (Wujud Terkunci Permanen).
         </p>
       </div>
     </div>
@@ -945,7 +945,7 @@ footer {
       <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
       <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
       <br>
-      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK</button>
+      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK & GANTI PATH</button>
     </div>
   </div>
 </div>
@@ -983,7 +983,8 @@ let streakData = {
   lastCalibratedTimestamp: null,
   dominionName: "",
   petCustomName: "",
-  petType: "dragon"
+  petType: "dragon",
+  isPermanentlyUnlocked: false // Penanda jika user pernah menyentuh streak 100
 };
 
 const DEFAULT_LEADERBOARD = [
@@ -1008,18 +1009,21 @@ const DEFAULT_LEADERBOARD = [
   { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
 ];
 
-/* SISTEM ENGINE SINKRONISASI GAMBAR PET BARU LU */
-function getPetSvg(type, highestStreak) {
+/* MEKANIK BARU SINKRONISASI GAMBAR BERDASARKAN STREAK SEKARANG / LOCK PERMANEN */
+function getPetSvg(type, count) {
   let fileName = "";
+  
+  // Jika streak sudah pernah 100+, wujud dikunci langsung ke Naga5 / Ikan5 / Serigala5
+  let checkValue = streakData.isPermanentlyUnlocked ? 100 : count;
 
   if (type === "dragon") {
-    if (highestStreak >= 100) {
+    if (checkValue >= 100) {
       fileName = "Naga5.png";
-    } else if (highestStreak >= 50) {
+    } else if (checkValue >= 50) {
       fileName = "Naga4.png";
-    } else if (highestStreak >= 30) {
+    } else if (checkValue >= 30) {
       fileName = "Naga3.png";
-    } else if (highestStreak >= 7) {
+    } else if (checkValue >= 7) {
       fileName = "Naga2.png";
     } else {
       fileName = "Naga1.png";
@@ -1027,13 +1031,13 @@ function getPetSvg(type, highestStreak) {
   } 
   
   else if (type === "fish") {
-    if (highestStreak >= 100) {
+    if (checkValue >= 100) {
       fileName = "Ikan5.png";
-    } else if (highestStreak >= 50) {
+    } else if (checkValue >= 50) {
       fileName = "Ikan4.png";
-    } else if (highestStreak >= 30) {
+    } else if (checkValue >= 30) {
       fileName = "Ikan3.png";
-    } else if (highestStreak >= 7) {
+    } else if (checkValue >= 7) {
       fileName = "Ikan2.png";
     } else {
       fileName = "Ikan1.png";
@@ -1041,13 +1045,13 @@ function getPetSvg(type, highestStreak) {
   } 
   
   else if (type === "wolf") {
-    if (highestStreak >= 100) {
+    if (checkValue >= 100) {
       fileName = "Serigala5.png";
-    } else if (highestStreak >= 50) {
+    } else if (checkValue >= 50) {
       fileName = "Serigala4.png";
-    } else if (highestStreak >= 30) {
+    } else if (checkValue >= 30) {
       fileName = "Serigala3.png";
-    } else if (highestStreak >= 7) {
+    } else if (checkValue >= 7) {
       fileName = "Serigala2.png";
     } else {
       fileName = "Serigala1.png";
@@ -1064,6 +1068,11 @@ function saveState() {
 function loadState() {
   const savedStr = localStorage.getItem("BLDS_STR_FINAL_v2");
   if(savedStr) streakData = JSON.parse(savedStr);
+  
+  // Menjaga status unlock permanen kalau data lama sudah mencapai target 100 hari
+  if (streakData.count >= 100 || streakData.highestCount >= 100) {
+    streakData.isPermanentlyUnlocked = true;
+  }
   
   checkStreakValidity();
   updateWidgetDynamicUI();
@@ -1095,40 +1104,44 @@ function closeResetModal() {
   document.getElementById("resetConfirmModal").style.display = "none";
 }
 
+/* TOMBOL RESET SEKARANG MEMBUAT USER MEMILIH ULANG PATH PET */
 function confirmResetStreak() {
   streakData.count = 0;
   streakData.lastCalibratedTimestamp = null;
   saveState();
   
-  updateWidgetDynamicUI();
-  updateCalibrationHudUI();
-  renderLeaderboard();
-  
   closeResetModal();
-  alert("🔄 Framework Re-calibrated! Streak kembali ke 0.");
+  
+  // Ubah tampilan modal registrasi agar terasa seperti menu ganti jalur pet
+  document.getElementById("modalRegTitle").innerHTML = "CHOOSE NEW CORE PATHWAY";
+  document.getElementById("dominionNameInput").value = streakData.dominionName || "";
+  document.getElementById("nameModal").style.display = "flex";
 }
 
-function getPetEvolutionEngine(highestStreak, type) {
+function getPetEvolutionEngine(count, type) {
   let stageText = "";
   let rank = "VOID WALKER";
   let glow = "0 0 10px rgba(255,255,255,0.3)";
+  
+  // Wujud mengikuti status unlock permanen atau streak saat ini
+  let checkValue = streakData.isPermanentlyUnlocked ? 100 : count;
 
-  if (highestStreak >= 100) {
+  if (checkValue >= 100) {
     rank = "THE ETERNAL CORE";
-    if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon";
-    else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan";
-    else stageText = "Fase 5: Fenrir God of the Void";
-  } else if (highestStreak >= 50) {
+    if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon (LOCKED)";
+    else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan (LOCKED)";
+    else stageText = "Fase 5: Fenrir God of the Void (LOCKED)";
+  } else if (checkValue >= 50) {
     rank = "DOMINION VANGUARD";
     if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
     else if (type === "fish") stageText = "Fase 4: Abyssal Dark Leviathan";
     else stageText = "Fase 4: Alpha Cosmic Fenrir";
-  } else if (highestStreak >= 30) {
+  } else if (checkValue >= 30) {
     rank = "RESONANCE KEEPER";
     if (type === "dragon") stageText = "Fase 3: Lightning Void Drake";
     else if (type === "fish") stageText = "Fase 3: Neon Serpent Fish";
     else stageText = "Fase 3: Twilight Shadow Wolf";
-  } else if (highestStreak >= 7) {
+  } else if (checkValue >= 7) {
     rank = "ECLIPSE SYNCHRONIZER";
     if (type === "dragon") stageText = "Fase 2: Void Dragon Hatchling";
     else if (type === "fish") stageText = "Fase 2: Abyss Angler Whelp";
@@ -1192,7 +1205,7 @@ function updateAchievementsUI(highestStreak) {
 }
 
 function updateWidgetDynamicUI() {
-  const engine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
+  const engine = getPetEvolutionEngine(streakData.count, streakData.petType);
   
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
@@ -1204,7 +1217,7 @@ function updateWidgetDynamicUI() {
     
     const frame = document.getElementById("petImageFrameSlot");
     if (frame) {
-      frame.innerHTML = getPetSvg(streakData.petType, streakData.highestCount);
+      frame.innerHTML = getPetSvg(streakData.petType, streakData.count);
       frame.style.filter = `drop-shadow(${engine.glow})`;
     }
   }
@@ -1218,7 +1231,7 @@ function renderLeaderboard() {
   let list = [...DEFAULT_LEADERBOARD];
 
   if (streakData.dominionName) {
-    const currentEngine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
+    const currentEngine = getPetEvolutionEngine(streakData.count, streakData.petType);
     const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
     if (existingIndex !== -1) {
       list[existingIndex].streak = streakData.count;
@@ -1299,6 +1312,11 @@ function calibrateCore() {
   streakData.count++;
   if (streakData.count > streakData.highestCount) {
     streakData.highestCount = streakData.count;
+  }
+  
+  // Trigger Pengunci Permanen jika menyentuh angka krusial 100 hari
+  if (streakData.count >= 100) {
+    streakData.isPermanentlyUnlocked = true;
   }
   
   streakData.lastCalibratedTimestamp = Date.now();
