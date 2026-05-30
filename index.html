@@ -668,7 +668,7 @@ footer {
   margin-right: 8px;
 }
 
-/* 🔄 FLOATING TRIGGER BUTTON & MINIMALIST MONOCHROME ADMIN PANEL */
+/* 🔄 FLOATING TRIGGER BUTTON & MINIMALIST MONOCHROME OWNER PANEL */
 .admin-trigger-launcher {
   position: fixed;
   bottom: 25px;
@@ -811,7 +811,7 @@ footer {
 }
 
 /* ==========================================================================
-   🎬 NEW SYSTEM: ODYSSEY 100 DAYS STREAK CUTSCENE STYLING
+   🎬 FIX: ODYSSEY 100 DAYS STREAK CUTSCENE STYLING (ANTI-CLIP & SEKUENSAL)
    ========================================================================== */
 .odyssey-cutscene-layer {
   position: fixed;
@@ -821,53 +821,27 @@ footer {
   display: none;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  overflow-y: auto; /* Mencegah pemotongan layar pada HP kecil */
+  padding: 40px 20px;
 }
 
 .odyssey-star-field {
   position: absolute;
   inset: 0;
   pointer-events: none;
-}
-
-.odyssey-text-container {
-  text-align: center;
-  z-index: 10;
-  max-width: 80%;
-}
-
-.odyssey-line {
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 4px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 20px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-  text-transform: uppercase;
-}
-
-.odyssey-line.odyssey-grand-title {
-  font-size: 48px;
-  font-weight: 600;
-  letter-spacing: 12px;
-  color: #ffffff;
-  text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
-  margin-top: 20px;
+  z-index: 1;
 }
 
 .odyssey-logo-holder {
-  width: 160px;
-  height: 160px;
-  position: absolute;
-  top: 22%;
+  width: 200px; /* Diperbesar dari 160px */
+  height: 200px;
   opacity: 0;
   z-index: 15;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 30px;
+  margin-top: 20px;
 }
 
 .odyssey-logo-img {
@@ -875,6 +849,56 @@ footer {
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.95));
+}
+
+.odyssey-text-container {
+  text-align: center;
+  z-index: 10;
+  max-width: 90%;
+  margin-bottom: 40px;
+}
+
+.odyssey-line {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(15px);
+  text-transform: uppercase;
+  display: none; /* Disembunyikan dulu agar tidak menumpuk */
+}
+
+/* Kelas khusus pemicu transisi fade-in via JS */
+.odyssey-fade-in {
+  display: block !important;
+  animation: odyFadeInText 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes odyFadeInText {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.odyssey-line.odyssey-grand-title {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: 10px;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+  margin-top: 25px;
+}
+
+/* Efek Guncangan Gempa Khusus Tulisan DAY 100 STREAK */
+.odyssey-text-shake-active {
+  animation: odyTextGuncangAction 0.15s linear infinite;
+}
+
+@keyframes odyTextGuncangAction {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -2px); }
 }
 
 /* Animasi Banting Logo (*Slam Drop*) */
@@ -918,20 +942,25 @@ footer {
   100% { filter: invert(1) hue-rotate(180deg) brightness(0.9); }
 }
 
-/* Pilihan Modul Kamar Tiga Pet */
+/* Pilihan Modul Tiga Pet (Diubah dari absolute menjadi layout flex aman) */
 .odyssey-pet-selection-deck {
-  position: absolute;
-  bottom: -150px; 
   display: flex;
-  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
   z-index: 20;
   opacity: 0;
-  transition: bottom 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+  transform: translateY(30px);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+  width: 100%;
+  max-width: 700px;
+  flex-wrap: wrap; /* Menyesuaikan otomatis jika dibuka di HP layar kecil */
+  margin-top: 10px;
 }
 
 .odyssey-pet-selection-deck.active {
-  bottom: 12%;
   opacity: 1;
+  transform: translateY(0);
 }
 
 .odyssey-pet-card {
@@ -943,7 +972,6 @@ footer {
   text-align: center;
   cursor: pointer;
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s, background 0.4s, box-shadow 0.4s;
-  position: relative;
 }
 
 .odyssey-pet-card:hover {
@@ -1413,11 +1441,11 @@ footer {
   </div>
 </div>
 
-<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ ADMIN</div>
+<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ OWNER</div>
 
 <div class="admin-floating-panel" id="adminPanel">
   <div class="admin-header">
-    <span>🛡️ BLDS ADMIN MATRIX</span>
+    <span>🛡️ BLDS OWNER MATRIX</span>
     <span style="cursor:pointer; font-weight:bold; font-size:14px;" id="adminCloseBtn">✕</span>
   </div>
   <div class="admin-body">
@@ -2061,7 +2089,7 @@ function startCalibrationTimer() {
 }
 
 /* ==========================================================================
-   🎬 EXECUTION ENGINE: ODYSSEY 100 STREAK EVENT PLAYBACK PROTOCOL
+   🎬 FIX IMPLEMENTATION: ODYSSEY 100 STREAK EVENT PLAYBACK ENGINE
    ========================================================================== */
 function runOdyssey100DaysCutscene() {
   initOdysseyAudioEngine();
@@ -2070,13 +2098,14 @@ function runOdyssey100DaysCutscene() {
   const container = document.getElementById("odysseyCutsceneContainer");
   const mainWeb = document.getElementById("mainWebsiteContainer");
   
-  // Sembunyikan web normal dan tampilkan kanvas hitam malam bertabur bintang
+  // Sembunyikan website utama
   mainWeb.style.opacity = "0";
   setTimeout(() => { mainWeb.style.display = "none"; }, 500);
   
+  // Munculkan container cutscene
   container.style.display = "flex";
 
-  // Reset Elemen Teks
+  // Reset Semua Keadaan Awal Elemen
   const l1 = document.getElementById("odyLine1");
   const l2 = document.getElementById("odyLine2");
   const l3 = document.getElementById("odyLine3");
@@ -2084,50 +2113,70 @@ function runOdyssey100DaysCutscene() {
   const logoHolder = document.getElementById("odysseyLogoHolder");
   const petDeck = document.getElementById("odysseyPetDeck");
 
-  l1.style.opacity = "0"; l1.style.transform = "translateY(20px)";
-  l2.style.opacity = "0"; l2.style.transform = "translateY(20px)";
-  l3.style.opacity = "0"; l3.style.transform = "translateY(20px)";
-  l4.style.opacity = "0"; l4.style.transform = "translateY(20px)";
+  l1.className = "odyssey-line";
+  l2.className = "odyssey-line";
+  l3.className = "odyssey-line";
+  l4.className = "odyssey-line odyssey-grand-title";
+  
   logoHolder.style.opacity = "0";
-  logoHolder.style.animation = "none";
+  logoHolder.className = "odyssey-logo-holder";
+  petDeck.classList.remove("active");
   container.classList.remove("odyssey-shake-earthquake", "odyssey-color-inversion");
 
-  // Rangkaian Teks Odyssey Berjalan Bertahap
-  setTimeout(() => { l1.style.opacity = "1"; l1.style.transform = "translateY(0)"; playOdyTextSfx(); }, 1200);
-  setTimeout(() => { l2.style.opacity = "1"; l2.style.transform = "translateY(0)"; playOdyTextSfx(); }, 3500);
-  setTimeout(() => { l3.style.opacity = "1"; l3.style.transform = "translateY(0)"; playOdyTextSfx(); }, 6000);
-  setTimeout(() => { l4.style.opacity = "1"; l4.style.transform = "translateY(0)"; playOdyTextSfx(); }, 8500);
+  // RANGKAIAN SEKUENSAL: Teks Muncul Bergantian 1 per 1 (Fade In)
+  setTimeout(() => { 
+    l1.classList.add("odyssey-fade-in"); 
+    playOdyTextSfx(); 
+  }, 1200);
 
-  // LOGO MUNCUL DI-BANTING (*SLAM*)
+  setTimeout(() => { 
+    l2.classList.add("odyssey-fade-in"); 
+    playOdyTextSfx(); 
+  }, 3500);
+
+  setTimeout(() => { 
+    l3.classList.add("odyssey-fade-in"); 
+    playOdyTextSfx(); 
+  }, 6000);
+
+  // TEKS UTAMA BANGKIT + SHAKE BERGUNCANG
+  setTimeout(() => { 
+    l4.classList.add("odyssey-fade-in");
+    l4.classList.add("odyssey-text-shake-active"); // Efek guncangan teks day 100 streak
+    playOdyTextSfx(); 
+  }, 8500);
+
+  // LOGO JATUH DI-BANTING (*SLAM DROP*)
   setTimeout(() => {
-    // Sembunyikan teks cerita lama untuk memusatkan fokus
-    l1.style.opacity = "0"; l2.style.opacity = "0"; l3.style.opacity = "0";
+    // Hilangkan teks pengantar agar fokus beralih ke logo
+    l1.style.opacity = "0"; 
+    l2.style.opacity = "0"; 
+    l3.style.opacity = "0";
     
     logoHolder.style.opacity = "1";
     logoHolder.style.animation = "logoSlamDrop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards";
     playOdyLogoSlamSfx();
-  }, 11500);
+  }, 12000);
 
   // Aktifkan Loop Mengapung (Float Smooth) Setelah Efek Banting Selesai
   setTimeout(() => {
     logoHolder.classList.add("odyssey-logo-float-active");
-  }, 12300);
+  }, 12800);
 
-  // EFEK GEMPA BUMI & INVERSI WARNA DILANCARKAN
+  // GLOBAL BACKGROUND SHAKE & COLOR INVERSION PROTOCOL
   setTimeout(() => {
     container.classList.add("odyssey-shake-earthquake");
     container.classList.add("odyssey-color-inversion");
-  }, 13200);
+  }, 13800);
 
-  // 3 PET TURUN DARI ATAS KE BAWAH LOGO
+  // DAFTAR KARTU 3 PET ULTIMATE MUNCUL (DIJAMIN TIDAK KEPOTONG)
   setTimeout(() => {
-    // Matikan guncangan gempa agar user bisa memilih dengan nyaman
-    container.classList.remove("odyssey-shake-earthquake");
+    container.classList.remove("odyssey-shake-earthquake"); // Hentikan getaran layar global
     petDeck.classList.add("active");
-  }, 15500);
+  }, 16200);
 }
 
-// Handler Aksi Pilihan Salah Satu Pet
+// Handler Pilihan Pet Utama
 function selectOdysseyUltimatePet(petName) {
   stopOdysseyCinematicBgm();
   streakData.unlockedOdysseyPet = petName;
@@ -2136,11 +2185,11 @@ function selectOdysseyUltimatePet(petName) {
   const curtain = document.getElementById("odysseyDarkCurtain");
   curtain.style.display = "block";
   
-  // Layar Menhitam Smooth Sempurna selama 4 Detik
+  // Layar Menghitam secara halus
   setTimeout(() => { curtain.style.opacity = "1"; }, 50);
 
   setTimeout(() => {
-    // Kembalikan Framework ke Kondisi Normal Sempurna
+    // Matikan Canvas Layar Cutscene
     document.getElementById("odysseyCutsceneContainer").style.display = "none";
     document.getElementById("odysseyPetDeck").classList.remove("active");
     
@@ -2151,11 +2200,11 @@ function selectOdysseyUltimatePet(petName) {
     updateWidgetDynamicUI();
     renderLeaderboard();
 
-    // Hilangkan Tirai Hitam
+    // Singkirkan Tirai Hitam
     curtain.style.opacity = "0";
     setTimeout(() => { curtain.style.display = "none"; }, 1500);
 
-  }, 4000); // Durasi Tepat 4 Detik Sesuai Permintaan
+  }, 4000); // Penutupan Transisi Berlangsung Tepat 4 Detik
 }
 
 function calibrateCore() {
@@ -2183,7 +2232,7 @@ function calibrateCore() {
   startCalibrationTimer();
   renderLeaderboard();
 
-  // CEK JIKA HARI INI PAS MENCAPAI 100 STREAK, PICU CUTSCENE ODYSSEY
+  // CEK APAKAH RESIDU HITUNGAN TEPAT MENYENTUH 100 STREAK
   if (streakData.count === 100) {
     runOdyssey100DaysCutscene();
   }
@@ -2397,7 +2446,7 @@ function executeAdminUserUpdate() {
   streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; 
   streakData.petCustomName = document.getElementById("admPetNick").value.trim();
 
-  // Reset pelihaan jika admin menurunkan streak dari 100
+  // Reset pilihan jika admin menurunkan streak dari 100
   if (streakData.count < 100) {
     streakData.unlockedOdysseyPet = "";
   }
@@ -2407,7 +2456,7 @@ function executeAdminUserUpdate() {
   renderLeaderboard();
   populateAdminPanelDropdowns();
   startCalibrationTimer();
-  alert("✨ Admin Node: Core User & Mutation Phase Changes Applied!");
+  alert("✨ Owner Node: Core User & Mutation Phase Changes Applied!");
 
   // Memungkinkan Admin menguji coba cutscene 100 streak dengan mengubah input angka ke 100
   if (oldStreak !== 100 && streakData.count === 100) {
@@ -2419,7 +2468,7 @@ function executeAdminRankOverride() {
   streakData.forcedRankTitle = document.getElementById("admForceRank").value.trim();
   saveState();
   updateWidgetDynamicUI();
-  alert("✨ Admin Node: Rank Title Overridden!");
+  alert("✨ Owner Node: Rank Title Overridden!");
 }
 
 function executeAdminLbUpdate() {
@@ -2433,7 +2482,7 @@ function executeAdminLbUpdate() {
   saveState();
   renderLeaderboard();
   populateAdminPanelDropdowns();
-  alert(`✨ Admin Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
+  alert(`✨ Owner Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
 }
 
 /* 🔄 FIX DRAG & CLICK ENGINE PROTOCOL */
@@ -2497,8 +2546,16 @@ function dragEnd(e) {
   }
 }
 
+// 🟢 FIX: MEMASANG EVENT LISTENER UNTUK TOMBOL "✕" PANEL OWNER
 document.addEventListener("DOMContentLoaded", () => {
   loadState();
+  
+  const closeBtn = document.getElementById("adminCloseBtn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      document.getElementById("adminPanel").style.display = "none";
+    });
+  }
 });
 </script>
 </body>
