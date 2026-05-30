@@ -30,7 +30,6 @@ body{
   transition: filter 0.5s ease;
 }
 
-/* CLASS UNTUK CODE "BLACK" (FULL INVERSI) */
 body.full-invert {
   filter: invert(1) hue-rotate(180deg);
 }
@@ -133,7 +132,6 @@ body.full-invert {
   display: none;
 }
 
-/* PET HUD BOX */
 .pet-hud-box {
   display: none;
   background: rgba(255, 255, 255, 0.03);
@@ -248,6 +246,20 @@ button:disabled {
   transform: none !important;
 }
 
+.reset-streak-btn {
+  border-color: rgba(255, 74, 74, 0.4);
+  color: rgba(255, 74, 74, 0.8);
+  font-size: 11px;
+  margin-top: 15px;
+  padding: 6px 14px;
+  letter-spacing: 1px;
+}
+.reset-streak-btn:hover {
+  background: #ff4a4a;
+  color: #000;
+  border-color: #ff4a4a;
+}
+
 .menu{
   display:none;
   flex-direction:column;
@@ -287,21 +299,39 @@ button:disabled {
   margin-bottom: 20px;
 }
 
+.box h3 {
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  border-left: 3px solid #fff;
+  padding-left: 10px;
+}
+
 .lore-text {
-  font-size: 14px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+  white-space: pre-line;
+}
+
+.flames-list {
+  list-style: none;
   margin-bottom: 15px;
 }
 
-.lore-quote {
-  border-left: 2px solid #fff;
-  padding-left: 15px;
-  margin: 20px 0;
-  font-style: italic;
-  color: rgba(255,255,255,0.6);
+.flames-list li {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.85);
 }
 
-/* PROGRESS BAR UNTUK HALAMAN ACHIEVEMENT AWAL */
+.flames-list b {
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
 .achievement-progress-container {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
@@ -375,15 +405,38 @@ button:disabled {
 }
 
 .archive-log {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px dashed rgba(255,255,255,0.05);
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
 }
 
 .archive-date {
   font-size: 11px;
   color: #fff;
   font-family: monospace;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.staff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.staff-group h4 {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.staff-group p {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 600;
 }
 
 input, select {
@@ -418,6 +471,18 @@ input, select {
   border-radius: 18px;
   padding: 30px;
   text-align: center;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.modal-btn-group button {
+  flex: 1;
+  margin: 0;
 }
 
 .leaderboard-table {
@@ -471,7 +536,6 @@ input, select {
 
 @keyframes spin{ to{ transform:rotate(360deg); } }
 
-/* OVERLAY UNTUK CODE "BLDS" (SETENGAH INVERSI KANAN) */
 .split-cutscene-container {
   position: fixed;
   inset: 0;
@@ -521,9 +585,6 @@ input, select {
   50% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
 }
 
-/* =======================================================
-   STYLE ANIMASI BLACK TRANSITION CUTSCENE UNTUK KODE BLDS
-   ======================================================= */
 .blds-black-screen-overlay {
   position: fixed;
   inset: 0;
@@ -613,7 +674,7 @@ footer {
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px;">MAIN MATRIX REGISTRATION</h3>
+    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MAIN MATRIX REGISTRATION</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name and choose your tracking core type.</p>
     <br>
     <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center;">
@@ -630,7 +691,7 @@ footer {
 
 <div class="modal-overlay" id="petNameModal">
   <div class="modal-box">
-    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px;">MUTATE CUSTOM NAME</h3>
+    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MUTATE CUSTOM NAME</h3>
     <input type="text" id="petNameInput" placeholder="GIVE NICKNAME" maxlength="12" style="text-align: center;">
     <br><br>
     <button onclick="savePetCustomName()" style="width: 100%; margin: 0;">BIND CORENODE SIGNATURE</button>
@@ -639,12 +700,23 @@ footer {
 
 <div class="modal-overlay" id="collapseModal">
   <div class="modal-box" style="border-color: rgba(255,0,0,0.4);">
-    <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px;">⚠️ SYNC LAPSE DETECTED</h3>
+    <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">⚠️ SYNC LAPSE DETECTED</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.6); text-align: justify;">
       Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0. Namun, wujud tertinggi pet Anda aman dan terkunci!
     </p>
     <br>
     <button onclick="closeCollapseModal()" style="width: 100%; margin: 0;">RE-CALIBRATE FRAMEWORK</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="resetConfirmModal">
+  <div class="modal-box" style="border-color: rgba(255,74,74,0.4);">
+    <h3 style="letter-spacing: 1px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">Are you sure dominioners?</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Tindakan ini akan mengembalikan hitungan streak Anda menjadi 0.</p>
+    <div class="modal-btn-group">
+      <button onclick="confirmResetStreak()" style="background:#ff4a4a; border-color:#ff4a4a; color:#000; font-weight:600;">Yes</button>
+      <button onclick="closeResetModal()">No</button>
+    </div>
   </div>
 </div>
 
@@ -690,20 +762,74 @@ footer {
 
   <div class="page" id="origin">
     <div class="box">
-      <h2>THE ORIGIN OF BLDS</h2>
-      <p class="lore-text">Before BLDS had a name, before the symbol existed, and before the squad was formed... there were only individuals trying to survive their own darkness.</p>
-      <p class="lore-text">Most people only shine when the world around them is clear and bright. But very few can continue moving forward, holding their inner embers when everything around them turns entirely dark.</p>
-      <div class="lore-quote">
-        "We didn't look for the light. We learned how to control the blacklight."
-      </div>
-      <p class="lore-text">BLDS stands as a digital core refuge, a unified frequency built for those who master self-discipline, harness silent growth, and navigate the eclipse of life as modern-day dominiones.</p>
+      <h2>LORE</h2>
+      <p class="lore-text">before BLDS had a name,
+      before the symbol existed,
+      before the squad was formed…
+      there were only individuals trying to survive their own darkness.
+      Some were ignored.
+      Some were underestimated.
+      Some failed over and over again until they stopped expecting anyone to believe in them.
+      They watched others rise faster.
+      Watched others gain recognition.
+      Watched people quit the moment things became difficult.
+      And slowly, they realized something:
+      Most people only shine when the world is bright.
+      But very few can continue moving forward when everything turns dark.
+      That realization became the beginning of BLDS.
+      Not a squad created for fame.
+      Not a kingdom built on arrogance.
+      Not a place for people searching only for victory.
+      But a dominion built by those who refused to disappear.</p>
+
+      <h2>BLACKLIGHT CORE</h2>
+      <p class="lore-text">At the center of the eclipse lies the Core.
+      A single star that continues to shine no matter how dark the sky becomes.
+      The Core represents the inner purpose carried by every member of BLDS.
+      Not a purpose given by the world.
+      Not a purpose created by attention or popularity.
+      But a purpose discovered through hardship.
+      It is the reminder that: even when everything around you changes…
+      even when people leave…
+      even when failure surrounds you…
+      your inner light can still remain alive.
+      BLDS believes the strongest people are not those who never fall.
+      The strongest are the ones who continue standing after every fall.
+      That is why the Core never disappears.
+      Because purpose cannot be erased by fear.</p>
+
+      <h2>10 FLAMES OF BLDS</h2>
+      
+      <h3>Greater</h3>
+      <ul class="flames-list">
+        <li><b>I. Vision</b> - The ability to see direction even when others are lost.</li>
+        <li><b>II. Discipline</b> - To continue growing even when nobody is watching.</li>
+        <li><b>III. Loyalty</b> - To stand together through victory and defeat.</li>
+        <li><b>IV. Ambition</b> - The desire to surpass limits and continue evolving.</li>
+        <li><b>V. Resilience</b> - The strength to rise again after every fall.</li>
+      </ul>
+
+      <h3>Lesser</h3>
+      <ul class="flames-list">
+        <li><b>I. Hope</b> - The light that remains during difficult times.</li>
+        <li><b>II. Awareness</b> - The ability to stay conscious and understand reality.</li>
+        <li><b>III. Patience</b> - Growth takes time and endurance.</li>
+        <li><b>IV. Courage</b> - The will to move forward despite fear.</li>
+        <li><b>V. Unity</b> - The bond that turns individuals into something greater.</li>
+      </ul>
+      
+      <p class="lore-text" style="font-style: italic; color: rgba(255,255,255,0.6);">Though smaller, these flames are just as important.
+      Because even the brightest Core will fade without what supports it.
+
+      Five flames grant strength.
+      Five flames preserve it.
+      Together, they protect the Core.</p>
     </div>
   </div>
 
   <div class="page" id="achievement">
     <div class="box">
       <h2>RESONANCE ACHIEVEMENTS</h2>
-      
       <div class="achievement-progress-container">
         <div class="achievement-progress-bar" id="achProgressBar"></div>
         <div class="achievement-progress-text" id="achProgressText">0 / 4 BADGES UNLOCKED</div>
@@ -756,23 +882,55 @@ footer {
       <h2>BLDS KRONOLOGIS ARCHIVES</h2>
       
       <div class="archive-log">
+        <div class="archive-date">> CORE DOMINION LEADERSHIP NETWORK</div>
+        <div class="staff-grid">
+          <div class="staff-group">
+            <h4>Founder</h4>
+            <p>Michael Lorenzo</p>
+          </div>
+          <div class="staff-group">
+            <h4>Right Hand of BLDS</h4>
+            <p>William Nayottama</p>
+          </div>
+          <div class="staff-group">
+            <h4>Left Hand of BLDS</h4>
+            <p>Prince Felix</p>
+          </div>
+        </div>
+        
+        <div class="staff-grid" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+          <div class="staff-group">
+            <h4>Admin</h4>
+            <p>George Alfred</p>
+          </div>
+          <div class="staff-group">
+            <h4>Admin</h4>
+            <p>Steven Cleo</p>
+          </div>
+          <div class="staff-group">
+            <h4>Admin</h4>
+            <p>Denzel Arnold</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="archive-log">
         <div class="archive-date">> MARCH 05, 2024 [CORE_LAUNCH]</div>
-        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
-          BLDS Framework officially created and initialized from the dark sectors. 
-          <br><span style="color:rgba(255,255,255,0.4);">Founder Signature ID:</span> <b>Michael Lorenzo</b>.
+        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
+          BLDS Framework officially created and initialized from the dark sectors.
         </p>
       </div>
 
       <div class="archive-log">
         <div class="archive-date">> NOVEMBER 12, 2024 [DATABASE_UPGRADE]</div>
-        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
+        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
           Integration of global dominion ranking protocols and deployment of companion tracking matrices (Dragon, Leviathan, Fenrir cores).
         </p>
       </div>
 
       <div class="archive-log">
         <div class="archive-date">> VERSION 2.5.0 [CURRENT_TIMESTAMP_2026]</div>
-        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
+        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
           System state stabilized. Local client media fallback asset links assigned to <code>logo.png</code> bypassing legacy cloud errors.
         </p>
       </div>
@@ -792,6 +950,8 @@ footer {
     <div class="calibration-box">
       <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
       <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
+      <br>
+      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK</button>
     </div>
   </div>
 </div>
@@ -829,8 +989,7 @@ let streakData = {
   lastCalibratedTimestamp: null,
   dominionName: "",
   petCustomName: "",
-  petType: "dragon",
-  claimedCodes: {} // TRACKING REWARD AGAR HANYA BISA CLAIM 1 KALI
+  petType: "dragon"
 };
 
 const DEFAULT_LEADERBOARD = [
@@ -882,11 +1041,7 @@ function saveState() {
 
 function loadState() {
   const savedStr = localStorage.getItem("BLDS_STR_FINAL_v2");
-  if(savedStr) {
-    let parsed = JSON.parse(savedStr);
-    if (!parsed.claimedCodes) parsed.claimedCodes = {};
-    streakData = parsed;
-  }
+  if(savedStr) streakData = JSON.parse(savedStr);
   
   checkStreakValidity();
   updateWidgetDynamicUI();
@@ -908,6 +1063,27 @@ function closeCollapseModal() {
   document.getElementById("collapseModal").style.display = "none";
   updateWidgetDynamicUI();
   updateCalibrationHudUI();
+}
+
+function openResetModal() {
+  document.getElementById("resetConfirmModal").style.display = "flex";
+}
+
+function closeResetModal() {
+  document.getElementById("resetConfirmModal").style.display = "none";
+}
+
+function confirmResetStreak() {
+  streakData.count = 0;
+  streakData.lastCalibratedTimestamp = null;
+  saveState();
+  
+  updateWidgetDynamicUI();
+  updateCalibrationHudUI();
+  renderLeaderboard();
+  
+  closeResetModal();
+  alert("🔄 Framework Re-calibrated! Streak kembali ke 0.");
 }
 
 function getPetEvolutionEngine(highestStreak, type) {
@@ -1145,9 +1321,7 @@ function showPage(id){
   }
 }
 
-/* =======================================================
-   SISTEM CUTSCENE SINEMATIK DIALOG UNTUK KODE "BLDS"
-   ======================================================= */
+/* SISTEM CUTSCENE SINEMATIK DIALOG UNTUK KODE "BLDS" */
 function runBldsCinematicCutscene() {
   const overlay = document.getElementById("bldsCutsceneOverlay");
   const logo = document.getElementById("bldsCutsceneLogo");
@@ -1156,7 +1330,6 @@ function runBldsCinematicCutscene() {
   overlay.style.display = "flex";
   setTimeout(() => { overlay.style.opacity = "1"; }, 50);
 
-  // Daftar dialog tanpa suara dengan durasi jeda yang disesuaikan
   const dialogSequence = [
     { text: "Sun", delay: 1000 },
     { text: "Moon", delay: 2500 },
@@ -1164,12 +1337,10 @@ function runBldsCinematicCutscene() {
     { text: "BLDS", delay: 6000 }
   ];
 
-  // Tampilkan Logo bersinar naik turun di tengah jalannya dialog
   setTimeout(() => {
     logo.style.opacity = "1";
   }, 1500);
 
-  // Eksekusi sekuensial baris dialog
   dialogSequence.forEach(item => {
     setTimeout(() => {
       dialogBox.style.opacity = "0";
@@ -1184,12 +1355,11 @@ function runBldsCinematicCutscene() {
     }, item.delay);
   });
 
-  // Akhiri cutscene dan langsung belah layar (kanan inversi, kiri tidak)
   setTimeout(() => {
     overlay.style.opacity = "0";
     setTimeout(() => {
       overlay.style.display = "none";
-      applyVisualMode("split"); // Langsung aktifkan efek pemisahan
+      applyVisualMode("split");
     }, 800);
   }, 8500);
 }
@@ -1219,7 +1389,7 @@ function applyVisualMode(mode) {
   }
 }
 
-function unlockCode(){
+function unlockCode() {
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
   if (!v) {
@@ -1227,46 +1397,25 @@ function unlockCode(){
     return;
   }
 
-  // Cek apakah kode penambah streak ini sudah pernah diklaim sebelumnya
-  if ((v === "blds" || v === "black" || v === "lorenzo" || v === "nayottama" || v === "prince") && streakData.claimedCodes[v]) {
-    alert(`❌ AMBIL GAGAL: Kode "${v.toUpperCase()}" hanya bisa diklaim 1 kali saja!`);
-    document.getElementById("codeInput").value = "";
-    return;
-  }
-
   if (v === "blds") {
-    streakData.count += 5;
-    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    streakData.claimedCodes[v] = true; // Kunci kode agar tidak bisa diulang
-    saveState();
-    runBldsCinematicCutscene(); // Jalankan transisi hitam & dialog sekuensial
+    runBldsCinematicCutscene();
   } 
   else if (v === "black") {
-    streakData.count += 5;
-    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    streakData.claimedCodes[v] = true; 
-    saveState();
     applyVisualMode("full");
-    alert("💀 KODE BLACK BERHASIL: +5 Streak & Full Screen Inverted!");
+    alert("💀 KODE BLACK BERHASIL: Full Screen Inverted!");
   } 
   else if (v === "white") {
     applyVisualMode("normal");
     alert("🔄 KODE WHITE BERHASIL: Sistem dibersihkan, visual kembali normal!");
   } 
   else if (v === "lorenzo" || v === "nayottama" || v === "prince") {
-    streakData.count += 5;
-    streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    streakData.claimedCodes[v] = true; 
-    saveState();
-    alert(`⚡ KODE CRITICAL ${v.toUpperCase()} BERHASIL: +5 Streak ditambahkan ke core node!`);
+    alert(`⚡ CORE CODENODE SIGNATURE ${v.toUpperCase()} AKTIF!`);
   } 
   else {
     alert("❌ INVALID CODE: Signature core tidak dikenali.");
     return;
   }
 
-  updateWidgetDynamicUI(); 
-  renderLeaderboard();    
   document.getElementById("codeInput").value = "";
 }
 
