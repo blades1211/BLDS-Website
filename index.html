@@ -521,6 +521,50 @@ input, select {
   50% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
 }
 
+/* =======================================================
+   STYLE ANIMASI BLACK TRANSITION CUTSCENE UNTUK KODE BLDS
+   ======================================================= */
+.blds-black-screen-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 999999;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.blds-overlay-logo {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
+  animation: smoothFloat 3s ease-in-out infinite;
+  margin-bottom: 40px;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+@keyframes smoothFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.blds-overlay-dialog {
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: #fff;
+  text-transform: uppercase;
+  height: 30px;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(10px);
+}
+
 footer {
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
@@ -552,6 +596,11 @@ footer {
 </head>
 
 <body>
+
+<div class="blds-black-screen-overlay" id="bldsCutsceneOverlay">
+  <img src="logo.png" alt="BLDS Cutscene Logo" class="blds-overlay-logo" id="bldsCutsceneLogo" onerror="this.style.display='none';">
+  <div class="blds-overlay-dialog" id="bldsCutsceneDialog"></div>
+</div>
 
 <div class="split-cutscene-container" id="splitOverlay">
   <div class="split-left"></div>
@@ -780,7 +829,8 @@ let streakData = {
   lastCalibratedTimestamp: null,
   dominionName: "",
   petCustomName: "",
-  petType: "dragon"
+  petType: "dragon",
+  claimedCodes: {} // TRACKING REWARD AGAR HANYA BISA CLAIM 1 KALI
 };
 
 const DEFAULT_LEADERBOARD = [
@@ -807,11 +857,6 @@ const DEFAULT_LEADERBOARD = [
 
 function getPetSvg(type, highestStreak) {
   let color = "#ffffff";
-  if (highestStreak >= 100) color = "#ffffff";
-  else if (highestStreak >= 50) color = "#ffffff";
-  else if (highestStreak >= 30) color = "#ffffff";
-  else if (highestStreak >= 7) color = "#ffffff";
-
   if (type === "dragon") {
     return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
       <path d="M50 15 L75 40 L60 45 L80 75 L50 60 L20 75 L40 45 L25 40 Z" fill="none" stroke="${color}" stroke-width="3"/>
@@ -837,7 +882,11 @@ function saveState() {
 
 function loadState() {
   const savedStr = localStorage.getItem("BLDS_STR_FINAL_v2");
-  if(savedStr) streakData = JSON.parse(savedStr);
+  if(savedStr) {
+    let parsed = JSON.parse(savedStr);
+    if (!parsed.claimedCodes) parsed.claimedCodes = {};
+    streakData = parsed;
+  }
   
   checkStreakValidity();
   updateWidgetDynamicUI();
@@ -935,7 +984,6 @@ function updateAchievementsUI(highestStreak) {
     ach4.classList.remove("unlocked"); ach4B.className = "ach-badge locked-badge"; ach4B.innerHTML = "🔒 Locked";
   }
 
-  // UPDATE PROGRESS BAR AWAL SECARA DINAMIS
   const progressBar = document.getElementById("achProgressBar");
   const progressText = document.getElementById("achProgressText");
   if (progressBar && progressText) {
@@ -1097,7 +1145,55 @@ function showPage(id){
   }
 }
 
-/* LOGIKA PEMROSESAN VISUAL INVERSI KODE */
+/* =======================================================
+   SISTEM CUTSCENE SINEMATIK DIALOG UNTUK KODE "BLDS"
+   ======================================================= */
+function runBldsCinematicCutscene() {
+  const overlay = document.getElementById("bldsCutsceneOverlay");
+  const logo = document.getElementById("bldsCutsceneLogo");
+  const dialogBox = document.getElementById("bldsCutsceneDialog");
+  
+  overlay.style.display = "flex";
+  setTimeout(() => { overlay.style.opacity = "1"; }, 50);
+
+  // Daftar dialog tanpa suara dengan durasi jeda yang disesuaikan
+  const dialogSequence = [
+    { text: "Sun", delay: 1000 },
+    { text: "Moon", delay: 2500 },
+    { text: "With the Core inside", delay: 4000 },
+    { text: "BLDS", delay: 6000 }
+  ];
+
+  // Tampilkan Logo bersinar naik turun di tengah jalannya dialog
+  setTimeout(() => {
+    logo.style.opacity = "1";
+  }, 1500);
+
+  // Eksekusi sekuensial baris dialog
+  dialogSequence.forEach(item => {
+    setTimeout(() => {
+      dialogBox.style.opacity = "0";
+      dialogBox.style.transform = "translateY(10px)";
+      
+      setTimeout(() => {
+        dialogBox.innerHTML = item.text;
+        dialogBox.style.opacity = "1";
+        dialogBox.style.transform = "translateY(0)";
+      }, 300);
+
+    }, item.delay);
+  });
+
+  // Akhiri cutscene dan langsung belah layar (kanan inversi, kiri tidak)
+  setTimeout(() => {
+    overlay.style.opacity = "0";
+    setTimeout(() => {
+      overlay.style.display = "none";
+      applyVisualMode("split"); // Langsung aktifkan efek pemisahan
+    }, 800);
+  }, 8500);
+}
+
 function applyVisualMode(mode) {
   const splitOverlay = document.getElementById("splitOverlay");
   const alertHud = document.getElementById("cutsceneAlert");
@@ -1108,12 +1204,12 @@ function applyVisualMode(mode) {
 
   if (mode === "split") {
     splitOverlay.style.display = "block";
-    alertHud.innerHTML = "CODE 'BLDS' ACTIVATED // RIGHT CORE INVERTED // +5 STREAK";
+    alertHud.innerHTML = "CODE 'BLDS' ACTIVATED // RIGHT CORE INVERTED";
     alertHud.style.display = "block";
   } 
   else if (mode === "full") {
     document.body.classList.add("full-invert");
-    alertHud.innerHTML = "CODE 'BLACK' ACTIVATED // OVERALL SCREEN INVERTED // +5 STREAK";
+    alertHud.innerHTML = "CODE 'BLACK' ACTIVATED // OVERALL SCREEN INVERTED";
     alertHud.style.display = "block";
   } 
   else if (mode === "normal") {
@@ -1131,15 +1227,25 @@ function unlockCode(){
     return;
   }
 
+  // Cek apakah kode penambah streak ini sudah pernah diklaim sebelumnya
+  if ((v === "blds" || v === "black" || v === "lorenzo" || v === "nayottama" || v === "prince") && streakData.claimedCodes[v]) {
+    alert(`❌ AMBIL GAGAL: Kode "${v.toUpperCase()}" hanya bisa diklaim 1 kali saja!`);
+    document.getElementById("codeInput").value = "";
+    return;
+  }
+
   if (v === "blds") {
     streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    applyVisualMode("split");
-    alert("⚡ KODE BLDS BERHASIL: +5 Streak & Split-Inversion Kanan Aktif!");
+    streakData.claimedCodes[v] = true; // Kunci kode agar tidak bisa diulang
+    saveState();
+    runBldsCinematicCutscene(); // Jalankan transisi hitam & dialog sekuensial
   } 
   else if (v === "black") {
     streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    streakData.claimedCodes[v] = true; 
+    saveState();
     applyVisualMode("full");
     alert("💀 KODE BLACK BERHASIL: +5 Streak & Full Screen Inverted!");
   } 
@@ -1150,6 +1256,8 @@ function unlockCode(){
   else if (v === "lorenzo" || v === "nayottama" || v === "prince") {
     streakData.count += 5;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
+    streakData.claimedCodes[v] = true; 
+    saveState();
     alert(`⚡ KODE CRITICAL ${v.toUpperCase()} BERHASIL: +5 Streak ditambahkan ke core node!`);
   } 
   else {
@@ -1157,7 +1265,6 @@ function unlockCode(){
     return;
   }
 
-  saveState();
   updateWidgetDynamicUI(); 
   renderLeaderboard();    
   document.getElementById("codeInput").value = "";
