@@ -331,62 +331,48 @@ input:focus{
   }
 }
 
+/* NOTIFICATION */
+
+.notification{
+  position:fixed;
+  top:25px;
+  right:25px;
+  background:black;
+  border:1px solid white;
+  padding:15px 20px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(255,255,255,.2);
+  z-index:999999;
+  animation:slideIn .5s ease;
+}
+
+@keyframes slideIn{
+  from{
+    opacity:0;
+    transform:translateX(100px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+
 /* MOBILE */
 
 @media(max-width:700px){
-
   .logo{
     width:120px;
   }
-
   .title{
     font-size:22px;
   }
-
   .box{
     padding:20px;
     font-size:14px;
   }
-
   .bigLogo{
     width:170px;
   }
-
-}
-
-.notification{
-
-position:fixed;
-top:25px;
-right:25px;
-
-background:black;
-border:1px solid white;
-
-padding:15px 20px;
-
-border-radius:15px;
-
-box-shadow:0 0 20px rgba(255,255,255,.2);
-
-z-index:999999;
-
-animation:slideIn .5s ease;
-
-}
-
-@keyframes slideIn{
-
-from{
-opacity:0;
-transform:translateX(100px);
-}
-
-to{
-opacity:1;
-transform:translateX(0);
-}
-
 }
 
 </style>
@@ -394,773 +380,415 @@ transform:translateX(0);
 
 <body>
 
-<!-- LOADER -->
-
 <div class="loader" id="loader">
-
-<div class="loaderCircle"></div>
-
-<div class="loaderText">
-ENTERING BLACKLIGHTDOMS
-</div>
-
+  <div class="loaderCircle"></div>
+  <div class="loaderText">ENTERING BLACKLIGHTDOMS</div>
 </div>
 
 <div class="flash" id="flash"></div>
-
 <div class="sky" id="sky"></div>
 <div class="eclipse"></div>
 
 <div class="container">
 
-<img src="logo.png" class="logo">
+  <img src="logo.png" class="logo">
+  <h1 class="title">BLACKLIGHTDOMS</h1>
 
-<h1 class="title">BLACKLIGHTDOMS</h1>
+  <button id="enterBtn" onclick="enter()">
+    ENTER THE ECLIPSE
+  </button>
 
-<button id="enterBtn" onclick="enter()">
-ENTER THE ECLIPSE
-</button>
+  <div class="menu" id="menu">
+    <button onclick="showPage('origin')">ORIGIN</button>
+    <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
+    <button onclick="showPage('archives')">ARCHIVES</button>
+    <button onclick="showPage('code')">CODE</button>
+  </div>
 
-<!-- MENU -->
+  <div class="page" id="origin">
+    <div class="box">
+      <h2>THE ORIGIN OF BLDS</h2>
+      <br>
+      before BLDS had a name,<br>
+      before the symbol existed,<br>
+      before the squad was formed…<br>
+      there were only individuals trying to survive their own darkness.<br><br>
+      Some were ignored.<br>
+      Some were underestimated.<br>
+      Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
+      They watched others rise faster.<br>
+      Watched others gain recognition.<br>
+      Watched people quit the moment things became difficult.<br><br>
+      And slowly, they realized something:<br><br>
+      <b>
+        Most people only shine when the world is bright.<br>
+        But very few can continue moving forward when everything turns dark.
+      </b>
+      <br><br>
+      That realization became the beginning of BLDS.<br><br>
+      Not a squad created for fame.<br>
+      Not a kingdom built on arrogance.<br>
+      Not a place for people searching only for victory.<br><br>
+      But a dominion built by those who refused to disappear.
+      <br><br><hr><br>
+      <h2>BLACKLIGHT CORE</h2>
+      <br>
+      At the center of the eclipse lies the Core.<br>
+      A single star that continues to shine no matter how dark the sky becomes.<br><br>
+      The Core represents the inner purpose carried by every member of BLDS.<br><br>
+      Not a purpose given by the world.<br>
+      Not a purpose created by attention or popularity.<br>
+      But a purpose discovered through hardship.<br><br>
+      It is the reminder that:<br><br>
+      even when everything around you changes…<br>
+      even when people leave…<br>
+      even when failure surrounds you…<br>
+      your inner light can still remain alive.<br><br>
+      BLDS believes the strongest people are not those who never fall.<br><br>
+      The strongest are the ones who continue standing after every fall.<br><br>
+      That is why the Core never disappears.<br>
+      Because purpose cannot be erased by fear.
+      <br><br><hr><br>
+      <h2>THE TEN FLAMES OF BLDS</h2>
+      <br>
+      <b>GREATER FLAMES</b>
+      <br><br>
+      I. Vision — The ability to see direction even when others are lost.<br><br>
+      II. Discipline — To continue growing even when nobody is watching.<br><br>
+      III. Loyalty — To stand together through victory and defeat.<br><br>
+      IV. Ambition — The desire to surpass limits and continue evolving.<br><br>
+      V. Resilience — The strength to rise again after every fall.<br><br>
+      <b>LESSER FLAMES</b>
+      <br><br>
+      I. Hope — The light that remains during difficult times.<br><br>
+      II. Awareness — The ability to stay conscious and understand reality.<br><br>
+      III. Patience — Growth takes time and endurance.<br><br>
+      IV. Courage — The will to move forward despite fear.<br><br>
+      V. Unity — The bond that turns individuals into something greater.<br><br>
+      Though smaller, these flames are just as important.<br><br>
+      Because even the brightest Core will fade without what supports it.<br><br>
+      <b>
+        Five flames grant strength.<br>
+        Five flames preserve it.<br>
+        Together, they protect the Core.
+      </b>
+    </div>
+  </div>
 
-<div class="menu" id="menu">
+  <div class="page" id="achievement">
+    <div class="box">
+      <h2>ACHIEVEMENTS</h2>
+      <br>
+      <div id="achievementList">
+        ❌ Forgotten Memories<br>
+        <small>Discover the Forgotten Eclipse</small>
+        <br><br>
+        ❌ Flames Mystery<br>
+        <small>Discover the 12 Flames Protocol</small>
+        <br><br>
+        ❌ Code Breaker<br>
+        <small>Unlock all hidden codes</small>
+      </div>
+    </div>
+  </div>
 
-<button onclick="showPage('origin')">
-ORIGIN
-</button>
+  <div class="page" id="archives">
+    <div class="box">
+      <h2>BLDS ARCHIVES</h2>
+      <br>
+      05-03-2024 — BLDS Born<br><br>
+      15-05-2024 — WhatsApp Community<br><br>
+      12-09-2024 — Discord Community<br><br>
+      20-08-2025 — Massive Remake
+      <br><br><hr><br>
+      Founder — Michael Lorenzo<br><br>
+      Right Hand Of BLDS — William Nayottama<br><br>
+      Left Hand Of BLDS — Felix
+    </div>
+  </div>
 
-<button onclick="showPage('achievement')">
-ACHIEVEMENTS
-</button>
-
-<button onclick="showPage('archives')">
-ARCHIVES
-</button>
-
-<button onclick="showPage('code')">
-CODE
-</button>
-
-</div>
-
-<!-- ORIGIN -->
-
-<div class="page" id="origin">
-
-<div class="box">
-
-<h2>THE ORIGIN OF BLDS</h2>
-
-<br>
-
-before BLDS had a name,<br>
-before the symbol existed,<br>
-before the squad was formed…<br>
-there were only individuals trying to survive their own darkness.<br><br>
-
-Some were ignored.<br>
-Some were underestimated.<br>
-Some failed over and over again until they stopped expecting anyone to believe in them.<br><br>
-
-They watched others rise faster.<br>
-Watched others gain recognition.<br>
-Watched people quit the moment things became difficult.<br><br>
-
-And slowly, they realized something:<br><br>
-
-<b>
-Most people only shine when the world is bright.<br>
-But very few can continue moving forward when everything turns dark.
-</b>
-
-<br><br>
-
-That realization became the beginning of BLDS.<br><br>
-
-Not a squad created for fame.<br>
-Not a kingdom built on arrogance.<br>
-Not a place for people searching only for victory.<br><br>
-
-But a dominion built by those who refused to disappear.
-
-<br><br><hr><br>
-
-<h2>BLACKLIGHT CORE</h2>
-
-<br>
-
-At the center of the eclipse lies the Core.<br>
-A single star that continues to shine no matter how dark the sky becomes.<br><br>
-
-The Core represents the inner purpose carried by every member of BLDS.<br><br>
-
-Not a purpose given by the world.<br>
-Not a purpose created by attention or popularity.<br>
-But a purpose discovered through hardship.<br><br>
-
-It is the reminder that:<br><br>
-
-even when everything around you changes…<br>
-even when people leave…<br>
-even when failure surrounds you…<br>
-your inner light can still remain alive.<br><br>
-
-BLDS believes the strongest people are not those who never fall.<br><br>
-
-The strongest are the ones who continue standing after every fall.<br><br>
-
-That is why the Core never disappears.<br>
-Because purpose cannot be erased by fear.
-
-<br><br><hr><br>
-
-<h2>THE TEN FLAMES OF BLDS</h2>
-
-<br>
-
-<b>GREATER FLAMES</b>
-
-<br><br>
-
-I. Vision — The ability to see direction even when others are lost.<br><br>
-
-II. Discipline — To continue growing even when nobody is watching.<br><br>
-
-III. Loyalty — To stand together through victory and defeat.<br><br>
-
-IV. Ambition — The desire to surpass limits and continue evolving.<br><br>
-
-V. Resilience — The strength to rise again after every fall.<br><br>
-
-<b>LESSER FLAMES</b>
-
-<br><br>
-
-I. Hope — The light that remains during difficult times.<br><br>
-
-II. Awareness — The ability to stay conscious and understand reality.<br><br>
-
-III. Patience — Growth takes time and endurance.<br><br>
-
-IV. Courage — The will to move forward despite fear.<br><br>
-
-V. Unity — The bond that turns individuals into something greater.<br><br>
-
-Though smaller, these flames are just as important.<br><br>
-
-Because even the brightest Core will fade without what supports it.<br><br>
-
-<b>
-Five flames grant strength.<br>
-Five flames preserve it.<br>
-Together, they protect the Core.
-</b>
+  <div class="page" id="code">
+    <div class="box">
+      <h2>CODE SYSTEM</h2>
+      <br>
+      Type hidden code below.
+      <input type="text" id="codeInput" placeholder="enter code">
+      <br><br>
+      <button onclick="unlockCode()">UNLOCK</button>
+    </div>
+  </div>
 
 </div>
-
-</div>
-
-<!-- ACHIEVEMENTS -->
-
-<div class="page" id="achievement">
-
-<div class="box">
-
-<h2>ACHIEVEMENTS</h2>
-
-<br>
-
-<div id="achievementList">
-
-❌ Forgotten Memories
-<br>
-<small>Discover the Forgotten Eclipse</small>
-
-<br><br>
-
-❌ Flames Mystery
-<br>
-<small>Discover the 12 Flames Protocol</small>
-
-<br><br>
-
-❌ Code Breaker
-<br>
-<small>Unlock all hidden codes</small>
-
-</div>
-
-</div>
-
-</div>
-
-/* CODE */
-
-function unlockCode(){
-
-let v=document.getElementById("codeInput").value.toLowerCase();
-
-if(v==="forgotten"){
-
-document.getElementById("forgotScene").style.display="flex";
-
-}
-
-else if(v==="12 flames" || v==="12flames"){
-
-document.getElementById("flameScene").style.display="flex";
-
-}
-
-else{
-
-alert("UNKNOWN CODE");
-
-}
-
-}
-
-/* CLOSE */
-
-function closeScene(id){
-
-document.getElementById(id).style.display="none";
-
-}
-
-
-<!-- ARCHIVES -->
-
-<div class="page" id="archives">
-
-<div class="box">
-
-<h2>BLDS ARCHIVES</h2>
-
-<br>
-
-05-03-2024 — BLDS Born<br><br>
-15-05-2024 — WhatsApp Community<br><br>
-12-09-2024 — Discord Community<br><br>
-20-08-2025 — Massive Remake
-
-<br><br><hr><br>
-
-Founder — Michael Lorenzo<br><br>
-Right Hand Of BLDS — William Nayottama<br><br>
-Left Hand Of BLDS — Felix
-
-</div>
-
-</div>
-
-<!-- CODE -->
-
-<div class="page" id="code">
-
-<div class="box">
-
-<h2>CODE SYSTEM</h2>
-
-<br>
-
-Type hidden code below.
-
-<input type="text" id="codeInput" placeholder="enter code">
-
-<br><br>
-
-<button onclick="unlockCode()">
-UNLOCK
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- FORGOTTEN -->
 
 <div class="cutscene" id="forgotScene">
-
-<h1 class="glitch">
-FORGOTTEN MEMORY DETECTED
-</h1>
-
-<br><br>
-
-<div class="box" style="max-width:900px; width:100%;">
-
-<h2>THE FORGOTTEN ECLIPSE</h2>
-
-<br>
-
-Long before BLDS became known…<br>
-before the symbol,<br>
-before the Core,<br>
-before the name itself existed…<br>
-there was another generation. A generation erased from the archive.
-
-<br><br>
-
-They were the first ones who tried to build a dominion inside the darkness.
-
-<br><br>
-
-Not for power.<br>
-Not for glory.<br><br>
-
-But to create a place where broken people could still stand together.
-
-<br><br>
-
-At first… they succeeded.
-
-<br><br>
-
-The eclipse began to grow.<br>
-More people arrived.<br>
-The light inside the Core became stronger.
-
-<br><br>
-
-But slowly, something changed.
-
-<br><br>
-
-Some members stopped believing in the original purpose.
-
-<br><br>
-
-They became obsessed with recognition.<br>
-With status.<br>
-With becoming feared instead of becoming united.
-
-<br><br>
-
-The dominion began tearing itself apart from within.
-
-<br><br>
-
-And then came the Collapse.
-
-<br><br>
-
-No one speaks about what truly happened that night.
-
-<br><br>
-
-The old records were destroyed.<br>
-Names disappeared.<br>
-Symbols vanished.
-
-<br><br>
-
-Entire conversations were erased as if they never existed.
-
-<br><br>
-
-Only one thing remained:
-
-<br><br>
-
-A single fragment of the Core.
-
-<br><br>
-
-Hidden by the last survivor.
-
-<br><br>
-
-Legend says the survivor left behind a message:
-
-<br><br>
-
-<b>
-“If the eclipse ever returns…<br>
-do not let the darkness consume the Core again.”
-</b>
-
-<br><br>
-
-Years later…<br>
-BLDS was born from the remains of that forgotten eclipse.
-
-<br><br>
-
-Not as a continuation.
-
-<br><br>
-
-But as a second chance.
-
-<br><br><br><br><br><br>
-
+  <h1 class="glitch">FORGOTTEN MEMORY DETECTED</h1>
+  <br><br>
+  <div class="box" style="max-width:900px; width:100%;">
+    <h2>THE FORGOTTEN ECLIPSE</h2>
+    <br>
+    Long before BLDS became known…<br>
+    before the symbol,<br>
+    before the Core,<br>
+    before the name itself existed…<br>
+    there was another generation. A generation erased from the archive.<br><br>
+    They were the first ones who tried to build a dominion inside the darkness.<br><br>
+    Not for power.<br>
+    Not for glory.<br><br>
+    But to create a place where broken people could still stand together.<br><br>
+    At first… they succeeded.<br><br>
+    The eclipse began to grow.<br>
+    More people arrived.<br>
+    The light inside the Core became stronger.<br><br>
+    But slowly, something changed.<br><br>
+    Some members stopped believing in the original purpose.<br><br>
+    They became obsessed with recognition.<br>
+    With status.<br>
+    With becoming feared instead of becoming united.<br><br>
+    The dominion began tearing itself apart from within.<br><br>
+    And then came the Collapse.<br><br>
+    No one speaks about what truly happened that night.<br><br>
+    The old records were destroyed.<br>
+    Names disappeared.<br>
+    Symbols vanished.<br><br>
+    Entire conversations were erased as if they never existed.<br><br>
+    Only one thing remained:<br><br>
+    A single fragment of the Core.<br><br>
+    Hidden by the last survivor.<br><br>
+    Legend says the survivor left behind a message:<br><br>
+    <b>
+      “If the eclipse ever returns…<br>
+      do not let the darkness consume the Core again.”
+    </b>
+    <br><br>
+    Years later…<br>
+    BLDS was born from the remains of that forgotten eclipse.<br><br>
+    Not as a continuation.<br><br>
+    But as a second chance.
+    <br><br><br><br><br><br>
+  </div>
+  <br>
+  <button onclick="closeScene('forgotScene')">CLOSE</button>
+  <br><br>
 </div>
-
-<br>
-
-<button onclick="closeScene('forgotScene')">
-CLOSE
-</button>
-
-<br><br>
-
-</div>
-
-<!-- 12 FLAMES -->
 
 <div class="cutscene" id="flameScene">
-
-<img src="logo.png" class="bigLogo">
-
-<br><br>
-
-<div class="box" style="max-width:900px; width:100%;">
-
-<h2>12 FLAMES PROTOCOL</h2>
-
-<br>
-
-In recorded history, humanity only remembers Ten Flames.<br>
-Not because the other two do not exist…<br>
-but because reality itself refuses to retain anything beyond that point.
-
-<br><br>
-
-<h2>THE MEMORY COLLAPSE PHENOMENON</h2>
-
-<br>
-
-Across every reconstructed timeline, a consistent failure appears at the same stage:
-
-<br><br>
-
-When humanity reaches the Flame System, cognition begins to destabilize beyond the 10th Flame threshold.
-
-<br><br>
-
-Archives describing anything past that point become corrupted mid-sentence.
-
-<br><br>
-
-Terminology shifts.<br>
-Names disappear.<br>
-Entire sections rewrite themselves into simpler conclusions.
-
-<br><br>
-
-One early record from Eclipse Reconstruction Layer-0 states:
-
-<br><br>
-
-<b>
-“We reached the tenth flame without issue.<br>
-Beyond this point, cognition begins rejecting continuation.”
-</b>
-
-<br><br>
-
-From that moment onward, every attempt to document further results in the same outcome:
-
-<br><br>
-
-<b>
-Flame 11 and 12 are automatically reduced to ‘non-existent’ in human perception.
-</b>
-
-<br><br>
-
-Not erased.<br>
-Not hidden.<br><br>
-
-But mentally rejected by the structure of consciousness itself.
-
-<br><br>
-
-That is why humanity can only remember ten flames.
-
-<br><br><hr><br>
-
-<h2>FLAME 11 — SACRED FLAME</h2>
-
-<br>
-
-The Sacred Flame is not a skill, power, or evolution stage.
-
-<br><br>
-
-It is a pre-identity memory layer.
-
-<br><br>
-
-A fragment that exists before the formation of self-awareness.
-
-<br><br>
-
-It does not represent who you become…<br>
-but what existed before “you” were defined.
-
-<br><br>
-
-The Sacred Flame does not feel learned.
-
-<br><br>
-
-It feels remembered from something older than consciousness itself.
-
-<br><br>
-
-It is not power.
-
-<br><br>
-
-It is the echo of existence before identity was assigned.
-
-<br><br><hr><br>
-
-<h2>FLAME 12 — HIDDEN FLAME</h2>
-
-<br>
-
-The Hidden Flame is the most unstable concept in the entire system because it does not behave like a flame at all.
-
-<br><br>
-
-It does not evolve.<br>
-It does not activate.<br>
-It does not belong to any known structure of consciousness.
-
-<br><br>
-
-All references describe it in the same way:
-
-<br><br>
-
-<b>
-“It does not participate in existence.<br>
-It observes whether existence should continue.”
-</b>
-
-<br><br>
-
-Unlike the other flames, Hidden Flame does not represent transformation.
-
-<br><br>
-
-It represents judgment without emotion, bias, or identity.
-
-<br><br>
-
-If Sacred Flame is what you were before becoming you…
-
-<br><br>
-
-then Hidden Flame is what decides whether “you” are permitted to remain real.
-
-<br><br><br><br><br><br>
-
-</div>
-
-<br>
-
-<button onclick="closeScene('flameScene')">
-CLOSE
-</button>
-
-<br><br>
-
+  <img src="logo.png" class="bigLogo">
+  <br><br>
+  <div class="box" style="max-width:900px; width:100%;">
+    <h2>12 FLAMES PROTOCOL</h2>
+    <br>
+    In recorded history, humanity only remembers Ten Flames.<br>
+    Not because the other two do not exist…<br>
+    but because reality itself refuses to retain anything beyond that point.<br><br>
+    <h2>THE MEMORY COLLAPSE PHENOMENON</h2>
+    <br>
+    Across every reconstructed timeline, a consistent failure appears at the same stage:<br><br>
+    When humanity reaches the Flame System, cognition begins to destabilize beyond the 10th Flame threshold.<br><br>
+    Archives describing anything past that point become corrupted mid-sentence.<br><br>
+    Terminology shifts.<br>
+    Names disappear.<br>
+    Entire sections rewrite themselves into simpler conclusions.<br><br>
+    One early record from Eclipse Reconstruction Layer-0 states:<br><br>
+    <b>
+      “We reached the tenth flame without issue.<br>
+      Beyond this point, cognition begins rejecting continuation.”
+    </b>
+    <br><br>
+    From that moment onward, every attempt to document further results in the same outcome:
+    <br><br>
+    <b>
+      Flame 11 and 12 are automatically reduced to ‘non-existent’ in human perception.
+    </b>
+    <br><br>
+    Not erased.<br>
+    Not hidden.<br><br>
+    But mentally rejected by the structure of consciousness itself.<br><br>
+    That is why humanity can only remember ten flames.
+    <br><br><hr><br>
+    <h2>FLAME 11 — SACRED FLAME</h2>
+    <br>
+    The Sacred Flame is not a skill, power, or evolution stage.<br><br>
+    It is a pre-identity memory layer.<br><br>
+    A fragment that exists before the formation of self-awareness.<br><br>
+    It does not represent who you become…<br>
+    but what existed before “you” were defined.<br><br>
+    The Sacred Flame does not feel learned.<br><br>
+    It feels remembered from something older than consciousness itself.<br><br>
+    It is not power.<br><br>
+    It is the echo of existence before identity was assigned.
+    <br><br><hr><br>
+    <h2>FLAME 12 — HIDDEN FLAME</h2>
+    <br>
+    The Hidden Flame is the most unstable concept in the entire system because it does not behave like a flame at all.<br><br>
+    It does not evolve.<br>
+    It does not activate.<br>
+    It does not belong to any known structure of consciousness.<br><br>
+    All references describe it in the same way:<br><br>
+    <b>
+      “It does not participate in existence.<br>
+      It observes whether existence should continue.”
+    </b>
+    <br><br>
+    Unlike the other flames, Hidden Flame does not represent transformation.<br><br>
+    It represents judgment without emotion, bias, or identity.<br><br>
+    If Sacred Flame is what you were before becoming you…<br><br>
+    then Hidden Flame is what decides whether “you” are permitted to remain real.
+    <br><br><br><br><br><br>
+  </div>
+  <br>
+  <button onclick="closeScene('flameScene')">CLOSE</button>
+  <br><br>
 </div>
 
 <script>
 
-/* STARS */
-
-const sky=document.getElementById("sky");
-
-for(let i=0;i<150;i++){
-
-let star=document.createElement("div");
-
-star.className="star";
-
-star.style.left=Math.random()*100+"%";
-
-star.style.top=Math.random()*-100+"vh";
-
-star.style.animationDuration=(3+Math.random()*6)+"s";
-
-sky.appendChild(star);
-
+/* STARS BACKGROUND */
+const sky = document.getElementById("sky");
+for(let i=0; i<150; i++){
+  let star = document.createElement("div");
+  star.className = "star";
+  star.style.left = Math.random()*100+"%";
+  star.style.top = Math.random()*-100+"vh";
+  star.style.animationDuration = (3+Math.random()*6)+"s";
+  sky.appendChild(star);
 }
 
 /* LOADER */
-
 window.addEventListener("load",()=>{
-
-setTimeout(()=>{
-
-document.getElementById("loader").classList.add("hidden");
-
-},2200);
-
+  setTimeout(()=>{
+    document.getElementById("loader").classList.add("hidden");
+  },2200);
 });
 
 /* SOUNDS */
+const bgMusic = new Audio("freesound_community-space-ambience-56265.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.35;
 
-const bgMusic=new Audio("freesound_community-space-ambience-56265.mp3");
-
-bgMusic.loop=true;
-bgMusic.volume=0.35;
-
-const clickSound=new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
-
-clickSound.volume=0.7;
+const clickSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
+clickSound.volume = 0.7;
 
 /* START MUSIC */
-
 document.body.addEventListener("click",()=>{
-
-bgMusic.play().catch(()=>{});
-
+  bgMusic.play().catch(()=>{});
 },{once:true});
 
-/* BUTTON SOUND */
-
+/* BUTTON SOUND & FLASH */
 document.querySelectorAll("button").forEach(btn=>{
-
-btn.addEventListener("click",()=>{
-
-clickSound.currentTime=0;
-clickSound.play();
-
-flashEffect();
-
-});
-
+  btn.addEventListener("click",()=>{
+    clickSound.currentTime = 0;
+    clickSound.play().catch(()=>{});
+    flashEffect();
+  });
 });
 
 /* FLASH EFFECT */
-
 function flashEffect(){
-
-const flash=document.getElementById("flash");
-
-flash.classList.add("active");
-
-setTimeout(()=>{
-
-flash.classList.remove("active");
-
-},400);
-
+  const flash = document.getElementById("flash");
+  flash.classList.add("active");
+  setTimeout(()=>{
+    flash.classList.remove("active");
+  },400);
 }
 
-/* ENTER */
-
+/* ENTER WEBSITE */
 function enter(){
-
-document.getElementById("enterBtn").style.display="none";
-
-const menu=document.getElementById("menu");
-
-menu.style.display="flex";
-
-menu.style.animation="pageFade .8s ease";
-
+  document.getElementById("enterBtn").style.display = "none";
+  const menu = document.getElementById("menu");
+  menu.style.display = "flex";
+  menu.style.animation = "pageFade .8s ease";
 }
 
-/* PAGE */
-
+/* PAGE NAVIGATION */
 function showPage(id){
-
-document.querySelectorAll(".page").forEach(p=>{
-
-p.style.display="none";
-
-});
-
-const page=document.getElementById(id);
-
-page.style.display="block";
-
-page.style.animation="pageFade .6s ease";
-
-window.scrollTo({
-top:document.body.scrollHeight,
-behavior:"smooth"
-});
-
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display = "none";
+  });
+  const page = document.getElementById(id);
+  page.style.display = "block";
+  page.style.animation = "pageFade .6s ease";
+  
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth"
+  });
 }
 
-let achievements={
-
-forgotten:false,
-flames:false,
-codeBreaker:false
-
+/* ACHIEVEMENT SYSTEM */
+let achievements = {
+  forgotten: false,
+  flames: false,
+  codeBreaker: false
 };
 
 function updateAchievements(){
-
-document.getElementById("achievementList").innerHTML=`
-
-${achievements.forgotten?"✅":"❌"} Forgotten Memories<br>
-<small>Discover the Forgotten Eclipse</small>
-
-<br><br>
-
-${achievements.flames?"✅":"❌"} Flames Mystery<br>
-<small>Discover the 12 Flames Protocol</small>
-
-<br><br>
-
-${achievements.codeBreaker?"✅":"❌"} Code Breaker<br>
-<small>Unlock all hidden codes</small>
-
-`;
-
+  document.getElementById("achievementList").innerHTML = `
+    ${achievements.forgotten ? "✅" : "❌"} Forgotten Memories<br>
+    <small>Discover the Forgotten Eclipse</small>
+    <br><br>
+    ${achievements.flames ? "✅" : "❌"} Flames Mystery<br>
+    <small>Discover the 12 Flames Protocol</small>
+    <br><br>
+    ${achievements.codeBreaker ? "✅" : "❌"} Code Breaker<br>
+    <small>Unlock all hidden codes</small>
+  `;
 }
 
 function showAchievement(title){
-
-const notif=document.createElement("div");
-
-notif.className="notification";
-
-notif.innerHTML=`
-🏆 ACHIEVEMENT UNLOCKED
-<br><br>
-<b>${title}</b>
-`;
-
-document.body.appendChild(notif);
-
-setTimeout(()=>{
-
-notif.remove();
-
-},4000);
-
+  const notif = document.createElement("div");
+  notif.className = "notification";
+  notif.innerHTML = `
+    🏆 ACHIEVEMENT UNLOCKED
+    <br><br>
+    <b>${title}</b>
+  `;
+  document.body.appendChild(notif);
+  setTimeout(()=>{
+    notif.remove();
+  },4000);
 }
 
 function checkCodeBreaker(){
-
-if(
-achievements.forgotten &&
-achievements.flames &&
-!achievements.codeBreaker
-){
-
-achievements.codeBreaker=true;
-
-updateAchievements();
-
-showAchievement("Code Breaker");
-
+  if(achievements.forgotten && achievements.flames && !achievements.codeBreaker){
+    achievements.codeBreaker = true;
+    updateAchievements();
+    showAchievement("Code Breaker");
+  }
 }
 
+/* CODE SYSTEM FUNCTIONS */
+function unlockCode(){
+  let v = document.getElementById("codeInput").value.toLowerCase().trim();
+
+  if(v === "forgotten"){
+    document.getElementById("forgotScene").style.display = "flex";
+    
+    // Trigger achievement jika belum didapatkan
+    if(!achievements.forgotten){
+      achievements.forgotten = true;
+      updateAchievements();
+      showAchievement("Forgotten Memories");
+      checkCodeBreaker();
+    }
+  }
+  else if(v === "12 flames" || v === "12flames"){
+    document.getElementById("flameScene").style.display = "flex";
+    
+    // Trigger achievement jika belum didapatkan
+    if(!achievements.flames){
+      achievements.flames = true;
+      updateAchievements();
+      showAchievement("Flames Mystery");
+      checkCodeBreaker();
+    }
+  }
+  else{
+    alert("UNKNOWN CODE");
+  }
+}
+
+function closeScene(id){
+  document.getElementById(id).style.display = "none";
 }
 
 </script>
