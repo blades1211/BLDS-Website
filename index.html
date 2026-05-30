@@ -94,9 +94,10 @@ body{
   align-items: center;
 }
 
-.logo-svg {
+.logo {
   width: 110px;
   height: 110px;
+  object-fit: contain;
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
   animation: floatLogo 4s ease-in-out infinite;
 }
@@ -110,15 +111,6 @@ body{
   margin-top:12px;
   letter-spacing:4px;
   font-size:28px;
-}
-
-.core-status {
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 10px;
-  margin-bottom: 15px;
-  display: none;
 }
 
 .streak-widget {
@@ -270,14 +262,94 @@ button:disabled {
   to{ opacity:1; transform:translateY(0); }
 }
 
+/* PERBAIKAN STYLING KONTEN BOX HALAMAN */
 .box{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  padding:25px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  padding:30px;
   border-radius:18px;
   text-align:left;
-  line-height:1.9;
-  backdrop-filter:blur(5px);
+  line-height:1.8;
+  backdrop-filter:blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.box h2 {
+  font-size: 20px;
+  letter-spacing: 2px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* KUSTOMISASI KONTEN LORE ORIGIN */
+.lore-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 15px;
+}
+
+.lore-quote {
+  border-left: 2px solid #fff;
+  padding-left: 15px;
+  margin: 20px 0;
+  font-style: italic;
+  color: rgba(255,255,255,0.6);
+}
+
+/* LAYOUT KARTU ACHIEVEMENT BARU */
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.achievement-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 15px;
+  transition: 0.3s;
+}
+
+.achievement-card.unlocked {
+  border-color: rgba(0, 243, 255, 0.4);
+  background: rgba(0, 243, 255, 0.02);
+}
+
+.ach-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.ach-badge.locked-badge {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+}
+
+.ach-badge.unlocked-badge {
+  background: #00f3ff;
+  color: #000;
+  box-shadow: 0 0 10px rgba(0,243,255,0.5);
+}
+
+/* LAYOUT ARCHIVES LOG */
+.archive-log {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed rgba(255,255,255,0.05);
+}
+
+.archive-date {
+  font-size: 11px;
+  color: #00f3ff;
+  font-family: monospace;
 }
 
 input, select {
@@ -444,12 +516,7 @@ footer {
 
 <div class="container">
   <div class="logo-container">
-    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 5 L85 20 L85 55 C85 75 70 90 50 95 C30 90 15 75 15 55 L15 20 Z" stroke="#ffffff" stroke-width="4" fill="rgba(255,255,255,0.03)" stroke-linejoin="round"/>
-      <circle cx="50" cy="50" r="18" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="5 3" />
-      <polygon points="50,38 60,56 40,56" fill="#ffffff" />
-      <line x1="25" y1="50" x2="75" y2="50" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
-    </svg>
+    <img src="logo.png" alt="BLDS Logo" class="logo" onerror="this.style.display='none';">
   </div>
   
   <div class="streak-widget" id="streakWidget">
@@ -464,12 +531,10 @@ footer {
       <button class="edit-pet-btn" onclick="openRenamePetModal()">✏️</button>
     </div>
     <div class="pet-stage-display" id="petStageDisplay">Fase 1</div>
-    <div class="pet-image-frame" id="petImageFrameSlot">
-      </div>
+    <div class="pet-image-frame" id="petImageFrameSlot"></div>
   </div>
 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
-  <div class="core-status" id="coreStatus">● CORE LINKED: ONLINE | ECLIPSE LAYER-0</div>
 
   <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
@@ -484,21 +549,44 @@ footer {
   <div class="page" id="origin">
     <div class="box">
       <h2>THE ORIGIN OF BLDS</h2>
-      <br>
-      before BLDS had a name,<br>
-      before the symbol existed,<br>
-      before the squad was formed…<br>
-      there were only individuals trying to survive their own darkness.<br><br>
-      Most people only shine when the world is bright.<br>
-      But very few can continue moving forward when everything turns dark.
+      <p class="lore-text">Before BLDS had a name, before the symbol existed, and before the squad was formed... there were only individuals trying to survive their own darkness.</p>
+      <p class="lore-text">Most people only shine when the world around them is clear and bright. But very few can continue moving forward, holding their inner embers when everything around them turns entirely dark.</p>
+      <div class="lore-quote">
+        "We didn't look for the light. We learned how to control the blacklight."
+      </div>
+      <p class="lore-text">BLDS stands as a digital core refuge, a unified frequency built for those who master self-discipline, harness silent growth, and navigate the eclipse of life as modern-day dominiones.</p>
     </div>
   </div>
 
   <div class="page" id="achievement">
     <div class="box">
-      <h2>ACHIEVEMENTS</h2>
-      <br>
-      <p style="font-size: 13px; color:rgba(255,255,255,0.5)">Resonance core achievement tracking system is armed.</p>
+      <h2>RESONANCE ACHIEVEMENTS</h2>
+      <p style="font-size: 12px; color:rgba(255,255,255,0.5); margin-bottom: 20px;">
+        Core node evaluation engine status: <span style="color:#00f3ff;">ONLINE</span>. Badges sync instantly with your active peak matrix streak.
+      </p>
+      
+      <div class="achievement-grid">
+        <div class="achievement-card" id="ach1">
+          <span class="ach-badge locked-badge" id="ach1Badge">🔒 Locked</span>
+          <h4 style="font-size:14px; margin-bottom:4px;">Eclipse Ignition</h4>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Successfully complete your first day of calibration synchronization.</p>
+        </div>
+        <div class="achievement-card" id="ach2">
+          <span class="ach-badge locked-badge" id="ach2Badge">🔒 Locked</span>
+          <h4 style="font-size:14px; margin-bottom:4px;">Resonance Synchronizer</h4>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain synchronization for 7 consecutive days. Pet reaches Stage 2.</p>
+        </div>
+        <div class="achievement-card" id="ach3">
+          <span class="ach-badge locked-badge" id="ach3Badge">🔒 Locked</span>
+          <h4 style="font-size:14px; margin-bottom:4px;">Dominion Master</h4>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve a massive streak of 50 days. Ultimate core mastery unlocked.</p>
+        </div>
+        <div class="achievement-card" id="ach4">
+          <span class="ach-badge locked-badge" id="ach4Badge">🔒 Locked</span>
+          <h4 style="font-size:14px; margin-bottom:4px;">The Eternal Overlord</h4>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Unlock a special cosmic cheat code or hit a monumental 100-day peak milestone.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -514,18 +602,36 @@ footer {
             <th>PET TYPE / STAGE</th>
           </tr>
         </thead>
-        <tbody id="leaderboardDataBody">
-          </tbody>
+        <tbody id="leaderboardDataBody"></tbody>
       </table>
     </div>
   </div>
 
   <div class="page" id="archives">
     <div class="box">
-      <h2>BLDS ARCHIVES</h2>
-      <br>
-      05-03-2024 — BLDS Born<br><br>
-      Founder — Michael Lorenzo
+      <h2>BLDS KRONOLOGIS ARCHIVES</h2>
+      
+      <div class="archive-log">
+        <div class="archive-date">> MARCH 05, 2024 [CORE_LAUNCH]</div>
+        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
+          BLDS Framework officially created and initialized from the dark sectors. 
+          <br><span style="color:rgba(255,255,255,0.4);">Founder Signature ID:</span> <b>Michael Lorenzo</b>.
+        </p>
+      </div>
+
+      <div class="archive-log">
+        <div class="archive-date">> NOVEMBER 12, 2024 [DATABASE_UPGRADE]</div>
+        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
+          Integration of global dominion ranking protocols and deployment of companion tracking matrices (Dragon, Leviathan, Fenrir cores).
+        </p>
+      </div>
+
+      <div class="archive-log">
+        <div class="archive-date">> VERSION 2.5.0 [CURRENT_TIMESTAMP_2026]</div>
+        <p style="font-size:13px; margin-top:5px; color:rgba(255,255,255,0.8);">
+          System state stabilized. Local client media fallback asset links assigned to <code>logo.png</code> bypassing legacy cloud errors.
+        </p>
+      </div>
     </div>
   </div>
 
@@ -557,7 +663,7 @@ footer {
 </footer>
 
 <script>
-/* STARS BACKGROUND EFFECTS */
+/* STARS BACKGROUND EFFECT */
 const sky = document.getElementById("sky");
 for(let i=0; i<100; i++){
   let star = document.createElement("div");
@@ -572,7 +678,7 @@ window.addEventListener("load",()=>{
   setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1200);
 });
 
-/* CORE DATA STRUCTURE */
+/* ENGINE LOGIC STRUCTURE */
 let streakData = {
   count: 0,
   highestCount: 0, 
@@ -582,7 +688,6 @@ let streakData = {
   petType: "dragon"
 };
 
-/* LEADERBOARD DATABASE KELOMPOK BLDS */
 const DEFAULT_LEADERBOARD = [
   { name: "Michael Lorenzo", streak: 152, petLabel: "🐉 Overlord Cosmic Dragon" },
   { name: "William Nayottama", streak: 121, petLabel: "🐺 Fenrir God of the Void" },
@@ -605,7 +710,6 @@ const DEFAULT_LEADERBOARD = [
   { name: "Budi Pulse", streak: 4, petLabel: "🐉 Anomaly Dragon Egg" }
 ];
 
-/* EMBEDDED SVG UNTUK MASING-MASING EVOLUSI PET AGAR TIDAK EROR */
 function getPetSvg(type, highestStreak) {
   let color = "#ffffff";
   if (highestStreak >= 100) color = "#00f3ff";
@@ -702,6 +806,45 @@ function getPetEvolutionEngine(highestStreak, type) {
   return { stage: stageText, rank: rank, glow: glow };
 }
 
+/* FIX LOGIKA: UPDATE BADGES ACHIEVEMENT SECARA REAL-TIME SEIRING BERUBAHNYA STREAK KODE */
+function updateAchievementsUI(highestStreak) {
+  // Achievement 1: Berhasil masuk & calibrasi pertama kali
+  const ach1 = document.getElementById("ach1");
+  const ach1B = document.getElementById("ach1Badge");
+  if(highestStreak >= 1) {
+    ach1.classList.add("unlocked"); ach1B.className = "ach-badge unlocked-badge"; ach1B.innerHTML = " Unlocked";
+  } else {
+    ach1.classList.remove("unlocked"); ach1B.className = "ach-badge locked-badge"; ach1B.innerHTML = "🔒 Locked";
+  }
+
+  // Achievement 2: Streak >= 7 Hari
+  const ach2 = document.getElementById("ach2");
+  const ach2B = document.getElementById("ach2Badge");
+  if(highestStreak >= 7) {
+    ach2.classList.add("unlocked"); ach2B.className = "ach-badge unlocked-badge"; ach2B.innerHTML = " Unlocked";
+  } else {
+    ach2.classList.remove("unlocked"); ach2B.className = "ach-badge locked-badge"; ach2B.innerHTML = "🔒 Locked";
+  }
+
+  // Achievement 3: Streak >= 50 Hari
+  const ach3 = document.getElementById("ach3");
+  const ach3B = document.getElementById("ach3Badge");
+  if(highestStreak >= 50) {
+    ach3.classList.add("unlocked"); ach3B.className = "ach-badge unlocked-badge"; ach3B.innerHTML = " Unlocked";
+  } else {
+    ach3.classList.remove("unlocked"); ach3B.className = "ach-badge locked-badge"; ach3B.innerHTML = "🔒 Locked";
+  }
+
+  // Achievement 4: Streak >= 100 Hari
+  const ach4 = document.getElementById("ach4");
+  const ach4B = document.getElementById("ach4Badge");
+  if(highestStreak >= 100) {
+    ach4.classList.add("unlocked"); ach4B.className = "ach-badge unlocked-badge"; ach4B.innerHTML = " Unlocked";
+  } else {
+    ach4.classList.remove("unlocked"); ach4B.className = "ach-badge locked-badge"; ach4B.innerHTML = "🔒 Locked";
+  }
+}
+
 function updateWidgetDynamicUI() {
   const engine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
   
@@ -719,6 +862,9 @@ function updateWidgetDynamicUI() {
       frame.style.filter = `drop-shadow(${engine.glow})`;
     }
   }
+  
+  // Pemicu update sistem kartu pencapaian
+  updateAchievementsUI(streakData.highestCount);
 }
 
 function renderLeaderboard() {
@@ -854,7 +1000,6 @@ function showPage(id){
   }
 }
 
-/* FIX LOGIKA CODE: MEMAKSA UPDATE PADA UI WIDGET, EVOLUSI, DAN LEADERBOARD SEKALIGUS */
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
@@ -866,25 +1011,25 @@ function unlockCode(){
   if (v === "lorenzo") {
     streakData.count += 50;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Resonance Streak & Pet Berevolusi!");
+    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Streak & Wujud Pet / Achievements Berevolusi!");
   } 
   else if (v === "nayottama") {
     streakData.count += 30;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Resonance Streak & Pet Berevolusi!");
+    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Streak & Wujud Pet / Achievements Berevolusi!");
   } 
   else if (v === "prince") {
     streakData.count += 20;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Resonance Streak & Pet Berevolusi!");
+    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Streak & Wujud Pet / Achievements Berevolusi!");
   } 
   else if (v === "blds") {
     streakData.count += 10;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Resonance Streak & Pet Berevolusi!");
+    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Streak & Wujud Pet / Achievements Berevolusi!");
   } 
   else if (v === "white" || v === "black") {
-    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Warna Berhasil Sinkron!`);
+    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Sinkronisasi visual sukses!`);
     document.getElementById("codeInput").value = "";
     return;
   } 
@@ -893,10 +1038,9 @@ function unlockCode(){
     return;
   }
 
-  // EKSEKUSI UTAMA: Paksa seluruh elemen web merender ulang status baru
   saveState();
-  updateWidgetDynamicUI(); // Mengubah angka widget dan memicu evolusi gambar pet instan
-  renderLeaderboard();    // Mengurutkan ulang posisi peringkat kamu di tabel leaderboard
+  updateWidgetDynamicUI(); 
+  renderLeaderboard();    
   
   document.getElementById("codeInput").value = "";
 }
