@@ -1161,10 +1161,12 @@ let streakData = {
     fish: false,
     wolf: false
   },
-  forcedRankTitle: "" // Penambahan variabel untuk admin override rank
+  forcedRankTitle: "" 
 };
 
-// Ubah ke let agar data leaderboard default bisa dimanipulasi admin secara realtime
+// Global interval tracker biar ga duplikat loop otomatis
+let calibrationInterval = null;
+
 let DEFAULT_LEADERBOARD = [
   { name: "Michael Lorenzo", streak: 152, petLabel: "Fase 5: Overlord Cosmic Dragon" },
   { name: "William Nayottama", streak: 121, petLabel: "Fase 5: Fenrir God of the Void" },
@@ -1214,7 +1216,9 @@ function getPetSvg(type, count) {
     else fileName = "Serigala1.png";
   }
 
-  return `<img src="${fileName}" alt="${type}" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">`;
+  // Menambahkan fallback onerror text jika aset gambar .png lokal tidak ditemukan/belum diupload
+  return `<img src="${fileName}" alt="${type}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">
+          <div style="display:none; font-size:12px; color:rgba(255,255,255,0.4); text-transform:uppercase;">[👾 Matrix Core Node Loaded]</div>`;
 }
 
 function saveState() {
@@ -1317,7 +1321,6 @@ function getPetEvolutionEngine(count, type) {
     else stageText = "Fase 1: Shadow Spirit Egg";
   }
 
-  // Jika ada forcedRankTitle dari Admin, override text rank aslinya
   if(streakData.forcedRankTitle) {
     rank = streakData.forcedRankTitle;
   }
@@ -1451,24 +1454,37 @@ function savePetCustomName() {
   updateWidgetDynamicUI();
 }
 
+/* FIX PERBAIKAN TIMEOUT LOOP DI SINI */
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
+  
   if (!streakData.lastCalibratedTimestamp) {
-    btn.disabled = false; status.innerHTML = "SYSTEM READY FOR INTEGRATION"; return;
+    btn.disabled = false; 
+    status.innerHTML = "SYSTEM READY FOR INTEGRATION"; 
+    return;
   }
+  
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
   const duration24h = 24 * 60 * 60 * 1000;
+  
   if (msElapsed < duration24h) {
     btn.disabled = true;
     const timeLeft = duration24h - msElapsed;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
     status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m`;
-    setTimeout(updateCalibrationHudUI, 60000);
   } else {
-    btn.disabled = false; status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
+    btn.disabled = false; 
+    status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
   }
+}
+
+function startCalibrationTimer() {
+  if(calibrationInterval) clearInterval(calibrationInterval);
+  updateCalibrationHudUI();
+  // Menggunakan setInterval satu arah yang stabil, jalan tiap 30 detik untuk update text sisa waktu
+  calibrationInterval = setInterval(updateCalibrationHudUI, 30000);
 }
 
 function calibrateCore() {
@@ -1493,7 +1509,7 @@ function calibrateCore() {
   streakData.lastCalibratedTimestamp = Date.now();
   saveState();
   updateWidgetDynamicUI();
-  updateCalibrationHudUI();
+  startCalibrationTimer();
   renderLeaderboard();
 }
 
@@ -1505,7 +1521,7 @@ function enter(){
   document.getElementById("streakWidget").style.display = "inline-flex";
   document.getElementById("calibrationHud").style.display = "block";
   document.getElementById("menu").style.display = "flex";
-  updateCalibrationHudUI();
+  startCalibrationTimer();
 }
 
 function saveDominionName() {
@@ -1607,7 +1623,6 @@ function unlockCode() {
     return;
   }
 
-  // Pengecekan Admin Code Khusus
   if (v === "-OWNER_ONLY-") {
     openAdminMatrixPanel();
     document.getElementById("codeInput").value = "";
@@ -1638,12 +1653,11 @@ function unlockCode() {
 }
 
 /* =======================================================
-   ⚡ CORE ENGINE ENGINE UNTUK MODUL ADMIN TOOLS ⚡
+   ⚡ CORE ENGINE UNTUK MODUL ADMIN TOOLS ⚡
    ======================================================= */
 function openAdminMatrixPanel() {
   document.getElementById("adminPanel").style.display = "flex";
   
-  // Ambil value stat user saat ini & pasang di form admin
   document.getElementById("admDomName").value = streakData.dominionName || "";
   document.getElementById("admStreak").value = streakData.count;
   document.getElementById("admHighStreak").value = streakData.highestCount;
@@ -1688,6 +1702,7 @@ function executeAdminUserUpdate() {
   updateWidgetDynamicUI();
   renderLeaderboard();
   populateAdminPanelDropdowns();
+  startCalibrationTimer();
   alert("✨ Admin Node: Core User Data Updated!");
 }
 
