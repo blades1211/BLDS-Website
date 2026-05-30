@@ -85,8 +85,19 @@ body{
   z-index: 5;
 }
 
+.logo-container {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .logo{
-  width:140px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   filter:drop-shadow(0 0 15px rgba(255,255,255,0.6));
   animation:floatLogo 4s ease-in-out infinite;
 }
@@ -454,7 +465,9 @@ footer {
 <div class="eclipse"></div>
 
 <div class="container">
-  <img src="https://i.imgur.com/83pZpG1.png" class="logo" id="mainLogo">
+  <div class="logo-container">
+    <img src="https://raw.githubusercontent.com/Lorenzomcl/Lorenzo/main/Picsart_24-05-18_14-38-03-345.png" class="logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/mD8zM42p/Picsart-24-05-18-14-38-03-345.png'">
+  </div>
   
   <div class="streak-widget" id="streakWidget">
     RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
@@ -523,27 +536,7 @@ footer {
           </tr>
         </thead>
         <tbody id="leaderboardDataBody">
-          <tr><td class="rank-highlight">#1</td><td>Michael Lorenzo</td><td>152 Days</td><td>🐉 Overlord Cosmic Dragon</td></tr>
-          <tr><td class="rank-highlight">#2</td><td>William Nayottama</td><td>121 Days</td><td>🐺 Fenrir God of the Void</td></tr>
-          <tr><td class="rank-highlight">#3</td><td>Prince Felix</td><td>98 Days</td><td>🐉 Obsidian Eclipse Dragon</td></tr>
-          <tr><td>#4</td><td>Rian Void</td><td>84 Days</td><td>🐟 Abyssal Dark Leviathan</td></tr>
-          <tr><td>#5</td><td>Zack Eclipse</td><td>76 Days</td><td>🐺 Alpha Cosmic Fenrir</td></tr>
-          <tr><td>#6</td><td>Darel Shadow</td><td>69 Days</td><td>🐉 Lightning Void Drake</td></tr>
-          <tr><td>#7</td><td>Niko Core</td><td>55 Days</td><td>🐟 Neon Serpent Fish</td></tr>
-          <tr><td>#8</td><td>Vino Nebula</td><td>48 Days</td><td>🐺 Twilight Shadow Wolf</td></tr>
-          <tr><td>#9</td><td>Alex Obsidian</td><td>41 Days</td><td>🐉 Lightning Void Drake</td></tr>
-          <tr><td>#10</td><td>Arka Abyss</td><td>35 Days</td><td>🐟 Neon Serpent Fish</td></tr>
-          <tr><td>#11</td><td>Farel Dark</td><td>29 Days</td><td>🐺 Shadow Wolf Pup</td></tr>
-          <tr><td>#12</td><td>Deva Zenith</td><td>25 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
-          <tr><td>#13</td><td>Roni Star</td><td>22 Days</td><td>🐟 Abyss Angler Whelp</td></tr>
-          <tr><td>#14</td><td>Gani Galaxy</td><td>19 Days</td><td>🐺 Shadow Wolf Pup</td></tr>
-          <tr><td>#15</td><td>Edo Zero</td><td>14 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
-          <tr><td>#16</td><td>Tio Matrix</td><td>11 Days</td><td>🐟 Abyss Angler Whelp</td></tr>
-          <tr><td>#17</td><td>Riko Titan</td><td>9 Days</td><td>🐉 Void Dragon Hatchling</td></tr>
-          <tr><td>#18</td><td>Andi Nova</td><td>6 Days</td><td>🐺 Shadow Spirit Egg</td></tr>
-          <tr><td>#19</td><td>Budi Pulse</td><td>4 Days</td><td>🐉 Anomaly Dragon Egg</td></tr>
-          <tr><td>#20</td><td>Soni Quark</td><td>2 Days</td><td>🐟 Biolume Aquatic Egg</td></tr>
-        </tbody>
+          </tbody>
       </table>
     </div>
   </div>
@@ -601,7 +594,6 @@ window.addEventListener("load",()=>{
 });
 
 /* CORE DATA SYSTEM */
-let achievements = { streak1: false, streak100: false };
 let streakData = {
   count: 0,
   highestCount: 0, 
@@ -611,7 +603,7 @@ let streakData = {
   petType: "dragon"
 };
 
-/* URL TEMPAT MENAMPUNG GAMBAR (GANTI PAKAI LINK PNG TRANS-MU SETELAH DIUPLOAD) */
+/* URL TEMPAT MENAMPUNG GAMBAR */
 const PET_IMAGES = {
   dragon: {
     f1: "https://i.imgur.com/E0l0Aqy.jpeg", 
@@ -636,6 +628,29 @@ const PET_IMAGES = {
   }
 };
 
+/* DATA DEFAULT LEADERBOARD KELOMPOK BLDS */
+const DEFAULT_LEADERBOARD = [
+  { name: "Michael Lorenzo", streak: 152, type: "dragon", petLabel: "🐉 Overlord Cosmic Dragon" },
+  { name: "William Nayottama", streak: 121, type: "wolf", petLabel: "🐺 Fenrir God of the Void" },
+  { name: "Prince Felix", streak: 98, type: "dragon", petLabel: "🐉 Obsidian Eclipse Dragon" },
+  { name: "Rian Void", streak: 84, type: "fish", petLabel: "🐟 Abyssal Dark Leviathan" },
+  { name: "Zack Eclipse", streak: 76, type: "wolf", petLabel: "🐺 Alpha Cosmic Fenrir" },
+  { name: "Darel Shadow", streak: 69, type: "dragon", petLabel: "🐉 Lightning Void Drake" },
+  { name: "Niko Core", streak: 55, type: "fish", petLabel: "🐟 Neon Serpent Fish" },
+  { name: "Vino Nebula", streak: 48, type: "wolf", petLabel: "🐺 Twilight Shadow Wolf" },
+  { name: "Alex Obsidian", streak: 41, type: "dragon", petLabel: "🐉 Lightning Void Drake" },
+  { name: "Arka Abyss", streak: 35, type: "fish", petLabel: "🐟 Neon Serpent Fish" },
+  { name: "Farel Dark", streak: 29, type: "wolf", petLabel: "🐺 Shadow Wolf Pup" },
+  { name: "Deva Zenith", streak: 25, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Roni Star", streak: 22, type: "fish", petLabel: "🐟 Abyss Angler Whelp" },
+  { name: "Gani Galaxy", streak: 19, type: "wolf", petLabel: "🐺 Shadow Wolf Pup" },
+  { name: "Edo Zero", streak: 14, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Tio Matrix", streak: 11, type: "fish", petLabel: "🐟 Abyss Angler Whelp" },
+  { name: "Riko Titan", streak: 9, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Andi Nova", streak: 6, type: "wolf", petLabel: "🐺 Shadow Spirit Egg" },
+  { name: "Budi Pulse", streak: 4, type: "dragon", petLabel: "🐉 Anomaly Dragon Egg" }
+];
+
 function saveState() {
   localStorage.setItem("BLDS_STR_FINAL_v2", JSON.stringify(streakData));
 }
@@ -646,6 +661,7 @@ function loadState() {
   
   checkStreakValidity();
   updateWidgetDynamicUI();
+  renderLeaderboard();
 }
 
 function checkStreakValidity() {
@@ -729,6 +745,63 @@ function updateWidgetDynamicUI() {
   }
 }
 
+/* SISTEM RENDAH LEADERBOARD YANG DISESUAIKAN SAMA PENDAFTAR WEB */
+function renderLeaderboard() {
+  const tbody = document.getElementById("leaderboardDataBody");
+  if (!tbody) return;
+
+  // Clone daftar default agar tidak merusak data dasar
+  let list = [...DEFAULT_LEADERBOARD];
+
+  // Jika user saat ini sudah daftar nama, masukkan dia ke baris kompetisi
+  if (streakData.dominionName) {
+    const currentEngine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
+    
+    // Cari apakah nama dominion sudah ada, kalau belum tambah baru
+    const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
+    if (existingIndex !== -1) {
+      list[existingIndex].streak = streakData.count;
+      list[existingIndex].petLabel = currentEngine.stage;
+    } else {
+      list.push({
+        name: streakData.dominionName,
+        streak: streakData.count,
+        type: streakData.petType,
+        petLabel: currentEngine.stage,
+        isCurrentUser: true // Flag penanda baris user aktif
+      });
+    }
+  }
+
+  // Urutkan List Berdasarkan Nilai Streak Tertinggi secara Real-Time
+  list.sort((a, b) => b.streak - a.streak);
+
+  // Potong hanya mengambil TOP 20 Teratas
+  const top20 = list.slice(0, 20);
+
+  // Konversi data array ke elemen HTML tabel string
+  let htmlString = "";
+  top20.forEach((user, index) => {
+    const position = index + 1;
+    const isMe = user.isCurrentUser || (streakData.dominionName && user.name.toLowerCase() === streakData.dominionName.toLowerCase());
+    
+    // Berikan style background baris khusus jika itu akun milik si pendaftar
+    const rowStyle = isMe ? "style='background: rgba(255,255,255,0.15); font-weight: 600;'" : "";
+    const rankClass = position <= 3 ? "class='rank-highlight'" : "";
+
+    htmlString += `
+      <tr ${rowStyle}>
+        <td ${rankClass}>#${position}</td>
+        <td>${user.name} ${isMe ? " <span style='font-size:9px; color:#00f3ff;'>(YOU)</span>" : ""}</td>
+        <td>${user.streak} Days</td>
+        <td>${user.petLabel}</td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = htmlString;
+}
+
 function openRenamePetModal() {
   document.getElementById("petNameInput").value = streakData.petCustomName || "";
   document.getElementById("petNameModal").style.display = "flex";
@@ -741,6 +814,7 @@ function savePetCustomName() {
   saveState();
   document.getElementById("petNameModal").style.display = "none";
   updateWidgetDynamicUI();
+  renderLeaderboard();
 }
 
 function updateCalibrationHudUI() {
@@ -779,6 +853,7 @@ function calibrateCore() {
   saveState();
   updateWidgetDynamicUI();
   updateCalibrationHudUI();
+  renderLeaderboard();
 }
 
 function enter(){
@@ -804,6 +879,7 @@ function saveDominionName() {
   document.getElementById("nameModal").style.display = "none";
   updateWidgetDynamicUI();
   enter();
+  renderLeaderboard();
 }
 
 function showPage(id){
@@ -815,7 +891,6 @@ function showPage(id){
   }
 }
 
-/* REAL ENGINE: SISTEM KODE RAHASIA CHEAT CODE BLDS */
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
@@ -854,6 +929,7 @@ function unlockCode(){
 
   saveState();
   updateWidgetDynamicUI();
+  renderLeaderboard();
   document.getElementById("codeInput").value = "";
 }
 
