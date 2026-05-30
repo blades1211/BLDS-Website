@@ -27,22 +27,54 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
-  transition: filter 0.8s ease, background 0.8s ease;
+  transition: filter 0.8s ease, background 0.8s ease, color 0.8s ease;
+  position: relative;
 }
 
-/* COLOR INVERSION CLASS */
+/* 1. DIMENSI BLACK (INVERTED) */
 body.inverted-dimension {
   filter: invert(100%);
   background: #fff;
 }
 
-/* SKY */
+/* 2. DIMENSI ECLIPSE SPLIT (HALF BLACK HALF WHITE) */
+body.split-dimension {
+  background: linear-gradient(to right, #ffffff 50%, #000000 50%);
+  color: #000000;
+}
 
+body.split-dimension .container {
+  position: relative;
+  z-index: 5;
+}
+
+/* Efek background overlay split agar transisi smooth */
+.split-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to right, rgba(255,255,255,0) 50%, #000000 50%);
+  z-index: -1;
+  display: none;
+  pointer-events: none;
+}
+
+body.split-dimension .split-overlay {
+  display: block;
+}
+
+/* SKY & ECLIPSE HIDDEN IN SPLIT */
+body.split-dimension .sky,
+body.split-dimension .eclipse {
+  opacity: 0.1;
+}
+
+/* SKY */
 .sky{
   position:fixed;
   inset:0;
   background:linear-gradient(to bottom,#000,#050816);
   z-index:-3;
+  transition: opacity 0.8s ease;
 }
 
 .star{
@@ -56,16 +88,11 @@ body.inverted-dimension {
 }
 
 @keyframes fall{
-  from{
-    transform:translateY(-10vh);
-  }
-  to{
-    transform:translateY(110vh);
-  }
+  from{ transform:translateY(-10vh); }
+  to{ transform:translateY(110vh); }
 }
 
 /* ECLIPSE BACKGROUND */
-
 .eclipse{
   position:fixed;
   top:50%;
@@ -74,26 +101,19 @@ body.inverted-dimension {
   height:320px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:radial-gradient(circle,
-  rgba(255,255,255,.7),
-  rgba(255,255,255,.08),
-  transparent 70%);
+  background:radial-gradient(circle, rgba(255,255,255,.7), rgba(255,255,255,.08), transparent 70%);
   opacity:.15;
   z-index:-2;
   animation:eclipseBackground 8s ease-in-out infinite;
+  transition: opacity 0.8s ease;
 }
 
 @keyframes eclipseBackground{
-  0%,100%{
-    transform:translate(-50%,-50%) scale(1);
-  }
-  50%{
-    transform:translate(-50%,-50%) scale(1.2);
-  }
+  0%,100%{ transform:translate(-50%,-50%) scale(1); }
+  50%{ transform:translate(-50%,-50%) scale(1.2); }
 }
 
 /* MAIN CONTAINER */
-
 .container{
   width:100%;
   max-width:950px;
@@ -107,22 +127,27 @@ body.inverted-dimension {
   padding:25px;
 }
 
-/* MAIN LOGO */
-
+/* MAIN LOGO WITH MIX BLEND FOR SPLIT */
 .logo{
   width:140px;
   filter:drop-shadow(0 0 15px white);
   animation:floatLogo 4s ease-in-out infinite;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, filter 0.8s ease;
+}
+
+body.split-dimension .logo {
+  mix-blend-mode: difference;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+}
+
+body.split-dimension .title {
+  mix-blend-mode: difference;
+  color: #fff;
 }
 
 @keyframes floatLogo{
-  0%,100%{
-    transform:translateY(0);
-  }
-  50%{
-    transform:translateY(-10px);
-  }
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
 }
 
 .title{
@@ -130,6 +155,7 @@ body.inverted-dimension {
   letter-spacing:4px;
   font-size:28px;
   animation:fadeUp 1.5s ease;
+  transition: color 0.8s ease;
 }
 
 .core-status {
@@ -142,8 +168,12 @@ body.inverted-dimension {
   animation: glitch .15s infinite;
 }
 
-/* BUTTONS */
+body.split-dimension .core-status {
+  mix-blend-mode: difference;
+  color: #fff;
+}
 
+/* BUTTONS */
 button{
   padding:11px 20px;
   margin:6px;
@@ -158,6 +188,18 @@ button{
   font-family:Poppins,sans-serif;
 }
 
+body.split-dimension button {
+  border-color: #000;
+  color: #000;
+}
+
+body.split-dimension .menu button,
+body.split-dimension .container > button {
+  mix-blend-mode: difference;
+  color: #fff;
+  border-color: #fff;
+}
+
 button:hover{
   background:white;
   color:black;
@@ -170,7 +212,6 @@ button:active{
 }
 
 /* MENU DISPLAY */
-
 .menu{
   display:none;
   flex-direction:column;
@@ -181,7 +222,6 @@ button:active{
 }
 
 /* PAGE WRAPPERS */
-
 .page{
   display:none;
   width:100%;
@@ -190,14 +230,8 @@ button:active{
 }
 
 @keyframes pageFade{
-  from{
-    opacity:0;
-    transform:translateY(20px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+  from{ opacity:0; transform:translateY(20px); }
+  to{ opacity:1; transform:translateY(0); }
 }
 
 .box{
@@ -210,17 +244,19 @@ button:active{
   backdrop-filter:blur(5px);
   animation:fadeUp 1s ease;
   box-shadow:0 0 20px rgba(255,255,255,.05);
+  transition: background 0.8s ease, border 0.8s ease;
+}
+
+body.split-dimension .box {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  mix-blend-mode: difference;
+  color: #fff;
 }
 
 @keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(25px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+  from{ opacity:0; transform:translateY(25px); }
+  to{ opacity:1; transform:translateY(0); }
 }
 
 /* QUOTES SYSTEM */
@@ -249,7 +285,6 @@ button:active{
 }
 
 /* INPUT SYSTEM */
-
 input{
   width:100%;
   padding:12px;
@@ -262,13 +297,17 @@ input{
   transition:.3s;
 }
 
+body.split-dimension input {
+  border-color: #fff;
+  color: #fff;
+}
+
 input:focus{
   border-color:white;
   box-shadow:0 0 15px rgba(255,255,255,.2);
 }
 
 /* STANDARD CUTSCENE */
-
 .cutscene{
   position:fixed;
   inset:0;
@@ -382,7 +421,6 @@ input:focus{
 }
 
 /* LOADING INITIALIZATION */
-
 .loader{
   position:fixed;
   inset:0;
@@ -421,7 +459,6 @@ input:focus{
 }
 
 /* FLASH COMPONENT */
-
 .flash{
   position:fixed;
   inset:0;
@@ -441,7 +478,6 @@ input:focus{
 }
 
 /* NOTIFICATION BAR */
-
 .notification{
   position:fixed;
   top:25px;
@@ -468,6 +504,12 @@ footer {
   padding: 20px;
   backdrop-filter: blur(10px);
   z-index: 10;
+  transition: background 0.8s ease;
+}
+
+body.split-dimension footer {
+  background: rgba(255, 255, 255, 0.1);
+  mix-blend-mode: difference;
 }
 
 .footer-content {
@@ -521,7 +563,6 @@ footer {
 }
 
 /* MOBILE RESPONSIVENESS */
-
 @media(max-width:700px){
   .logo{ width:120px; }
   .title{ font-size:22px; }
@@ -534,12 +575,20 @@ footer {
   .ultimate-center { width: 75px; height: 75px; }
   .ultimate-subtitle { font-size: 18px; }
   .ultimate-subtitle.blds-glow { font-size: 26px; }
+  body.split-dimension {
+    background: linear-gradient(to bottom, #ffffff 50%, #000000 50%);
+  }
+  .split-overlay {
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, #000000 50%);
+  }
 }
 
 </style>
 </head>
 
 <body>
+
+<div class="split-overlay"></div>
 
 <div class="ultimate-scene" id="ultimateScene">
   <div class="ultimate-logo-wrapper">
@@ -675,6 +724,9 @@ footer {
         <br><br>
         ❌ Eclipse<br>
         <small>Code?</small>
+        <br><br>
+        ❌ 2 Dimension<br>
+        <small>Black And White</small>
         <br><br>
         ❌ Black<br>
         <small>Discover the Black Eclipse Dimension</small>
@@ -966,6 +1018,7 @@ let achievements = {
   nayottama: false,
   prince: false,
   eclipse: false,
+  dimension2: false, // NYAWA BARU UNTUK 2 DIMENSION
   black: false,
   white: false
 };
@@ -993,6 +1046,9 @@ function updateAchievements() {
     ${achievements.eclipse ? "✅" : "❌"} Eclipse<br>
     <small>Code?</small>
     <br><br>
+    ${achievements.dimension2 ? "✅" : "❌"} 2 Dimension<br>
+    <small>Black And White</small>
+    <br><br>
     ${achievements.black ? "✅" : "❌"} Black<br>
     <small>Discover the Black Eclipse Dimension</small>
     <br><br>
@@ -1016,7 +1072,7 @@ function showAchievement(title){
 }
 
 function checkCodeBreaker(){
-  if(achievements.forgotten && achievements.flames && achievements.lorenzo && achievements.nayottama && achievements.prince && achievements.eclipse && achievements.black && achievements.white && !achievements.codeBreaker){
+  if(achievements.forgotten && achievements.flames && achievements.lorenzo && achievements.nayottama && achievements.prince && achievements.eclipse && achievements.dimension2 && achievements.black && achievements.white && !achievements.codeBreaker){
     achievements.codeBreaker = true;
     updateAchievements();
     showAchievement("Code Breaker");
@@ -1082,12 +1138,25 @@ function runUltimateCinematic() {
                     scene.style.display = "none";
                     if(!isMuted) bgMusic.volume = savedVolume;
                     
+                    document.body.classList.remove("inverted-dimension");
+                    document.body.classList.add("split-dimension");
+                    document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION";
+
+                    /* TRIGGER UNLOCK KEDUA-DUANYA SECARA BERUNTUN */
+                    let delay = 0;
                     if(!achievements.eclipse){
                       achievements.eclipse = true;
-                      updateAchievements();
-                      showAchievement("Eclipse");
-                      checkCodeBreaker();
+                      setTimeout(() => { showAchievement("Eclipse"); }, delay);
+                      delay += 1200;
                     }
+                    if(!achievements.dimension2){
+                      achievements.dimension2 = true;
+                      setTimeout(() => { showAchievement("2 Dimension"); }, delay);
+                    }
+                    
+                    updateAchievements();
+                    setTimeout(checkCodeBreaker, 2000);
+
                   }, 1500);
                 }
 
@@ -1153,7 +1222,7 @@ function unlockCode(){
     runUltimateCinematic();
   }
   else if(v === "black"){
-    /* TRIGGER BLACK DIMENSION (INVERTED BACKGROUND LIGHT) */
+    document.body.classList.remove("split-dimension");
     document.body.classList.add("inverted-dimension");
     document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION";
     
@@ -1166,8 +1235,8 @@ function unlockCode(){
     alert("BLACK ECLIPSE PROTOCOL ACTIVATED");
   }
   else if(v === "white"){
-    /* TRIGGER WHITE DIMENSION (DEFAULT DARK BACKGROUND) */
     document.body.classList.remove("inverted-dimension");
+    document.body.classList.remove("split-dimension");
     document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | ECLIPSE LAYER-0";
     
     if(!achievements.white){
