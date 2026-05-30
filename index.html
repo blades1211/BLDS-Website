@@ -88,6 +88,7 @@ body.full-invert {
   padding:25px;
   position: relative;
   z-index: 5;
+  transition: opacity 0.5s ease;
 }
 
 .logo-container {
@@ -808,6 +809,192 @@ footer {
   opacity: 1;
   pointer-events: all;
 }
+
+/* ==========================================================================
+   🎬 NEW SYSTEM: ODYSSEY 100 DAYS STREAK CUTSCENE STYLING
+   ========================================================================== */
+.odyssey-cutscene-layer {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, #000000, #03030b);
+  z-index: 9999999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.odyssey-star-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.odyssey-text-container {
+  text-align: center;
+  z-index: 10;
+  max-width: 80%;
+}
+
+.odyssey-line {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+  text-transform: uppercase;
+}
+
+.odyssey-line.odyssey-grand-title {
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 12px;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+  margin-top: 20px;
+}
+
+.odyssey-logo-holder {
+  width: 160px;
+  height: 160px;
+  position: absolute;
+  top: 22%;
+  opacity: 0;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.odyssey-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.95));
+}
+
+/* Animasi Banting Logo (*Slam Drop*) */
+@keyframes logoSlamDrop {
+  0% { transform: scale(4) translateY(-150px); opacity: 0; filter: blur(10px); }
+  60% { transform: scale(0.9) translateY(0); opacity: 1; filter: blur(0); }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Animasi Naik Turun Smooth (*Float Loop*) */
+.odyssey-logo-float-active {
+  animation: logoSmoothFloatLoop 4s ease-in-out infinite alternate !important;
+}
+
+@keyframes logoSmoothFloatLoop {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-15px); }
+}
+
+/* Efek Guncangan Gempa Global Screen */
+.odyssey-shake-earthquake {
+  animation: screenEarthquakeAction 0.15s cubic-bezier(.36,.07,.19,.97) infinite;
+}
+
+@keyframes screenEarthquakeAction {
+  10%, 90% { transform: translate3d(-3px, 2px, 0) rotate(0.5deg); }
+  20%, 80% { transform: translate3d(4px, -3px, 0) rotate(-1deg); }
+  30%, 50%, 70% { transform: translate3d(-5px, 4px, 0) rotate(1deg); }
+  40%, 60% { transform: translate3d(5px, -2px, 0) rotate(-0.5deg); }
+}
+
+/* Inversi Warna Halus */
+.odyssey-color-inversion {
+  animation: dynamicInversionPulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes dynamicInversionPulse {
+  0% { filter: invert(0) hue-rotate(0deg); }
+  50% { filter: invert(1) hue-rotate(180deg) contrast(1.2); }
+  100% { filter: invert(1) hue-rotate(180deg) brightness(0.9); }
+}
+
+/* Pilihan Modul Kamar Tiga Pet */
+.odyssey-pet-selection-deck {
+  position: absolute;
+  bottom: -150px; 
+  display: flex;
+  gap: 30px;
+  z-index: 20;
+  opacity: 0;
+  transition: bottom 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+}
+
+.odyssey-pet-selection-deck.active {
+  bottom: 12%;
+  opacity: 1;
+}
+
+.odyssey-pet-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  width: 170px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s, background 0.4s, box-shadow 0.4s;
+  position: relative;
+}
+
+.odyssey-pet-card:hover {
+  transform: translateY(-12px) scale(1.05);
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
+}
+
+.odyssey-pet-avatar-slot {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 12px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.odyssey-pet-avatar-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: petBreathing 2.5s ease-in-out infinite;
+}
+
+.odyssey-pet-title-tag {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.odyssey-pet-sub-tag {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* Smooth Blackout Transitions */
+.odyssey-dark-curtain {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 99999999;
+  display: none;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  pointer-events: none;
+}
 </style>
 </head>
 
@@ -832,6 +1019,53 @@ footer {
 <div class="cutscene-hud-alert" id="cutsceneAlert">
   CORE SIGNATURE INJECTED // CALIBRATION PROTOCOL ACTIVE
 </div>
+
+<div class="odyssey-cutscene-layer" id="odysseyCutsceneContainer">
+  <div class="odyssey-star-field" id="odysseyStarField"></div>
+  
+  <div class="odyssey-logo-holder" id="odysseyLogoHolder">
+    <img src="logo.png" alt="BLDS Mega Core" class="odyssey-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+    <div style="display:none; font-size:24px; font-weight:600; letter-spacing:4px;">[BLDS CORE]</div>
+  </div>
+
+  <div class="odyssey-text-container" id="odysseyTextContainer">
+    <div class="odyssey-line" id="odyLine1">100 hari lalu, kamu memulainya...</div>
+    <div class="odyssey-line" id="odyLine2">Kamu sudah sabar menunggu</div>
+    <div class="odyssey-line" id="odyLine3">Hari ini, dimana kamu mencapainya</div>
+    <div class="odyssey-line odyssey-grand-title" id="odyLine4">DAYS 100 STREAK</div>
+  </div>
+
+  <div class="odyssey-pet-selection-deck" id="odysseyPetDeck">
+    <div class="odyssey-pet-card" onclick="selectOdysseyUltimatePet('cerberus')">
+      <div class="odyssey-pet-avatar-slot">
+        <img src="Cerberus.png" alt="Cerberus" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div style="display:none; font-size:32px;">🔥</div>
+      </div>
+      <div class="odyssey-pet-title-tag">Cerberus</div>
+      <div class="odyssey-pet-sub-tag">Hellfire core</div>
+    </div>
+
+    <div class="odyssey-pet-card" onclick="selectOdysseyUltimatePet('phoenix')">
+      <div class="odyssey-pet-avatar-slot">
+        <img src="Phoenix.png" alt="Phoenix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div style="display:none; font-size:32px;">☀️</div>
+      </div>
+      <div class="odyssey-pet-title-tag">Phoenix</div>
+      <div class="odyssey-pet-sub-tag">Rebirth core</div>
+    </div>
+
+    <div class="odyssey-pet-card" onclick="selectOdysseyUltimatePet('leviathan')">
+      <div class="odyssey-pet-avatar-slot">
+        <img src="Leviathan.png" alt="Leviathan" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div style="display:none; font-size:32px;">🌊</div>
+      </div>
+      <div class="odyssey-pet-title-tag">Leviathan</div>
+      <div class="odyssey-pet-sub-tag">Abyss core</div>
+    </div>
+  </div>
+</div>
+
+<div class="odyssey-dark-curtain" id="odysseyDarkCurtain"></div>
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
@@ -889,7 +1123,7 @@ footer {
 <div class="sky" id="sky"></div>
 <div class="eclipse"></div>
 
-<div class="container">
+<div class="container" id="mainWebsiteContainer">
   <div class="logo-container">
     <img src="logo.png" alt="BLDS Logo" class="logo" onerror="this.style.display='none';">
   </div>
@@ -1273,6 +1507,121 @@ footer {
 </footer>
 
 <script>
+/* ==========================================================================
+   🎵 NEW AUDIO ENGINE: SYNTHETIC BACKGROUND & TEXT CHIME GENERATOR
+   ========================================================================== */
+let odysseyAudioCtx = null;
+let odysseyBgmNode = null;
+
+function initOdysseyAudioEngine() {
+  if (!odysseyAudioCtx) {
+    odysseyAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+// Sound Effect saat baris kalimat teks muncul (High Crystal Chime Pop)
+function playOdyTextSfx() {
+  if (!odysseyAudioCtx) return;
+  const now = odysseyAudioCtx.currentTime;
+  
+  const osc = odysseyAudioCtx.createOscillator();
+  const gain = odysseyAudioCtx.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(587.33, now); // D5 Node Key
+  osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12); // Meluncur ke A5
+  
+  gain.gain.setValueAtTime(0.12, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+  
+  osc.connect(gain);
+  gain.connect(odysseyAudioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.35);
+}
+
+// Sound Effect saat Logo dibanting (Sub-Bass Drop Explosion)
+function playOdyLogoSlamSfx() {
+  if (!odysseyAudioCtx) return;
+  const now = odysseyAudioCtx.currentTime;
+  
+  // Oscillator Rendah untuk guncangan bass
+  const oscLow = odysseyAudioCtx.createOscillator();
+  const gainLow = odysseyAudioCtx.createGain();
+  oscLow.type = 'triangle';
+  oscLow.frequency.setValueAtTime(90, now);
+  oscLow.frequency.linearRampToValueAtTime(30, now + 0.6);
+  
+  gainLow.gain.setValueAtTime(0.4, now);
+  gainLow.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+  
+  oscLow.connect(gainLow);
+  gainLow.connect(odysseyAudioCtx.destination);
+  oscLow.start(now);
+  oscLow.stop(now + 0.7);
+
+  // Noise Krusial untuk hantaman serpihan mekanik
+  const bufferSize = odysseyAudioCtx.sampleRate * 0.4;
+  const buffer = odysseyAudioCtx.createBuffer(1, bufferSize, odysseyAudioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  
+  const noiseNode = odysseyAudioCtx.createBufferSource();
+  noiseNode.buffer = buffer;
+  
+  const noiseFilter = odysseyAudioCtx.createBiquadFilter();
+  noiseFilter.type = 'lowpass';
+  noiseFilter.frequency.setValueAtTime(300, now);
+  
+  const gainNoise = odysseyAudioCtx.createGain();
+  gainNoise.gain.setValueAtTime(0.2, now);
+  gainNoise.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+  
+  noiseNode.connect(noiseFilter);
+  noiseFilter.connect(gainNoise);
+  gainNoise.connect(odysseyAudioCtx.destination);
+  noiseNode.start(now);
+  noiseNode.stop(now + 0.4);
+}
+
+// Trigger Backsound Sinematik Megah Khusus saat Mode Cutscene Aktif
+function startOdysseyCinematicBgm() {
+  if (!odysseyAudioCtx) return;
+  const now = odysseyAudioCtx.currentTime;
+  
+  odysseyBgmNode = odysseyAudioCtx.createOscillator();
+  const bgmGain = odysseyAudioCtx.createGain();
+  
+  odysseyBgmNode.type = 'sawtooth';
+  odysseyBgmNode.frequency.setValueAtTime(65.41, now); // C2 Low Note Space Ambient
+  
+  // Filter frekuensi agar tidak pekak di telinga, terdengar tebal & berwibawa
+  const lowpass = odysseyAudioCtx.createBiquadFilter();
+  lowpass.type = 'lowpass';
+  lowpass.frequency.setValueAtTime(150, now);
+  lowpass.frequency.linearRampToValueAtTime(320, now + 6); 
+  
+  bgmGain.gain.setValueAtTime(0.001, now);
+  bgmGain.gain.linearRampToValueAtTime(0.25, now + 2.5); // Fade In
+  
+  odysseyBgmNode.connect(lowpass);
+  lowpass.connect(bgmGain);
+  bgmGain.connect(odysseyAudioCtx.destination);
+  
+  odysseyBgmNode.start(now);
+}
+
+function stopOdysseyCinematicBgm() {
+  if (odysseyBgmNode) {
+    try {
+      odysseyBgmNode.stop();
+    } catch(e){}
+    odysseyBgmNode = null;
+  }
+}
+
 /* 🎧 AUDIO CONTROLLER EXPERT PROTOCOL */
 const bgAmbient = document.getElementById("bgAmbient");
 
@@ -1301,12 +1650,12 @@ function playClickSound() {
 
 // Menangkap event klik secara global di seluruh dokumen
 document.addEventListener("click", (e) => {
-  // Cek apakah elemen yang diklik atau leluhur terdekatnya adalah tombol/elemen pemicu aksi
   if (
     e.target.tagName === "BUTTON" || 
     e.target.closest("button") || 
     e.target.classList.contains("admin-trigger-launcher") || 
-    e.target.id === "adminCloseBtn"
+    e.target.id === "adminCloseBtn" ||
+    e.target.closest(".odyssey-pet-card")
   ) {
     playClickSound();
   }
@@ -1321,6 +1670,17 @@ for(let i=0; i<100; i++){
   star.style.top = Math.random()*-100+"vh";
   star.style.animationDuration = (3+Math.random()*5)+"s";
   sky.appendChild(star);
+}
+
+// Generate Bintang Khusus untuk Canvas Layar Cutscene Odyssey 100 Streak
+const odyField = document.getElementById("odysseyStarField");
+for(let j=0; j<80; j++) {
+  let oStar = document.createElement("div");
+  oStar.className = "star";
+  oStar.style.left = Math.random()*100+"%";
+  oStar.style.top = Math.random()*100+"vh";
+  oStar.style.opacity = Math.random();
+  odyField.appendChild(oStar);
 }
 
 window.addEventListener("load",()=>{
@@ -1341,7 +1701,8 @@ let streakData = {
     wolf: false
   },
   forcedRankTitle: "",
-  forcedPetStage: "auto"
+  forcedPetStage: "auto",
+  unlockedOdysseyPet: "" // Menyimpan tipe pet 100 streak hasil pilihan user
 };
 
 let calibrationInterval = null;
@@ -1380,6 +1741,17 @@ function getPetSvg(type, count) {
     else if(stageForce === 3) checkValue = 30;
     else if(stageForce === 4) checkValue = 50;
     else if(stageForce === 5) checkValue = 100;
+  }
+
+  // Jika user sudah memilih pet khusus dari event 100 streak, paksa override visualnya
+  if (checkValue >= 100 && streakData.unlockedOdysseyPet) {
+    let chosen = streakData.unlockedOdysseyPet.toLowerCase();
+    if (chosen === "cerberus") fileName = "Cerberus.png";
+    else if (chosen === "phoenix") fileName = "Phoenix.png";
+    else if (chosen === "leviathan") fileName = "Leviathan.png";
+    
+    return `<img src="${fileName}" alt="${chosen}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">
+            <div style="display:none; font-size:12px; color:rgba(255,255,255,0.4); text-transform:uppercase;">[👑 ${chosen.toUpperCase()} ACTIVATED]</div>`;
   }
 
   if (type === "dragon") {
@@ -1423,6 +1795,9 @@ function loadState() {
     if (!streakData.forcedPetStage) {
       streakData.forcedPetStage = "auto";
     }
+    if (!streakData.unlockedOdysseyPet) {
+      streakData.unlockedOdysseyPet = "";
+    }
   }
 
   const savedLb = localStorage.getItem("BLDS_ADM_LB_OVERRIDE");
@@ -1451,6 +1826,7 @@ function checkStreakValidity() {
     document.getElementById("collapseModal").style.display = "flex";
     streakData.count = 0; 
     streakData.lastCalibratedTimestamp = null; 
+    streakData.unlockedOdysseyPet = ""; // Hapus pet premium jika streak hangus
     saveState();
   }
 }
@@ -1472,6 +1848,7 @@ function closeResetModal() {
 function confirmResetStreak() {
   streakData.count = 0;
   streakData.lastCalibratedTimestamp = null;
+  streakData.unlockedOdysseyPet = "";
   saveState();
   closeResetModal();
 
@@ -1500,9 +1877,13 @@ function getPetEvolutionEngine(count, type) {
 
   if (checkValue >= 100) {
     rank = "THE ETERNAL CORE";
-    if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon (LOCKED)";
-    else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan (LOCKED)";
-    else stageText = "Fase 5: Fenrir God of the Void (LOCKED)";
+    if (streakData.unlockedOdysseyPet) {
+      stageText = `Fase 5: God Core ${streakData.unlockedOdysseyPet.toUpperCase()} (LOCKED)`;
+    } else {
+      if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon (LOCKED)";
+      else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan (LOCKED)";
+      else stageText = "Fase 5: Fenrir God of the Void (LOCKED)";
+    }
   } else if (checkValue >= 50) {
     rank = "DOMINION VANGUARD";
     if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
@@ -1540,7 +1921,6 @@ function getPetEvolutionEngine(count, type) {
 
 function updateAchievementsUI(highestStreak) {
   let unlockedCount = 0;
-  // Mapping target streak untuk masing-masing id achievement dari ach1 sampai ach15
   const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
 
   for (let i = 1; i <= 15; i++) {
@@ -1680,6 +2060,104 @@ function startCalibrationTimer() {
   calibrationInterval = setInterval(updateCalibrationHudUI, 1000); 
 }
 
+/* ==========================================================================
+   🎬 EXECUTION ENGINE: ODYSSEY 100 STREAK EVENT PLAYBACK PROTOCOL
+   ========================================================================== */
+function runOdyssey100DaysCutscene() {
+  initOdysseyAudioEngine();
+  startOdysseyCinematicBgm();
+
+  const container = document.getElementById("odysseyCutsceneContainer");
+  const mainWeb = document.getElementById("mainWebsiteContainer");
+  
+  // Sembunyikan web normal dan tampilkan kanvas hitam malam bertabur bintang
+  mainWeb.style.opacity = "0";
+  setTimeout(() => { mainWeb.style.display = "none"; }, 500);
+  
+  container.style.display = "flex";
+
+  // Reset Elemen Teks
+  const l1 = document.getElementById("odyLine1");
+  const l2 = document.getElementById("odyLine2");
+  const l3 = document.getElementById("odyLine3");
+  const l4 = document.getElementById("odyLine4");
+  const logoHolder = document.getElementById("odysseyLogoHolder");
+  const petDeck = document.getElementById("odysseyPetDeck");
+
+  l1.style.opacity = "0"; l1.style.transform = "translateY(20px)";
+  l2.style.opacity = "0"; l2.style.transform = "translateY(20px)";
+  l3.style.opacity = "0"; l3.style.transform = "translateY(20px)";
+  l4.style.opacity = "0"; l4.style.transform = "translateY(20px)";
+  logoHolder.style.opacity = "0";
+  logoHolder.style.animation = "none";
+  container.classList.remove("odyssey-shake-earthquake", "odyssey-color-inversion");
+
+  // Rangkaian Teks Odyssey Berjalan Bertahap
+  setTimeout(() => { l1.style.opacity = "1"; l1.style.transform = "translateY(0)"; playOdyTextSfx(); }, 1200);
+  setTimeout(() => { l2.style.opacity = "1"; l2.style.transform = "translateY(0)"; playOdyTextSfx(); }, 3500);
+  setTimeout(() => { l3.style.opacity = "1"; l3.style.transform = "translateY(0)"; playOdyTextSfx(); }, 6000);
+  setTimeout(() => { l4.style.opacity = "1"; l4.style.transform = "translateY(0)"; playOdyTextSfx(); }, 8500);
+
+  // LOGO MUNCUL DI-BANTING (*SLAM*)
+  setTimeout(() => {
+    // Sembunyikan teks cerita lama untuk memusatkan fokus
+    l1.style.opacity = "0"; l2.style.opacity = "0"; l3.style.opacity = "0";
+    
+    logoHolder.style.opacity = "1";
+    logoHolder.style.animation = "logoSlamDrop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards";
+    playOdyLogoSlamSfx();
+  }, 11500);
+
+  // Aktifkan Loop Mengapung (Float Smooth) Setelah Efek Banting Selesai
+  setTimeout(() => {
+    logoHolder.classList.add("odyssey-logo-float-active");
+  }, 12300);
+
+  // EFEK GEMPA BUMI & INVERSI WARNA DILANCARKAN
+  setTimeout(() => {
+    container.classList.add("odyssey-shake-earthquake");
+    container.classList.add("odyssey-color-inversion");
+  }, 13200);
+
+  // 3 PET TURUN DARI ATAS KE BAWAH LOGO
+  setTimeout(() => {
+    // Matikan guncangan gempa agar user bisa memilih dengan nyaman
+    container.classList.remove("odyssey-shake-earthquake");
+    petDeck.classList.add("active");
+  }, 15500);
+}
+
+// Handler Aksi Pilihan Salah Satu Pet
+function selectOdysseyUltimatePet(petName) {
+  stopOdysseyCinematicBgm();
+  streakData.unlockedOdysseyPet = petName;
+  saveState();
+
+  const curtain = document.getElementById("odysseyDarkCurtain");
+  curtain.style.display = "block";
+  
+  // Layar Menhitam Smooth Sempurna selama 4 Detik
+  setTimeout(() => { curtain.style.opacity = "1"; }, 50);
+
+  setTimeout(() => {
+    // Kembalikan Framework ke Kondisi Normal Sempurna
+    document.getElementById("odysseyCutsceneContainer").style.display = "none";
+    document.getElementById("odysseyPetDeck").classList.remove("active");
+    
+    const mainWeb = document.getElementById("mainWebsiteContainer");
+    mainWeb.style.display = "flex";
+    setTimeout(() => { mainWeb.style.opacity = "1"; }, 50);
+
+    updateWidgetDynamicUI();
+    renderLeaderboard();
+
+    // Hilangkan Tirai Hitam
+    curtain.style.opacity = "0";
+    setTimeout(() => { curtain.style.display = "none"; }, 1500);
+
+  }, 4000); // Durasi Tepat 4 Detik Sesuai Permintaan
+}
+
 function calibrateCore() {
   checkStreakValidity();
   if (streakData.lastCalibratedTimestamp) {
@@ -1704,6 +2182,11 @@ function calibrateCore() {
   updateWidgetDynamicUI();
   startCalibrationTimer();
   renderLeaderboard();
+
+  // CEK JIKA HARI INI PAS MENCAPAI 100 STREAK, PICU CUTSCENE ODYSSEY
+  if (streakData.count === 100) {
+    runOdyssey100DaysCutscene();
+  }
 }
 
 function enter(){
@@ -1907,11 +2390,17 @@ function loadTargetLbSlotData() {
 
 function executeAdminUserUpdate() {
   streakData.dominionName = document.getElementById("admDomName").value.trim();
+  const oldStreak = streakData.count;
   streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
   streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
   streakData.petType = document.getElementById("admPetType").value;
   streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; 
   streakData.petCustomName = document.getElementById("admPetNick").value.trim();
+
+  // Reset pelihaan jika admin menurunkan streak dari 100
+  if (streakData.count < 100) {
+    streakData.unlockedOdysseyPet = "";
+  }
 
   saveState();
   updateWidgetDynamicUI();
@@ -1919,6 +2408,11 @@ function executeAdminUserUpdate() {
   populateAdminPanelDropdowns();
   startCalibrationTimer();
   alert("✨ Admin Node: Core User & Mutation Phase Changes Applied!");
+
+  // Memungkinkan Admin menguji coba cutscene 100 streak dengan mengubah input angka ke 100
+  if (oldStreak !== 100 && streakData.count === 100) {
+    runOdyssey100DaysCutscene();
+  }
 }
 
 function executeAdminRankOverride() {
