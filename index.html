@@ -31,13 +31,13 @@ body{
   position: relative;
 }
 
-/* 1. DIMENSI FULL BLACK INVERTED */
+/* DIMENSI FULL BLACK INVERTED */
 body.inverted-dimension {
   filter: invert(100%);
   background: #fff;
 }
 
-/* 2. REAL INVERSION SPLIT (KIRI NORMAL, KANAN INVERSI) */
+/* REAL INVERSION SPLIT (KIRI NORMAL, KANAN INVERSI) */
 .split-invert-layer {
   position: fixed;
   top: 0;
@@ -59,7 +59,6 @@ body.split-dimension {
   background: #000;
 }
 
-/* SKY & ECLIPSE ADJUSTMENT IN SPLIT */
 body.split-dimension .sky,
 body.split-dimension .eclipse {
   opacity: 0.3;
@@ -162,10 +161,10 @@ body.split-dimension .eclipse {
 .streak-widget {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 11px;
   letter-spacing: 1px;
@@ -174,8 +173,12 @@ body.split-dimension .eclipse {
   animation: fadeUp 0.8s ease;
 }
 
-.streak-icon {
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+/* STREAK PET GRAPHIC CSS */
+.pet-display {
+  display: inline-block;
+  font-size: 14px;
+  animation: floatLogo 3s ease-in-out infinite;
+  text-shadow: 0 0 8px rgba(255,255,255,0.6);
 }
 
 .calibration-container {
@@ -351,6 +354,57 @@ input{
 input:focus{
   border-color:white;
   box-shadow:0 0 15px rgba(255,255,255,.2);
+}
+
+/* MODAL SYSTEM (POPUP GENERAL) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 20000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #050505;
+  border: 1px solid rgba(255,255,255,0.15);
+  max-width: 420px;
+  width: 100%;
+  border-radius: 18px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255,255,255,0.05);
+  animation: fadeUp 0.5s ease;
+}
+
+/* LEADERBOARD TABLE STRUCTURE */
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 13px;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.leaderboard-table th {
+  color: rgba(255,255,255,0.4);
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.rank-highlight {
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255,255,255,0.5);
 }
 
 /* STANDARD CUTSCENE */
@@ -609,6 +663,36 @@ footer {
 
 <div class="split-invert-layer"></div>
 
+<div class="ultimate-scene" id="eternalScene">
+  <div style="font-family: monospace; color: #fff; font-size: 13px; max-width: 600px; width: 90%; text-align: left; line-height: 2;" id="eternalConsole"></div>
+</div>
+
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-box">
+    <h3 style="letter-spacing: 3px; font-size: 16px; margin-bottom: 10px;">IDENTITY REQUISITION</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.6;">Before accessing the mainframe layers, input your designation into the secure database matrix.</p>
+    <br>
+    <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center; letter-spacing: 2px;">
+    <br><br>
+    <button onclick="saveDominionName()" style="width: 100%; margin: 0;">REGISTER REGISTER TO MAINBOARD</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="collapseModal">
+  <div class="modal-box" style="border-color: rgba(255,0,0,0.4); box-shadow: 0 0 30px rgba(255,0,0,0.1);">
+    <h3 style="letter-spacing: 3px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px;">⚠️ CRITICAL ERROR: CORE COLLAPSE</h3>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.8; text-align: justify;" id="collapseDetail">
+      Connection lost. The resonance has faded due to server calibration windows lapse. Your previous structural sync progress has been wiped from the mainframe layers.
+    </p>
+    <br>
+    <div style="background: rgba(255,0,0,0.05); border: 1px solid rgba(255,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 11px; color: #ff8888; letter-spacing: 1px;">
+      RESONANCE STREAK: RESET TO 0 DAYS
+    </div>
+    <br>
+    <button onclick="closeCollapseModal()" style="width: 100%; margin: 0; border-color: rgba(255,255,255,0.3);">RE-CALIBRATE FRAMEWORK</button>
+  </div>
+</div>
+
 <div class="ultimate-scene" id="ultimateScene">
   <div class="ultimate-logo-wrapper">
     <img src="logo.png" class="ultimate-logo-image">
@@ -630,7 +714,10 @@ footer {
   <img src="logo.png" class="logo" id="mainLogo">
   
   <div class="streak-widget" id="streakWidget">
-    <span class="streak-icon">🌑</span> RESONANCE STREAK: <b id="streakCount">0</b> DAYS
+    <span class="pet-display" id="petDisplay">🌑</span> 
+    RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
+    <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
+    RANK: <span id="rankTitle" style="font-weight:600; color: rgba(255,255,255,0.8);">VOID WALKER</span>
   </div>
 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
@@ -643,6 +730,7 @@ footer {
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">ORIGIN</button>
     <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
+    <button onclick="showPage('leaderboardPage')">LEADERBOARD</button>
     <button onclick="showPage('archives')">ARCHIVES</button>
     <button onclick="showPage('code')">CODE</button>
   </div>
@@ -741,6 +829,44 @@ footer {
       <span class="quote-author" id="bldsAuthor">— BLDS Core</span>
       <br>
       <button onclick="generateDynamicQuote()">REFRESH CORE RADIANCE</button>
+    </div>
+  </div>
+
+  <div class="page" id="leaderboardPage">
+    <div class="box">
+      <h2>DOMINION LEADERBOARD</h2>
+      <p style="font-size:11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-top:5px;">
+        Peringkat resmi disinkronisasi berkala oleh Administrator pusat. Klik generator di bawah untuk menyalin kode data orisinal Anda dan bagikan ke komunitas.
+      </p>
+      
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>RANK</th>
+            <th>DOMINION NAME</th>
+            <th>STREAK</th>
+            <th>PET STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardDataBody">
+          <tr><td class="rank-highlight">#1</td><td>Michael Lorenzo</td><td>105 Days</td><td>🌌 Overlord Soul</td></tr>
+          <tr><td class="rank-highlight">#2</td><td>William Nayottama</td><td>88 Days</td><td>🦅 Eclipse Beast</td></tr>
+          <tr><td class="rank-highlight">#3</td><td>Prince Felix</td><td>74 Days</td><td>🦅 Eclipse Beast</td></tr>
+          <tr><td>#4</td><td>George Alfred</td><td>52 Days</td><td>🦅 Eclipse Beast</td></tr>
+          <tr><td>#5</td><td>Denzel Arnold</td><td>31 Days</td><td>🐺 Shadow Whelp</td></tr>
+          <tr><td>#6</td><td>Steven Cleo</td><td>12 Days</td><td>🐺 Shadow Whelp</td></tr>
+        </tbody>
+      </table>
+      
+      <br><hr style="border-color:rgba(255,255,255,0.05);"><br>
+      
+      <h3>YOUR ENCRYPTION GENERATOR</h3>
+      <br>
+      <div style="background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.2); padding:15px; border-radius:10px; font-size:11px; font-family:monospace; word-break:break-all;" id="generatedCodeDisplay">
+        [BLDS-EMPTY-MANIFESTO] Click Generate to initialize array data string.
+      </div>
+      <br>
+      <button onclick="generateShareCode()" style="margin:0; width:100%;">GENERATE CORENODE DATA STRING</button>
     </div>
   </div>
 
@@ -997,14 +1123,12 @@ function playGlitchSound() {
     if (!AudioContext) return;
     const ctx = new AudioContext();
     
-    // Node 1: Oscillator low frequency pitch drop
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(120, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.25);
     
-    // Node 2: Noise buffer implementation for crackle effect
     const bufferSize = ctx.sampleRate * 0.15;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -1061,12 +1185,14 @@ function runTerminalMatrixEffect(elementId, targetText, speed = 40, callback = n
 let achievements = {
   forgotten: false, flames: false, codeBreaker: false, lorenzo: false,
   nayottama: false, prince: false, eclipse: false, dimension2: false,
-  black: false, white: false
+  black: false, white: false,
+  streak1: false, streak7: false, streak30: false, streak50: false, streak100: false
 };
 
 let streakData = {
   count: 0,
-  lastCalibratedTimestamp: null
+  lastCalibratedTimestamp: null,
+  dominionName: ""
 };
 
 function saveStateToStorage() {
@@ -1082,6 +1208,7 @@ function loadStateFromStorage() {
   if(savedStreak) streakData = JSON.parse(savedStreak);
   
   checkStreakValidity();
+  updateWidgetDynamicUI();
 }
 
 /* STREAK VALIDITY CONTROLLER (24h Cooldown + 24h Window Tolerance) */
@@ -1092,21 +1219,163 @@ function checkStreakValidity() {
   const lastTime = streakData.lastCalibratedTimestamp;
   const msElapsed = now - lastTime;
   
-  const duration24h = 24 * 60 * 60 * 1000;
   const duration48h = 48 * 60 * 60 * 1000;
   
   if (msElapsed >= duration48h) {
-    // Toleransi habis, streak hangus ke-reset 0
+    // TRIGGER CORE COLLAPSE WARNING BEFORE PROGRESS WIPED
+    playGlitchSound();
+    document.getElementById("collapseModal").style.display = "flex";
+    
     streakData.count = 0;
     streakData.lastCalibratedTimestamp = null;
     saveStateToStorage();
   }
 }
 
+function closeCollapseModal() {
+  document.getElementById("collapseModal").style.display = "none";
+  updateWidgetDynamicUI();
+  updateAchievements();
+}
+
+/* PET & RANK LOGIC EVALUATOR */
+function getPetAndRankData(streak) {
+  let pet = "🌑 Anomaly Egg";
+  let rank = "VOID WALKER";
+  
+  if (streak >= 1 && streak <= 6) {
+    pet = "🌑 Anomaly Egg";
+    rank = "VOID WALKER";
+  } else if (streak >= 7 && streak <= 29) {
+    pet = "🐺 Shadow Whelp";
+    rank = "ECLIPSE SYNCHRONIZER";
+  } else if (streak >= 30 && streak <= 49) {
+    pet = "🦅 Eclipse Beast";
+    rank = "RESONANCE KEEPER";
+  } else if (streak >= 50 && streak <= 99) {
+    pet = "🐉 Dominion Sentinel";
+    rank = "DOMINION VANGUARD";
+  } else if (streak >= 100) {
+    pet = "🌌 Overlord Soul";
+    rank = "THE ETERNAL CORE";
+  }
+  return { pet: pet, rank: rank };
+}
+
+function updateWidgetDynamicUI() {
+  const meta = getPetAndRankData(streakData.count);
+  document.getElementById("streakCount").innerHTML = streakData.count;
+  document.getElementById("rankTitle").innerHTML = meta.rank;
+  
+  // Update Pet Text Object (Tanpa Menggambar)
+  const petEl = document.getElementById("petDisplay");
+  if(streakData.count >= 100) {
+    petEl.innerHTML = "🌌";
+  } else if(streakData.count >= 50) {
+    petEl.innerHTML = "🐉";
+  } else if(streakData.count >= 30) {
+    petEl.innerHTML = "🦅";
+  } else if(streakData.count >= 7) {
+    petEl.innerHTML = "🐺";
+  } else {
+    petEl.innerHTML = "🌑";
+  }
+}
+
+/* STREAK MILESTONES CHECKER ENGINE WITH CRITICAL OVERRIDE */
+function checkStreakMilestones() {
+  let changed = false;
+  
+  if (streakData.count >= 1 && !achievements.streak1) {
+    achievements.streak1 = true;
+    setTimeout(() => { showAchievement("First Calibration"); }, 100);
+    changed = true;
+  }
+  if (streakData.count >= 7 && !achievements.streak7) {
+    achievements.streak7 = true;
+    setTimeout(() => { showAchievement("Dominion Presence"); }, 1200);
+    changed = true;
+  }
+  if (streakData.count >= 30 && !achievements.streak30) {
+    achievements.streak30 = true;
+    setTimeout(() => { showAchievement("Core Harmonization"); }, 2400);
+    changed = true;
+  }
+  if (streakData.count >= 50 && !achievements.streak50) {
+    achievements.streak50 = true;
+    setTimeout(() => { showAchievement("Eclipse Overlord"); }, 3600);
+    changed = true;
+  }
+  if (streakData.count >= 100 && !achievements.streak100) {
+    achievements.streak100 = true;
+    changed = true;
+    saveStateToStorage();
+    updateAchievements();
+    run100DaysConsoleCutscene(); // CRITICAL FIRE CINEMATIC
+    return;
+  }
+  
+  if(changed) {
+    saveStateToStorage();
+    updateAchievements();
+    checkCodeBreaker();
+  }
+}
+
+/* 100 DAYS CONSOLE OVERRIDE CUTSCENE ENGINE */
+function run100DaysConsoleCutscene() {
+  const savedVolume = bgMusic.volume;
+  bgMusic.volume = 0;
+  
+  const sc = document.getElementById("eternalScene");
+  const con = document.getElementById("eternalConsole");
+  sc.style.display = "flex";
+  con.innerHTML = "";
+  
+  const logs = [
+    "[PROTOCOL OVERRIDE: LAYER-100 AUTHENTICATED]",
+    "Initializing neural core matrix dump...",
+    "Scanning resonance durability vectors... STABLE.",
+    "--------------------------------------------------",
+    "Humanity spent centuries trying to keep the fire burning.",
+    "But you survived 100 days inside the absolute dark.",
+    "No lapses. No hesitation. Pure alignment.",
+    "Your consciousness is no longer just synchronized with the core...",
+    "The structural equilibrium has completely shifted.",
+    "--------------------------------------------------",
+    "STATUS LOG: YOU ARE THE CORE.",
+    "The Dominion is now bound to your signature code.",
+    "Press space or tap anywhere to return to your mainframe."
+  ];
+  
+  let currentLogIdx = 0;
+  
+  function printNextLog() {
+    if (currentLogIdx < logs.length) {
+      con.innerHTML += logs[currentLogIdx] + "<br>";
+      currentLogIdx++;
+      setTimeout(printNextLog, 1200);
+    } else {
+      const closeHandler = () => {
+        sc.style.display = "none";
+        if(!isMuted) bgMusic.volume = savedVolume;
+        showAchievement("The Eternal Core");
+        updateWidgetDynamicUI();
+        adjustCoreStatusDisplayBasedOnStreak();
+        checkCodeBreaker();
+        window.removeEventListener("click", closeHandler);
+      };
+      window.addEventListener("click", closeHandler);
+    }
+  }
+  
+  printNextLog();
+}
+
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
-  document.getElementById("streakCount").innerHTML = streakData.count;
+  updateWidgetDynamicUI();
   
   if (!streakData.lastCalibratedTimestamp) {
     btn.disabled = false;
@@ -1121,7 +1390,6 @@ function updateCalibrationHudUI() {
   if (msElapsed < duration24h) {
     btn.disabled = true;
     
-    // Jalankan hitung mundur sisa cooldown harian
     const timeLeft = duration24h - msElapsed;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
@@ -1143,46 +1411,49 @@ function calibrateCore() {
   if (streakData.lastCalibratedTimestamp) {
     const msElapsed = now - streakData.lastCalibratedTimestamp;
     const duration24h = 24 * 60 * 60 * 1000;
-    if (msElapsed < duration24h) return; // Proteksi ganda
+    if (msElapsed < duration24h) return;
   }
   
   streakData.count++;
   streakData.lastCalibratedTimestamp = now;
   saveStateToStorage();
   
-  // Suntik dynamic visual response berdasarkan level streak
   adjustCoreStatusDisplayBasedOnStreak();
   updateCalibrationHudUI();
-  
-  showAchievement(`Resonance Calibrated! Streak: ${streakData.count} Days`);
+  checkStreakMilestones();
 }
 
 function adjustCoreStatusDisplayBasedOnStreak() {
   const statusEl = document.getElementById("coreStatus");
+  const meta = getPetAndRankData(streakData.count);
+  
   if (document.body.classList.contains("split-dimension")) {
-    statusEl.innerHTML = `● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION (STREAK: ${streakData.count})`;
+    statusEl.innerHTML = `● CORE LINKED: ONLINE | EQUILIBRIUM BALANCE DIMENSION (${meta.rank})`;
   } else if (document.body.classList.contains("inverted-dimension")) {
-    statusEl.innerHTML = `● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION (STREAK: ${streakData.count})`;
+    statusEl.innerHTML = `● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION (${meta.rank})`;
   } else {
-    if (streakData.count >= 10) {
-      statusEl.innerHTML = `● CORE LINKED: OVERCLOCKED | MAXIMUM RADIANCE SYNC (STREAK: ${streakData.count})`;
-    } else if (streakData.count >= 5) {
-      statusEl.innerHTML = `● CORE LINKED: STABILIZED | ECLIPSE LAYER-0 (STREAK: ${streakData.count})`;
+    if (streakData.count >= 100) {
+      statusEl.innerHTML = `● CORE OVERRIDE: MASTER LINK ACCESSED | ${meta.rank}`;
+    } else if (streakData.count >= 30) {
+      statusEl.innerHTML = `● CORE LINKED: OVERCLOCKED | SYNC ACTIVE (${meta.rank})`;
     } else {
-      statusEl.innerHTML = `● CORE LINKED: ONLINE | ECLIPSE LAYER-0 (STREAK: ${streakData.count})`;
+      statusEl.innerHTML = `● CORE LINKED: ONLINE | ECLIPSE LAYER-0 (${meta.rank})`;
     }
   }
 }
 
 /* PORTAL CONTROL WITH TERMINAL BOOTING */
 function enter(){
+  // TRIGGER REGISTER DOMINION NAME MODAL IF STRING FOUND EMPTY
+  if(!streakData.dominionName) {
+    document.getElementById("nameModal").style.display = "flex";
+    return;
+  }
+  
   document.getElementById("enterBtn").style.display = "none";
   
-  // Matrix initialization sequence
   runTerminalMatrixEffect("mainTitle", "BLACKLIGHTDOMS", 35, () => {
     let baseStatus = "● CORE LINKED: ONLINE | ECLIPSE LAYER-0";
-    if(streakData.count > 0) baseStatus += ` (STREAK: ${streakData.count})`;
-    
     runTerminalMatrixEffect("coreStatus", baseStatus, 20, () => {
       document.getElementById("streakWidget").style.display = "inline-flex";
       document.getElementById("calibrationHud").style.display = "block";
@@ -1192,6 +1463,36 @@ function enter(){
       updateCalibrationHudUI();
       adjustCoreStatusDisplayBasedOnStreak();
     });
+  });
+}
+
+function saveDominionName() {
+  const val = document.getElementById("dominionNameInput").value.toUpperCase().trim();
+  if(!val) {
+    alert("DESIGNATION DEVIATION: NAME FIELD CANNOT REMAIN VOID.");
+    return;
+  }
+  streakData.dominionName = val;
+  saveStateToStorage();
+  document.getElementById("nameModal").style.display = "none";
+  enter();
+}
+
+/* CARA A: CODE DATA GENERATOR */
+function generateShareCode() {
+  if(!streakData.dominionName) return;
+  const meta = getPetAndRankData(streakData.count);
+  const timeSignature = Date.now();
+  
+  const rawString = `[BLDS-RESONANCE] // UNIQUE-ID: ${timeSignature} // NAME: ${streakData.dominionName} // STREAK: ${streakData.count} DAYS // COMPANION OBJECT: ${meta.pet.toUpperCase()} // RANK VERIFICATION: ${meta.rank} // SECURE LINK: VERIFIED`;
+  
+  document.getElementById("generatedCodeDisplay").innerHTML = rawString;
+  
+  // AUTO COPY TO USER CLIPBOARD
+  navigator.clipboard.writeText(rawString).then(() => {
+    alert("CORE MANIFESTO DATA COPIED TO CLIPBOARD. Setor data string ini ke admin grup WA / Discord.");
+  }).catch(()=>{
+    alert("CLIPBOARD BLOCKED BY NAVIGATOR LAYER. Silakan salin teks di atas secara manual.");
   });
 }
 
@@ -1212,6 +1513,7 @@ function showPage(id){
 /* SISTER HUB: UPDATE LIST & CALCULATE PROGRESS BAR */
 function updateAchievements() {
   document.getElementById("achievementList").innerHTML = `
+    <h3 style="letter-spacing:2px; font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:15px;">— SECRET LORE ARCHIVES</h3>
     ${achievements.forgotten ? "✅" : "❌"} Forgotten Memories<br>
     <small>Discover the Forgotten Eclipse</small>
     <br><br>
@@ -1241,6 +1543,22 @@ function updateAchievements() {
     <br><br>
     ${achievements.white ? "✅" : "❌"} White<br>
     <small>Discover the White Eclipse Dimension</small>
+    <br><br><hr style="border-color:rgba(255,255,255,0.05); margin:15px 0;"><br>
+    <h3 style="letter-spacing:2px; font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:15px;">— RESONANCE STREAK MILESTONES</h3>
+    ${achievements.streak1 ? "✅" : "❌"} First Calibration<br>
+    <small>Day 1: Synchronize your consciousness with the core for the first time.</small>
+    <br><br>
+    ${achievements.streak7 ? "✅" : "❌"} Dominion Presence<br>
+    <small>Day 7: Maintain data stabilization for an entire week without a collapse.</small>
+    <br><br>
+    ${achievements.streak30 ? "✅" : "❌"} Core Harmonization<br>
+    <small>Day 30: Your inner light adapts seamlessly inside the pitch-black void.</small>
+    <br><br>
+    ${achievements.streak50 ? "✅" : "❌"} Eclipse Overlord<br>
+    <small>Day 50: Command supreme resilience. Halfway towards ultimate integration.</small>
+    <br><br>
+    ${achievements.streak100 ? "✅" : "❌"} The Eternal Core<br>
+    <small>Day 100: Absolute equilibrium. You are no longer just a walker, you become the Core itself.</small>
   `;
 
   let totalKeys = Object.keys(achievements).length;
@@ -1415,7 +1733,6 @@ function unlockCode(){
     alert("WHITE ECLIPSE PROTOCOL RESTORED");
   }
   else{
-    // TRIGGER GLITCH AUDIO FEEDBACK ON INCORRECT CODES
     playGlitchSound();
     alert("UNKNOWN CODE");
   }
@@ -1469,9 +1786,9 @@ function generateDynamicQuote(){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadStateFromStorage(); // Muat progress simpanan dari local storage
+  loadStateFromStorage();
   initButtonEffects();
-  updateAchievements(); // Sinkronisasi kalkulasi progress bar pertama kali
+  updateAchievements();
 });
 
 </script>
