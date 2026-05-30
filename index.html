@@ -1112,7 +1112,7 @@ footer {
         • blds : Inverted split cinematic<br>
         • black : Full filter screen inverted<br>
         • white : Normal visual calibration<br>
-        • -OWNER_ONLY- : Trigger Admin Board<br>
+        • OWNERONLYBLDS : Trigger Admin Board<br>
         • lorenzo / nayottama / prince : Core system activation signatures
       </div>
     </div>
@@ -1480,7 +1480,7 @@ function updateCalibrationHudUI() {
 function startCalibrationTimer() {
   if(calibrationInterval) clearInterval(calibrationInterval);
   updateCalibrationHudUI();
-  calibrationInterval = setInterval(updateCalibrationHudUI, 1000); // Dipercepat ke 1 detik agar hitungan mundur jam/menit/detik real-time
+  calibrationInterval = setInterval(updateCalibrationHudUI, 1000); 
 }
 
 function calibrateCore() {
@@ -1619,7 +1619,8 @@ function unlockCode() {
     return;
   }
 
-  if (v === "-OWNER_ONLY-") {
+  // DI SINI: Kode pemanggil diubah dari "-OWNER_ONLY-" menjadi "OWNERONLYBLDS"
+  if (v === "OWNERONLYBLDS") {
     openAdminMatrixPanel();
     document.getElementById("codeInput").value = "";
     return;
