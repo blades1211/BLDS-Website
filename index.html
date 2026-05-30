@@ -844,14 +844,23 @@ footer {
   z-index: 1;
 }
 
+/* 🛠️ UPDATE: Logo disembunyikan di awal, bersiap untuk efek kebanting */
 .odyssey-logo-holder {
   width: 140px;
   height: 140px;
-  opacity: 1;
+  opacity: 0;
+  transform: scale(0.3);
   z-index: 15;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 🛠️ Class pemicu logo kebanting / nongol banting */
+.odyssey-logo-holder.slam-active {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .odyssey-logo-img {
@@ -905,12 +914,12 @@ footer {
 }
 
 @keyframes screenEarthquakeAction {
-  0% { transform: translate(2px, 1px) rotate(0deg); }
-  20% { transform: translate(-1px, -2px) rotate(-0.5deg); }
-  40% { transform: translate(-3px, 0px) rotate(0.5deg); }
-  60% { transform: translate(3px, 2px) rotate(0deg); }
-  80% { transform: translate(1px, -1px) rotate(0.5deg); }
-  100% { transform: translate(-1px, 2px) rotate(-0.5deg); }
+  0% { transform: translate(3px, 2px) rotate(0deg); }
+  20% { transform: translate(-2px, -3px) rotate(-1deg); }
+  40% { transform: translate(-4px, 0px) rotate(1deg); }
+  60% { transform: translate(4px, 3px) rotate(0deg); }
+  80% { transform: translate(2px, -2px) rotate(1deg); }
+  100% { transform: translate(-2px, 3px) rotate(-1deg); }
 }
 
 /* Animasi Naik Turun Smooth (*Float Loop*) */
@@ -923,21 +932,26 @@ footer {
   100% { transform: translateY(-12px); }
 }
 
-/* Pilihan Modul Tiga Pet - Selalu sejajar horizontal, dekat dengan teks/logo */
+/* 🛠️ Area Pilihan Modul Tiga Pet - Muncul halus dari bawah ke atas smooth */
 .odyssey-pet-selection-deck {
-  display: none; /* Dikendalikan JavaScript setelah guncangan */
+  display: none; 
   justify-content: center;
   align-items: center;
   gap: 15px;
   z-index: 20;
   width: 100%;
   opacity: 0;
-  transition: opacity 0.8s ease;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .odyssey-pet-selection-deck.active {
   display: flex;
+}
+
+.odyssey-pet-selection-deck.smooth-show {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .odyssey-pet-card {
@@ -2099,7 +2113,7 @@ function startCalibrationTimer() {
 }
 
 /* ==========================================================================
-   🎬 UPDATE: SMOOTH CAROUSEL TEXT TIMING & SCREEN SHAKE ENGINE (5 SECONDS)
+   🎬 UPDATE LOGIC: SINKRONISASI CAROUSEL TEXT, LOGO KEBANTING, & PILIHAN PET SMOOTH
    ========================================================================== */
 function runOdyssey100DaysCutscene() {
   initOdysseyAudioEngine();
@@ -2123,19 +2137,15 @@ function runOdyssey100DaysCutscene() {
   const logoHolder = document.getElementById("odysseyLogoHolder");
   const petDeck = document.getElementById("odysseyPetDeck");
 
-  // Reset keadaan awal
+  // Reset keadaan awal / membersihkan sisa animasi sebelumnya
   lines.forEach(line => line.classList.remove("active"));
-  logoHolder.className = "odyssey-logo-holder";
-  petDeck.classList.remove("active");
+  logoHolder.className = "odyssey-logo-holder"; // Hapus float dan slam aktif di awal
+  petDeck.className = "odyssey-pet-selection-deck"; 
   wrapper.classList.remove("odyssey-shake-earthquake");
   container.classList.remove("odyssey-color-inversion");
 
   let currentLineIndex = 0;
 
-  // Efek floating logo aktif dari awal agar sinematik
-  logoHolder.classList.add("odyssey-logo-float-active");
-
-  // Fungsi pengatur karosel teks bergantian secara smooth (fade-in dan out)
   function showNextOdyLine() {
     if (currentLineIndex > 0) {
       lines[currentLineIndex - 1].classList.remove("active");
@@ -2147,33 +2157,44 @@ function runOdyssey100DaysCutscene() {
         playOdyTextSfx();
         currentLineIndex++;
         
-        // Pindah ke kalimat berikutnya tepat setelah 5 detik berjalan
-        if (currentLineIndex <= lines.length) {
+        // Cek apakah barusan yang muncul adalah kalimat terakhir (DAYS 100 STREAK)
+        if (currentLineIndex === lines.length) {
+          // Tunggu sebentar pas kalimat ke-4 muncul, baru hantam logonya keluar kebanting
+          setTimeout(() => {
+            logoHolder.classList.add("slam-active"); // LOGO KEBANTING/NONGOL DISINI
+            wrapper.classList.add("odyssey-shake-earthquake"); // GEMPA BUMI BERGUNCANG
+            container.classList.add("odyssey-color-inversion");
+            playOdyLogoSlamSfx();
+
+            // Guncangan gempa bumi diatur tepat berlangsung selama 5 Detik
+            setTimeout(() => {
+              wrapper.classList.remove("odyssey-shake-earthquake");
+              container.classList.remove("odyssey-color-inversion");
+              
+              // Setelah guncangan selesai, aktifkan efek melayang halus sisa loop back
+              logoHolder.classList.add("odyssey-logo-float-active");
+              
+              // Sembunyikan teks teks lama agar ruang terlihat bersih
+              lines.forEach(line => line.classList.remove("active"));
+
+              // Memunculkan Pilihan Kartu Pet dari bawah ke atas secara smooth
+              petDeck.classList.add("active");
+              setTimeout(() => {
+                petDeck.classList.add("smooth-show");
+              }, 50);
+
+            }, 5000); // 5 Detik guncangan gempa
+
+          }, 1200); // Penundaan visual sejenak sebelum hantaman logo keluar
+        } else {
+          // Jika belum kalimat terakhir, lanjutkan karosel teks per 5 detik
           setTimeout(showNextOdyLine, 5000);
         }
-      } else {
-        // --- 🎬 JIKA SEMUA TEKS SELESAI (SETELAH DAYS 100 STREAK) ---
-        // Pemicu efek guncangan gempa (earthquake shake) selama tepat 5 detik
-        wrapper.classList.add("odyssey-shake-earthquake");
-        container.classList.add("odyssey-color-inversion");
-        playOdyLogoSlamSfx();
-
-        setTimeout(() => {
-          // Hentikan getaran dan kembalikan filter warna
-          wrapper.classList.remove("odyssey-shake-earthquake");
-          container.classList.remove("odyssey-color-inversion");
-
-          // Sembunyikan teks untuk memberikan ruang bersih bagi tombol pilihan
-          lines.forEach(line => line.classList.remove("active"));
-
-          // Munculkan dek pet pilihan sejajar horizontal di bawah logo
-          petDeck.classList.add("active");
-        }, 5000); // Durasi guncang 5 detik
       }
-    }, 1000); // Delay transisi pergantian agar teks lama benar-benar menghilang
+    }, 1000);
   }
 
-  // Mulai sekuens teks pertama setelah layar transisi hitam meredup
+  // Mulai sekuens teks pertama setelah transisi hitam meredup sempurna
   setTimeout(showNextOdyLine, 1000);
 }
 
@@ -2190,6 +2211,7 @@ function selectOdysseyUltimatePet(petName) {
   setTimeout(() => {
     document.getElementById("odysseyCutsceneContainer").style.display = "none";
     document.getElementById("odysseyPetDeck").classList.remove("active");
+    document.getElementById("odysseyPetDeck").classList.remove("smooth-show");
     
     const mainWeb = document.getElementById("mainWebsiteContainer");
     mainWeb.style.display = "flex";
