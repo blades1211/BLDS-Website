@@ -576,7 +576,7 @@ input, select {
 
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-  50% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
+  50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); }
 }
 
 .blds-black-screen-overlay {
@@ -648,9 +648,6 @@ footer {
   margin-right: 8px;
 }
 
-/* =======================================================
-   ⚡ STYLING TAMBAHAN UNTUK ADMIN PANEL INTERFACE ⚡
-   ======================================================= */
 .admin-floating-panel {
   position: fixed;
   bottom: 20px;
@@ -1164,7 +1161,6 @@ let streakData = {
   forcedRankTitle: "" 
 };
 
-// Global interval tracker biar ga duplikat loop otomatis
 let calibrationInterval = null;
 
 let DEFAULT_LEADERBOARD = [
@@ -1216,7 +1212,6 @@ function getPetSvg(type, count) {
     else fileName = "Serigala1.png";
   }
 
-  // Menambahkan fallback onerror text jika aset gambar .png lokal tidak ditemukan/belum diupload
   return `<img src="${fileName}" alt="${type}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">
           <div style="display:none; font-size:12px; color:rgba(255,255,255,0.4); text-transform:uppercase;">[👾 Matrix Core Node Loaded]</div>`;
 }
@@ -1454,7 +1449,7 @@ function savePetCustomName() {
   updateWidgetDynamicUI();
 }
 
-/* FIX PERBAIKAN TIMEOUT LOOP DI SINI */
+/* ⚡ PERBAIKAN LOGIKA DISINI ⚡ */
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
@@ -1462,7 +1457,7 @@ function updateCalibrationHudUI() {
   if (!streakData.lastCalibratedTimestamp) {
     btn.disabled = false; 
     status.innerHTML = "SYSTEM READY FOR INTEGRATION"; 
-    return;
+    return; // Berhenti agar tidak ditimpa instruksi di bawahnya
   }
   
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
@@ -1483,8 +1478,7 @@ function updateCalibrationHudUI() {
 function startCalibrationTimer() {
   if(calibrationInterval) clearInterval(calibrationInterval);
   updateCalibrationHudUI();
-  // Menggunakan setInterval satu arah yang stabil, jalan tiap 30 detik untuk update text sisa waktu
-  calibrationInterval = setInterval(updateCalibrationHudUI, 30000);
+  calibrationInterval = setInterval(updateCalibrationHudUI, 10000); // interval update 10 detik agar responsif
 }
 
 function calibrateCore() {
@@ -1652,9 +1646,6 @@ function unlockCode() {
   document.getElementById("codeInput").value = "";
 }
 
-/* =======================================================
-   ⚡ CORE ENGINE UNTUK MODUL ADMIN TOOLS ⚡
-   ======================================================= */
 function openAdminMatrixPanel() {
   document.getElementById("adminPanel").style.display = "flex";
   
