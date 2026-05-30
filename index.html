@@ -94,11 +94,11 @@ body{
   align-items: center;
 }
 
-.logo{
-  width: 100px;
-  height: 100px;
-  filter:drop-shadow(0 0 15px rgba(255,255,255,0.7));
-  animation:floatLogo 4s ease-in-out infinite;
+.logo-svg {
+  width: 110px;
+  height: 110px;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+  animation: floatLogo 4s ease-in-out infinite;
 }
 
 @keyframes floatLogo{
@@ -188,11 +188,20 @@ body{
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.pet-placeholder-svg {
+  width: 70px;
+  height: 70px;
+  opacity: 0.7;
 }
 
 @keyframes petBreathing {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.03); }
+  50% { transform: translateY(-4px) scale(1.04); }
 }
 
 .calibration-container {
@@ -435,11 +444,11 @@ footer {
 
 <div class="container">
   <div class="logo-container">
-    <svg class="logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 5L15 20V45C15 67.5 30 88 50 95C70 88 85 67.5 85 45V20 L50 5Z" stroke="#ffffff" stroke-width="3" fill="rgba(255,255,255,0.03)" />
-      <circle cx="50" cy="48" r="15" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 4" />
-      <polygon points="50,38 58,54 42,54" fill="#ffffff" />
-      <path d="M30 45 H70" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 5 L85 20 L85 55 C85 75 70 90 50 95 C30 90 15 75 15 55 L15 20 Z" stroke="#ffffff" stroke-width="4" fill="rgba(255,255,255,0.03)" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="18" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="5 3" />
+      <polygon points="50,38 60,56 40,56" fill="#ffffff" />
+      <line x1="25" y1="50" x2="75" y2="50" stroke="#ffffff" stroke-width="1.5" opacity="0.3" />
     </svg>
   </div>
   
@@ -455,7 +464,8 @@ footer {
       <button class="edit-pet-btn" onclick="openRenamePetModal()">✏️</button>
     </div>
     <div class="pet-stage-display" id="petStageDisplay">Fase 1</div>
-    <div class="pet-image-frame" id="petImageFrameSlot"></div>
+    <div class="pet-image-frame" id="petImageFrameSlot">
+      </div>
   </div>
 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
@@ -488,7 +498,7 @@ footer {
     <div class="box">
       <h2>ACHIEVEMENTS</h2>
       <br>
-      <p style="font-size:13px; color:rgba(255,255,255,0.6);">Sistem sinkronisasi riwayat trofi internal aman.</p>
+      <p style="font-size: 13px; color:rgba(255,255,255,0.5)">Resonance core achievement tracking system is armed.</p>
     </div>
   </div>
 
@@ -501,7 +511,7 @@ footer {
             <th>RANK</th>
             <th>DOMINION NAME</th>
             <th>STREAK</th>
-            <th>PET TYPE</th>
+            <th>PET TYPE / STAGE</th>
           </tr>
         </thead>
         <tbody id="leaderboardDataBody">
@@ -547,7 +557,7 @@ footer {
 </footer>
 
 <script>
-/* BACKGROUND STARS EFFECT */
+/* STARS BACKGROUND EFFECTS */
 const sky = document.getElementById("sky");
 for(let i=0; i<100; i++){
   let star = document.createElement("div");
@@ -559,10 +569,10 @@ for(let i=0; i<100; i++){
 }
 
 window.addEventListener("load",()=>{
-  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1000);
+  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1200);
 });
 
-/* STATE MANAGEMENT */
+/* CORE DATA STRUCTURE */
 let streakData = {
   count: 0,
   highestCount: 0, 
@@ -572,30 +582,7 @@ let streakData = {
   petType: "dragon"
 };
 
-const PET_IMAGES = {
-  dragon: {
-    f1: "https://i.imgur.com/E0l0Aqy.jpeg", 
-    f2: "https://i.imgur.com/G5gM1jA.jpeg", 
-    f3: "https://i.imgur.com/K6b9H2c.jpeg", 
-    f4: "https://i.imgur.com/M7c8D3b.jpeg", 
-    f5: "https://i.imgur.com/P8d9E4a.jpeg"  
-  },
-  fish: {
-    f1: "https://i.imgur.com/B7xYv9h.jpeg", 
-    f2: "https://i.imgur.com/R3v8N2c.jpeg", 
-    f3: "https://i.imgur.com/H8m9B2x.jpeg", 
-    f4: "https://i.imgur.com/J3k9L4m.jpeg", 
-    f5: "https://i.imgur.com/Y7x9P2o.jpeg"  
-  },
-  wolf: {
-    f1: "https://i.imgur.com/L2k8H4m.jpeg", 
-    f2: "https://i.imgur.com/T3v9K4x.jpeg", 
-    f3: "https://i.imgur.com/O4m8L2b.jpeg", 
-    f4: "https://i.imgur.com/V7x8P2m.jpeg", 
-    f5: "https://i.imgur.com/W2k9K4x.jpeg"  
-  }
-};
-
+/* LEADERBOARD DATABASE KELOMPOK BLDS */
 const DEFAULT_LEADERBOARD = [
   { name: "Michael Lorenzo", streak: 152, petLabel: "🐉 Overlord Cosmic Dragon" },
   { name: "William Nayottama", streak: 121, petLabel: "🐺 Fenrir God of the Void" },
@@ -617,6 +604,33 @@ const DEFAULT_LEADERBOARD = [
   { name: "Andi Nova", streak: 6, petLabel: "🐺 Shadow Spirit Egg" },
   { name: "Budi Pulse", streak: 4, petLabel: "🐉 Anomaly Dragon Egg" }
 ];
+
+/* EMBEDDED SVG UNTUK MASING-MASING EVOLUSI PET AGAR TIDAK EROR */
+function getPetSvg(type, highestStreak) {
+  let color = "#ffffff";
+  if (highestStreak >= 100) color = "#00f3ff";
+  else if (highestStreak >= 50) color = "#ff003c";
+  else if (highestStreak >= 30) color = "#7800ff";
+  else if (highestStreak >= 7) color = "#0096ff";
+
+  if (type === "dragon") {
+    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
+      <path d="M50 15 L75 40 L60 45 L80 75 L50 60 L20 75 L40 45 L25 40 Z" fill="none" stroke="${color}" stroke-width="3"/>
+      <circle cx="50" cy="45" r="5" fill="${color}"/>
+    </svg>`;
+  } else if (type === "fish") {
+    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
+      <path d="M15 50 Q50 20 85 50 Q50 80 15 50 Z" fill="none" stroke="${color}" stroke-width="3"/>
+      <path d="M85 50 L95 35 L90 50 L95 65 Z" fill="none" stroke="${color}" stroke-width="2.5"/>
+      <circle cx="35" cy="45" r="4" fill="${color}"/>
+    </svg>`;
+  } else {
+    return `<svg class="pet-placeholder-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="animation: petBreathing 3s ease-in-out infinite;">
+      <path d="M50 20 L65 45 L85 40 L70 65 L75 85 L50 70 L25 85 L30 65 L15 40 L35 45 Z" fill="none" stroke="${color}" stroke-width="3"/>
+      <circle cx="50" cy="52" r="6" fill="none" stroke="${color}" stroke-width="2"/>
+    </svg>`;
+  }
+}
 
 function saveState() {
   localStorage.setItem("BLDS_STR_FINAL_v2", JSON.stringify(streakData));
@@ -650,48 +664,42 @@ function closeCollapseModal() {
 
 function getPetEvolutionEngine(highestStreak, type) {
   let stageText = "";
-  let imgSrc = "";
-  let glow = "0 0 10px #fff";
   let rank = "VOID WALKER";
+  let glow = "0 0 10px #fff";
 
   if (highestStreak >= 100) {
     rank = "THE ETERNAL CORE";
-    glow = "0 0 35px #00f3ff, 0 0 15px rgba(0,243,255,0.6)";
-    imgSrc = PET_IMAGES[type].f5;
+    glow = "0 0 25px #00f3ff";
     if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon";
     else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan";
     else stageText = "Fase 5: Fenrir God of the Void";
   } else if (highestStreak >= 50) {
     rank = "DOMINION VANGUARD";
-    glow = "0 0 25px #ff003c";
-    imgSrc = PET_IMAGES[type].f4;
+    glow = "0 0 20px #ff003c";
     if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
     else if (type === "fish") stageText = "Fase 4: Abyssal Dark Leviathan";
     else stageText = "Fase 4: Alpha Cosmic Fenrir";
   } else if (highestStreak >= 30) {
     rank = "RESONANCE KEEPER";
-    glow = "0 0 20px #7800ff";
-    imgSrc = PET_IMAGES[type].f3;
+    glow = "0 0 15px #7800ff";
     if (type === "dragon") stageText = "Fase 3: Lightning Void Drake";
     else if (type === "fish") stageText = "Fase 3: Neon Serpent Fish";
     else stageText = "Fase 3: Twilight Shadow Wolf";
   } else if (highestStreak >= 7) {
     rank = "ECLIPSE SYNCHRONIZER";
-    glow = "0 0 15px #0096ff";
-    imgSrc = PET_IMAGES[type].f2;
+    glow = "0 0 12px #0096ff";
     if (type === "dragon") stageText = "Fase 2: Void Dragon Hatchling";
     else if (type === "fish") stageText = "Fase 2: Abyss Angler Whelp";
     else stageText = "Fase 2: Shadow Wolf Pup";
   } else {
     rank = "VOID WALKER";
-    glow = "0 0 10px rgba(255,255,255,0.2)";
-    imgSrc = PET_IMAGES[type].f1;
+    glow = "0 0 8px rgba(255,255,255,0.3)";
     if (type === "dragon") stageText = "Fase 1: Anomaly Dragon Egg";
     else if (type === "fish") stageText = "Fase 1: Biolume Aquatic Egg";
     else stageText = "Fase 1: Shadow Spirit Egg";
   }
 
-  return { stage: stageText, imgSrc: imgSrc, glow: glow, rank: rank };
+  return { stage: stageText, rank: rank, glow: glow };
 }
 
 function updateWidgetDynamicUI() {
@@ -707,12 +715,12 @@ function updateWidgetDynamicUI() {
     
     const frame = document.getElementById("petImageFrameSlot");
     if (frame) {
-      frame.innerHTML = `<img src="${engine.imgSrc}" alt="pet" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:10px; filter: drop-shadow(${engine.glow}); animation: petBreathing 3s ease-in-out infinite;">`;
+      frame.innerHTML = getPetSvg(streakData.petType, streakData.highestCount);
+      frame.style.filter = `drop-shadow(${engine.glow})`;
     }
   }
 }
 
-/* LEADERBOARD REAL-TIME FIX BERDASARKAN CHEAT / REGISTER */
 function renderLeaderboard() {
   const tbody = document.getElementById("leaderboardDataBody");
   if (!tbody) return;
@@ -722,13 +730,11 @@ function renderLeaderboard() {
   if (streakData.dominionName) {
     const currentEngine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
     
-    // Periksa apakah nama pendaftar adalah salah satu nama admin default, jika iya timpa nilainya
     const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
     if (existingIndex !== -1) {
       list[existingIndex].streak = streakData.count;
       list[existingIndex].petLabel = currentEngine.stage;
     } else {
-      // Jika nama umum baru, push pendaftar baru tersebut ke dalam list kompetisi
       list.push({
         name: streakData.dominionName,
         streak: streakData.count,
@@ -738,7 +744,6 @@ function renderLeaderboard() {
     }
   }
 
-  // Pengurutan paksa berdasarkan streak terbesar
   list.sort((a, b) => b.streak - a.streak);
 
   let htmlString = "";
@@ -773,7 +778,6 @@ function savePetCustomName() {
   saveState();
   document.getElementById("petNameModal").style.display = "none";
   updateWidgetDynamicUI();
-  renderLeaderboard();
 }
 
 function updateCalibrationHudUI() {
@@ -850,7 +854,7 @@ function showPage(id){
   }
 }
 
-/* FIX CODE ENGINE: LANGSUNG MEMICU RE-SORT DI LEADERBOARD */
+/* FIX LOGIKA CODE: MEMAKSA UPDATE PADA UI WIDGET, EVOLUSI, DAN LEADERBOARD SEKALIGUS */
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
@@ -859,29 +863,28 @@ function unlockCode(){
     return;
   }
 
-  // Logika Cheat Code Penambah Streak Akumulatif
   if (v === "lorenzo") {
     streakData.count += 50;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Resonance Streak!");
+    alert("⚡ KODE LORENZO DIAKTIFKAN: +50 Resonance Streak & Pet Berevolusi!");
   } 
   else if (v === "nayottama") {
     streakData.count += 30;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Resonance Streak!");
+    alert("⚡ KODE NAYOTTAMA DIAKTIFKAN: +30 Resonance Streak & Pet Berevolusi!");
   } 
   else if (v === "prince") {
     streakData.count += 20;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Resonance Streak!");
+    alert("⚡ KODE PRINCE DIAKTIFKAN: +20 Resonance Streak & Pet Berevolusi!");
   } 
   else if (v === "blds") {
     streakData.count += 10;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
-    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Resonance Streak!");
+    alert("⚡ KODE BLDS DIAKTIFKAN: +10 Resonance Streak & Pet Berevolusi!");
   } 
   else if (v === "white" || v === "black") {
-    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Sistem Sinkronisasi Warna Berhasil!`);
+    alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Warna Berhasil Sinkron!`);
     document.getElementById("codeInput").value = "";
     return;
   } 
@@ -890,10 +893,10 @@ function unlockCode(){
     return;
   }
 
-  // PENTING: Simpan, paksa kalkulasi grafik evolusi dan susun ulang tabel kompetisi secara berurutan!
+  // EKSEKUSI UTAMA: Paksa seluruh elemen web merender ulang status baru
   saveState();
-  updateWidgetDynamicUI();
-  renderLeaderboard();
+  updateWidgetDynamicUI(); // Mengubah angka widget dan memicu evolusi gambar pet instan
+  renderLeaderboard();    // Mengurutkan ulang posisi peringkat kamu di tabel leaderboard
   
   document.getElementById("codeInput").value = "";
 }
