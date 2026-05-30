@@ -238,6 +238,7 @@ button:disabled {
   border-color: rgba(255,255,255,0.1) !important;
   cursor: not-allowed;
   transform: none !important;
+  background: transparent !important;
 }
 
 .reset-streak-btn {
@@ -1180,7 +1181,7 @@ let DEFAULT_LEADERBOARD = [
   { name: "Gani Galaxy", streak: 19, petLabel: "Fase 2: Shadow Wolf Pup" },
   { name: "Edo Zero", streak: 14, petLabel: "Fase 2: Void Dragon Hatchling" },
   { name: "Tio Matrix", streak: 11, petLabel: "Fase 2: Abyss Angler Whelp" },
-  { name: "Riko Titan", streak: 9, merge: true, petLabel: "Fase 2: Void Dragon Hatchling" },
+  { name: "Riko Titan", streak: 9, petLabel: "Fase 2: Void Dragon Hatchling" },
   { name: "Andi Nova", streak: 6, petLabel: "Fase 1: Shadow Spirit Egg" },
   { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
 ];
@@ -1449,7 +1450,7 @@ function savePetCustomName() {
   updateWidgetDynamicUI();
 }
 
-/* ⚡ PERBAIKAN LOGIKA DISINI ⚡ */
+/* ⚡ PERBAIKAN TOTAL KONDISI CALIBRATION HUD ⚡ */
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
@@ -1457,7 +1458,7 @@ function updateCalibrationHudUI() {
   if (!streakData.lastCalibratedTimestamp) {
     btn.disabled = false; 
     status.innerHTML = "SYSTEM READY FOR INTEGRATION"; 
-    return; // Berhenti agar tidak ditimpa instruksi di bawahnya
+    return;
   }
   
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
@@ -1468,7 +1469,8 @@ function updateCalibrationHudUI() {
     const timeLeft = duration24h - msElapsed;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m`;
+    const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m ${seconds}s`;
   } else {
     btn.disabled = false; 
     status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
@@ -1478,7 +1480,7 @@ function updateCalibrationHudUI() {
 function startCalibrationTimer() {
   if(calibrationInterval) clearInterval(calibrationInterval);
   updateCalibrationHudUI();
-  calibrationInterval = setInterval(updateCalibrationHudUI, 10000); // interval update 10 detik agar responsif
+  calibrationInterval = setInterval(updateCalibrationHudUI, 1000); // Dipercepat ke 1 detik agar hitungan mundur jam/menit/detik real-time
 }
 
 function calibrateCore() {
