@@ -560,6 +560,75 @@ Together, they protect the Core.
 
 </div>
 
+<!-- ACHIEVEMENTS -->
+
+<div class="page" id="achievement">
+
+<div class="box">
+
+<h2>ACHIEVEMENTS</h2>
+
+<br>
+
+<div id="achievementList">
+
+❌ Forgotten Memories
+<br>
+<small>Discover the Forgotten Eclipse</small>
+
+<br><br>
+
+❌ Flames Mystery
+<br>
+<small>Discover the 12 Flames Protocol</small>
+
+<br><br>
+
+❌ Code Breaker
+<br>
+<small>Unlock all hidden codes</small>
+
+</div>
+
+</div>
+
+</div>
+
+/* CODE */
+
+function unlockCode(){
+
+let v=document.getElementById("codeInput").value.toLowerCase();
+
+if(v==="forgotten"){
+
+document.getElementById("forgotScene").style.display="flex";
+
+}
+
+else if(v==="12 flames" || v==="12flames"){
+
+document.getElementById("flameScene").style.display="flex";
+
+}
+
+else{
+
+alert("UNKNOWN CODE");
+
+}
+
+}
+
+/* CLOSE */
+
+function closeScene(id){
+
+document.getElementById(id).style.display="none";
+
+}
+
+
 <!-- ARCHIVES -->
 
 <div class="page" id="archives">
@@ -1022,74 +1091,6 @@ window.scrollTo({
 top:document.body.scrollHeight,
 behavior:"smooth"
 });
-
-}
-
-<!-- ACHIEVEMENTS -->
-
-<div class="page" id="achievement">
-
-<div class="box">
-
-<h2>ACHIEVEMENTS</h2>
-
-<br>
-
-<div id="achievementList">
-
-❌ Forgotten Memories
-<br>
-<small>Discover the Forgotten Eclipse</small>
-
-<br><br>
-
-❌ Flames Mystery
-<br>
-<small>Discover the 12 Flames Protocol</small>
-
-<br><br>
-
-❌ Code Breaker
-<br>
-<small>Unlock all hidden codes</small>
-
-</div>
-
-</div>
-
-</div>
-
-/* CODE */
-
-function unlockCode(){
-
-let v=document.getElementById("codeInput").value.toLowerCase();
-
-if(v==="forgotten"){
-
-document.getElementById("forgotScene").style.display="flex";
-
-}
-
-else if(v==="12 flames" || v==="12flames"){
-
-document.getElementById("flameScene").style.display="flex";
-
-}
-
-else{
-
-alert("UNKNOWN CODE");
-
-}
-
-}
-
-/* CLOSE */
-
-function closeScene(id){
-
-document.getElementById(id).style.display="none";
 
 }
 
