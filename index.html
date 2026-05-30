@@ -151,6 +151,29 @@ button:active{
   transform:scale(.95);
 }
 
+/* AUDIO TOGGLE */
+.audio-toggle {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 1000;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 14px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.audio-toggle:hover {
+  color: white;
+  border-color: white;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
 /* MENU */
 
 .menu{
@@ -449,12 +472,19 @@ footer {
     gap: 10px;
     align-items: center;
   }
+  .audio-toggle {
+    top: auto;
+    bottom: 85px;
+    left: 25px;
+  }
 }
 
 </style>
 </head>
 
 <body>
+
+<div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">[ AUDIO: ON ]</div>
 
 <div class="loader" id="loader">
   <div class="loaderCircle"></div>
@@ -564,6 +594,15 @@ footer {
         <br><br>
         ❌ Code Breaker<br>
         <small>Unlock all hidden codes</small>
+        <br><br>
+        ❌ Lorenzo<br>
+        <small>???</small>
+        <br><br>
+        ❌ Nayottama<br>
+        <small>???</small>
+        <br><br>
+        ❌ Prince<br>
+        <small>???</small>
       </div>
     </div>
 
@@ -588,7 +627,7 @@ footer {
       <br><br><hr><br>
       Founder — Michael Lorenzo<br><br>
       Right Hand Of BLDS — William Nayottama<br><br>
-      Left Hand Of BLDS — Felix
+      Left Hand Of BLDS — Prince Felix
     </div>
   </div>
 
@@ -763,27 +802,47 @@ bgMusic.volume = 0.35;
 const clickSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
 clickSound.volume = 0.7;
 
+let isMuted = false;
+
+/* AUDIO TOGGLE FUNCTION */
+function toggleAudio() {
+  const btn = document.getElementById("audioToggle");
+  if (!isMuted) {
+    bgMusic.volume = 0;
+    clickSound.volume = 0;
+    btn.innerHTML = "[ AUDIO: MUTED ]";
+    isMuted = true;
+  } else {
+    bgMusic.volume = 0.35;
+    clickSound.volume = 0.7;
+    btn.innerHTML = "[ AUDIO: ON ]";
+    isMuted = false;
+  }
+}
+
 /* START MUSIC */
 document.body.addEventListener("click",()=>{
-  bgMusic.play().catch(()=>{});
+  if(!isMuted) {
+    bgMusic.play().catch(()=>{});
+  }
 },{once:true});
 
 /* BUTTON SOUND & FLASH */
 function initButtonEffects() {
   document.querySelectorAll("button").forEach(btn=>{
-    // Hapus listener lama jika ada agar tidak double suara
     btn.removeEventListener("click", playEffects);
     btn.addEventListener("click", playEffects);
   });
 }
 
 function playEffects() {
-  clickSound.currentTime = 0;
-  clickSound.play().catch(()=>{});
+  if(!isMuted) {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(()=>{});
+  }
   flashEffect();
 }
 
-// Jalankan efek tombol di awal
 initButtonEffects();
 
 /* FLASH EFFECT */
@@ -822,7 +881,10 @@ function showPage(id){
 let achievements = {
   forgotten: false,
   flames: false,
-  codeBreaker: false
+  codeBreaker: false,
+  lorenzo: false,
+  nayottama: false,
+  prince: false
 };
 
 function updateAchievements(){
@@ -835,6 +897,15 @@ function updateAchievements(){
     <br><br>
     ${achievements.codeBreaker ? "✅" : "❌"} Code Breaker<br>
     <small>Unlock all hidden codes</small>
+    <br><br>
+    ${achievements.lorenzo ? "✅" : "❌"} Lorenzo<br>
+    <small>???</small>
+    <br><br>
+    ${achievements.nayottama ? "✅" : "❌"} Nayottama<br>
+    <small>???</small>
+    <br><br>
+    ${achievements.prince ? "✅" : "❌"} Prince<br>
+    <small>???</small>
   `;
 }
 
@@ -853,7 +924,7 @@ function showAchievement(title){
 }
 
 function checkCodeBreaker(){
-  if(achievements.forgotten && achievements.flames && !achievements.codeBreaker){
+  if(achievements.forgotten && achievements.flames && achievements.lorenzo && achievements.nayottama && achievements.prince && !achievements.codeBreaker){
     achievements.codeBreaker = true;
     updateAchievements();
     showAchievement("Code Breaker");
@@ -866,7 +937,6 @@ function unlockCode(){
 
   if(v === "forgotten"){
     document.getElementById("forgotScene").style.display = "flex";
-    
     if(!achievements.forgotten){
       achievements.forgotten = true;
       updateAchievements();
@@ -876,12 +946,38 @@ function unlockCode(){
   }
   else if(v === "12 flames" || v === "12flames"){
     document.getElementById("flameScene").style.display = "flex";
-    
     if(!achievements.flames){
       achievements.flames = true;
       updateAchievements();
       showAchievement("Flames Mystery");
       checkCodeBreaker();
+    }
+  }
+  else if(v === "lorenzo"){
+    if(!achievements.lorenzo){
+      achievements.lorenzo = true;
+      updateAchievements();
+      showAchievement("Lorenzo");
+      checkCodeBreaker();
+      alert("FOUNDER CODE ACCEPTED");
+    }
+  }
+  else if(v === "nayottama"){
+    if(!achievements.nayottama){
+      achievements.nayottama = true;
+      updateAchievements();
+      showAchievement("Nayottama");
+      checkCodeBreaker();
+      alert("RIGHT HAND CODE ACCEPTED");
+    }
+  }
+  else if(v === "prince"){
+    if(!achievements.prince){
+      achievements.prince = true;
+      updateAchievements();
+      showAchievement("Prince");
+      checkCodeBreaker();
+      alert("LEFT HAND CODE ACCEPTED");
     }
   }
   else{
@@ -923,7 +1019,6 @@ function generateDynamicQuote(){
   const txt = document.getElementById("bldsQuote");
   const auth = document.getElementById("bldsAuthor");
   
-  // Efek transisi meredup saat teks diganti
   txt.style.opacity = 0;
   
   setTimeout(() => {
@@ -938,7 +1033,6 @@ function generateDynamicQuote(){
   }, 150);
 }
 
-// Pastikan tombol baru juga mendapatkan sound effect & flash secara dinamis
 document.addEventListener("DOMContentLoaded", () => {
   initButtonEffects();
 });
