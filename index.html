@@ -1008,49 +1008,49 @@ const DEFAULT_LEADERBOARD = [
   { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
 ];
 
-/* SISTEM MATRIKS AUTOMATIC EVOLUTION BERDASARKAN FILE STORAGE LU */
+/* SISTEM ENGINE SINKRONISASI GAMBAR PET BARU LU */
 function getPetSvg(type, highestStreak) {
   let fileName = "";
 
   if (type === "dragon") {
     if (highestStreak >= 100) {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_an_ancient_Cosmic_Overlord_Dragon_body_made_of_pure_star_-0.png";
+      fileName = "Naga5.png";
     } else if (highestStreak >= 50) {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+      fileName = "Naga4.png";
     } else if (highestStreak >= 30) {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+      fileName = "Naga3.png";
     } else if (highestStreak >= 7) {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+      fileName = "Naga2.png";
     } else {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_powerful_adult_eclipse_dragon_massive_obsidian_wings_op-0.png";
+      fileName = "Naga1.png";
     }
   } 
   
   else if (type === "fish") {
     if (highestStreak >= 100) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_an_ancient_Celestial_Astra_3.png";
+      fileName = "Ikan5.png";
     } else if (highestStreak >= 50) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_an_adult_dark_Leviathan_fi_3.png";
+      fileName = "Ikan4.png";
     } else if (highestStreak >= 30) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_teenage_abyss_serpent_fi_3.png";
+      fileName = "Ikan3.png";
     } else if (highestStreak >= 7) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_cute_tiny_deepsea_baby_f_2.png";
+      fileName = "Ikan2.png";
     } else {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_vibrant_glowing_aquatic__0.png";
+      fileName = "Ikan1.png";
     }
   } 
   
   else if (type === "wolf") {
     if (highestStreak >= 100) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_Fenrir_God_of_the_Void_a_l_0.png";
+      fileName = "Serigala5.png";
     } else if (highestStreak >= 50) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_Fenrir_God_of_the_Void_a_l_3.png";
+      fileName = "Serigala4.png";
     } else if (highestStreak >= 30) {
-      fileName = "Lucid_Origin_2D_pixel_art_sprite_of_a_teenage_shadow_wolf_with_2.png";
+      fileName = "Serigala3.png";
     } else if (highestStreak >= 7) {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_cute_baby_shadow_wolf_pup_made_of_dark_smoke_and_void_a-0.png";
+      fileName = "Serigala2.png";
     } else {
-      fileName = "lucid_origin_2D_pixel_art_sprite_of_a_spiritual_beast_egg_covered_in_dark_fur-like_shadow_pat-0.png";
+      fileName = "Serigala1.png";
     }
   }
 
