@@ -31,41 +31,38 @@ body{
   position: relative;
 }
 
-/* 1. DIMENSI BLACK (INVERTED) */
+/* 1. DIMENSI BLACK (FULL INVERTED) */
 body.inverted-dimension {
   filter: invert(100%);
   background: #fff;
 }
 
-/* 2. DIMENSI ECLIPSE SPLIT (HALF BLACK HALF WHITE) */
-body.split-dimension {
-  background: linear-gradient(to right, #ffffff 50%, #000000 50%);
-  color: #000000;
-}
-
-body.split-dimension .container {
-  position: relative;
-  z-index: 5;
-}
-
-/* Efek background overlay split agar transisi smooth */
-.split-overlay {
+/* 2. REAL INVERSION SPLIT (HALF INVERTED EFFECT) */
+.split-invert-layer {
   position: fixed;
-  inset: 0;
-  background: linear-gradient(to right, rgba(255,255,255,0) 50%, #000000 50%);
-  z-index: -1;
-  display: none;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: transparent;
+  backdrop-filter: invert(100%);
+  z-index: 999;
   pointer-events: none;
+  display: none;
 }
 
-body.split-dimension .split-overlay {
+body.split-dimension .split-invert-layer {
   display: block;
 }
 
-/* SKY & ECLIPSE HIDDEN IN SPLIT */
+body.split-dimension {
+  background: #000;
+}
+
+/* SKY & ECLIPSE ADJUSTMENT IN SPLIT */
 body.split-dimension .sky,
 body.split-dimension .eclipse {
-  opacity: 0.1;
+  opacity: 0.3;
 }
 
 /* SKY */
@@ -125,24 +122,16 @@ body.split-dimension .eclipse {
   align-items:center;
   text-align:center;
   padding:25px;
+  position: relative;
+  z-index: 5;
 }
 
-/* MAIN LOGO WITH MIX BLEND FOR SPLIT */
+/* MAIN LOGO */
 .logo{
   width:140px;
-  filter:drop-shadow(0 0 15px white);
+  filter:drop-shadow(0 0 15px rgba(255,255,255,0.6));
   animation:floatLogo 4s ease-in-out infinite;
   transition: transform 0.5s ease, filter 0.8s ease;
-}
-
-body.split-dimension .logo {
-  mix-blend-mode: difference;
-  filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
-}
-
-body.split-dimension .title {
-  mix-blend-mode: difference;
-  color: #fff;
 }
 
 @keyframes floatLogo{
@@ -168,11 +157,6 @@ body.split-dimension .title {
   animation: glitch .15s infinite;
 }
 
-body.split-dimension .core-status {
-  mix-blend-mode: difference;
-  color: #fff;
-}
-
 /* BUTTONS */
 button{
   padding:11px 20px;
@@ -186,18 +170,6 @@ button{
   position:relative;
   overflow:hidden;
   font-family:Poppins,sans-serif;
-}
-
-body.split-dimension button {
-  border-color: #000;
-  color: #000;
-}
-
-body.split-dimension .menu button,
-body.split-dimension .container > button {
-  mix-blend-mode: difference;
-  color: #fff;
-  border-color: #fff;
 }
 
 button:hover{
@@ -247,13 +219,6 @@ button:active{
   transition: background 0.8s ease, border 0.8s ease;
 }
 
-body.split-dimension .box {
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  mix-blend-mode: difference;
-  color: #fff;
-}
-
 @keyframes fadeUp{
   from{ opacity:0; transform:translateY(25px); }
   to{ opacity:1; transform:translateY(0); }
@@ -297,11 +262,6 @@ input{
   transition:.3s;
 }
 
-body.split-dimension input {
-  border-color: #fff;
-  color: #fff;
-}
-
 input:focus{
   border-color:white;
   box-shadow:0 0 15px rgba(255,255,255,.2);
@@ -327,8 +287,8 @@ input:focus{
 }
 
 .bigLogo{
-  width:240px;
-  filter:drop-shadow(0 0 25px white);
+  width:200px;
+  filter:drop-shadow(0 0 25px rgba(255,255,255,0.7));
   animation:floatLogo 3s ease-in-out infinite;
   margin-top:20px;
 }
@@ -359,45 +319,24 @@ input:focus{
 
 .ultimate-logo-wrapper {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 260px;
+  height: 260px;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: ultimateFloat 4s ease-in-out infinite;
 }
 
-@keyframes ultimateFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-.ultimate-flames {
-  position: absolute;
+.ultimate-logo-image {
   width: 100%;
   height: 100%;
-  fill: #fff;
-  filter: drop-shadow(0 0 20px rgba(255,255,255,0.6));
-  animation: spinFlames 12s linear infinite;
+  object-fit: contain;
+  filter: drop-shadow(0 0 30px rgba(255,255,255,0.8));
+  animation: pulseNewCore 3s ease-in-out infinite;
 }
 
-@keyframes spinFlames {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.ultimate-center {
-  position: absolute;
-  width: 105px;
-  height: 105px;
-  fill: #fff;
-  filter: drop-shadow(0 0 30px rgba(255,255,255,0.9));
-  animation: pulseCore 2s ease-in-out infinite;
-}
-
-@keyframes pulseCore {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(255,255,255,0.8)); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 45px rgba(255,255,255,1)); }
+@keyframes pulseNewCore {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 45px rgba(255,255,255,0.9)); }
 }
 
 .ultimate-subtitle {
@@ -507,11 +446,6 @@ footer {
   transition: background 0.8s ease;
 }
 
-body.split-dimension footer {
-  background: rgba(255, 255, 255, 0.1);
-  mix-blend-mode: difference;
-}
-
 .footer-content {
   max-width: 950px;
   margin: 0 auto;
@@ -571,15 +505,13 @@ body.split-dimension footer {
   .footer-content { flex-direction: column; text-align: center; }
   .footer-links { flex-direction: column; width: 100%; gap: 10px; }
   .footer-links a, .audio-footer-btn { width: 100%; }
-  .ultimate-logo-wrapper { width: 220px; height: 220px; }
-  .ultimate-center { width: 75px; height: 75px; }
+  .ultimate-logo-wrapper { width: 200px; height: 200px; }
   .ultimate-subtitle { font-size: 18px; }
   .ultimate-subtitle.blds-glow { font-size: 26px; }
-  body.split-dimension {
-    background: linear-gradient(to bottom, #ffffff 50%, #000000 50%);
-  }
-  .split-overlay {
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, #000000 50%);
+  
+  .split-invert-layer {
+    width: 100%;
+    height: 50%;
   }
 }
 
@@ -588,17 +520,11 @@ body.split-dimension footer {
 
 <body>
 
-<div class="split-overlay"></div>
+<div class="split-invert-layer"></div>
 
 <div class="ultimate-scene" id="ultimateScene">
   <div class="ultimate-logo-wrapper">
-    <svg class="ultimate-flames" viewBox="0 0 500 500">
-      <path d="M250,50 C265,95 240,120 270,140 C300,110 290,75 320,90 C315,130 350,135 340,165 C380,130 395,160 420,165 C390,195 355,185 365,220 C410,210 430,240 450,265 C405,270 380,245 360,275 C390,305 425,295 410,325 C370,320 365,355 335,345 C365,385 335,400 330,430 C300,400 310,365 275,355 C285,400 255,420 250,450 C235,405 260,380 230,360 C200,390 210,425 180,410 C185,370 150,365 160,335 C120,370 105,340 80,335 C110,305 145,315 135,280 C90,290 70,260 50,235 C95,230 120,255 140,225 C110,195 75,205 90,175 C130,180 135,145 165,155 C135,115 165,100 170,70 C200,100 190,135 225,145 C215,100 245,80 250,50 Z"/>
-    </svg>
-    <svg class="ultimate-center" viewBox="0 0 200 200">
-      <circle cx="100" cy="100" r="85" fill="none" stroke="#fff" stroke-width="12"/>
-      <path d="M100,25 Q100,100 25,100 Q100,100 100,175 Q100,100 175,100 Q100,100 100,25 Z"/>
-    </svg>
+    <img src="logo.png" class="ultimate-logo-image">
   </div>
   <div class="ultimate-subtitle" id="ultimateSubtitle"></div>
 </div>
@@ -1018,7 +944,7 @@ let achievements = {
   nayottama: false,
   prince: false,
   eclipse: false,
-  dimension2: false, // NYAWA BARU UNTUK 2 DIMENSION
+  dimension2: false,
   black: false,
   white: false
 };
@@ -1079,24 +1005,7 @@ function checkCodeBreaker(){
   }
 }
 
-/* ROBOTIC DEEP ECHO SYSTEM VOICE GENERATOR */
-function speakEcho(text, callback) {
-  if (isMuted || !('speechSynthesis' in window)) {
-    if(callback) setTimeout(callback, 2000);
-    return;
-  }
-  
-  let msg = new SpeechSynthesisUtterance(text);
-  msg.lang = 'en-US'; 
-  msg.pitch = 0.4;   
-  msg.rate = 0.75;    
-  msg.volume = 1.0;
-
-  msg.onend = () => { if(callback) callback(); };
-  window.speechSynthesis.speak(msg);
-}
-
-/* RUN ULTIMATE CINEMATIC ECLIPSE */
+/* RUN ULTIMATE CINEMATIC ECLIPSE (PURE TEXT & MUTED EFFECT) */
 function runUltimateCinematic() {
   const savedVolume = bgMusic.volume;
   bgMusic.volume = 0;
@@ -1110,62 +1019,41 @@ function runUltimateCinematic() {
 
   setTimeout(() => {
     sub.innerHTML = "Sun...";
-    speakEcho("Sun", () => {
+    setTimeout(() => {
+      sub.innerHTML = "Moon...";
       setTimeout(() => {
-        sub.innerHTML = "Moon...";
-        speakEcho("Moon", () => {
+        sub.innerHTML = "Eclipse with the core inside";
+        setTimeout(() => {
+          sub.classList.add("blds-glow");
+          sub.innerHTML = "BLDS";
+          
           setTimeout(() => {
-            sub.innerHTML = "Eclipse with the core inside";
-            speakEcho("Eclipse with the core inside", () => {
-              setTimeout(() => {
-                sub.classList.add("blds-glow");
-                sub.innerHTML = "BLDS";
-                
-                if (!isMuted && ('speechSynthesis' in window)) {
-                  let bldsMsg = new SpeechSynthesisUtterance("B L D S");
-                  bldsMsg.lang = 'en-US';
-                  bldsMsg.pitch = 0.5;
-                  bldsMsg.rate = 0.85;
-                  bldsMsg.volume = 1.0;
-                  bldsMsg.onend = () => { finishScene(); };
-                  window.speechSynthesis.speak(bldsMsg);
-                } else {
-                  setTimeout(finishScene, 2000);
-                }
+            scene.style.display = "none";
+            if(!isMuted) bgMusic.volume = savedVolume;
+            
+            /* RE-SINKRONISASI AKTIFKAN REAL INVERSION SPLIT */
+            document.body.classList.remove("inverted-dimension");
+            document.body.classList.add("split-dimension");
+            document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION";
 
-                function finishScene() {
-                  setTimeout(() => {
-                    scene.style.display = "none";
-                    if(!isMuted) bgMusic.volume = savedVolume;
-                    
-                    document.body.classList.remove("inverted-dimension");
-                    document.body.classList.add("split-dimension");
-                    document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION";
+            let delay = 0;
+            if(!achievements.eclipse){
+              achievements.eclipse = true;
+              setTimeout(() => { showAchievement("Eclipse"); }, delay);
+              delay += 1200;
+            }
+            if(!achievements.dimension2){
+              achievements.dimension2 = true;
+              setTimeout(() => { showAchievement("2 Dimension"); }, delay);
+            }
+            
+            updateAchievements();
+            setTimeout(checkCodeBreaker, 2000);
 
-                    /* TRIGGER UNLOCK KEDUA-DUANYA SECARA BERUNTUN */
-                    let delay = 0;
-                    if(!achievements.eclipse){
-                      achievements.eclipse = true;
-                      setTimeout(() => { showAchievement("Eclipse"); }, delay);
-                      delay += 1200;
-                    }
-                    if(!achievements.dimension2){
-                      achievements.dimension2 = true;
-                      setTimeout(() => { showAchievement("2 Dimension"); }, delay);
-                    }
-                    
-                    updateAchievements();
-                    setTimeout(checkCodeBreaker, 2000);
-
-                  }, 1500);
-                }
-
-              }, 800);
-            });
-          }, 1000);
-        });
-      }, 1000);
-    });
+          }, 2000);
+        }, 1500);
+      }, 1500);
+    }, 1500);
   }, 1000);
 }
 
