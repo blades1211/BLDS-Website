@@ -667,7 +667,7 @@ footer {
   margin-right: 8px;
 }
 
-/* 🔄 DESIGN BARU: FLOATING TRIGGER BUTTON & MINIMALIST MONOCHROME ADMIN PANEL */
+/* 🔄 FLOATING TRIGGER BUTTON & MINIMALIST MONOCHROME ADMIN PANEL */
 .admin-trigger-launcher {
   position: fixed;
   bottom: 25px;
@@ -1224,7 +1224,7 @@ let streakData = {
     wolf: false
   },
   forcedRankTitle: "",
-  forcedPetStage: "auto" // Default Auto mengikuti perhitungan hari/streak
+  forcedPetStage: "auto"
 };
 
 let calibrationInterval = null;
@@ -1256,7 +1256,6 @@ function getPetSvg(type, count) {
   let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
   let checkValue = isCoreLocked ? 100 : count;
 
-  // Jika admin memaksakan fase, visual gambar akan mengikuti fase paksaan tersebut
   if(streakData.forcedPetStage && streakData.forcedPetStage !== "auto") {
     let stageForce = parseInt(streakData.forcedPetStage);
     if(stageForce === 1) checkValue = 0;
@@ -1318,7 +1317,6 @@ function loadState() {
     streakData.unlockedPermanently[streakData.petType] = true;
   }
 
-  // Jika terdeteksi admin mengaktifkan launcher sebelumnya, biarkan tetap menyala
   if (localStorage.getItem("BLDS_LAUNCHER_ENABLED") === "true") {
     document.getElementById("adminLauncherBtn").style.display = "block";
   }
@@ -1373,7 +1371,6 @@ function getPetEvolutionEngine(count, type) {
   let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
   let checkValue = isCoreLocked ? 100 : count;
 
-  // Intersepsi nilai perhitungan berdasarkan paksaan fase dari admin panel
   let isForced = streakData.forcedPetStage && streakData.forcedPetStage !== "auto";
   if(isForced) {
     let stageForce = parseInt(streakData.forcedPetStage);
@@ -1411,11 +1408,9 @@ function getPetEvolutionEngine(count, type) {
     else stageText = "Fase 1: Shadow Spirit Egg";
   }
 
-  // Jika dipaksa tapi rank utamanya mau di-override manual oleh admin text
   if(streakData.forcedRankTitle) {
     rank = streakData.forcedRankTitle;
   } else if(isForced) {
-    // Menyesuaikan rank bawaan fase jika sedang di-override fasenya saja
     if(checkValue >= 100) rank = "THE ETERNAL CORE";
     else if(checkValue >= 50) rank = "DOMINION VANGUARD";
     else if(checkValue >= 30) rank = "RESONANCE KEEPER";
@@ -1479,7 +1474,7 @@ function updateWidgetDynamicUI() {
 
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
-  document.getElementById("highestStreakDisplayCount").innerHTML = streakData.highestCount; // Menampilkan Highest Streak ke Layar Utama
+  document.getElementById("highestStreakDisplayCount").innerHTML = streakData.highestCount;
 
   if (streakData.dominionName) {
     document.getElementById("petHudBox").style.display = "block";
@@ -1722,7 +1717,6 @@ function unlockCode() {
   }
 
   if (v === "OWNERONLYBLDS") {
-    // Memunculkan tombol launcher secara permanen di kanan bawah
     document.getElementById("adminLauncherBtn").style.display = "block";
     localStorage.setItem("BLDS_LAUNCHER_ENABLED", "true");
     openAdminMatrixPanel();
@@ -1803,7 +1797,7 @@ function executeAdminUserUpdate() {
   streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
   streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
   streakData.petType = document.getElementById("admPetType").value;
-  streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; // Menyimpan data paksaan fase pet
+  streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; 
   streakData.petCustomName = document.getElementById("admPetNick").value.trim();
   
   saveState();
@@ -1835,11 +1829,12 @@ function executeAdminLbUpdate() {
   alert(`✨ Admin Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
 }
 
-/* 🔄 DRAGGABLE ENGINE INJECTION FOR FLOATING TRIGGER BUTTON */
+/* 🔄 SMART DRAGGABLE ENGINE: SEPARATING DRAG AND CLICK ACTION */
 const dragBtn = document.getElementById("adminLauncherBtn");
 let isDragging = false;
-let currentX, currentY, initialX, initialY;
-let xOffset = 0, yOffset = 0;
+let startX, startY;       // Menyimpan titik awal sentuhan/klik mouse
+let currentX = 0, currentY = 0;
+let initialX = 0, initialY = 0;
 
 dragBtn.addEventListener("mousedown", dragStart);
 document.addEventListener("mousemove", drag);
@@ -1853,8 +1848,11 @@ function dragStart(e) {
   let clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
   let clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
   
-  initialX = clientX - xOffset;
-  initialY = clientY - yOffset;
+  startX = clientX;
+  startY = clientY;
+  
+  initialX = clientX - currentX;
+  initialY = clientY - currentY;
   
   if (e.target === dragBtn) {
     isDragging = true;
@@ -1864,16 +1862,13 @@ function dragStart(e) {
 
 function drag(e) {
   if (!isDragging) return;
-  if (e.type === "touchmove") e.preventDefault(); // Mencegah scrolling layar saat digeser di HP
+  if (e.type === "touchmove") e.preventDefault();
 
   let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
   let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 
   currentX = clientX - initialX;
   currentY = clientY - initialY;
-
-  xOffset = currentX;
-  yOffset = currentY;
 
   setTranslate(currentX, currentY, dragBtn);
 }
@@ -1884,14 +1879,20 @@ function setTranslate(xPos, yPos, el) {
 
 function dragEnd(e) {
   if (!isDragging) return;
-  initialX = currentX;
-  initialY = currentY;
+  
   isDragging = false;
   dragBtn.style.cursor = "grab";
 
-  // Jika tombol dilepas dan posisi gesernya sangat kecil/tidak bergeser, anggap sebagai aksi "KLIK"
-  if (!currentX || (Math.abs(currentX) < 3 && Math.abs(currentY) < 3)) {
-    toggleAdminPanelUI();
+  // Deteksi Jarak Geser Akhir vs Titik Awal
+  let lastClientX = e.type === "touchend" ? e.changedTouches[0].clientX : e.clientX;
+  let lastClientY = e.type === "touchend" ? e.changedTouches[0].clientY : e.clientY;
+
+  let deltaX = Math.abs(lastClientX - startX);
+  let deltaY = Math.abs(lastClientY - startY);
+
+  // THRESHOLD DETECTOR: Jika tombol digeser kurang dari 5 pixel, itu dihitung sebagai KLIK/PENCET biasa!
+  if (deltaX < 5 && deltaY < 5) {
+    toggleAdminPanelUI(); // Jalankan fungsi buka/tutup menu secara akurat
   }
 }
 
