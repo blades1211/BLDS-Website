@@ -95,10 +95,9 @@ body{
 }
 
 .logo{
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  filter:drop-shadow(0 0 15px rgba(255,255,255,0.6));
+  width: 100px;
+  height: 100px;
+  filter:drop-shadow(0 0 15px rgba(255,255,255,0.7));
   animation:floatLogo 4s ease-in-out infinite;
 }
 
@@ -272,36 +271,6 @@ button:disabled {
   backdrop-filter:blur(5px);
 }
 
-.progress-wrapper {
-  margin-bottom: 25px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 15px 20px;
-  border-radius: 12px;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
-.progress-container {
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #fff;
-  transition: width 0.6s ease;
-}
-
 input, select {
   width:100%;
   padding:12px;
@@ -466,7 +435,12 @@ footer {
 
 <div class="container">
   <div class="logo-container">
-    <img src="https://raw.githubusercontent.com/Lorenzomcl/Lorenzo/main/Picsart_24-05-18_14-38-03-345.png" class="logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/mD8zM42p/Picsart-24-05-18-14-38-03-345.png'">
+    <svg class="logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 5L15 20V45C15 67.5 30 88 50 95C70 88 85 67.5 85 45V20 L50 5Z" stroke="#ffffff" stroke-width="3" fill="rgba(255,255,255,0.03)" />
+      <circle cx="50" cy="48" r="15" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 4" />
+      <polygon points="50,38 58,54 42,54" fill="#ffffff" />
+      <path d="M30 45 H70" stroke="#ffffff" stroke-width="1" opacity="0.4"/>
+    </svg>
   </div>
   
   <div class="streak-widget" id="streakWidget">
@@ -481,8 +455,7 @@ footer {
       <button class="edit-pet-btn" onclick="openRenamePetModal()">✏️</button>
     </div>
     <div class="pet-stage-display" id="petStageDisplay">Fase 1</div>
-    <div class="pet-image-frame" id="petImageFrameSlot">
-      </div>
+    <div class="pet-image-frame" id="petImageFrameSlot"></div>
   </div>
 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
@@ -512,14 +485,10 @@ footer {
   </div>
 
   <div class="page" id="achievement">
-    <div class="progress-wrapper">
-      <div class="progress-header"><span>CORE COMPLETION</span><span id="progressPercent">0%</span></div>
-      <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-    </div>
     <div class="box">
       <h2>ACHIEVEMENTS</h2>
       <br>
-      <div id="achievementList"></div>
+      <p style="font-size:13px; color:rgba(255,255,255,0.6);">Sistem sinkronisasi riwayat trofi internal aman.</p>
     </div>
   </div>
 
@@ -578,7 +547,7 @@ footer {
 </footer>
 
 <script>
-/* STARS BACKGROUND EFFECTS */
+/* BACKGROUND STARS EFFECT */
 const sky = document.getElementById("sky");
 for(let i=0; i<100; i++){
   let star = document.createElement("div");
@@ -590,10 +559,10 @@ for(let i=0; i<100; i++){
 }
 
 window.addEventListener("load",()=>{
-  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1500);
+  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1000);
 });
 
-/* CORE DATA SYSTEM */
+/* STATE MANAGEMENT */
 let streakData = {
   count: 0,
   highestCount: 0, 
@@ -603,7 +572,6 @@ let streakData = {
   petType: "dragon"
 };
 
-/* URL TEMPAT MENAMPUNG GAMBAR */
 const PET_IMAGES = {
   dragon: {
     f1: "https://i.imgur.com/E0l0Aqy.jpeg", 
@@ -628,27 +596,26 @@ const PET_IMAGES = {
   }
 };
 
-/* DATA DEFAULT LEADERBOARD KELOMPOK BLDS */
 const DEFAULT_LEADERBOARD = [
-  { name: "Michael Lorenzo", streak: 152, type: "dragon", petLabel: "🐉 Overlord Cosmic Dragon" },
-  { name: "William Nayottama", streak: 121, type: "wolf", petLabel: "🐺 Fenrir God of the Void" },
-  { name: "Prince Felix", streak: 98, type: "dragon", petLabel: "🐉 Obsidian Eclipse Dragon" },
-  { name: "Rian Void", streak: 84, type: "fish", petLabel: "🐟 Abyssal Dark Leviathan" },
-  { name: "Zack Eclipse", streak: 76, type: "wolf", petLabel: "🐺 Alpha Cosmic Fenrir" },
-  { name: "Darel Shadow", streak: 69, type: "dragon", petLabel: "🐉 Lightning Void Drake" },
-  { name: "Niko Core", streak: 55, type: "fish", petLabel: "🐟 Neon Serpent Fish" },
-  { name: "Vino Nebula", streak: 48, type: "wolf", petLabel: "🐺 Twilight Shadow Wolf" },
-  { name: "Alex Obsidian", streak: 41, type: "dragon", petLabel: "🐉 Lightning Void Drake" },
-  { name: "Arka Abyss", streak: 35, type: "fish", petLabel: "🐟 Neon Serpent Fish" },
-  { name: "Farel Dark", streak: 29, type: "wolf", petLabel: "🐺 Shadow Wolf Pup" },
-  { name: "Deva Zenith", streak: 25, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Roni Star", streak: 22, type: "fish", petLabel: "🐟 Abyss Angler Whelp" },
-  { name: "Gani Galaxy", streak: 19, type: "wolf", petLabel: "🐺 Shadow Wolf Pup" },
-  { name: "Edo Zero", streak: 14, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Tio Matrix", streak: 11, type: "fish", petLabel: "🐟 Abyss Angler Whelp" },
-  { name: "Riko Titan", streak: 9, type: "dragon", petLabel: "🐉 Void Dragon Hatchling" },
-  { name: "Andi Nova", streak: 6, type: "wolf", petLabel: "🐺 Shadow Spirit Egg" },
-  { name: "Budi Pulse", streak: 4, type: "dragon", petLabel: "🐉 Anomaly Dragon Egg" }
+  { name: "Michael Lorenzo", streak: 152, petLabel: "🐉 Overlord Cosmic Dragon" },
+  { name: "William Nayottama", streak: 121, petLabel: "🐺 Fenrir God of the Void" },
+  { name: "Prince Felix", streak: 98, petLabel: "🐉 Obsidian Eclipse Dragon" },
+  { name: "Rian Void", streak: 84, petLabel: "🐟 Abyssal Dark Leviathan" },
+  { name: "Zack Eclipse", streak: 76, petLabel: "🐺 Alpha Cosmic Fenrir" },
+  { name: "Darel Shadow", streak: 69, petLabel: "🐉 Lightning Void Drake" },
+  { name: "Niko Core", streak: 55, petLabel: "🐟 Neon Serpent Fish" },
+  { name: "Vino Nebula", streak: 48, petLabel: "🐺 Twilight Shadow Wolf" },
+  { name: "Alex Obsidian", streak: 41, petLabel: "🐉 Lightning Void Drake" },
+  { name: "Arka Abyss", streak: 35, petLabel: "🐟 Neon Serpent Fish" },
+  { name: "Farel Dark", streak: 29, petLabel: "🐺 Shadow Wolf Pup" },
+  { name: "Deva Zenith", streak: 25, petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Roni Star", streak: 22, petLabel: "🐟 Abyss Angler Whelp" },
+  { name: "Gani Galaxy", streak: 19, petLabel: "🐺 Shadow Wolf Pup" },
+  { name: "Edo Zero", streak: 14, petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Tio Matrix", streak: 11, petLabel: "🐟 Abyss Angler Whelp" },
+  { name: "Riko Titan", streak: 9, petLabel: "🐉 Void Dragon Hatchling" },
+  { name: "Andi Nova", streak: 6, petLabel: "🐺 Shadow Spirit Egg" },
+  { name: "Budi Pulse", streak: 4, petLabel: "🐉 Anomaly Dragon Egg" }
 ];
 
 function saveState() {
@@ -733,7 +700,7 @@ function updateWidgetDynamicUI() {
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
   
-  if (streakData.highestCount >= 0) {
+  if (streakData.dominionName) {
     document.getElementById("petHudBox").style.display = "block";
     document.getElementById("petNameDisplay").innerHTML = streakData.petCustomName ? streakData.petCustomName : "UNNAMED ENTITY";
     document.getElementById("petStageDisplay").innerHTML = engine.stage;
@@ -745,47 +712,39 @@ function updateWidgetDynamicUI() {
   }
 }
 
-/* SISTEM RENDAH LEADERBOARD YANG DISESUAIKAN SAMA PENDAFTAR WEB */
+/* LEADERBOARD REAL-TIME FIX BERDASARKAN CHEAT / REGISTER */
 function renderLeaderboard() {
   const tbody = document.getElementById("leaderboardDataBody");
   if (!tbody) return;
 
-  // Clone daftar default agar tidak merusak data dasar
   let list = [...DEFAULT_LEADERBOARD];
 
-  // Jika user saat ini sudah daftar nama, masukkan dia ke baris kompetisi
   if (streakData.dominionName) {
     const currentEngine = getPetEvolutionEngine(streakData.highestCount, streakData.petType);
     
-    // Cari apakah nama dominion sudah ada, kalau belum tambah baru
+    // Periksa apakah nama pendaftar adalah salah satu nama admin default, jika iya timpa nilainya
     const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
     if (existingIndex !== -1) {
       list[existingIndex].streak = streakData.count;
       list[existingIndex].petLabel = currentEngine.stage;
     } else {
+      // Jika nama umum baru, push pendaftar baru tersebut ke dalam list kompetisi
       list.push({
         name: streakData.dominionName,
         streak: streakData.count,
-        type: streakData.petType,
         petLabel: currentEngine.stage,
-        isCurrentUser: true // Flag penanda baris user aktif
+        isCurrentUser: true
       });
     }
   }
 
-  // Urutkan List Berdasarkan Nilai Streak Tertinggi secara Real-Time
+  // Pengurutan paksa berdasarkan streak terbesar
   list.sort((a, b) => b.streak - a.streak);
 
-  // Potong hanya mengambil TOP 20 Teratas
-  const top20 = list.slice(0, 20);
-
-  // Konversi data array ke elemen HTML tabel string
   let htmlString = "";
-  top20.forEach((user, index) => {
+  list.slice(0, 20).forEach((user, index) => {
     const position = index + 1;
     const isMe = user.isCurrentUser || (streakData.dominionName && user.name.toLowerCase() === streakData.dominionName.toLowerCase());
-    
-    // Berikan style background baris khusus jika itu akun milik si pendaftar
     const rowStyle = isMe ? "style='background: rgba(255,255,255,0.15); font-weight: 600;'" : "";
     const rankClass = position <= 3 ? "class='rank-highlight'" : "";
 
@@ -868,7 +827,7 @@ function enter(){
 }
 
 function saveDominionName() {
-  const nameVal = document.getElementById("dominionNameInput").value.toUpperCase().trim();
+  const nameVal = document.getElementById("dominionNameInput").value.trim();
   const typeVal = document.getElementById("petTypeSelect").value;
   if(!nameVal) { alert("FIELD CANNOT BE VOID!"); return; }
   
@@ -891,6 +850,7 @@ function showPage(id){
   }
 }
 
+/* FIX CODE ENGINE: LANGSUNG MEMICU RE-SORT DI LEADERBOARD */
 function unlockCode(){
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
   
@@ -899,6 +859,7 @@ function unlockCode(){
     return;
   }
 
+  // Logika Cheat Code Penambah Streak Akumulatif
   if (v === "lorenzo") {
     streakData.count += 50;
     streakData.highestCount = Math.max(streakData.highestCount, streakData.count);
@@ -921,15 +882,19 @@ function unlockCode(){
   } 
   else if (v === "white" || v === "black") {
     alert(`🎨 KODE CORE ${v.toUpperCase()} DIAKTIFKAN: Sistem Sinkronisasi Warna Berhasil!`);
+    document.getElementById("codeInput").value = "";
+    return;
   } 
   else {
     alert("❌ INVALID CODE: Signature core tidak dikenali.");
     return;
   }
 
+  // PENTING: Simpan, paksa kalkulasi grafik evolusi dan susun ulang tabel kompetisi secara berurutan!
   saveState();
   updateWidgetDynamicUI();
   renderLeaderboard();
+  
   document.getElementById("codeInput").value = "";
 }
 
