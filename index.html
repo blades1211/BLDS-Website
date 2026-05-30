@@ -1829,17 +1829,20 @@ function executeAdminLbUpdate() {
   alert(`✨ Admin Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
 }
 
-/* 🔄 SMART DRAGGABLE ENGINE: SEPARATING DRAG AND CLICK ACTION */
+/* 🔄 FIX DRAG & CLICK ENGINE PROTOCOL */
 const dragBtn = document.getElementById("adminLauncherBtn");
 let isDragging = false;
-let startX, startY;       // Menyimpan titik awal sentuhan/klik mouse
+let startX = 0, startY = 0;       
 let currentX = 0, currentY = 0;
 let initialX = 0, initialY = 0;
+let totalMovement = 0; // Mengukur total piksel pergeseran tombol
 
+// Event Mouse (PC)
 dragBtn.addEventListener("mousedown", dragStart);
 document.addEventListener("mousemove", drag);
 document.addEventListener("mouseup", dragEnd);
 
+// Event Touch (HP)
 dragBtn.addEventListener("touchstart", dragStart, { passive: false });
 document.addEventListener("touchmove", drag, { passive: false });
 document.addEventListener("touchend", dragEnd);
@@ -1850,6 +1853,7 @@ function dragStart(e) {
   
   startX = clientX;
   startY = clientY;
+  totalMovement = 0; // Reset jarak geser tiap ditekan
   
   initialX = clientX - currentX;
   initialY = clientY - currentY;
@@ -1862,19 +1866,20 @@ function dragStart(e) {
 
 function drag(e) {
   if (!isDragging) return;
-  if (e.type === "touchmove") e.preventDefault();
+  if (e.type === "touchmove") e.preventDefault(); // Mencegah layar ikut scroll saat tombol digeser
 
   let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
   let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 
+  // Akumulasikan total jarak pergeseran tombol
+  let diffX = Math.abs(clientX - (initialX + currentX));
+  let diffY = Math.abs(clientY - (initialY + currentY));
+  totalMovement += (diffX + diffY);
+
   currentX = clientX - initialX;
   currentY = clientY - initialY;
 
-  setTranslate(currentX, currentY, dragBtn);
-}
-
-function setTranslate(xPos, yPos, el) {
-  el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+  dragBtn.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
 }
 
 function dragEnd(e) {
@@ -1883,16 +1888,9 @@ function dragEnd(e) {
   isDragging = false;
   dragBtn.style.cursor = "grab";
 
-  // Deteksi Jarak Geser Akhir vs Titik Awal
-  let lastClientX = e.type === "touchend" ? e.changedTouches[0].clientX : e.clientX;
-  let lastClientY = e.type === "touchend" ? e.changedTouches[0].clientY : e.clientY;
-
-  let deltaX = Math.abs(lastClientX - startX);
-  let deltaY = Math.abs(lastClientY - startY);
-
-  // THRESHOLD DETECTOR: Jika tombol digeser kurang dari 5 pixel, itu dihitung sebagai KLIK/PENCET biasa!
-  if (deltaX < 5 && deltaY < 5) {
-    toggleAdminPanelUI(); // Jalankan fungsi buka/tutup menu secara akurat
+  // CRITICAL HIT PROTOCOL: Jika total gerakan sangat minim (di bawah 10px), dihitung sebagai PENCET/KLIK murni!
+  if (totalMovement < 10) {
+    toggleAdminPanelUI(); 
   }
 }
 
