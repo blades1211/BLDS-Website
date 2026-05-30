@@ -354,6 +354,41 @@ input:focus{
 
 }
 
+.notification{
+
+position:fixed;
+top:25px;
+right:25px;
+
+background:black;
+border:1px solid white;
+
+padding:15px 20px;
+
+border-radius:15px;
+
+box-shadow:0 0 20px rgba(255,255,255,.2);
+
+z-index:999999;
+
+animation:slideIn .5s ease;
+
+}
+
+@keyframes slideIn{
+
+from{
+opacity:0;
+transform:translateX(100px);
+}
+
+to{
+opacity:1;
+transform:translateX(0);
+}
+
+}
+
 </style>
 </head>
 
@@ -392,6 +427,10 @@ ENTER THE ECLIPSE
 
 <button onclick="showPage('origin')">
 ORIGIN
+</button>
+
+<button onclick="showPage('achievement')">
+ACHIEVEMENTS
 </button>
 
 <button onclick="showPage('archives')">
@@ -985,6 +1024,40 @@ behavior:"smooth"
 });
 
 }
+
+<!-- ACHIEVEMENTS -->
+
+<div class="page" id="achievement">
+
+<div class="box">
+
+<h2>ACHIEVEMENTS</h2>
+
+<br>
+
+<div id="achievementList">
+
+❌ Forgotten Memories
+<br>
+<small>Discover the Forgotten Eclipse</small>
+
+<br><br>
+
+❌ Flames Mystery
+<br>
+<small>Discover the 12 Flames Protocol</small>
+
+<br><br>
+
+❌ Code Breaker
+<br>
+<small>Unlock all hidden codes</small>
+
+</div>
+
+</div>
+
+</div>
 
 /* CODE */
 
