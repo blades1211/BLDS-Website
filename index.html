@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLDS | BlackLightDoms</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -1219,7 +1219,6 @@ footer {
 /* 🎧 AUDIO CONTROLLER EXPERT PROTOCOL */
 const bgAmbient = document.getElementById("bgAmbient");
 
-// Fungsi generate efek click minimalis via Web Audio API agar lancar tanpa lemot
 function playClickSound() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1227,7 +1226,7 @@ function playClickSound() {
     const gainNode = audioCtx.createGain();
 
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); // Pitch klik rendah & padat
+    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); 
     oscillator.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
     
     gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
@@ -1243,7 +1242,6 @@ function playClickSound() {
   }
 }
 
-// Pasang event click global untuk seluruh button di template agar memicu suara klik
 document.addEventListener("click", (e) => {
   if (e.target.tagName === "BUTTON") {
     playClickSound();
@@ -1661,34 +1659,28 @@ function calibrateCore() {
   renderLeaderboard();
 }
 
-/* 🎬 ENTER SECTOR WITH SMOOTH BLACK TRANSITION & SOUND OVERRIDE */
 function enter(){
   if(!streakData.dominionName) {
     document.getElementById("nameModal").style.display = "flex"; return;
   }
 
-  // Jalankan Ambient Sound Audio Luar Angkasa secara looping
   bgAmbient.play().catch(err => console.log("Ambient autoplay blocked, waiting user interaction."));
 
   const overlay = document.getElementById("smoothEnterOverlay");
-  
-  // 1. Tampilkan overlay hitam halus (Fade In)
   overlay.classList.add("active");
 
   setTimeout(() => {
-    // 2. Di balik layar hitam, ubah struktur HUD inti
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("streakWidget").style.display = "inline-flex";
     document.getElementById("calibrationHud").style.display = "block";
     document.getElementById("menu").style.display = "flex";
     startCalibrationTimer();
 
-    // 3. Hilangkan kembali overlay hitam secara halus (Fade Out)
     setTimeout(() => {
       overlay.classList.remove("active");
     }, 300);
 
-  }, 800); // Durasi puncak layar menggelap sebelum dirender kembali
+  }, 800); 
 }
 
 function saveDominionName() {
