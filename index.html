@@ -793,10 +793,31 @@ footer {
   margin-top: 5px;
   line-height: 1.5;
 }
+
+/* 🎬 SMOOTH TRANSITION OVERLAY FOR ENTER THE ECLIPSE */
+.enter-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 15000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.enter-transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
 </style>
 </head>
 
 <body>
+
+<audio id="bgAmbient" loop>
+  <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
+</audio>
+
+<div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
 
 <div class="blds-black-screen-overlay" id="bldsCutsceneOverlay">
   <img src="logo.png" alt="BLDS Cutscene Logo" class="blds-overlay-logo" id="bldsCutsceneLogo" onerror="this.style.display='none';">
@@ -1109,19 +1130,19 @@ footer {
     <span style="cursor:pointer; font-weight:bold; font-size:14px;" onclick="toggleAdminPanelUI()">✕</span>
   </div>
   <div class="admin-body">
-    
+
     <div class="admin-section">
       <h4>1. Core User Modification</h4>
-      
+
       <label>Dominion Name:</label>
       <input type="text" id="admDomName">
-      
+
       <label>Current Streak Count (Days):</label>
       <input type="number" id="admStreak">
-      
+
       <label>Highest Peak Streak (Record):</label>
       <input type="number" id="admHighStreak">
-      
+
       <label>Core Path / Pet Type:</label>
       <select id="admPetType">
         <option value="dragon">Dragon (Void)</option>
@@ -1138,10 +1159,10 @@ footer {
         <option value="4">Fase 4: Alpha Apex Overlord State</option>
         <option value="5">Fase 5: Locked Cosmic Ancient God State</option>
       </select>
-      
+
       <label>Pet Custom Nickname:</label>
       <input type="text" id="admPetNick">
-      
+
       <button class="admin-btn" onclick="executeAdminUserUpdate()">APPLY USER CHANGES</button>
     </div>
 
@@ -1156,16 +1177,16 @@ footer {
       <h4>3. Edit Leaderboard Data</h4>
       <label>Select Target Leaderboard Slot:</label>
       <select id="admLbIndex" onchange="loadTargetLbSlotData()"></select>
-      
+
       <label>Edit Name In Slot:</label>
       <input type="text" id="admLbName">
-      
+
       <label>Edit Streak In Slot:</label>
       <input type="number" id="admLbStreak">
-      
+
       <label>Edit Pet/Stage Label:</label>
       <input type="text" id="admLbLabel">
-      
+
       <button class="admin-btn" onclick="executeAdminLbUpdate()">MUTATE LEADERBOARD SLOT</button>
     </div>
 
@@ -1195,6 +1216,40 @@ footer {
 </footer>
 
 <script>
+/* 🎧 AUDIO CONTROLLER EXPERT PROTOCOL */
+const bgAmbient = document.getElementById("bgAmbient");
+
+// Fungsi generate efek click minimalis via Web Audio API agar lancar tanpa lemot
+function playClickSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); // Pitch klik rendah & padat
+    oscillator.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
+    
+    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.08);
+  } catch(e) {
+    console.log("AudioContext blocked or not supported yet.");
+  }
+}
+
+// Pasang event click global untuk seluruh button di template agar memicu suara klik
+document.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    playClickSound();
+  }
+});
+
 /* STARS BACKGROUND EFFECT */
 const sky = document.getElementById("sky");
 for(let i=0; i<100; i++){
@@ -1551,16 +1606,16 @@ function savePetCustomName() {
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
-  
+
   if (!streakData.lastCalibratedTimestamp) {
     btn.disabled = false; 
     status.innerHTML = "SYSTEM READY FOR INTEGRATION"; 
     return;
   }
-  
+
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
   const duration24h = 24 * 60 * 60 * 1000;
-  
+
   if (msElapsed < duration24h) {
     btn.disabled = true;
     const timeLeft = duration24h - msElapsed;
@@ -1606,15 +1661,34 @@ function calibrateCore() {
   renderLeaderboard();
 }
 
+/* 🎬 ENTER SECTOR WITH SMOOTH BLACK TRANSITION & SOUND OVERRIDE */
 function enter(){
   if(!streakData.dominionName) {
     document.getElementById("nameModal").style.display = "flex"; return;
   }
-  document.getElementById("enterBtn").style.display = "none";
-  document.getElementById("streakWidget").style.display = "inline-flex";
-  document.getElementById("calibrationHud").style.display = "block";
-  document.getElementById("menu").style.display = "flex";
-  startCalibrationTimer();
+
+  // Jalankan Ambient Sound Audio Luar Angkasa secara looping
+  bgAmbient.play().catch(err => console.log("Ambient autoplay blocked, waiting user interaction."));
+
+  const overlay = document.getElementById("smoothEnterOverlay");
+  
+  // 1. Tampilkan overlay hitam halus (Fade In)
+  overlay.classList.add("active");
+
+  setTimeout(() => {
+    // 2. Di balik layar hitam, ubah struktur HUD inti
+    document.getElementById("enterBtn").style.display = "none";
+    document.getElementById("streakWidget").style.display = "inline-flex";
+    document.getElementById("calibrationHud").style.display = "block";
+    document.getElementById("menu").style.display = "flex";
+    startCalibrationTimer();
+
+    // 3. Hilangkan kembali overlay hitam secara halus (Fade Out)
+    setTimeout(() => {
+      overlay.classList.remove("active");
+    }, 300);
+
+  }, 800); // Durasi puncak layar menggelap sebelum dirender kembali
 }
 
 function saveDominionName() {
@@ -1758,7 +1832,7 @@ function toggleAdminPanelUI() {
 
 function openAdminMatrixPanel() {
   document.getElementById("adminPanel").style.display = "flex";
-  
+
   document.getElementById("admDomName").value = streakData.dominionName || "";
   document.getElementById("admStreak").value = streakData.count;
   document.getElementById("admHighStreak").value = streakData.highestCount;
@@ -1766,7 +1840,7 @@ function openAdminMatrixPanel() {
   document.getElementById("admForceStageSelection").value = streakData.forcedPetStage || "auto";
   document.getElementById("admPetNick").value = streakData.petCustomName || "";
   document.getElementById("admForceRank").value = streakData.forcedRankTitle || "";
-  
+
   loadTargetLbSlotData();
 }
 
@@ -1785,7 +1859,7 @@ function populateAdminPanelDropdowns() {
 function loadTargetLbSlotData() {
   const idx = document.getElementById("admLbIndex").value;
   if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
-  
+
   const target = DEFAULT_LEADERBOARD[idx];
   document.getElementById("admLbName").value = target.name;
   document.getElementById("admLbStreak").value = target.streak;
@@ -1799,7 +1873,7 @@ function executeAdminUserUpdate() {
   streakData.petType = document.getElementById("admPetType").value;
   streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; 
   streakData.petCustomName = document.getElementById("admPetNick").value.trim();
-  
+
   saveState();
   updateWidgetDynamicUI();
   renderLeaderboard();
@@ -1818,11 +1892,11 @@ function executeAdminRankOverride() {
 function executeAdminLbUpdate() {
   const idx = document.getElementById("admLbIndex").value;
   if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
-  
+
   DEFAULT_LEADERBOARD[idx].name = document.getElementById("admLbName").value.trim();
   DEFAULT_LEADERBOARD[idx].streak = parseInt(document.getElementById("admLbStreak").value) || 0;
   DEFAULT_LEADERBOARD[idx].petLabel = document.getElementById("admLbLabel").value.trim();
-  
+
   saveState();
   renderLeaderboard();
   populateAdminPanelDropdowns();
@@ -1835,14 +1909,12 @@ let isDragging = false;
 let startX = 0, startY = 0;       
 let currentX = 0, currentY = 0;
 let initialX = 0, initialY = 0;
-let totalMovement = 0; // Mengukur total piksel pergeseran tombol
+let totalMovement = 0; 
 
-// Event Mouse (PC)
 dragBtn.addEventListener("mousedown", dragStart);
 document.addEventListener("mousemove", drag);
 document.addEventListener("mouseup", dragEnd);
 
-// Event Touch (HP)
 dragBtn.addEventListener("touchstart", dragStart, { passive: false });
 document.addEventListener("touchmove", drag, { passive: false });
 document.addEventListener("touchend", dragEnd);
@@ -1850,14 +1922,14 @@ document.addEventListener("touchend", dragEnd);
 function dragStart(e) {
   let clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
   let clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-  
+
   startX = clientX;
   startY = clientY;
-  totalMovement = 0; // Reset jarak geser tiap ditekan
-  
+  totalMovement = 0; 
+
   initialX = clientX - currentX;
   initialY = clientY - currentY;
-  
+
   if (e.target === dragBtn) {
     isDragging = true;
     dragBtn.style.cursor = "grabbing";
@@ -1866,12 +1938,11 @@ function dragStart(e) {
 
 function drag(e) {
   if (!isDragging) return;
-  if (e.type === "touchmove") e.preventDefault(); // Mencegah layar ikut scroll saat tombol digeser
+  if (e.type === "touchmove") e.preventDefault(); 
 
   let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
   let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 
-  // Akumulasikan total jarak pergeseran tombol
   let diffX = Math.abs(clientX - (initialX + currentX));
   let diffY = Math.abs(clientY - (initialY + currentY));
   totalMovement += (diffX + diffY);
@@ -1884,11 +1955,10 @@ function drag(e) {
 
 function dragEnd(e) {
   if (!isDragging) return;
-  
+
   isDragging = false;
   dragBtn.style.cursor = "grab";
 
-  // CRITICAL HIT PROTOCOL: Jika total gerakan sangat minim (di bawah 10px), dihitung sebagai PENCET/KLIK murni!
   if (totalMovement < 10) {
     toggleAdminPanelUI(); 
   }
