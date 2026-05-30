@@ -1094,6 +1094,75 @@ behavior:"smooth"
 
 }
 
+let achievements={
+
+forgotten:false,
+flames:false,
+codeBreaker:false
+
+};
+
+function updateAchievements(){
+
+document.getElementById("achievementList").innerHTML=`
+
+${achievements.forgotten?"✅":"❌"} Forgotten Memories<br>
+<small>Discover the Forgotten Eclipse</small>
+
+<br><br>
+
+${achievements.flames?"✅":"❌"} Flames Mystery<br>
+<small>Discover the 12 Flames Protocol</small>
+
+<br><br>
+
+${achievements.codeBreaker?"✅":"❌"} Code Breaker<br>
+<small>Unlock all hidden codes</small>
+
+`;
+
+}
+
+function showAchievement(title){
+
+const notif=document.createElement("div");
+
+notif.className="notification";
+
+notif.innerHTML=`
+🏆 ACHIEVEMENT UNLOCKED
+<br><br>
+<b>${title}</b>
+`;
+
+document.body.appendChild(notif);
+
+setTimeout(()=>{
+
+notif.remove();
+
+},4000);
+
+}
+
+function checkCodeBreaker(){
+
+if(
+achievements.forgotten &&
+achievements.flames &&
+!achievements.codeBreaker
+){
+
+achievements.codeBreaker=true;
+
+updateAchievements();
+
+showAchievement("Code Breaker");
+
+}
+
+}
+
 </script>
 
 </body>
