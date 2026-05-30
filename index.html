@@ -726,7 +726,7 @@ footer {
   <div class="logo-container">
     <img src="logo.png" alt="BLDS Logo" class="logo" onerror="this.style.display='none';">
   </div>
-  
+
   <div class="streak-widget" id="streakWidget">
     RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
     <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
@@ -793,7 +793,7 @@ footer {
       Because purpose cannot be erased by fear.</p>
 
       <h2>10 FLAMES OF BLDS</h2>
-      
+
       <h3>Greater</h3>
       <ul class="flames-list">
         <li><b>I. Vision</b> - The ability to see direction even when others are lost.</li>
@@ -811,7 +811,7 @@ footer {
         <li><b>IV. Courage</b> - The will to move forward despite fear.</li>
         <li><b>V. Unity</b> - The bond that turns individuals into something greater.</li>
       </ul>
-      
+
       <p class="lore-text" style="font-style: italic; color: rgba(255,255,255,0.6);">Though smaller, these flames are just as important.
       Because even the brightest Core will fade without what supports it.
 
@@ -828,7 +828,7 @@ footer {
         <div class="achievement-progress-bar" id="achProgressBar"></div>
         <div class="achievement-progress-text" id="achProgressText">0 / 4 BADGES UNLOCKED</div>
       </div>
-      
+
       <div class="achievement-grid">
         <div class="achievement-card" id="ach1">
           <span class="ach-badge locked-badge" id="ach1Badge">🔒 Locked</span>
@@ -874,7 +874,7 @@ footer {
   <div class="page" id="archives">
     <div class="box">
       <h2>BLDS KRONOLOGIS ARCHIVES</h2>
-      
+
       <div class="archive-log">
         <div class="archive-date">> CORE DOMINION LEADERSHIP NETWORK</div>
         <div class="staff-grid">
@@ -891,7 +891,7 @@ footer {
             <p>Prince Felix</p>
           </div>
         </div>
-        
+
         <div class="staff-grid" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
           <div class="staff-group">
             <h4>Admin</h4>
@@ -907,7 +907,7 @@ footer {
           </div>
         </div>
       </div>
-      
+
       <div class="archive-log">
         <div class="archive-date">> MARCH 05, 2024 [CORE_LAUNCH]</div>
         <p style="font-size:13px; color:rgba(255,255,255,0.8);">
@@ -923,7 +923,7 @@ footer {
       </div>
 
       <div class="archive-log">
-        <div class="archive-date">> VERSION 2.7.0 [TRUE_RESET_INITIALIZED_2026]</div>
+        <div class="archive-date">> MAY 30, 2026 [VERSION 2.7.0] [TRUE_RESET_INITIALIZED]</div>
         <p style="font-size:13px; color:rgba(255,255,255,0.8);">
           Sistem mutasi diperbarui. Menyetujui pergantian jalur peliharaan (*Core Path*) melalui menu reset harian akan mengembalikan kondisi embrio ke Fase 1 (Telur) secara instan.
         </p>
@@ -1055,11 +1055,11 @@ function loadState() {
       streakData.unlockedPermanently = { dragon: false, fish: false, wolf: false };
     }
   }
-  
+
   if (streakData.count >= 100) {
     streakData.unlockedPermanently[streakData.petType] = true;
   }
-  
+
   checkStreakValidity();
   updateWidgetDynamicUI();
   renderLeaderboard();
@@ -1095,10 +1095,10 @@ function confirmResetStreak() {
   streakData.count = 0;
   streakData.lastCalibratedTimestamp = null;
   saveState();
-  
+
   // Tutup panel konfirmasi
   closeResetModal();
-  
+
   // Set judul modal registrasi biar dinamis & langsung nampilin pemilihan pet
   document.getElementById("modalRegTitle").innerHTML = "CHOOSE NEW CORE PATHWAY";
   document.getElementById("dominionNameInput").value = streakData.dominionName || "";
@@ -1109,7 +1109,7 @@ function getPetEvolutionEngine(count, type) {
   let stageText = "";
   let rank = "VOID WALKER";
   let glow = "0 0 10px rgba(255,255,255,0.3)";
-  
+
   let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
   let checkValue = isCoreLocked ? 100 : count;
 
@@ -1193,15 +1193,15 @@ function updateAchievementsUI(highestStreak) {
 
 function updateWidgetDynamicUI() {
   const engine = getPetEvolutionEngine(streakData.count, streakData.petType);
-  
+
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
-  
+
   if (streakData.dominionName) {
     document.getElementById("petHudBox").style.display = "block";
     document.getElementById("petNameDisplay").innerHTML = streakData.petCustomName ? streakData.petCustomName : "UNNAMED ENTITY";
     document.getElementById("petStageDisplay").innerHTML = engine.stage;
-    
+
     const frame = document.getElementById("petImageFrameSlot");
     if (frame) {
       frame.innerHTML = getPetSvg(streakData.petType, streakData.count);
@@ -1295,19 +1295,19 @@ function calibrateCore() {
     const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
     if (msElapsed < (24 * 60 * 60 * 1000)) return;
   }
-  
+
   streakData.count++;
   if (streakData.count > streakData.highestCount) {
     streakData.highestCount = streakData.count;
   }
-  
+
   if (streakData.count >= 100) {
     if (!streakData.unlockedPermanently) {
       streakData.unlockedPermanently = { dragon: false, fish: false, wolf: false };
     }
     streakData.unlockedPermanently[streakData.petType] = true;
   }
-  
+
   streakData.lastCalibratedTimestamp = Date.now();
   saveState();
   updateWidgetDynamicUI();
@@ -1330,11 +1330,11 @@ function saveDominionName() {
   const nameVal = document.getElementById("dominionNameInput").value.trim();
   const typeVal = document.getElementById("petTypeSelect").value;
   if(!nameVal) { alert("FIELD CANNOT BE VOID!"); return; }
-  
+
   streakData.dominionName = nameVal;
   streakData.petType = typeVal;
   saveState();
-  
+
   document.getElementById("nameModal").style.display = "none";
   updateWidgetDynamicUI();
   enter();
@@ -1354,7 +1354,7 @@ function runBldsCinematicCutscene() {
   const overlay = document.getElementById("bldsCutsceneOverlay");
   const logo = document.getElementById("bldsCutsceneLogo");
   const dialogBox = document.getElementById("bldsCutsceneDialog");
-  
+
   overlay.style.display = "flex";
   setTimeout(() => { overlay.style.opacity = "1"; }, 50);
 
@@ -1373,7 +1373,7 @@ function runBldsCinematicCutscene() {
     setTimeout(() => {
       dialogBox.style.opacity = "0";
       dialogBox.style.transform = "translateY(10px)";
-      
+
       setTimeout(() => {
         dialogBox.innerHTML = item.text;
         dialogBox.style.opacity = "1";
@@ -1395,7 +1395,7 @@ function runBldsCinematicCutscene() {
 function applyVisualMode(mode) {
   const splitOverlay = document.getElementById("splitOverlay");
   const alertHud = document.getElementById("cutsceneAlert");
-  
+
   document.body.classList.remove("full-invert");
   splitOverlay.style.display = "none";
   alertHud.style.display = "none";
@@ -1419,7 +1419,7 @@ function applyVisualMode(mode) {
 
 function unlockCode() {
   let v = document.getElementById("codeInput").value.toLowerCase().trim();
-  
+
   if (!v) {
     alert("KODE TIDAK BOLEH KOSONG!");
     return;
