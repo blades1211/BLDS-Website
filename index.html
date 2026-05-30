@@ -24,6 +24,9 @@ body{
   color:white;
   font-family:Poppins,sans-serif;
   overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
 }
 
 /* SKY */
@@ -88,7 +91,7 @@ body{
   width:100%;
   max-width:950px;
   margin:auto;
-  min-height:100vh;
+  flex:1;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -134,6 +137,7 @@ button{
   transition:.35s;
   position:relative;
   overflow:hidden;
+  font-family:Poppins,sans-serif;
 }
 
 button:hover{
@@ -199,6 +203,31 @@ button:active{
     opacity:1;
     transform:translateY(0);
   }
+}
+
+/* QUOTES SYSTEM */
+.quote-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.quote-text {
+  font-style: italic;
+  font-weight: 300;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #e0e0e0;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  transition: opacity 0.3s ease;
+}
+
+.quote-author {
+  display: block;
+  margin-top: 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* INPUT */
@@ -357,6 +386,48 @@ input:focus{
   }
 }
 
+/* FOOTER */
+footer {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 2px;
+  transition: 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.footer-links a:hover {
+  color: white;
+  border-color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.footer-credits {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
 /* MOBILE */
 
 @media(max-width:700px){
@@ -372,6 +443,11 @@ input:focus{
   }
   .bigLogo{
     width:170px;
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
   }
 }
 
@@ -489,6 +565,15 @@ input:focus{
         ❌ Code Breaker<br>
         <small>Unlock all hidden codes</small>
       </div>
+    </div>
+
+    <div class="box quote-container">
+      <h2>CORE RADIANCE QUOTES</h2>
+      <br>
+      <p class="quote-text" id="bldsQuote">"Click the button below to draw strength from the dominion."</p>
+      <span class="quote-author" id="bldsAuthor">— BLDS Core</span>
+      <br>
+      <button onclick="generateDynamicQuote()">REFRESH CORE RADIANCE</button>
     </div>
   </div>
 
@@ -640,6 +725,16 @@ input:focus{
   <br><br>
 </div>
 
+<footer>
+  <div class="footer-links">
+    <a href="https://discord.gg/r4dM4QFteV" target="_blank">DISCORD COMMUNITY</a>
+    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0" target="_blank">WHATSAPP COMMUNITY</a>
+  </div>
+  <div class="footer-credits">
+    © 2026 BLACKLIGHTDOMS. Built to survive the shadows.
+  </div>
+</footer>
+
 <script>
 
 /* STARS BACKGROUND */
@@ -674,13 +769,22 @@ document.body.addEventListener("click",()=>{
 },{once:true});
 
 /* BUTTON SOUND & FLASH */
-document.querySelectorAll("button").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    clickSound.currentTime = 0;
-    clickSound.play().catch(()=>{});
-    flashEffect();
+function initButtonEffects() {
+  document.querySelectorAll("button").forEach(btn=>{
+    // Hapus listener lama jika ada agar tidak double suara
+    btn.removeEventListener("click", playEffects);
+    btn.addEventListener("click", playEffects);
   });
-});
+}
+
+function playEffects() {
+  clickSound.currentTime = 0;
+  clickSound.play().catch(()=>{});
+  flashEffect();
+}
+
+// Jalankan efek tombol di awal
+initButtonEffects();
 
 /* FLASH EFFECT */
 function flashEffect(){
@@ -763,7 +867,6 @@ function unlockCode(){
   if(v === "forgotten"){
     document.getElementById("forgotScene").style.display = "flex";
     
-    // Trigger achievement jika belum didapatkan
     if(!achievements.forgotten){
       achievements.forgotten = true;
       updateAchievements();
@@ -774,7 +877,6 @@ function unlockCode(){
   else if(v === "12 flames" || v === "12flames"){
     document.getElementById("flameScene").style.display = "flex";
     
-    // Trigger achievement jika belum didapatkan
     if(!achievements.flames){
       achievements.flames = true;
       updateAchievements();
@@ -790,6 +892,56 @@ function unlockCode(){
 function closeScene(id){
   document.getElementById(id).style.display = "none";
 }
+
+/* PROCEDURAL THOUSANDS QUOTES GENERATOR */
+const subjek = [
+  "A real member of BLDS", "The Blacklight Core", "A survivor inside the eclipse", 
+  "Those who refuse to disappear", "An ignored soul", "The hidden 11th Flame", 
+  "A true Dominion walker", "The shadow left behind", "The founder's vision", 
+  "Every broken individual who arrived here"
+];
+
+const kondisi = [
+  "does not seek recognition when the world is bright", "continues to stand after every single collapse",
+  "moves forward even when everything turns pitch black", "remembers their pre-identity purpose",
+  "ignores the fast rise of the superficial crowd", "rebuilds the fragment of their broken star",
+  "conquers fear without expecting anyone to believe in them", "keeps growing when nobody is watching",
+  "preserves the lesser flames inside their soul", "refuses to let the outer darkness consume the mind"
+];
+
+const dampak = [
+  "because victory belongs to those who endure.", "and that is why their light can never be erased.",
+  "proving that shadows are just a lack of vision.", "creating a second chance out of complete destruction.",
+  "leaving a legacy that history cannot corrupt.", "because true discipline shines brightest alone.",
+  "turning individual pain into an unbreakable unity.", "and judging whether the obstacle deserves to remain real.",
+  "shattering the illusions of those who only shine in safety.", "protecting the center of the eclipse forever."
+];
+
+const authors = ["— Core Radiance", "— Archival Echo", "— BLDS Oracle", "— The Survivor Fragment", "— Flame Whisperer"];
+
+function generateDynamicQuote(){
+  const txt = document.getElementById("bldsQuote");
+  const auth = document.getElementById("bldsAuthor");
+  
+  // Efek transisi meredup saat teks diganti
+  txt.style.opacity = 0;
+  
+  setTimeout(() => {
+    let s = subjek[Math.floor(Math.random() * subjek.length)];
+    let k = kondisi[Math.floor(Math.random() * kondisi.length)];
+    let d = dampak[Math.floor(Math.random() * dampak.length)];
+    let a = authors[Math.floor(Math.random() * authors.length)];
+    
+    txt.innerHTML = `"${s} ${k} ${d}"`;
+    auth.innerHTML = a;
+    txt.style.opacity = 1;
+  }, 150);
+}
+
+// Pastikan tombol baru juga mendapatkan sound effect & flash secara dinamis
+document.addEventListener("DOMContentLoaded", () => {
+  initButtonEffects();
+});
 
 </script>
 
