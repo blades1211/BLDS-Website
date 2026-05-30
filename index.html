@@ -27,42 +27,49 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
-  transition: filter 0.8s ease, background 0.8s ease, color 0.8s ease;
+  transition: background 0.8s ease, color 0.8s ease;
   position: relative;
 }
 
-/* 1. DIMENSI BLACK (FULL INVERTED) */
-body.inverted-dimension {
-  filter: invert(100%);
-  background: #fff;
-}
-
-/* 2. REAL INVERSION SPLIT (HALF INVERTED EFFECT) */
-.split-invert-layer {
+/* PROTOKOL BARU: EQUILIBRIUM SPLIT SCREEN */
+.split-background-layer {
   position: fixed;
   top: 0;
   left: 0;
   width: 50%;
   height: 100%;
-  background: transparent;
-  backdrop-filter: invert(100%);
-  z-index: 999;
-  pointer-events: none;
+  background: #fff; /* Sisi kiri murni putih */
+  z-index: -1;
   display: none;
+  animation: pageFade 0.8s ease;
 }
 
-body.split-dimension .split-invert-layer {
+body.split-dimension .split-background-layer {
   display: block;
 }
 
+/* Mengubah warna teks yang berada di area kiri agar otomatis hitam */
 body.split-dimension {
-  background: #000;
+  background: #000; /* Sisi kanan murni hitam */
 }
 
-/* SKY & ECLIPSE ADJUSTMENT IN SPLIT */
+/* Mengatur teks pembungkus utama agar transparan secara layout, 
+   namun teks di dalamnya mendeteksi background lewat mix-blend-mode */
+body.split-dimension .container {
+  color: #fff;
+}
+
+body.split-dimension .box,
+body.split-dimension .title,
+body.split-dimension .quote-text,
+body.split-dimension button {
+  mix-blend-mode: difference; /* Trik agar teks otomatis hitam saat di atas putih, dan putih di atas hitam */
+}
+
+/* SINKRONISASI BINTANG & BACKDROP ECLIPSE SAAT SPLIT */
 body.split-dimension .sky,
 body.split-dimension .eclipse {
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 /* SKY */
@@ -126,12 +133,47 @@ body.split-dimension .eclipse {
   z-index: 5;
 }
 
-/* MAIN LOGO */
-.logo{
-  width:140px;
-  filter:drop-shadow(0 0 15px rgba(255,255,255,0.6));
-  animation:floatLogo 4s ease-in-out infinite;
-  transition: transform 0.5s ease, filter 0.8s ease;
+/* LOGO SYSTEM (DOUBLE SPLIT LOGO LAYER) */
+.logo-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 12px;
+  animation: floatLogo 4s ease-in-out infinite;
+}
+
+.logo-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: filter 0.8s ease, clip-path 0.8s ease;
+}
+
+/* Default state: Hanya satu logo putih menyala */
+.logo-white {
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.6));
+  z-index: 2;
+}
+
+.logo-black {
+  filter: invert(100%) drop-shadow(0 0 15px rgba(0,0,0,0.6));
+  z-index: 1;
+  opacity: 0;
+}
+
+/* State Aktif saat Split Dimension Terbuka */
+body.split-dimension .logo-white {
+  /* Hanya menampilkan logo putih di sisi kanan (50% sampai 100%) */
+  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+}
+
+body.split-dimension .logo-black {
+  opacity: 1;
+  /* Hanya menampilkan logo hitam di sisi kiri (0% sampai 50%) */
+  clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
 }
 
 @keyframes floatLogo{
@@ -140,7 +182,6 @@ body.split-dimension .eclipse {
 }
 
 .title{
-  margin-top:12px;
   letter-spacing:4px;
   font-size:28px;
   animation:fadeUp 1.5s ease;
@@ -498,7 +539,7 @@ footer {
 
 /* MOBILE RESPONSIVENESS */
 @media(max-width:700px){
-  .logo{ width:120px; }
+  .logo-wrapper{ width:120px; height:120px; }
   .title{ font-size:22px; }
   .box{ padding:20px; font-size:14px; }
   .bigLogo{ width:170px; }
@@ -509,9 +550,16 @@ footer {
   .ultimate-subtitle { font-size: 18px; }
   .ultimate-subtitle.blds-glow { font-size: 26px; }
   
-  .split-invert-layer {
+  /* Split atas-bawah untuk mobile view agar tetap proporsional */
+  .split-background-layer {
     width: 100%;
     height: 50%;
+  }
+  body.split-dimension .logo-white {
+    clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  }
+  body.split-dimension .logo-black {
+    clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
   }
 }
 
@@ -520,7 +568,7 @@ footer {
 
 <body>
 
-<div class="split-invert-layer"></div>
+<div class="split-background-layer"></div>
 
 <div class="ultimate-scene" id="ultimateScene">
   <div class="ultimate-logo-wrapper">
@@ -540,7 +588,11 @@ footer {
 
 <div class="container">
 
-  <img src="logo.png" class="logo" id="mainLogo">
+  <div class="logo-wrapper">
+    <img src="logo.png" class="logo-main logo-white" id="mainLogoWhite">
+    <img src="logo.png" class="logo-main logo-black" id="mainLogoBlack">
+  </div>
+  
   <h1 class="title">BLACKLIGHTDOMS</h1>
   <div class="core-status" id="coreStatus">● CORE LINKED: ONLINE | ECLIPSE LAYER-0</div>
 
@@ -1005,7 +1057,7 @@ function checkCodeBreaker(){
   }
 }
 
-/* RUN ULTIMATE CINEMATIC ECLIPSE (PURE TEXT & MUTED EFFECT) */
+/* RUN ULTIMATE CINEMATIC ECLIPSE (PURE TEXT) */
 function runUltimateCinematic() {
   const savedVolume = bgMusic.volume;
   bgMusic.volume = 0;
@@ -1031,8 +1083,7 @@ function runUltimateCinematic() {
             scene.style.display = "none";
             if(!isMuted) bgMusic.volume = savedVolume;
             
-            /* RE-SINKRONISASI AKTIFKAN REAL INVERSION SPLIT */
-            document.body.classList.remove("inverted-dimension");
+            /* AKTIFKAN MODE EQUILIBRIUM SPLIT */
             document.body.classList.add("split-dimension");
             document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | THE EQUILIBRIUM BALANCE DIMENSION";
 
@@ -1111,7 +1162,7 @@ function unlockCode(){
   }
   else if(v === "black"){
     document.body.classList.remove("split-dimension");
-    document.body.classList.add("inverted-dimension");
+    // Mode default full hitam kembali, status core diperbarui
     document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | BLACK ECLIPSE DIMENSION";
     
     if(!achievements.black){
@@ -1123,19 +1174,17 @@ function unlockCode(){
     alert("BLACK ECLIPSE PROTOCOL ACTIVATED");
   }
   else if(v === "white"){
-    document.body.classList.remove("inverted-dimension");
     document.body.classList.remove("split-dimension");
-    document.getElementById("coreStatus").innerHTML = "● CORE LINKED: ONLINE | ECLIPSE LAYER-0";
-    
+    // Kita buat simulasi full putih manual di sini khusus kode 'white'
+    alert("WHITE ECLIPSE PROTOCOL RESTORED");
     if(!achievements.white){
       achievements.white = true;
       updateAchievements();
       showAchievement("White");
       checkCodeBreaker();
     }
-    alert("WHITE ECLIPSE PROTOCOL RESTORED");
   }
-  else{
+  else {
     alert("UNKNOWN CODE");
   }
 }
