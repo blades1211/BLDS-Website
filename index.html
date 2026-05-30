@@ -120,16 +120,34 @@ body.full-invert {
 
 .streak-widget {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  padding: 6px 14px;
+  padding: 10px 18px;
   border-radius: 20px;
   font-size: 11px;
   letter-spacing: 1px;
   margin-bottom: 15px;
   display: none;
+}
+
+.streak-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.highest-streak-display {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 4px;
+  width: 100%;
+  text-align: center;
 }
 
 .pet-hud-box {
@@ -649,31 +667,55 @@ footer {
   margin-right: 8px;
 }
 
+/* 🔄 DESIGN BARU: FLOATING TRIGGER BUTTON & MINIMALIST MONOCHROME ADMIN PANEL */
+.admin-trigger-launcher {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
+  padding: 10px 16px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: grab;
+  z-index: 999998;
+  box-shadow: 0 4px 20px rgba(255,255,255,0.25);
+  display: none;
+  user-select: none;
+  touch-action: none;
+}
+.admin-trigger-launcher:active {
+  cursor: grabbing;
+}
+
 .admin-floating-panel {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 340px;
-  max-height: 80vh;
-  background: rgba(5, 5, 8, 0.95);
-  border: 2px solid #ff0055;
-  box-shadow: 0 0 25px rgba(255, 0, 85, 0.4);
+  bottom: 80px;
+  right: 25px;
+  width: 350px;
+  max-height: 75vh;
+  background: rgba(10, 10, 10, 0.98);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  z-index: 99999;
+  z-index: 999999;
   font-family: 'Poppins', sans-serif;
   color: #fff;
   display: none;
   flex-direction: column;
   overflow: hidden;
-  animation: pageFade 0.4s ease;
+  animation: pageFade 0.3s ease;
 }
 
 .admin-header {
-  background: #ff0055;
-  color: #000;
-  padding: 10px 15px;
+  background: #ffffff;
+  color: #000000;
+  padding: 12px 16px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 2px;
   display: flex;
   justify-content: space-between;
@@ -681,24 +723,25 @@ footer {
 }
 
 .admin-body {
-  padding: 15px;
+  padding: 18px;
   overflow-y: auto;
   flex: 1;
   font-size: 12px;
 }
 
 .admin-section {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 12px;
+  padding-bottom: 14px;
 }
 
 .admin-section h4 {
-  color: #ff0055;
-  margin-bottom: 6px;
+  color: #ffffff;
+  margin-bottom: 8px;
   text-transform: uppercase;
   font-size: 11px;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .admin-body label {
@@ -711,41 +754,44 @@ footer {
 .admin-body input, .admin-body select {
   padding: 8px;
   margin-top: 4px;
-  border-color: rgba(255, 0, 85, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: #000;
+  color: #fff;
 }
 
 .admin-body input:focus, .admin-body select:focus {
-  border-color: #ff0055;
+  border-color: #ffffff;
 }
 
 .admin-btn {
-  background: #ff0055 !important;
-  color: #000 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
   border: none !important;
   font-weight: 600;
-  padding: 8px 12px;
+  padding: 9px 12px;
   width: 100%;
-  margin: 10px 0 0 0;
+  margin: 12px 0 0 0;
   font-size: 11px;
   letter-spacing: 1px;
+  border-radius: 8px;
 }
 
 .admin-btn:hover {
-  background: #fff !important;
-  color: #000 !important;
+  background: rgba(255,255,255,0.8) !important;
 }
 
 .code-list-box {
-  background: rgba(0,0,0,0.5);
-  border: 1px dashed rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.6);
+  border: 1px dashed rgba(255,255,255,0.3);
   padding: 8px;
   border-radius: 8px;
-  max-height: 90px;
+  max-height: 105px;
   overflow-y: auto;
   font-family: monospace;
   font-size: 11px;
-  color: #00ffcc;
+  color: #ffffff;
   margin-top: 5px;
+  line-height: 1.5;
 }
 </style>
 </head>
@@ -828,9 +874,14 @@ footer {
   </div>
 
   <div class="streak-widget" id="streakWidget">
-    RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
-    <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
-    RANK: <span id="rankTitle" style="font-weight:600;">VOID WALKER</span>
+    <div class="streak-row">
+      RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
+      <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
+      RANK: <span id="rankTitle" style="font-weight:600;">VOID WALKER</span>
+    </div>
+    <div class="highest-streak-display">
+      HIGHEST PEAK RECORD: <b id="highestStreakDisplayCount" style="color: #fff;">0</b> DAYS
+    </div>
   </div>
 
   <div class="pet-hud-box" id="petHudBox">
@@ -1023,9 +1074,9 @@ footer {
       </div>
 
       <div class="archive-log">
-        <div class="archive-date">> MAY 30, 2026 [VERSION 2.7.0] [TRUE_RESET_INITIALIZED]</div>
+        <div class="archive-date">> MAY 30, 2026 [VERSION 2.7.5] [DRAGGABLE_HUD_INJECTED]</div>
         <p style="font-size:13px; color:rgba(255,255,255,0.8);">
-          Sistem mutasi diperbarui. Menyetujui pergantian jalur peliharaan (*Core Path*) melalui menu reset harian akan mengembalikan kondisi embrio ke Fase 1 (Telur) secara instan.
+          Pembaruan masif pada panel admin eksternal. Struktur GUI diubah menjadi monokrom (Hitam-Putih), peluncur tombol dipindahkan ke status mengambang bebas yang dapat dipindahkan sesuka hati oleh Pemilik.
         </p>
       </div>
     </div>
@@ -1050,22 +1101,25 @@ footer {
   </div>
 </div>
 
+<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ ADMIN</div>
+
 <div class="admin-floating-panel" id="adminPanel">
   <div class="admin-header">
     <span>🛡️ BLDS ADMIN MATRIX</span>
-    <span style="cursor:pointer; font-weight:bold;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span>
+    <span style="cursor:pointer; font-weight:bold; font-size:14px;" onclick="toggleAdminPanelUI()">✕</span>
   </div>
   <div class="admin-body">
     
     <div class="admin-section">
       <h4>1. Core User Modification</h4>
+      
       <label>Dominion Name:</label>
       <input type="text" id="admDomName">
       
-      <label>Streak Count (Days):</label>
+      <label>Current Streak Count (Days):</label>
       <input type="number" id="admStreak">
       
-      <label>Highest Streak (For Badges):</label>
+      <label>Highest Peak Streak (Record):</label>
       <input type="number" id="admHighStreak">
       
       <label>Core Path / Pet Type:</label>
@@ -1073,6 +1127,16 @@ footer {
         <option value="dragon">Dragon (Void)</option>
         <option value="fish">Fish (Abyss)</option>
         <option value="wolf">Wolf (Shadow)</option>
+      </select>
+
+      <label>Force Evolution Phase Override:</label>
+      <select id="admForceStageSelection">
+        <option value="auto">-- SYSTEM AUTOMATIC (BY STREAK) --</option>
+        <option value="1">Fase 1: Embryo Egg State</option>
+        <option value="2">Fase 2: Hatchling Whelp State</option>
+        <option value="3">Fase 3: Intermediate Drake/Serpent State</option>
+        <option value="4">Fase 4: Alpha Apex Overlord State</option>
+        <option value="5">Fase 5: Locked Cosmic Ancient God State</option>
       </select>
       
       <label>Pet Custom Nickname:</label>
@@ -1112,8 +1176,8 @@ footer {
         • blds : Inverted split cinematic<br>
         • black : Full filter screen inverted<br>
         • white : Normal visual calibration<br>
-        • OWNERONLYBLDS : Trigger Admin Board<br>
-        • lorenzo / nayottama / prince : Core system activation signatures
+        • OWNERONLYBLDS : Trigger Admin Launcher Button<br>
+        • lorenzo / nayottama / prince : Activation keys
       </div>
     </div>
 
@@ -1159,7 +1223,8 @@ let streakData = {
     fish: false,
     wolf: false
   },
-  forcedRankTitle: "" 
+  forcedRankTitle: "",
+  forcedPetStage: "auto" // Default Auto mengikuti perhitungan hari/streak
 };
 
 let calibrationInterval = null;
@@ -1190,6 +1255,16 @@ function getPetSvg(type, count) {
   let fileName = "";
   let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
   let checkValue = isCoreLocked ? 100 : count;
+
+  // Jika admin memaksakan fase, visual gambar akan mengikuti fase paksaan tersebut
+  if(streakData.forcedPetStage && streakData.forcedPetStage !== "auto") {
+    let stageForce = parseInt(streakData.forcedPetStage);
+    if(stageForce === 1) checkValue = 0;
+    else if(stageForce === 2) checkValue = 7;
+    else if(stageForce === 3) checkValue = 30;
+    else if(stageForce === 4) checkValue = 50;
+    else if(stageForce === 5) checkValue = 100;
+  }
 
   if (type === "dragon") {
     if (checkValue >= 100) fileName = "Naga5.png";
@@ -1229,6 +1304,9 @@ function loadState() {
     if (!streakData.unlockedPermanently) {
       streakData.unlockedPermanently = { dragon: false, fish: false, wolf: false };
     }
+    if (!streakData.forcedPetStage) {
+      streakData.forcedPetStage = "auto";
+    }
   }
 
   const savedLb = localStorage.getItem("BLDS_ADM_LB_OVERRIDE");
@@ -1238,6 +1316,11 @@ function loadState() {
 
   if (streakData.count >= 100) {
     streakData.unlockedPermanently[streakData.petType] = true;
+  }
+
+  // Jika terdeteksi admin mengaktifkan launcher sebelumnya, biarkan tetap menyala
+  if (localStorage.getItem("BLDS_LAUNCHER_ENABLED") === "true") {
+    document.getElementById("adminLauncherBtn").style.display = "block";
   }
 
   checkStreakValidity();
@@ -1290,6 +1373,17 @@ function getPetEvolutionEngine(count, type) {
   let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
   let checkValue = isCoreLocked ? 100 : count;
 
+  // Intersepsi nilai perhitungan berdasarkan paksaan fase dari admin panel
+  let isForced = streakData.forcedPetStage && streakData.forcedPetStage !== "auto";
+  if(isForced) {
+    let stageForce = parseInt(streakData.forcedPetStage);
+    if(stageForce === 1) checkValue = 0;
+    else if(stageForce === 2) checkValue = 7;
+    else if(stageForce === 3) checkValue = 30;
+    else if(stageForce === 4) checkValue = 50;
+    else if(stageForce === 5) checkValue = 100;
+  }
+
   if (checkValue >= 100) {
     rank = "THE ETERNAL CORE";
     if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon (LOCKED)";
@@ -1317,8 +1411,16 @@ function getPetEvolutionEngine(count, type) {
     else stageText = "Fase 1: Shadow Spirit Egg";
   }
 
+  // Jika dipaksa tapi rank utamanya mau di-override manual oleh admin text
   if(streakData.forcedRankTitle) {
     rank = streakData.forcedRankTitle;
+  } else if(isForced) {
+    // Menyesuaikan rank bawaan fase jika sedang di-override fasenya saja
+    if(checkValue >= 100) rank = "THE ETERNAL CORE";
+    else if(checkValue >= 50) rank = "DOMINION VANGUARD";
+    else if(checkValue >= 30) rank = "RESONANCE KEEPER";
+    else if(checkValue >= 7) rank = "ECLIPSE SYNCHRONIZER";
+    else rank = "VOID WALKER";
   }
 
   return { stage: stageText, rank: rank, glow: glow };
@@ -1377,6 +1479,7 @@ function updateWidgetDynamicUI() {
 
   document.getElementById("streakCount").innerHTML = streakData.count;
   document.getElementById("rankTitle").innerHTML = engine.rank;
+  document.getElementById("highestStreakDisplayCount").innerHTML = streakData.highestCount; // Menampilkan Highest Streak ke Layar Utama
 
   if (streakData.dominionName) {
     document.getElementById("petHudBox").style.display = "block";
@@ -1450,7 +1553,6 @@ function savePetCustomName() {
   updateWidgetDynamicUI();
 }
 
-/* ⚡ PERBAIKAN TOTAL KONDISI CALIBRATION HUD ⚡ */
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
@@ -1619,8 +1721,10 @@ function unlockCode() {
     return;
   }
 
-  // DI SINI: Kode pemanggil diubah dari "-OWNER_ONLY-" menjadi "OWNERONLYBLDS"
   if (v === "OWNERONLYBLDS") {
+    // Memunculkan tombol launcher secara permanen di kanan bawah
+    document.getElementById("adminLauncherBtn").style.display = "block";
+    localStorage.setItem("BLDS_LAUNCHER_ENABLED", "true");
     openAdminMatrixPanel();
     document.getElementById("codeInput").value = "";
     return;
@@ -1649,6 +1753,15 @@ function unlockCode() {
   document.getElementById("codeInput").value = "";
 }
 
+function toggleAdminPanelUI() {
+  const panel = document.getElementById("adminPanel");
+  if(panel.style.display === "flex") {
+    panel.style.display = "none";
+  } else {
+    openAdminMatrixPanel();
+  }
+}
+
 function openAdminMatrixPanel() {
   document.getElementById("adminPanel").style.display = "flex";
   
@@ -1656,11 +1769,11 @@ function openAdminMatrixPanel() {
   document.getElementById("admStreak").value = streakData.count;
   document.getElementById("admHighStreak").value = streakData.highestCount;
   document.getElementById("admPetType").value = streakData.petType;
+  document.getElementById("admForceStageSelection").value = streakData.forcedPetStage || "auto";
   document.getElementById("admPetNick").value = streakData.petCustomName || "";
   document.getElementById("admForceRank").value = streakData.forcedRankTitle || "";
   
   loadTargetLbSlotData();
-  alert("🛡️ ACCESS GRANTED: Admin Control Injected Successfully!");
 }
 
 function populateAdminPanelDropdowns() {
@@ -1690,6 +1803,7 @@ function executeAdminUserUpdate() {
   streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
   streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
   streakData.petType = document.getElementById("admPetType").value;
+  streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; // Menyimpan data paksaan fase pet
   streakData.petCustomName = document.getElementById("admPetNick").value.trim();
   
   saveState();
@@ -1697,7 +1811,7 @@ function executeAdminUserUpdate() {
   renderLeaderboard();
   populateAdminPanelDropdowns();
   startCalibrationTimer();
-  alert("✨ Admin Node: Core User Data Updated!");
+  alert("✨ Admin Node: Core User & Mutation Phase Changes Applied!");
 }
 
 function executeAdminRankOverride() {
@@ -1719,6 +1833,66 @@ function executeAdminLbUpdate() {
   renderLeaderboard();
   populateAdminPanelDropdowns();
   alert(`✨ Admin Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
+}
+
+/* 🔄 DRAGGABLE ENGINE INJECTION FOR FLOATING TRIGGER BUTTON */
+const dragBtn = document.getElementById("adminLauncherBtn");
+let isDragging = false;
+let currentX, currentY, initialX, initialY;
+let xOffset = 0, yOffset = 0;
+
+dragBtn.addEventListener("mousedown", dragStart);
+document.addEventListener("mousemove", drag);
+document.addEventListener("mouseup", dragEnd);
+
+dragBtn.addEventListener("touchstart", dragStart, { passive: false });
+document.addEventListener("touchmove", drag, { passive: false });
+document.addEventListener("touchend", dragEnd);
+
+function dragStart(e) {
+  let clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+  let clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+  
+  initialX = clientX - xOffset;
+  initialY = clientY - yOffset;
+  
+  if (e.target === dragBtn) {
+    isDragging = true;
+    dragBtn.style.cursor = "grabbing";
+  }
+}
+
+function drag(e) {
+  if (!isDragging) return;
+  if (e.type === "touchmove") e.preventDefault(); // Mencegah scrolling layar saat digeser di HP
+
+  let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+  let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+
+  currentX = clientX - initialX;
+  currentY = clientY - initialY;
+
+  xOffset = currentX;
+  yOffset = currentY;
+
+  setTranslate(currentX, currentY, dragBtn);
+}
+
+function setTranslate(xPos, yPos, el) {
+  el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+}
+
+function dragEnd(e) {
+  if (!isDragging) return;
+  initialX = currentX;
+  initialY = currentY;
+  isDragging = false;
+  dragBtn.style.cursor = "grab";
+
+  // Jika tombol dilepas dan posisi gesernya sangat kecil/tidak bergeser, anggap sebagai aksi "KLIK"
+  if (!currentX || (Math.abs(currentX) < 3 && Math.abs(currentY) < 3)) {
+    toggleAdminPanelUI();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
