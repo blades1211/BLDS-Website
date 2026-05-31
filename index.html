@@ -3,190 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLDS HUB SYSTEM</title>
+    <title>BLDS CORE SYSTEM</title>
     <style>
-        * { box-sizing: border-box; }
+        /* ===================================================
+           UI ASLI HITAM PEKAT MINIMALIS ELEGAN (#000000)
+           =================================================== */
         body {
-            background: #020205;
+            background-color: #000000;
             color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Container Pembungkus Gadget/UI Utama */
-        .phone-wrapper {
-            width: 100%;
-            max-width: 430px;
-            height: 780px;
-            border: 4px solid #111122;
-            border-radius: 24px;
-            background: #000000;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-        }
-
-        /* 📱 PANEL 1: MENU UTAMA WEBSITE HUB */
-        #mainMenuContainer {
-            display: block; /* Aktif di awal */
-            width: 100%;
-            height: 100%;
-            padding: 30px 20px;
+        .container {
             text-align: center;
-            overflow-y: auto;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .hub-title {
-            font-size: 20px;
-            color: #00ffff;
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
             letter-spacing: 2px;
             margin-bottom: 5px;
-            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+            color: #00ffff; /* Warna cyan khas BLDS Core */
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
         }
 
-        .hub-subtitle {
-            font-size: 11px;
-            color: #8888aa;
+        .subtitle {
+            font-size: 0.8rem;
+            color: #666666;
             margin-bottom: 40px;
+            letter-spacing: 1px;
         }
 
-        /* Tombol Menu Utama Sleek Style */
-        .menu-grid {
+        .menu-list {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            width: 100%;
         }
 
-        .btn-hub {
-            width: 100%;
-            background: rgba(255,255,255,0.02);
+        .menu-item {
+            background-color: transparent;
             color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid #333333;
             padding: 15px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 0.9rem;
             letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 8px;
             text-align: left;
-            transition: all 0.2s ease;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .btn-hub:hover {
-            background: #00ffff;
-            color: #000000;
+        .menu-item:hover {
             border-color: #00ffff;
-            box-shadow: 0 0 15px rgba(0,255,255,0.4);
-            transform: translateY(-2px);
+            background-color: rgba(0, 255, 255, 0.05);
         }
 
-        /* 🎮 PANEL 2: CONTAINER IFRAME GAME */
-        #beastEngineContainer {
-            display: none; /* Sembunyi di awal, muncul saat klik Beast Engine */
+        /* ===================================================
+           STYLE INTERFACE MODAL / POP-UP LORE & CODES
+           =================================================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #050508;
+            border: 1px solid #222222;
             width: 100%;
-            height: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            padding: 25px;
+            box-sizing: border-box;
             position: relative;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .modal-close-btn {
             background: transparent;
+            color: #ff4a4a;
+            border: 1px solid #ff4a4a;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 11px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-family: inherit;
+            float: right;
+        }
+
+        .modal-close-btn:hover {
+            background: #ff4a4a;
+            color: #ffffff;
+        }
+
+        .lore-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .lore-logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .lore-body-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #cccccc;
+            text-align: justify;
+            white-space: pre-line;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .code-input {
+            width: 100%;
+            background: #000000;
+            color: #00ff00;
+            border: 1px solid #333333;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            border-radius: 6px;
+        }
+
+        .code-input:focus {
+            border-color: #00ff00;
+        }
+
+        /* ===================================================
+           IFRAME CONTAINER (BEAST ENGINE SATU HALAMAN PENUH)
+           =================================================== */
+        #beastIframe {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 99999;
+            background-color: #020205;
         }
     </style>
 </head>
 <body>
 
-    <div class="phone-wrapper">
+    <div class="container" id="mainMenuArea">
+        <div class="title">BLDS CORE SYSTEM</div>
+        <div class="subtitle">V.109 - BLACKLIGHT DIRECTORY</div>
         
-        <div id="mainMenuContainer">
-            <div class="hub-title">BLDS CORE SYSTEM</div>
-            <div class="hub-subtitle">V.109 - BLACKLIGHT DIRECTORY</div>
-            
-            <div class="menu-grid">
-                <button class="btn-hub" onclick="alert('Opening Archives...')">📂 ARCHIVES</button>
-                <button class="btn-hub" onclick="alert('Opening Code Entry...')">🔑 ENTER CODE</button>
-                <button class="btn-hub" style="border-color: #00ffff; color: #00ffff;" onclick="bukaGameBeastEngine()">🎮 BEAST ENGINE SYSTEM</button>
-                <button class="btn-hub" onclick="alert('Opening Lore Panel...')">📜 LORE FLAMES</button>
-            </div>
+        <div class="menu-list">
+            <button class="menu-item" onclick="openModal('archivesModal')">📁 ARCHIVES</button>
+            <button class="menu-item" onclick="openModal('codeModal')">🔑 ENTER CODE</button>
+            <button class="menu-item" onclick="bukaGameBeastEngine()">🎮 BEAST ENGINE SYSTEM</button>
+            <button class="menu-item" onclick="openModal('loreModal')">📜 LORE FLAMES</button>
         </div>
-
-        <div id="beastEngineContainer">
-            <iframe id="beastIframe" src="index_beast_system.html"></iframe>
-        </div>
-
     </div>
 
-    <script>
-        // Data Telemetri Profil Player (Otomatis dilempar ke game saat masuk)
-        let playerProfileData = {
-            dominionName: "X_Doms_Player", 
-            count: 5,                    
-            highestCount: 88              
-        };
+    <div class="modal-overlay" id="archivesModal">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('archivesModal')">Close</button>
+            <div class="lore-header">
+                <div class="lore-logo">☀️</div>
+                <h2 style="margin:5px 0; font-size:1.3rem; letter-spacing:1px;">BLACKLIGHT CORE</h2>
+                <div style="font-size:10px; color:#666;">BLACK LIGHT DOMINION SQUAD</div>
+            </div>
+            <hr style="border:0; border-top:1px solid #222; margin-bottom:15px;">
+            <div class="lore-body-text">
+                <b>[ LORE ]</b>
+                Before BLDS had a name, before the symbol existed, before the squad was formed...
+                There were only individuals trying to survive their own darkness.
+                Some were ignored. Some were underestimated. Some failed over and over again until they stopped expecting anyone to believe in them.
+                They watched others rise faster. Watched others gain recognition. Watched people quit the moment things became difficult.
+                And slowly, they realized something: Most people only shine when the world is bright. But very few can continue moving forward when everything turns dark. That realization became the beginning of BLDS.
+                Not a squad created for fame. Not a kingdom built on arrogance. Not a place for people searching only for victory. But a dominion built by those who refused to disappear.
 
-        let currentActivePet = {
-            name: "Ikan5" 
-        };
+                <b>[ THE BLACKLIGHT CORE ]</b>
+                At the center of the eclipse lies the Core. A single star that continues to shine no matter how dark the sky becomes.
+                The Core represents the inner purpose carried by every member of BLDS. Not a purpose given by the world. Not a purpose created by attention or popularity. But a purpose discovered through hardship.
+                It is the reminder that: Even when everything around you changes... Even when people leave... Even when failure surrounds you... Your inner light can still remain alive.
+                BLDS believes the strongest people are not those who never fall. The strongest are the ones who continue standing after every fall. That is why the Core never disappears. Because purpose cannot be erased by fear.
 
-        // Fungsi pemicu saat tombol "BEAST ENGINE SYSTEM" di web diklik
-        function bukaGameBeastEngine() {
-            // Tukar visibilitas layer panel UI
-            document.getElementById("mainMenuContainer").style.display = "none";
-            document.getElementById("beastEngineContainer").style.display = "block";
+                <b>[ MEANING ]</b>
+                • <b>The Core</b>: Our purpose. Our inner light. The source of our strength.
+                • <b>The Eclipse</b>: The world. The darkness. The challenges we face every day.
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loreModal">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('loreModal')">Close</button>
+            <div class="lore-header">
+                <div class="lore-logo">🔥</div>
+                <h2 style="margin:5px 0; font-size:1.2rem; letter-spacing:1px;">THE TEN FLAMES OF BLDS</h2>
+                <div style="font-size:10px; color:#666;">5 Greater Flames & 5 Lesser Flames</div>
+            </div>
+            <hr style="border:0; border-top:1px solid #222; margin-bottom:15px;">
+            <div class="lore-body-text">
+                <span style="color:#ffcc00; font-weight:bold;">[ GREATER FLAMES ]</span>
+                <b>I. Vision</b>
+                The ability to see direction even when others are lost.
+                <b>II. Discipline</b>
+                To continue growing even when nobody is watching.
+                <b>III. Loyalty</b>
+                To stand together through victory and defeat.
+                <b>IV. Ambition</b>
+                The desire to surpass limits and continue evolving.
+                <b>V. Resilience</b>
+                The strength to rise again after every fall.
+
+                <span style="color:#aa88ff; font-weight:bold;">[ LESSER FLAMES ]</span>
+                <b>I. Hope</b>
+                The light that remains during difficult times.
+                <b>II. Awareness</b>
+                The ability to stay conscious and understand reality.
+                <b>III. Patience</b>
+                Growth takes time and endurance.
+                <b>IV. Courage</b>
+                The will to move forward despite fear.
+                <b>V. Unity</b>
+                The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.
+
+                <i>"Five flames grant strength. Five flames preserve it. Together, they protect the Core."</i>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="modal-close-btn" onclick="closeModal('codeModal')">Close</button>
+            <h3 style="margin-top:0; letter-spacing:1px;">ENTER SYSTEM DECRYPT CODE</h3>
+            <p style="font-size:11px; color:#666;">Masukkan kode sandi enkripsi terminal untuk membuka reward status.</p>
             
-            // Jeda sedikit biar iframe kelar loading, lalu inject data profil
-            setTimeout(() => {
-                let iframeWin = document.getElementById("beastIframe").contentWindow;
-                if(iframeWin) {
-                    iframeWin.postMessage({
-                        type: 'TELEMETRY_UPDATE',
-                        data: playerProfileData,
-                        pet: currentActivePet
-                    }, '*');
-                }
-            }, 400);
+            <input type="text" id="terminalCodeField" class="code-input" placeholder="INPUT CODE HERE..." autocomplete="off">
+            
+            <button class="menu-item" style="justify-content:center; border-color:#00ff00; color:#00ff00; padding:10px;" onclick="validateTerminalCode()">
+                RUN DECRYPT PROTOCOL
+            </button>
+            <div id="codeResponseMsg" style="font-size:12px; margin-top:15px; font-family:monospace;"></div>
+        </div>
+    </div>
+
+    <iframe id="beastIframe" src="index_beast_system.html"></iframe>
+
+    <script>
+        // Database lokal penyimpanan reward code agar persistensinya sinkron ke game
+        let systemAchievements = {
+            unlockedPills: 0,
+            unlockedRevives: 0,
+            bonusPower: 0
+        };
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            if(id === 'codeModal') {
+                document.getElementById('terminalCodeField').value = "";
+                document.getElementById('codeResponseMsg').innerText = "";
+            }
         }
 
         // ====================================================================
-        // 📡 JEMBATAN NAVIGASI UTAMA (Mendengarkan Sinyal Keluar Dari Iframe)
+        // 🔑 VERIFIKASI KODE RAHASIA SAKTI KAMU (FORGOTTEN & 12 FLAMES)
         // ====================================================================
-        window.addEventListener("message", (event) => {
+        function validateTerminalCode() {
+            const input = document.getElementById('terminalCodeField').value.trim().toLowerCase();
+            const msgBox = document.getElementById('codeResponseMsg');
             
-            // Cek apakah data pesan beneran sinyal tombol BACK dari game
-            if (event.data && event.data.type === 'BEAST_NAVIGATE_BACK') {
-                console.log("Sinyal BACK terdeteksi! Memulihkan navigasi menu utama...");
+            if (input === 'forgotten') {
+                systemAchievements.unlockedRevives += 5;
+                systemAchievements.unlockedPills += 10;
+                localStorage.setItem("BLDS_BONUS_AWARDS", JSON.stringify(systemAchievements));
                 
-                const menuUtama = document.getElementById("mainMenuContainer");
-                const areaGame = document.getElementById("beastEngineContainer");
-
-                // Jika elemen ID pembungkusnya cocok dan ketemu di DOM HTML
-                if (menuUtama && areaGame) {
-                    areaGame.style.display = "none";       // Sembunyikan game
-                    menuUtama.style.display = "block";     // Munculkan menu utama lagi
-                } else {
-                    // 🚨 FAILSAFE SYSTEM: Jika ID-nya beda/hilang di kode aslimu,
-                    // reload halaman otomatis agar balik ke menu utama & gak ngeblank!
-                    window.location.reload(); 
-                }
+                msgBox.style.color = "#00ff00";
+                msgBox.innerHTML = "🔓 CODE UNLOCKED!<br>Sinyal Masa Lalu Terdeteksi: +5 Revive Kit & +10 Burst Pills ditambahkan ke inventory game!";
+            } 
+            else if (input === '12 flames') {
+                systemAchievements.bonusPower += 30;
+                localStorage.setItem("BLDS_BONUS_AWARDS", JSON.stringify(systemAchievements));
+                
+                msgBox.style.color = "#00ff00";
+                msgBox.innerHTML = "🔓 CODE UNLOCKED!<br>Core Overdrive Aktif: +30 Bonus ATK Power Permanen disuntikkan ke Beast-mu!";
+            } 
+            else {
+                msgBox.style.color = "#ff4a4a";
+                msgBox.innerHTML = "❌ DECRYPT FAILED!<br>Kode Enkripsi Salah atau Tidak Terdaftar di Terminal Database.";
             }
+        }
 
-            // Merespon handshake otomatis dari dalam game
-            if (event.data && event.data.type === 'BEAST_HANDSHAKE_REQ') {
-                let iframeWin = document.getElementById("beastIframe").contentWindow;
-                if(iframeWin) {
-                    iframeWin.postMessage({
-                        type: 'TELEMETRY_UPDATE',
-                        data: playerProfileData,
-                        pet: currentActivePet
-                    }, '*');
+        // Jalankan transisi peluncuran game full screen overlay
+        function bukaGameBeastEngine() {
+            const iframe = document.getElementById("beastIframe");
+            if (iframe) {
+                iframe.style.display = "block";
+                // Kirim ulang data bonus rahasia ke game via window message
+                setTimeout(() => {
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({ type: 'SYNC_BONUS_CODES' }, '*');
+                    }
+                }, 200);
+            }
+        }
+
+        // 📡 JEMBATAN BACK BUTTON PENGIKAT IFRAME
+        window.addEventListener("message", (event) => {
+            if (event.data && event.data.type === 'BEAST_NAVIGATE_BACK') {
+                const iframe = document.getElementById("beastIframe");
+                if (iframe) {
+                    iframe.style.display = "none"; // Iframe mati, menu hitam aslimu terlihat kembali sempura
                 }
             }
         });
