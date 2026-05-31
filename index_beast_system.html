@@ -45,7 +45,7 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 PHYSICS SYSTEM STAGE (TALKING TOM STYLE) */
+/* 🐉 PHYSICS SYSTEM STAGE */
 .pet-center-stage {
   position: absolute; inset: 0; z-index: 10; pointer-events: none;
 }
@@ -303,7 +303,7 @@ body {
 
   <div class="screen-overlay" id="leaderboardScreen">
     <div class="top-nav-container" style="position:static; margin-bottom:12px;">
-      <button class="nav-btn" onclick="closeScreen('leaderboardScreen')">⬅️ Back</button>
+      <button class="nav-btn" onclick="closeLeaderboardAndGoHome()">⬅️ Back</button>
       <div style="font-size:12px; font-weight:bold; color:#00ffff; margin-top:5px;">🌐 Global Live Board</div>
     </div>
 
@@ -353,7 +353,6 @@ body {
 </div>
 
 <script>
-// 🧭 NAMING REGISTRY MATRIX
 const petNamingRegistry = {
   "Telor": { title: "Void Egg", element: "Water" },
   "Ikan1": { title: "Glitter Fin", element: "Water" },
@@ -373,7 +372,6 @@ const petNamingRegistry = {
   "Serigala5": { title: "Apex Sovereign", element: "Earth" }
 };
 
-// State Utama
 let stateData = {
   isHatched: true,
   activePetFile: "Ikan5",
@@ -384,7 +382,8 @@ let stateData = {
   power: 65,                 
   currentStreak: 0, highestStreak: 0,
   totalHunts: 0, 
-  deathTimestamp: null
+  deathTimestamp: null,
+  dominionName: "Player"
 };
 
 let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 1, pill: 3, revive: 1 };
@@ -403,6 +402,23 @@ const enemyPool = [
 
 const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
+const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+// 📡 BRIDGE TELEMETRY: Menangkap sinkronisasi nama dan profile utama dari index.html
+window.addEventListener("message", (e) => {
+  if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
+    if (e.data.data && e.data.data.dominionName) {
+      stateData.dominionName = e.data.data.dominionName;
+      stateData.currentStreak = e.data.data.count;
+      stateData.highestStreak = e.data.data.highestCount;
+    }
+    if (e.data.pet && e.data.pet.name) {
+      stateData.activePetFile = e.data.pet.name;
+    }
+    saveLocalData();
+    syncInterfaceGraphic();
+  }
+});
 
 function saveLocalData() {
   localStorage.setItem("BLDS_GATE_STATE", JSON.stringify(stateData));
@@ -415,9 +431,12 @@ function loadLocalData() {
   const b = localStorage.getItem("BLDS_GATE_BAG"); if(b) foodBag = JSON.parse(b);
 
   const fullBodyText = document.body.innerHTML;
-  if(fullBodyText.includes("Ikan5.png")) stateData.activePetFile = "Ikan5";
-  else if(fullBodyText.includes("Naga1.png")) stateData.activePetFile = "Naga1";
-  else if(fullBodyText.includes("Serigala1.png")) stateData.activePetFile = "Serigala1";
+  if(fullBodyText.includes("Ikan5.png") && !s) stateData.activePetFile = "Ikan5";
+  
+  // Handshake pemicu awal meminta data profile dari core utama parent
+  if(window.parent) {
+    window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
+  }
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -425,7 +444,7 @@ function loadLocalData() {
   setInterval(checkDeathCooldown, 1000);
 }
 
-// 🔐 SECURITY OWNER SYSTEM
+// 🛡️ SECURITY OWNER SYSTEM
 function verifyGatekeeperKey() {
   const field = document.getElementById("gatekeeperKeyField");
   if(field.value === "OWNERONLYBLDS") {
@@ -439,10 +458,18 @@ function verifyGatekeeperKey() {
   }
 }
 
-// 📊 TRIPLE TAB LEADERBOARD GENERATOR (TOP 20)
+// 📊 TRIPLE TAB LEADERBOARD SYSTEM (LIVE KONEKSI FIREBASE)
 function openLeaderboardScreen() {
   openScreen('leaderboardScreen');
   switchLeaderboardTab(currentActiveTab);
+}
+
+// FIX NAVIGATION: Fungsi tombol back melempar perintah keluar ke parent window utama
+function closeLeaderboardAndGoHome() {
+  closeScreen('leaderboardScreen');
+  if(window.parent) {
+    window.parent.postMessage({ type: 'BEAST_NAVIGATE_BACK' }, '*');
+  }
 }
 
 function switchLeaderboardTab(tab) {
@@ -460,55 +487,72 @@ function switchLeaderboardTab(tab) {
 
 function renderLeaderboardRows() {
   const box = document.getElementById("leaderboardRowsContainer");
-  box.innerHTML = "";
+  box.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.5;">Loading live global matrix...</div>`;
 
-  // Mock Database Competitor Online (Top 20 Array Generator)
-  let leaderboardDataset = [];
-  
-  // Masukkan data statik penantang global
-  const seedNames = ["X_Doms", "ZetaV", "Viper_09", "DomsBrother", "GamerX", "CyberFin", "AeroLupin", "IgnisM", "ShadowW", "Rogue1", "AlphaPro", "NetRider", "BlazeK", "WaterG", "DomsFans", "Specter", "FrostF", "KratosFin", "LupinKing", "Ragnarok"];
-  
-  for(let i = 0; i < 19; i++) {
-    let mockStreak = Math.floor(150 - (i * 7)) + (i % 2 === 0 ? 3 : 0);
-    let mockHunt = Math.floor(650 - (i * 28));
-    let mockLvl = Math.floor(45 - (i * 2)) || 1;
-    
-    leaderboardDataset.push({ name: seedNames[i], streak: mockStreak, hunt: mockHunt, level: mockLvl });
-  }
+  fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
+    .then(res => res.json())
+    .then(cloudData => {
+      let dataset = [];
+      if (cloudData) {
+        Object.keys(cloudData).forEach(key => {
+          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) {
+            dataset.push({
+              name: cloudData[key].displayName,
+              streak: cloudData[key].streak || 0,
+              hunt: cloudData[key].hunt || 0,
+              level: cloudData[key].level || 1
+            });
+          }
+        });
+      }
 
-  // Masukkan Real Data Player ke dalam kalkulasi Peringkat Online
-  leaderboardDataset.push({
-    name: "You (Player)",
-    streak: stateData.highestStreak,
-    hunt: stateData.totalHunts,
-    level: stateData.level
-  });
+      // Pastikan data milik player lokal terdaftar di dalam perhitungan tabel array
+      if (!dataset.some(u => u.name === stateData.dominionName)) {
+        dataset.push({
+          name: stateData.dominionName,
+          streak: stateData.highestStreak,
+          hunt: stateData.totalHunts,
+          level: stateData.level
+        });
+      } else {
+        // Update baris player lokal dengan nilai paling mutakhir saat ini
+        dataset.forEach(u => {
+          if(u.name === stateData.dominionName) {
+            u.streak = Math.max(u.streak, stateData.highestStreak);
+            u.hunt = Math.max(u.hunt, stateData.totalHunts);
+            u.level = Math.max(u.level, stateData.level);
+          }
+        });
+      }
 
-  // Sortir Algoritma Top 20 berdasarkan Tab yang Sedang Aktif
-  if(currentActiveTab === 'streak') leaderboardDataset.sort((a,b) => b.streak - a.streak);
-  if(currentActiveTab === 'hunt') leaderboardDataset.sort((a,b) => b.hunt - a.hunt);
-  if(currentActiveTab === 'level') leaderboardDataset.sort((a,b) => b.level - a.level);
+      // Sortir Algoritma
+      if(currentActiveTab === 'streak') dataset.sort((a,b) => b.streak - a.streak);
+      if(currentActiveTab === 'hunt') dataset.sort((a,b) => b.hunt - a.hunt);
+      if(currentActiveTab === 'level') dataset.sort((a,b) => b.level - a.level);
 
-  // Ambil data terbatas hanya Top 20 teratas
-  const top20 = leaderboardDataset.slice(0, 20);
+      box.innerHTML = "";
+      const top20 = dataset.slice(0, 20);
 
-  top20.forEach((user, index) => {
-    let finalValueText = "";
-    if(currentActiveTab === 'streak') finalValueText = `${user.streak} Strk`;
-    if(currentActiveTab === 'hunt') finalValueText = `${user.hunt} Hunts`;
-    if(currentActiveTab === 'level') finalValueText = `Lvl ${user.level}`;
+      top20.forEach((user, index) => {
+        let finalValueText = "";
+        if(currentActiveTab === 'streak') finalValueText = `${user.streak} Strk`;
+        if(currentActiveTab === 'hunt') finalValueText = `${user.hunt} Hunts`;
+        if(currentActiveTab === 'level') finalValueText = `Lvl ${user.level}`;
 
-    // Highlight row khusus jika itu data milik user sendiri
-    let rowStyle = (user.name === "You (Player)") ? "background:rgba(0,255,255,0.12); border:1px solid #00ffff;" : "";
+        let rowStyle = (user.name === stateData.dominionName) ? "background:rgba(0,255,255,0.12); border:1px solid #00ffff;" : "";
 
-    box.innerHTML += `
-      <div class="rank-row" style="${rowStyle}">
-        <div class="rank-num">#${index + 1}</div>
-        <div class="rank-name">${user.name}</div>
-        <div class="rank-val">${finalValueText}</div>
-      </div>
-    `;
-  });
+        box.innerHTML += `
+          <div class="rank-row" style="${rowStyle}">
+            <div class="rank-num">#${index + 1}</div>
+            <div class="rank-name">${user.name}</div>
+            <div class="rank-val">${finalValueText}</div>
+          </div>
+        `;
+      });
+    })
+    .catch(() => {
+      box.innerHTML = `<div style="text-align:center; padding:20px; color:#ff4a4a; font-size:11px;">Failed to link cloud database matrix.</div>`;
+    });
 }
 
 function syncInterfaceGraphic() {
@@ -550,6 +594,7 @@ function feedPet(item) {
     stateData.power += 6;
     stateData.maxHp += 15;
     stateData.hp = stateData.maxHp;
+    pushUpdateToCloud();
   }
   
   saveLocalData();
@@ -566,7 +611,7 @@ function useFullElixir() {
 /* 🕹️ PHYSICS SYSTEM ENGINE */
 let pet = null; let wrapper = null;
 let isDragging = false;
-let px = 0, py = 0; vx = 0, vy = 0;       
+let px = 0, py = 0, vx = 0, vy = 0;       
 let lastMouseX = 0, lastMouseY = 0;
 let dragOffsetX = 0, dragOffsetY = 0;
 
@@ -732,7 +777,7 @@ function setRpgBoardInteractive(act) { for(let i=0; i<4; i++) document.getElemen
 function handleBattleVictory() {
   const log = document.getElementById("battleLogBox");
   stateData.currentStreak++;
-  stateData.totalHunts++; // Menambah total jumlah hunting terkalkulasi
+  stateData.totalHunts++; 
   if (stateData.currentStreak > stateData.highestStreak) stateData.highestStreak = stateData.currentStreak;
 
   let expGained = Math.floor(stateData.maxExp * 0.30);
@@ -742,14 +787,34 @@ function handleBattleVictory() {
   log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Acquired ${expGained} EXP.</div>`;
   document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
   stateData.hp = playerBattleHp;
-  saveLocalData(); syncInterfaceGraphic();
+  
+  saveLocalData(); 
+  syncInterfaceGraphic();
+  pushUpdateToCloud();
 }
 
 function handleBattleDefeat() {
   stateData.currentStreak = 0; stateData.hp = 0;
   stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000);
-  saveLocalData(); syncInterfaceGraphic();
+  saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
   setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
+}
+
+function pushUpdateToCloud() {
+  if (!stateData.dominionName || stateData.dominionName === "Player") return;
+  const secureKey = stateData.dominionName.replace(/[.#$\[\]]/g, "_");
+  const payload = {
+    username: secureKey,
+    displayName: stateData.dominionName,
+    streak: stateData.highestStreak,
+    hunt: stateData.totalHunts,
+    level: stateData.level
+  };
+  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(err => console.error("Koneksi Firebase terhambat:", err));
 }
 
 function checkDeathCooldown() {
@@ -788,7 +853,7 @@ function applyOwnerPetStats() {
   stateData.power = parseInt(document.getElementById("inpDevPower").value) || 65;
   stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
   stateData.activePetFile = document.getElementById("inpDevFileCode").value || "Ikan5";
-  saveLocalData(); syncInterfaceGraphic(); alert("Core Modified!");
+  saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud(); alert("Core Modified!");
 }
 function generateOwnerLoot() {
   Object.keys(foodBag).forEach(key => { foodBag[key] = 50; });
