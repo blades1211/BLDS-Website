@@ -499,7 +499,13 @@ function saveState() {
 
 function loadState() {
   const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
-  if(saved) streakData = JSON.parse(saved);
+  if(saved) {
+    streakData = JSON.parse(saved);
+    // Proteksi data korup rekor tertinggi agar minimal bernilai 1 jika sudah punya nama
+    if(streakData.dominionName && streakData.highestCount < 1) {
+      streakData.highestCount = 1;
+    }
+  }
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
   if(savedPet) petData = JSON.parse(savedPet);
   updateUI();
@@ -538,7 +544,14 @@ function pushStreakToFirebase() {
   if (!FIREBASE_DB_URL || !streakData.dominionName) return;
   const secureKey = streakData.dominionName.replace(/[.#$\[\]]/g, "_");
   const payload = { username: secureKey, displayName: streakData.dominionName, streak: streakData.highestCount, hunt: 0, level: petData.level };
-  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  
+  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, { 
+    method: 'PUT', 
+    headers: { 'Content-Type': 'application/json' }, 
+    body: JSON.stringify(payload) 
+  }).then(res => {
+    if(!res.ok) console.warn("Firebase Database melarang akses penuangan data. Cek Rules Firebase Anda.");
+  }).catch(err => console.error("Koneksi Firebase terhambat:", err));
 }
 
 function fetchCloudLeaderboard() {
@@ -546,8 +559,15 @@ function fetchCloudLeaderboard() {
     .then(res => res.json())
     .then(cloudData => {
       let dataset = [];
-      if (cloudData) { Object.keys(cloudData).forEach(key => { if (cloudData[key]) dataset.push(cloudData[key]); }); }
-      dataset.sort((a, b) => b.streak - a.streak);
+      if (cloudData) { 
+        Object.keys(cloudData).forEach(key => { 
+          // Validasi ekstra agar baris kosong (null) tidak membuat script crash
+          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) { 
+            dataset.push(cloudData[key]); 
+          } 
+        }); 
+      }
+      dataset.sort((a, b) => (b.streak || 0) - (a.streak || 0));
       let top20List = dataset.slice(0, 20);
       const tableBody = document.getElementById("leaderboardDataBody");
       if (top20List.length === 0) {
@@ -556,7 +576,7 @@ function fetchCloudLeaderboard() {
       }
       tableBody.innerHTML = top20List.map((u, i) => {
         const isCurrentMe = (u.displayName === streakData.dominionName);
-        return `<tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}><td>#${i + 1}</td><td>${u.displayName}</td><td>${u.streak} Days</td></tr>`;
+        return `<tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}><td>#${i + 1}</td><td>${u.displayName}</td><td>${u.streak || 0} Days</td></tr>`;
       }).join('');
     }).catch(() => {
       document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Matrix connection error.</td></tr>`;
@@ -624,8 +644,6 @@ function saveDominionName() {
   
   streakData.dominionName = nameVal;
   petData.name = petVal;
-  
-  // Jika ini pendaftaran baru setelah reset, level diatur ke level 1
   if (streakData.count === 0) { petData.level = 1; }
 
   saveState();
@@ -637,14 +655,12 @@ function saveDominionName() {
 function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
 
-// 🔄 FUNGSI CONFIRM RESET (FIXED): Menghapus rekor tertinggi lama agar data 1 hari mau terkirim ke Firebase
 function confirmResetStreak() {
   streakData.count = 0;
-  streakData.highestCount = 1; // Memaksa reset puncak rekor lokal menjadi 1 hari agar server menerima overwrite
+  streakData.highestCount = 1; // Memaksa reset data rekor lokal ke 1 hari
   streakData.lastCalibratedTimestamp = null;
   closeResetModal();
   
-  // Ubah judul modal agar sesuai dengan proses re-spec identity baru
   document.getElementById("modalTitle").innerText = "Core Re-spec Matrix";
   document.getElementById("dominionNameInput").value = streakData.dominionName; 
   document.getElementById("nameModal").style.display = "flex";
@@ -675,7 +691,18 @@ function broadcastToBeast() {
   }
 }
 
-window.addEventListener("message", (e) => { if(e.data && e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); } });
+// 🌐 BRIDGE LISTENER UNTUK MENANGKAP TOMBOL BACK DARI BEAST ENGINE IFRAME
+window.addEventListener("message", (e) => { 
+  if(!e.data) return;
+  if(e.data.type === 'BEAST_HANDSHAKE_REQ') { 
+    broadcastToBeast(); 
+  }
+  // Menangkap perintah kembali dari iframe sistem sebelah
+  if(e.data.type === 'BEAST_NAVIGATE_BACK' || e.data === 'BACK_TO_MAIN') {
+    showPage('origin');
+  }
+});
+
 window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); });
 
 function showPage(id) {
