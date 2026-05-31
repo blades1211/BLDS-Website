@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Perfect Sync</title>
+<title>BLDS | Beast Engine Perfect Name Sync</title>
 <style>
 body {
   background: transparent; color: #fff;
@@ -224,7 +224,7 @@ body {
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
       <div class="fighter-card">
-        <span class="element-badge" id="btEnemyElement">🔥</span>
+        <span class="element-badge" id="btEnemyElement">🌿</span>
         <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy">
         <div id="btEnemyName" style="font-size:11px; font-weight:bold;">Opponent</div>
         <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:3px;">Common</div>
@@ -288,26 +288,25 @@ body {
 </div>
 
 <script>
-// 🧭 DICTIONARY MATRIX RE-DESIGN (NAMA FILENAME PNG TETAP SAMA AGAR GAMBAR TIDAK PECAH)
+// 🧭 REGISTRY MAPS: MERUBAH TAMPILAN DISPLAY NAME TANPA MERUSAK NAMA FILE GAMBAR ASLI (.png)
 const petNamingRegistry = {
-  // Jalur Telur & Default
   "Telor": { title: "Void Egg", element: "Water" },
-  "Naga1": { title: "Pyre Hatchling", element: "Fire" },
   
-  // Jalur Ikan Mas (Fase 1 - 5)
+  // 🐟 JALUR IKAN MAS (DISPLAY NAME BARU)
   "Ikan1": { title: "Glitter Fin", element: "Water" },
   "Ikan2": { title: "Aqua Brocade", element: "Water" },
   "Ikan3": { title: "Torrent Glimmer", element: "Water" },
   "Ikan4": { title: "Abyssal Koi", element: "Water" },
-  "Ikan5": { title: "Aurelius Sovereign", element: "Water" }, // Ikan Mas Fase 5 Kamu!
+  "Ikan5": { title: "Aurelius Sovereign", element: "Water" }, // Ikan Mas Fase 5 Legendaris Kamu!
 
-  // Jalur Naga (Fase 1 - 5)
+  // 🐉 JALUR NAGA (DISPLAY NAME BARU)
+  "Naga1": { title: "Pyre Hatchling", element: "Fire" },
   "Naga2": { title: "Ember Scale", element: "Fire" },
   "Naga3": { title: "Blaze Wing", element: "Fire" },
   "Naga4": { title: "Ignis Dread", element: "Fire" },
   "Naga5": { title: "Astral Sovereign", element: "Fire" },
 
-  // Jalur Serigala (Fase 1 - 5)
+  // 🐺 JALUR SERIGALA (DISPLAY NAME BARU)
   "Serigala1": { title: "Lupin Pup", element: "Earth" },
   "Serigala2": { title: "Wild Fang", element: "Earth" },
   "Serigala3": { title: "Alpha Claw", element: "Earth" },
@@ -318,7 +317,7 @@ const petNamingRegistry = {
 // State Utama
 let stateData = {
   isHatched: true,
-  activePetFile: "Ikan5", // Menggunakan Ikan5 agar langsung sync ke gambar Ikan5.png kamu
+  activePetFile: "Ikan5", // Menggunakan Ikan5 agar otomatis membaca gambar Ikan5.png
   level: 10,                 
   hp: 100, maxHp: 100,
   hunger: 100, maxHunger: 100,
@@ -346,32 +345,32 @@ const enemyPool = [
 const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 
 function saveLocalData() {
-  localStorage.setItem("BLDS_PERFECT_STATE", JSON.stringify(stateData));
-  localStorage.setItem("BLDS_PERFECT_BAG", JSON.stringify(foodBag));
+  localStorage.setItem("BLDS_DISPLAY_STATE", JSON.stringify(stateData));
+  localStorage.setItem("BLDS_DISPLAY_BAG", JSON.stringify(foodBag));
 }
 
-// 🛡️ DETEKSI AUTOMATIC SYNC BERDASARKAN TEXT PROFIL UTAMA
+// 🛡️ SCANNER OTOMATIS: MENYAMAKAN CORE MENGIKUTI TEKS LEVEL DI HALAMAN UTAMA KAMU
 function loadLocalData() {
-  const s = localStorage.getItem("BLDS_PERFECT_STATE");
+  const s = localStorage.getItem("BLDS_DISPLAY_STATE");
   if(s) {
     stateData = JSON.parse(s);
   } else {
-    // Dipaksa langsung sinkronisasi dari awal ke Ikan Fase 5 legendaris kamu!
     stateData.activePetFile = "Ikan5";
     stateData.level = 10;
     saveLocalData();
   }
   
-  // SCANNER: Cek jika ada text mentah h1/div di hostingan kamu yang tertulis "Ikan5.png" atau "Naga1.png"
-  // Ini mendeteksi tulisan di atas tombol Menu utama agar sinkronisasi 100% mutlak tanpa ngebug lagi.
-  const bodyText = document.body.innerHTML;
-  if(bodyText.includes("Ikan5.png")) {
+  // Script scan otomatis mendeteksi kata kunci dari data awal game kamu
+  const fullBodyText = document.body.innerHTML;
+  if(fullBodyText.includes("Ikan5.png")) {
      stateData.activePetFile = "Ikan5";
-  } else if(bodyText.includes("Naga1.png")) {
+  } else if(fullBodyText.includes("Naga1.png")) {
      stateData.activePetFile = "Naga1";
+  } else if(fullBodyText.includes("Serigala1.png")) {
+     stateData.activePetFile = "Serigala1";
   }
 
-  const b = localStorage.getItem("BLDS_PERFECT_BAG"); if(b) foodBag = JSON.parse(b);
+  const b = localStorage.getItem("BLDS_DISPLAY_BAG"); if(b) foodBag = JSON.parse(b);
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -380,13 +379,12 @@ function loadLocalData() {
 }
 
 function syncInterfaceGraphic() {
-  // Ambil nama terjemahan RPG dari registry map
-  const activeLookup = petNamingRegistry[stateData.activePetFile] || { title: "Unknown Beast", element: "Water" };
+  const activeLookup = petNamingRegistry[stateData.activePetFile] || { title: "Glitter Fin", element: "Water" };
   
-  // Set file asset gambar asli (Ikan5.png) agar tidak broken image lagi!
+  // File gambar asli dipanggil tanpa merubah nama aset lokal
   document.getElementById("petGraphicFile").src = stateData.activePetFile + ".png";
   
-  // Cetak teks nama RPG kerennya di layar bawah logo
+  // Merubah nama mentah Ikan5.png menjadi nama RPG keren barunya di bawah logo
   document.getElementById("petLabelTag").innerHTML = `${elementIcons[activeLookup.element]} ${activeLookup.title} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
   
   document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
@@ -428,7 +426,7 @@ function feedPet(item) {
   
   saveLocalData();
   syncInterfaceGraphic();
-  vy = -12; // Efek mental ke atas sedikit pas makan
+  vy = -12; // Mental ke atas sedikit pas makan
 }
 
 function useFullElixir() {
@@ -437,7 +435,7 @@ function useFullElixir() {
   saveLocalData(); syncInterfaceGraphic();
 }
 
-/* 🕹️ MY TALKING TOM PHYSICS ENGINE CODE (ANTI KELUAR BOX + AUTO CENTER) */
+/* 🕹️ MY TALKING TOM PHYSICS ENGINE CODE (ANTI LUAR BOX + AUTO CENTER) */
 let pet = null; let wrapper = null;
 let isDragging = false;
 let px = 0, py = 0;       
@@ -477,8 +475,7 @@ function startDrag(e) {
   dragOffsetX = pageX - (rect.left + window.scrollX);
   dragOffsetY = pageY - (rect.top + window.scrollY);
 
-  lastMouseX = pageX;
-  lastMouseY = pageY;
+  lastMouseX = pageX; lastMouseY = pageY;
   vx = 0; vy = 0;
   if(e.cancelable) e.preventDefault();
 }
@@ -496,7 +493,7 @@ function doDrag(e) {
   let maxX = wrapper.clientWidth - pet.clientWidth;
   let maxY = wrapper.clientHeight - pet.clientHeight;
 
-  // STRICT BARRIER: Mengunci koordinat agar mustahil tembus keluar frame box!
+  // STRICT WALLS LOCK: Tidak bisa keluar dari batas margin kotak main wrapper
   if (targetX < 0) targetX = 0;
   if (targetX > maxX) targetX = maxX;
   if (targetY < 0) targetY = 0;
@@ -526,17 +523,17 @@ function updatePhysicsFrame() {
   let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
   let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
 
-  vx *= 0.95; vy *= 0.95; // Friction
+  vx *= 0.95; vy *= 0.95; 
 
   px += vx; py += vy;
 
-  // PULL-CENTER: Menarik pelan-pelan kembali ke koordinat tengah jika tidak di-drag
+  // AUTO RETURN: Jika lemparan mulai melambat, magnet akan menarik kembali ke tengah secara perlahan
   if (Math.abs(vx) < 1.5 && Math.abs(vy) < 1.5) {
     px += (centerX - px) * 0.06;
     py += (centerY - py) * 0.06;
   }
 
-  // BOUNCE LOGIC (Efek mantul pas kepentok dinding kotak wrapper)
+  // PANTULAN FISIK PADA BOUNDING BOX
   if (px < 0) { px = 0; vx *= -0.7; }
   if (px > maxX) { px = maxX; vx *= -0.7; }
   if (py < 0) { py = 0; vy *= -0.7; }
@@ -550,7 +547,7 @@ function updatePhysicsFrame() {
 }
 
 
-/* ⚔️ RPG COMBAT SYSTEM */
+/* ⚔️ RPG COMBAT ENGINE */
 let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
 let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
 
@@ -654,7 +651,7 @@ function handleBattleVictory() {
   if(stateData.exp >= stateData.maxExp) { stateData.exp = 0; stateData.level++; stateData.power += 6; }
   
   log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Acquired ${expGained} EXP.</div>`;
-  document.getElementById("btnExitBattle").innerText = "⬅ shrink Arena";
+  document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
   stateData.hp = playerBattleHp;
   saveLocalData(); syncInterfaceGraphic();
 }
