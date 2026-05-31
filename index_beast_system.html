@@ -66,9 +66,15 @@ body {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-6px) scale(1.02); }
 }
+.pet-title-container {
+  display: flex; align-items: center; gap: 6px; margin-top: 12px; pointer-events: auto;
+}
 .pet-title-tag {
-  font-size: 12px; font-weight: bold; margin-top: 12px; letter-spacing: 1px;
+  font-size: 12px; font-weight: bold; letter-spacing: 1px;
   text-shadow: 0 0 8px rgba(255,255,255,0.4); text-align: center;
+}
+.btn-rename {
+  background: none; border: none; color: #00ff00; cursor: pointer; font-size: 12px; padding: 2px;
 }
 
 /* 🎒 BAG & FEEDING CONTROLLER */
@@ -142,7 +148,7 @@ body {
 }
 .dev-input:focus { border-color: #00ff00; outline: none; }
 .owner-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-.btn-danger { border-color: #ff3333; color: #ff3333; }
+.btn-danger { border-color: #ff3333; color: #ff3333; background: transparent; }
 .btn-danger:hover { background: #ff3333; color: #fff; }
 
 /* ⏳ RESPOND MATRIX TIMER */
@@ -212,7 +218,12 @@ function playPurrSound() {
     <div class="pet-draggable-area" id="petActor" onclick="handlePetClick()">
       <img id="petGraphicFile" class="pet-main-graphic" src="Telor.png" alt="Pet Graphic" onerror="this.style.opacity='0.5';">
     </div>
-    <div class="pet-title-tag" id="petLabelTag">Egg [Unhatched]</div>
+    
+    <div class="pet-title-container">
+      <div class="pet-title-tag" id="petLabelTag">Egg [Unhatched]</div>
+      <button class="btn-rename" id="btnRenamePet" onclick="triggerRenamePet()" title="Rename Pet">✏️</button>
+    </div>
+    
     <button class="nav-btn" id="huntWildTopBtn" style="margin-top:12px; border-color:#ff4a4a; color:#ff4a4a; pointer-events:auto;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
   </div>
 
@@ -297,14 +308,15 @@ function playPurrSound() {
       <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00;" onclick="generateOwnerLoot()">Inject Items Stock</button>
     </div>
 
-    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,0,0,0.2); padding:12px; border-radius:6px;">
+    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,0,0,0.2); padding:12px; border-radius:6px; margin-bottom: 20px;">
       <div style="font-size:11px; font-weight:bold; color:#ff3333; margin-bottom:10px;">⚠️ CRITICAL EMERGENCY RESET</div>
       <div class="owner-action-row">
         <button class="nav-btn btn-danger" onclick="resetOwnerAction('profile')">Reset Profil</button>
         <button class="nav-btn btn-danger" onclick="resetOwnerAction('pet')">Reset Pet</button>
       </div>
-      <div style="margin-top:8px;">
-        <button class="nav-btn btn-danger" style="width:100%;" onclick="resetOwnerAction('leaderboard')">Reset Leaderboard Normal</button>
+      <div class="owner-action-row">
+        <button class="nav-btn btn-danger" onclick="resetOwnerAction('streak')">Reset Streak</button>
+        <button class="nav-btn btn-danger" onclick="resetOwnerAction('leaderboard')">Reset Leaderboard</button>
       </div>
     </div>
   </div>
@@ -317,11 +329,14 @@ let stateData = {
   isHatched: false,
   hatchStreak: 0,
   activePetName: "Naga1",
+  customPetName: "", // Custom Name Tag dari User
   level: 1,
   hp: 100, maxHp: 100,
   hunger: 100, maxHunger: 100,
   exp: 0, maxExp: 100,
   power: 15,
+  currentStreak: 0,
+  highestStreak: 0,
   deathTimestamp: null
 };
 
@@ -378,17 +393,21 @@ function syncInterfaceGraphic() {
   const graphicEl = document.getElementById("petGraphicFile");
   const labelEl = document.getElementById("petLabelTag");
   const huntBtn = document.getElementById("huntWildTopBtn");
+  const renameBtn = document.getElementById("btnRenamePet");
 
   if (!stateData.isHatched) {
     graphicEl.src = "Telor.png";
-    labelEl.innerHTML = `Egg Matrix<br><span style="font-size:9px;color:#ffff00;">Streak Required: ${stateData.hatchStreak}/2 untuk Netes</span>`;
+    labelEl.innerHTML = `Egg Matrix<br><span style="font-size:9px;color:#ffff00;">Streak: ${stateData.hatchStreak}/2 untuk Netes</span>`;
     huntBtn.disabled = true;
     huntBtn.innerText = "🔒 Need Hatching";
+    renameBtn.style.display = "none";
   } else {
     graphicEl.src = stateData.activePetName + ".png";
-    labelEl.innerText = `${stateData.activePetName}.png [Lvl ${stateData.level}]`;
+    let displayName = stateData.customPetName ? stateData.customPetName : `${stateData.activePetName}.png`;
+    labelEl.innerHTML = `${displayName} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
     huntBtn.disabled = false;
     huntBtn.innerText = "⚔️ Hunt Wild";
+    renameBtn.style.display = "inline-block";
   }
   renderStats();
   updateInventoryCounters();
@@ -412,6 +431,20 @@ function updateInventoryCounters() {
   });
 }
 
+// ✏️ MEKANIK GANTI NAMA PET
+function triggerRenamePet() {
+  if (!stateData.isHatched) return;
+  let oldName = stateData.customPetName || stateData.activePetName;
+  let newName = prompt("Masukkan nama baru untuk Pet kamu:", oldName);
+  if (newName !== null && newName.trim() !== "") {
+    stateData.customPetName = newName.trim();
+    saveLocalData();
+    syncInterfaceGraphic();
+    playPurrSound();
+  }
+}
+
+// 🥚 PROSES CLEAR STREAK TETAS TELOR
 function handlePetClick() {
   if (!stateData.isHatched) {
     stateData.hatchStreak++;
@@ -432,6 +465,7 @@ function handlePetClick() {
 function switchActivePet(targetName) {
   if(!stateData.isHatched) return;
   stateData.activePetName = targetName;
+  stateData.customPetName = ""; // Reset nama kustom saat berganti jenis monster
   playGrowlSound();
   saveLocalData();
   syncInterfaceGraphic();
@@ -481,7 +515,7 @@ function addExp(amount) {
   }
 }
 
-// 🕹️ DRAG & SNAP ANIMATION
+// 🕹️ DRAG SYSTEM
 petActor.addEventListener("mousedown", (e) => { dragActive = true; startX = e.clientX; });
 window.addEventListener("mousemove", (e) => {
   if (!dragActive) return;
@@ -495,7 +529,7 @@ window.addEventListener("mouseup", () => {
   setTimeout(() => { petActor.style.transition = "transform 0.1s ease"; }, 400);
 });
 
-// ⚔️ COMBAT ENGINE
+// ⚔️ COMBAT SYSTEM DENGAN STREAK TRACKER
 function getRandomEnemy() {
   let rand = Math.random(); let cumulative = 0;
   for (let enemy of enemyPool) {
@@ -514,7 +548,7 @@ function prepareBattle() {
   activeEnemy.dmg = Math.floor((6 + (lvlMod * 3)) * activeEnemy.multiplier);
   
   document.getElementById("btPlayerImg").src = stateData.activePetName + ".png";
-  document.getElementById("btPlayerName").innerText = stateData.activePetName;
+  document.getElementById("btPlayerName").innerText = stateData.customPetName || stateData.activePetName;
   document.getElementById("btPlayerHp").innerText = `${stateData.hp}/${stateData.maxHp} HP`;
   
   document.getElementById("btEnemyImg").src = activeEnemy.img;
@@ -549,6 +583,13 @@ function startCombatEngine() {
     
     if (activeEnemy.hp <= 0) {
       clearInterval(combatInterval);
+      
+      // Hitung Penambahan Streak Menang
+      stateData.currentStreak++;
+      if (stateData.currentStreak > stateData.highestStreak) {
+        stateData.highestStreak = stateData.currentStreak;
+      }
+
       let pct = 0.15; let loot = ["apple"];
       if (activeEnemy.rarity === "Celestial") { pct = 0.60; loot = ["pizza", "burger", "juice"]; }
       else if (activeEnemy.rarity === "Mythic") { pct = 0.45; loot = ["burger", "pizza"]; }
@@ -564,7 +605,7 @@ function startCombatEngine() {
       
       let gotElixir = false; if (Math.random() <= 0.10) { foodBag.elixir++; gotElixir = true; }
       
-      log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! +${expGained} EXP gained.</div>`;
+      log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Win Streak: ${stateData.currentStreak}</div>`;
       if(gotElixir) log.innerHTML += `<div style='color:#00ffff;font-weight:bold;'>🧪 Drop Luck! Found 1x Elixir.</div>`;
       
       if (!discoveredBeasts.includes(activeEnemy.name)) discoveredBeasts.push(activeEnemy.name);
@@ -575,15 +616,18 @@ function startCombatEngine() {
     
     let eDmg = Math.floor(activeEnemy.dmg * (0.8 + Math.random() * 0.4));
     pCurrentHp = Math.max(0, pCurrentHp - eDmg);
-    log.innerHTML += `<div style='color:#ff4a4a;'>💥 Turn ${turn}: Enemy counter-punches for <b>${eDmg}</b> damage.</div>`;
+    log.innerHTML += `<div>💥 Enemy counter-punches for <b>${eDmg}</b> damage.</div>`;
     document.getElementById("btPlayerHp").innerText = `${pCurrentHp}/${stateData.maxHp} HP`;
     log.scrollTop = log.scrollHeight;
     
     if (pCurrentHp <= 0) {
       clearInterval(combatInterval);
-      log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Fallen in battle.</div>`;
+      log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Streak reset to 0!</div>`;
+      
+      stateData.currentStreak = 0; // Patahkan streak karena kalah
       stateData.hp = 0;
-      stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000);
+      stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000); // Penalti nunggu 5 jam
+      
       saveLocalData(); syncInterfaceGraphic();
       setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
     }
@@ -619,7 +663,7 @@ function buildBestiaryUI() {
   }).join('');
 }
 
-// 🛠️ DEV OWNER MODULE LOGIC
+// 🛠️ DEVELOPER MANAGEMENT FIELD ENGINE
 function syncOwnerFields() {
   document.getElementById("inpDevHp").value = stateData.hp;
   document.getElementById("inpDevMaxHp").value = stateData.maxHp;
@@ -634,14 +678,14 @@ function applyOwnerPetStats() {
   stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
   
   saveLocalData(); syncInterfaceGraphic();
-  alert("🧪 Owner Override: Pet DNA Core updated successfully.");
+  alert("🧪 Owner Override: Pet status injection success.");
 }
 
 function generateOwnerLoot() {
   const qty = parseInt(document.getElementById("inpDevLootQty").value) || 10;
   Object.keys(foodBag).forEach(key => { foodBag[key] = qty; });
   saveLocalData(); updateInventoryCounters();
-  alert(`📦 Owner Override: Set all food & item healer stocks to ${qty}.`);
+  alert(`📦 Owner Override: Items stock modified to ${qty}.`);
 }
 
 function bypassCooldown() {
@@ -650,27 +694,33 @@ function bypassCooldown() {
   saveLocalData(); syncInterfaceGraphic();
 }
 
+// MULTI RESET EXECUTION CENTER
 function resetOwnerAction(type) {
-  if (!confirm(`Are you sure you want to reset [${type.toUpperCase()}] matrix?`)) return;
+  if (!confirm(`Apakah Anda yakin ingin melakukan reset variabel [${type.toUpperCase()}]?`)) return;
   
   if (type === 'profile') {
-    // Reset Profile / Data User Dasar kembali normal
     localStorage.removeItem("BLDS_BEAST_DISCOVERED");
     discoveredBeasts = ["Naga1"];
-    alert("🔄 Profile Matrix Reset To Factory Default!");
+    alert("🔄 Profile Matrix Reset To Default!");
   } 
   else if (type === 'pet') {
-    // Reset Pet kembali jadi telor belum menetas
-    stateData = { isHatched: false, hatchStreak: 0, activePetName: "Naga1", level: 1, hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100, power: 15, deathTimestamp: null };
+    stateData = { isHatched: false, hatchStreak: 0, activePetName: "Naga1", customPetName: "", level: 1, hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100, power: 15, currentStreak: 0, highestStreak: 0, deathTimestamp: null };
     foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1 };
     alert("🔄 Pet Core Data Reset back to Egg Cell!");
   } 
+  else if (type === 'streak') {
+    // RESET BERIKUT KHUSUS UNTUK STREAK & HIGHEST STREAK
+    stateData.currentStreak = 0;
+    stateData.highestStreak = 0;
+    alert("🔄 Win Streak & Highest Streak successfully wiped back to 0!");
+  }
   else if (type === 'leaderboard') {
-    // Reset Leaderboard kembali normal (mengembalikan data awal bawaan web, bukan menghapus paksa filenya)
+    // Normalisasi Leaderboard tanpa menghapus database utama
+    localStorage.setItem("BLDS_LEADERBOARD_NORMALIZED", "true");
     if(window.parent) {
       window.parent.postMessage({ type: 'RESET_LEADERBOARD_NORMAL' }, '*');
     }
-    alert("🔄 Leaderboard Restored to standard normalized index!");
+    alert("🔄 Leaderboard matrix commands transmitted! Values calibrated back to normal.");
   }
   
   saveLocalData();
