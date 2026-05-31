@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Evolution & Dev Mode</title>
+<title>BLDS | Beast Engine Evolution RPG</title>
 <style>
 body {
   background: transparent; color: #fff;
@@ -18,7 +18,7 @@ body {
   overflow: hidden; box-sizing: border-box;
 }
 
-/* 🧭 NAVIGATION & FIX LAYOUT KETABRAK */
+/* 🧭 NAVIGATION */
 .top-nav-container {
   position: absolute; top: 12px; left: 12px; right: 12px;
   display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
@@ -45,7 +45,7 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 HUB TENGAH: TOM INTERACTION SYSTEM */
+/* 🐉 HUB TENGAH */
 .pet-center-stage {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -99,24 +99,48 @@ body {
   font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 6px;
 }
 
-/* ⚔️ SCREEN OVERLAYS */
+/* ⚔️ SCREEN OVERLAYS & RPG PANEL */
 .screen-overlay {
   position: absolute; inset: 0; background: #020206; z-index: 500;
   display: none; flex-direction: column; padding: 15px; box-sizing: border-box;
 }
 .battle-arena-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 45px 0 15px 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 40px 0 10px 0;
 }
 .fighter-card {
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
-  padding: 12px; border-radius: 6px; text-align: center;
+  padding: 10px; border-radius: 6px; text-align: center; position: relative;
 }
-.fighter-img { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; }
-.rarity-tag { font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
+.fighter-img { width: 65px; height: 65px; object-fit: contain; margin-bottom: 6px; }
+.rarity-tag { font-size: 8px; font-weight: bold; padding: 2px 5px; border-radius: 3px; text-transform: uppercase; }
+.element-badge {
+  position: absolute; top: 6px; right: 6px; font-size: 10px;
+  background: rgba(0,0,0,0.6); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);
+}
 
 .combat-log-screen {
-  background: #000; border: 1px solid rgba(255,255,255,0.1); height: 130px;
-  overflow-y: auto; padding: 8px; font-size: 10px; color: #00ff00; border-radius: 4px;
+  background: #000; border: 1px solid rgba(255,255,255,0.1); height: 110px;
+  overflow-y: auto; padding: 8px; font-size: 10px; color: #00ff00; border-radius: 4px; margin-bottom: 10px;
+}
+
+/* 🎮 RPG 4-SKILL ACTION BOARD */
+.rpg-action-board {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: auto;
+}
+.skill-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; padding: 8px; font-family: inherit; font-size: 10px; text-align: left;
+  cursor: pointer; border-radius: 4px; display: flex; flex-direction: column; justify-content: center;
+}
+.skill-btn:hover:not(:disabled) { background: #fff; color: #000; border-color: #fff; }
+.skill-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.skill-meta { font-size: 8px; opacity: 0.6; margin-top: 2px; }
+
+/* 🎒 IN-BATTLE ITEM SUBPANEL */
+.battle-item-subpanel {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px; border-radius: 6px; margin-top: 8px; display: none;
 }
 
 /* 📖 BESTIARY GRID */
@@ -164,30 +188,30 @@ body {
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playGrowlSound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const filter = audioCtx.createBiquadFilter();
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const filter = document.createElement('div');
   osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-  osc.frequency.linearRampToValueAtTime(45, audioCtx.currentTime + 0.4);
-  filter.type = 'lowpass'; filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.4, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-  osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+  gain.gain.setValueAtTime(0.3, audioCtx.currentTime); osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.3);
 }
 function playPurrSound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-  osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+  osc.type = 'triangle'; osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.2, audioCtx.currentTime); osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.2);
 }
 </script>
 
 <div class="cooldown-blocker" id="deathOverlay">
   <div style="font-size: 32px; margin-bottom: 10px;">💀</div>
   <div style="font-size: 14px; font-weight: bold; color: #ff4a4a; letter-spacing: 1px;">BEAST INCAPACITATED</div>
-  <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin: 8px 0 15px 0; max-width: 240px;">Your pet fainted. Cybernetic reconstruction in progress.</div>
-  <div id="countdownTimer" style="font-size: 18px; font-weight: bold; color: #ffff00;">05:00:00</div>
-  <button class="nav-btn" style="margin-top: 10px; border-color: #00ffff; color: #00ffff;" onclick="bypassCooldown()">⚡ Owner Bypass</button>
+  <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin: 8px 0 12px 0;">Your pet fainted in wild zone.</div>
+  <div id="countdownTimer" style="font-size: 18px; font-weight: bold; color: #ffff00; margin-bottom: 15px;">05:00:00</div>
+  
+  <div style="display:flex; flex-direction:column; gap:8px; width: 180px;">
+    <button class="nav-btn" style="border-color: #00ffff; color: #00ffff;" onclick="useReviveInstant()">💉 Revive Instant (<span id="death-revive-stock">0</span>)</button>
+    <button class="nav-btn" style="opacity:0.6; font-size:9px;" onclick="bypassCooldown()">⚡ Owner Bypass</button>
+  </div>
 </div>
 
 <div class="main-wrapper">
@@ -216,12 +240,12 @@ function playPurrSound() {
 
   <div class="pet-center-stage" id="mainStage">
     <div class="pet-draggable-area" id="petActor" onclick="handlePetClick()">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Telor.png" alt="Pet Graphic" onerror="this.style.opacity='0.5';">
+      <img id="petGraphicFile" class="pet-main-graphic" src="Telor.png" alt="Pet Graphic">
     </div>
     
     <div class="pet-title-container">
       <div class="pet-title-tag" id="petLabelTag">Egg [Unhatched]</div>
-      <button class="btn-rename" id="btnRenamePet" onclick="triggerRenamePet()" title="Rename Pet">✏️</button>
+      <button class="btn-rename" id="btnRenamePet" onclick="triggerRenamePet()">✏️</button>
     </div>
     
     <button class="nav-btn" id="huntWildTopBtn" style="margin-top:12px; border-color:#ff4a4a; color:#ff4a4a; pointer-events:auto;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
@@ -241,31 +265,61 @@ function playPurrSound() {
   </div>
 
   <div class="screen-overlay" id="battleScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:10px;">
-      <button class="nav-btn" onclick="closeScreen('battleScreen')">⬅️ Back</button>
-      <div style="font-size:11px; font-weight:bold; color:#ff4a4a; margin-top:5px;">Wild Hunting Domain</div>
+    <div class="top-nav-container" style="position:static; margin-bottom:5px;">
+      <button class="nav-btn" id="btnExitBattle" onclick="closeScreen('battleScreen')">⬅️ Run</button>
+      <div id="combatTurnTitle" style="font-size:11px; font-weight:bold; color:#ff4a4a; margin-top:5px;">Your Turn</div>
     </div>
+    
     <div class="battle-arena-grid">
       <div class="fighter-card">
-        <img id="btPlayerImg" class="fighter-img" src="Telor.png" alt="Player" onerror="this.style.opacity='0.3';">
+        <span class="element-badge" id="btPlayerElement">🔥</span>
+        <img id="btPlayerImg" class="fighter-img" src="Telor.png" alt="Player">
         <div id="btPlayerName" style="font-size:11px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
       <div class="fighter-card">
-        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy" onerror="this.style.opacity='0.3';">
+        <span class="element-badge" id="btEnemyElement">💧</span>
+        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy">
         <div id="btEnemyName" style="font-size:11px; font-weight:bold;">Opponent</div>
-        <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:4px;">Common</div>
+        <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:3px;">Common</div>
         <div id="btEnemyHp" style="font-size:10px; opacity:0.6; margin-top:4px;">50/50 HP</div>
       </div>
     </div>
+    
     <div class="combat-log-screen" id="battleLogBox"></div>
-    <button class="nav-btn" id="btActionBtn" style="width:100%; margin-top:12px; border-color:#00ff00; color:#00ff00;" onclick="startCombatEngine()">💥 Engage Combat</button>
+    
+    <div class="rpg-action-board" id="rpgActionBoard">
+      <button class="skill-btn" id="skillBtn0" onclick="executeRpgTurn(0)">
+        <span>💥 Strike</span>
+        <span class="skill-meta" id="skillDmg0">Dmg: 15</span>
+      </button>
+      <button class="skill-btn" id="skillBtn1" onclick="executeRpgTurn(1)">
+        <span>🔨 Heavy Smash</span>
+        <span class="skill-meta" id="skillDmg1">Dmg: 22 [CD: 0]</span>
+      </button>
+      <button class="skill-btn" id="skillBtn2" onclick="executeRpgTurn(2)">
+        <span>⚡ Electro Stun</span>
+        <span class="skill-meta" id="skillDmg2">Dmg: 7 (50% Stun)</span>
+      </button>
+      <button class="skill-btn" id="skillBtn3" onclick="executeRpgTurn(3)">
+        <span>🔥 Ulti Burst</span>
+        <span class="skill-meta" id="skillDmg3">Dmg: 37 [CD: 0]</span>
+      </button>
+    </div>
+    
+    <button class="nav-btn" id="btnToggleBattleItem" style="margin-top: 6px; width: 100%; border-color:#00ffff; color:#00ffff;" onclick="toggleBattleItemPanel()">🎒 Use Battle Item</button>
+    
+    <div class="battle-item-subpanel" id="battleItemPanel">
+      <button class="nav-btn" style="font-size:10px;" onclick="useBattleItem('elixir')">🧪 Elixir (<span id="b-stock-elixir">0</span>)</button>
+      <button class="nav-btn" style="font-size:10px;" onclick="useBattleItem('pill')">💊 Burst (<span id="b-stock-pill">0</span>)</button>
+      <button class="nav-btn" style="font-size:10px; border-color:#ff4a4a; color:#ff4a4a;" onclick="toggleBattleItemPanel()">❌ Close</button>
+    </div>
   </div>
 
   <div class="screen-overlay" id="bestiaryScreen">
     <div class="top-nav-container" style="position:static; margin-bottom:10px;">
       <button class="nav-btn" onclick="closeScreen('bestiaryScreen')">⬅️ Back</button>
-      <div style="font-size:11px; font-weight:bold; color:#ffff00; margin-top:5px;">Bestiary & Switch Panel</div>
+      <div style="font-size:11px; font-weight:bold; color:#ffff00; margin-top:5px;">Bestiary Matrix</div>
     </div>
     <div class="grid-bestiary" id="bestiaryGridContainer"></div>
   </div>
@@ -277,7 +331,7 @@ function playPurrSound() {
     </div>
 
     <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px;">
-      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📊 PET PARAMETERS ADJUSTER</div>
+      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📊 OWNER MATRIX CONTROLLER</div>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <div class="dev-form-group">
           <label>Set HP</label>
@@ -296,27 +350,30 @@ function playPurrSound() {
           <input type="number" id="inpDevExp" class="dev-input">
         </div>
       </div>
-      <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00; margin-top:5px;" onclick="applyOwnerPetStats()">Inject Core Status</button>
+      
+      <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
+        <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; width:100%;" onclick="applyOwnerPetStats()">Inject Core Status</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <button class="nav-btn btn-danger" onclick="resetOwnerAction('core_stats')">Reset Stats Only</button>
+          <button class="nav-btn btn-danger" onclick="resetOwnerAction('streak')">Reset Streak Only</button>
+        </div>
+      </div>
     </div>
 
     <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px;">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📦 INVENTORY ITEM GENERATOR</div>
       <div class="dev-form-group">
-        <label>Set All Food & Elixir Stock Count</label>
+        <label>Set All Loot Count (Inc 💊 & 💉)</label>
         <input type="number" id="inpDevLootQty" class="dev-input" value="50">
       </div>
       <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00;" onclick="generateOwnerLoot()">Inject Items Stock</button>
     </div>
 
     <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,0,0,0.2); padding:12px; border-radius:6px; margin-bottom: 20px;">
-      <div style="font-size:11px; font-weight:bold; color:#ff3333; margin-bottom:10px;">⚠️ CRITICAL EMERGENCY RESET</div>
+      <div style="font-size:11px; font-weight:bold; color:#ff3333; margin-bottom:10px;">⚠️ CRITICAL EMERGENCY SYSTEM RESET</div>
       <div class="owner-action-row">
-        <button class="nav-btn btn-danger" onclick="resetOwnerAction('profile')">Reset Profil</button>
-        <button class="nav-btn btn-danger" onclick="resetOwnerAction('pet')">Reset Pet</button>
-      </div>
-      <div class="owner-action-row">
-        <button class="nav-btn btn-danger" onclick="resetOwnerAction('streak')">Reset Streak</button>
-        <button class="nav-btn btn-danger" onclick="resetOwnerAction('leaderboard')">Reset Leaderboard</button>
+        <button class="nav-btn btn-danger" onclick="resetOwnerAction('profile')">Reset Total Profil</button>
+        <button class="nav-btn btn-danger" onclick="resetOwnerAction('pet')">Reset Pet To Egg</button>
       </div>
     </div>
   </div>
@@ -324,12 +381,13 @@ function playPurrSound() {
 </div>
 
 <script>
-// Core Parameter & Data Persist
+// Core State
 let stateData = {
   isHatched: false,
   hatchStreak: 0,
   activePetName: "Naga1",
-  customPetName: "", // Custom Name Tag dari User
+  activePetElement: "Fire", // Elemen Dasar Pet
+  customPetName: "", 
   level: 1,
   hp: 100, maxHp: 100,
   hunger: 100, maxHunger: 100,
@@ -340,38 +398,39 @@ let stateData = {
   deathTimestamp: null
 };
 
-let foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1 };
+// Loot Bag bertambah obat pendorong dan jarum revive
+let foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1, pill: 2, revive: 1 };
 let discoveredBeasts = ["Naga1"]; 
 
 const foodValues = {
-  apple:  { xp: 10, hp: 15, hunger: 20 },
-  candy:  { xp: 15, hp: 10, hunger: 15 },
-  juice:  { xp: 20, hp: 20, hunger: 25 },
-  bread:  { xp: 25, hp: 30, hunger: 35 },
-  burger: { xp: 40, hp: 45, hunger: 50 },
-  pizza:  { xp: 60, hp: 60, hunger: 65 }
+  apple: { xp: 10, hp: 15, hunger: 20 }, candy: { xp: 15, hp: 10, hunger: 15 },
+  juice: { xp: 20, hp: 20, hunger: 25 }, bread: { xp: 25, hp: 30, hunger: 35 },
+  burger: { xp: 40, hp: 45, hunger: 50 }, pizza: { xp: 60, hp: 60, hunger: 65 }
 };
 
 const enemyPool = [
-  { name: "Void Slime", rarity: "Common", multiplier: 1.0, chance: 0.27, img: "Serigala1.png" },
-  { name: "Gorgon Larva", rarity: "Uncommon", multiplier: 1.2, chance: 0.23, img: "Ikan1.png" },
-  { name: "Shadow Basilisk", rarity: "Rare", multiplier: 1.6, chance: 0.20, img: "Ikan2.png" },
-  { name: "Phantom Griffin", rarity: "Epic", multiplier: 2.2, chance: 0.15, img: "Serigala2.png" },
-  { name: "Mecha Golem", rarity: "Legendary", multiplier: 3.0, chance: 0.12, img: "Serigala3.png" },
-  { name: "Inferno Drake", rarity: "Mythic", multiplier: 4.2, chance: 0.07, img: "Naga2.png" },
-  { name: "Amaterasu Core", rarity: "Celestial", multiplier: 6.0, chance: 0.01, img: "Naga3.png" }
+  { name: "Void Slime", rarity: "Common", multiplier: 1.0, chance: 0.35, img: "Serigala1.png", element: "Water" },
+  { name: "Gorgon Larva", rarity: "Uncommon", multiplier: 1.2, chance: 0.25, img: "Ikan1.png", element: "Earth" },
+  { name: "Shadow Basilisk", rarity: "Rare", multiplier: 1.6, chance: 0.20, img: "Ikan2.png", element: "Fire" },
+  { name: "Inferno Drake", rarity: "Mythic", multiplier: 4.2, chance: 0.15, img: "Naga2.png", element: "Fire" },
+  { name: "Amaterasu Core", rarity: "Celestial", multiplier: 6.0, chance: 0.05, img: "Naga3.png", element: "Water" }
 ];
 
-const allBeastList = [
-  "Naga1", "Naga2", "Naga3", "Naga4", "Naga5",
-  "Ikan1", "Ikan2", "Ikan3", "Ikan4", "Ikan5",
-  "Serigala1", "Serigala2", "Serigala3", "Serigala4", "Serigala5"
-];
+const allBeastList = ["Naga1", "Naga2", "Naga3", "Ikan1", "Ikan2", "Serigala1", "Serigala2"];
 
+// RPG Combat Internal State
 let activeEnemy = null;
-let dragActive = false;
-let startX, currentTransformX = 0;
+let playerBattleHp = 0;
+let enemyBattleHp = 0;
+let skillCooldowns = [0, 0, 0, 0];
+let isEnemyStunned = false;
+let doubleDamageActive = false; 
+
+// Drag System Variables
+let dragActive = false; let startX, currentTransformX = 0;
 const petActor = document.getElementById("petActor");
+
+const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 
 function saveLocalData() {
   localStorage.setItem("BLDS_STATE_SYSTEM", JSON.stringify(stateData));
@@ -397,18 +456,19 @@ function syncInterfaceGraphic() {
 
   if (!stateData.isHatched) {
     graphicEl.src = "Telor.png";
-    labelEl.innerHTML = `Egg Matrix<br><span style="font-size:9px;color:#ffff00;">Streak: ${stateData.hatchStreak}/2 untuk Netes</span>`;
+    labelEl.innerHTML = `Egg Matrix<br><span style="font-size:9px;color:#ffff00;">Hatch Tap: ${stateData.hatchStreak}/2</span>`;
     huntBtn.disabled = true;
     huntBtn.innerText = "🔒 Need Hatching";
     renameBtn.style.display = "none";
   } else {
     graphicEl.src = stateData.activePetName + ".png";
     let displayName = stateData.customPetName ? stateData.customPetName : `${stateData.activePetName}.png`;
-    labelEl.innerHTML = `${displayName} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
+    labelEl.innerHTML = `${elementIcons[stateData.activePetElement]} ${displayName} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
     huntBtn.disabled = false;
     huntBtn.innerText = "⚔️ Hunt Wild";
     renameBtn.style.display = "inline-block";
   }
+  document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   renderStats();
   updateInventoryCounters();
 }
@@ -431,216 +491,286 @@ function updateInventoryCounters() {
   });
 }
 
-// ✏️ MEKANIK GANTI NAMA PET
 function triggerRenamePet() {
   if (!stateData.isHatched) return;
   let oldName = stateData.customPetName || stateData.activePetName;
-  let newName = prompt("Masukkan nama baru untuk Pet kamu:", oldName);
+  let newName = prompt("Masukkan nama kustom baru:", oldName);
   if (newName !== null && newName.trim() !== "") {
     stateData.customPetName = newName.trim();
-    saveLocalData();
-    syncInterfaceGraphic();
-    playPurrSound();
+    saveLocalData(); syncInterfaceGraphic(); playPurrSound();
   }
 }
 
-// 🥚 PROSES CLEAR STREAK TETAS TELOR
 function handlePetClick() {
   if (!stateData.isHatched) {
-    stateData.hatchStreak++;
-    playPurrSound();
+    stateData.hatchStreak++; playPurrSound();
     if (stateData.hatchStreak >= 2) {
-      stateData.isHatched = true;
-      stateData.hp = stateData.maxHp;
-      alert("🎉 BOOM! Telur berhasil netes!");
-      playGrowlSound();
+      stateData.isHatched = true; stateData.hp = stateData.maxHp;
+      alert("🎉 BOOM! Telur menetas!"); playGrowlSound();
     }
-    saveLocalData();
-    syncInterfaceGraphic();
+    saveLocalData(); syncInterfaceGraphic();
   } else {
     playPurrSound();
   }
 }
 
 function switchActivePet(targetName) {
-  if(!stateData.isHatched) return;
   stateData.activePetName = targetName;
-  stateData.customPetName = ""; // Reset nama kustom saat berganti jenis monster
-  playGrowlSound();
-  saveLocalData();
-  syncInterfaceGraphic();
+  // Penentuan element otomatis simulasi berdasarkan tipe nama
+  if(targetName.includes("Ikan")) stateData.activePetElement = "Water";
+  else if(targetName.includes("Serigala")) stateData.activePetElement = "Earth";
+  else stateData.activePetElement = "Fire";
+  
+  stateData.customPetName = ""; saveLocalData(); syncInterfaceGraphic();
   closeScreen('bestiaryScreen');
 }
 
 function feedPet(itemKey) {
-  if (!stateData.isHatched) { alert("Egg cannot consume items."); return; }
-  if (foodBag[itemKey] <= 0) { alert("Item out of stock!"); return; }
-  
+  if (!stateData.isHatched || foodBag[itemKey] <= 0) return;
   foodBag[itemKey]--;
   const effect = foodValues[itemKey];
-  
   stateData.hp = Math.min(stateData.maxHp, stateData.hp + effect.hp);
   stateData.hunger = Math.min(stateData.maxHunger, stateData.hunger + effect.hunger);
-  
-  addExp(effect.xp);
-  playPurrSound();
-  saveLocalData();
-  renderStats();
-  updateInventoryCounters();
+  addExp(effect.xp); playPurrSound(); saveLocalData(); renderStats(); updateInventoryCounters();
 }
 
 function useFullElixir() {
-  if (!stateData.isHatched) return;
-  if (foodBag.elixir <= 0) { alert("No Elixir available."); return; }
-  
-  foodBag.elixir--;
-  stateData.hp = stateData.maxHp;
-  
-  playPurrSound();
-  saveLocalData();
-  renderStats();
-  updateInventoryCounters();
+  if (!stateData.isHatched || foodBag.elixir <= 0) return;
+  foodBag.elixir--; stateData.hp = stateData.maxHp;
+  playPurrSound(); saveLocalData(); renderStats(); updateInventoryCounters();
 }
 
 function addExp(amount) {
   stateData.exp += amount;
   if (stateData.exp >= stateData.maxExp) {
-    stateData.exp -= stateData.maxExp;
-    stateData.level++;
-    stateData.maxHp = 100 + (stateData.level * 15);
-    stateData.hp = stateData.maxHp;
-    stateData.power = 15 + (stateData.level * 4);
-    stateData.maxExp = 100 + (stateData.level * 30);
-    alert(`✨ Level Up! Your pet reached Level ${stateData.level}.`);
+    stateData.exp -= stateData.maxExp; stateData.level++;
+    stateData.maxHp = 100 + (stateData.level * 15); stateData.hp = stateData.maxHp;
+    stateData.power = 15 + (stateData.level * 4); stateData.maxExp = 100 + (stateData.level * 30);
   }
 }
 
-// 🕹️ DRAG SYSTEM
-petActor.addEventListener("mousedown", (e) => { dragActive = true; startX = e.clientX; });
-window.addEventListener("mousemove", (e) => {
-  if (!dragActive) return;
-  currentTransformX = e.clientX - startX;
-  petActor.style.transform = `translateX(${currentTransformX}px)`;
-});
-window.addEventListener("mouseup", () => {
-  if (!dragActive) return; dragActive = false;
-  petActor.style.transition = "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25)";
-  petActor.style.transform = "translateX(0px)";
-  setTimeout(() => { petActor.style.transition = "transform 0.1s ease"; }, 400);
-});
-
-// ⚔️ COMBAT SYSTEM DENGAN STREAK TRACKER
-function getRandomEnemy() {
-  let rand = Math.random(); let cumulative = 0;
-  for (let enemy of enemyPool) {
-    cumulative += enemy.chance;
-    if (rand <= cumulative) return Object.assign({}, enemy);
-  }
-  return Object.assign({}, enemyPool[0]);
+// ⚔️ ADVANCED RPG COMBAT ENGINE ENGINE
+function checkElementCounter(attackerEle, defenderEle) {
+  if (attackerEle === "Water" && defenderEle === "Fire") return 1.5;
+  if (attackerEle === "Fire" && defenderEle === "Earth") return 1.5;
+  if (attackerEle === "Earth" && defenderEle === "Water") return 1.5;
+  return 1.0;
 }
 
 function prepareBattle() {
   activeEnemy = getRandomEnemy();
-  const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.5)) || 1;
-  
-  activeEnemy.maxHp = Math.floor((40 + (lvlMod * 10)) * activeEnemy.multiplier);
+  const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.4)) || 1;
+  activeEnemy.maxHp = Math.floor((45 + (lvlMod * 8)) * activeEnemy.multiplier);
   activeEnemy.hp = activeEnemy.maxHp;
-  activeEnemy.dmg = Math.floor((6 + (lvlMod * 3)) * activeEnemy.multiplier);
+  activeEnemy.dmg = Math.floor((5 + (lvlMod * 2)) * activeEnemy.multiplier);
   
+  playerBattleHp = stateData.hp;
+  enemyBattleHp = activeEnemy.hp;
+  skillCooldowns = [0, 0, 0, 0];
+  isEnemyStunned = false;
+  doubleDamageActive = false;
+
   document.getElementById("btPlayerImg").src = stateData.activePetName + ".png";
   document.getElementById("btPlayerName").innerText = stateData.customPetName || stateData.activePetName;
-  document.getElementById("btPlayerHp").innerText = `${stateData.hp}/${stateData.maxHp} HP`;
+  document.getElementById("btPlayerElement").innerText = elementIcons[stateData.activePetElement];
   
   document.getElementById("btEnemyImg").src = activeEnemy.img;
   document.getElementById("btEnemyName").innerText = `${activeEnemy.name} [Lvl ${lvlMod}]`;
-  document.getElementById("btEnemyHp").innerText = `${activeEnemy.hp}/${activeEnemy.maxHp} HP`;
+  document.getElementById("btEnemyElement").innerText = elementIcons[activeEnemy.element];
+  document.getElementById("btEnemyRarity").innerText = activeEnemy.rarity;
   
-  const tag = document.getElementById("btEnemyRarity");
-  tag.innerText = activeEnemy.rarity;
+  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Confronting Arena standard vs ${activeEnemy.name}. Choose attack!</div>`;
   
-  if(activeEnemy.rarity === "Celestial") tag.style.background = "#ffff00", tag.style.color="#000";
-  else if(activeEnemy.rarity === "Mythic") tag.style.background = "#ff3333", tag.style.color="#fff";
-  else if(activeEnemy.rarity === "Legendary") tag.style.background = "#ffa500", tag.style.color="#fff";
-  else if(activeEnemy.rarity === "Epic") tag.style.background = "#bf55ec", tag.style.color="#fff";
-  else tag.style.background = "#ffffff", tag.style.color="#000";
-  
-  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Warning: Confronting wild ${activeEnemy.rarity} tier lifeform.</div>`;
-  document.getElementById("btActionBtn").disabled = false;
+  document.getElementById("btnExitBattle").style.display = "inline-block";
+  updateRpgActionButtons();
 }
 
-function startCombatEngine() {
-  document.getElementById("btActionBtn").disabled = true;
-  const log = document.getElementById("battleLogBox");
-  let pCurrentHp = stateData.hp; let turn = 0;
-  
-  let combatInterval = setInterval(() => {
-    turn++;
-    let pDmg = Math.floor(stateData.power * (0.8 + Math.random() * 0.4));
-    activeEnemy.hp = Math.max(0, activeEnemy.hp - pDmg);
-    log.innerHTML += `<div>⚔️ Turn ${turn}: Hit dealt <b>${pDmg}</b> damage.</div>`;
-    document.getElementById("btEnemyHp").innerText = `${activeEnemy.hp}/${activeEnemy.maxHp} HP`;
-    log.scrollTop = log.scrollHeight;
-    
-    if (activeEnemy.hp <= 0) {
-      clearInterval(combatInterval);
-      
-      // Hitung Penambahan Streak Menang
-      stateData.currentStreak++;
-      if (stateData.currentStreak > stateData.highestStreak) {
-        stateData.highestStreak = stateData.currentStreak;
-      }
+function updateRpgActionButtons() {
+  document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
+  document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
 
-      let pct = 0.15; let loot = ["apple"];
-      if (activeEnemy.rarity === "Celestial") { pct = 0.60; loot = ["pizza", "burger", "juice"]; }
-      else if (activeEnemy.rarity === "Mythic") { pct = 0.45; loot = ["burger", "pizza"]; }
-      else if (activeEnemy.rarity === "Legendary") { pct = 0.35; loot = ["bread", "burger"]; }
-      else if (activeEnemy.rarity === "Epic") { pct = 0.28; loot = ["juice", "bread"]; }
-      else if (activeEnemy.rarity === "Rare") { pct = 0.22; loot = ["candy", "juice"]; }
+  // Hitung Nilai Damage Pasti Sebelum Tombol Dipencet (Fixed Formula)
+  let pMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
+  let d0 = Math.floor(stateData.power * 1.0 * pMod);
+  let d1 = Math.floor(stateData.power * 1.5 * pMod);
+  let d2 = Math.floor(stateData.power * 0.5 * pMod);
+  let d3 = Math.floor(stateData.power * 2.5 * pMod);
+
+  document.getElementById("skillDmg0").innerText = `Dmg: ${d0} ${pMod > 1 ? '(Effective)' : ''}`;
+  document.getElementById("skillDmg1").innerText = `Dmg: ${d1} [CD: ${skillCooldowns[1]}]`;
+  document.getElementById("skillDmg2").innerText = `Dmg: ${d2} (50% Stun)`;
+  document.getElementById("skillDmg3").innerText = `Dmg: ${d3} [CD: ${skillCooldowns[3]}]`;
+
+  for(let i=0; i<4; i++) {
+    const btn = document.getElementById(`skillBtn${i}`);
+    btn.disabled = (skillCooldowns[i] > 0);
+  }
+  
+  document.getElementById("b-stock-elixir").innerText = foodBag.elixir;
+  document.getElementById("b-stock-pill").innerText = foodBag.pill;
+}
+
+function toggleBattleItemPanel() {
+  const panel = document.getElementById("battleItemPanel");
+  panel.style.display = (panel.style.display === "grid") ? "none" : "grid";
+}
+
+function useBattleItem(type) {
+  const log = document.getElementById("battleLogBox");
+  if (type === 'elixir') {
+    if(foodBag.elixir <= 0) return;
+    foodBag.elixir--;
+    playerBattleHp = stateData.maxHp;
+    log.innerHTML += `<div style='color:#00ffff;'>🧪 Item: HP recovered fully to 100%!</div>`;
+  } 
+  else if (type === 'pill') {
+    if(foodBag.pill <= 0) return;
+    foodBag.pill--;
+    doubleDamageActive = true;
+    log.innerHTML += `<div style='color:#ffff00;'>💊 Item: Beast Burst Pill consumed! Next attack damage x2.</div>`;
+  }
+  toggleBattleItemPanel();
+  updateRpgActionButtons();
+}
+
+function executeRpgTurn(skillIndex) {
+  // Matikan Tombol untuk mencegah double klik bermasalah
+  setRpgBoardInteractive(false);
+  const log = document.getElementById("battleLogBox");
+  
+  // 1. Player Turn Action Calculation
+  let baseMult = 1.0;
+  if (skillIndex === 1) { baseMult = 1.5; skillCooldowns[1] = 3; }
+  if (skillIndex === 2) { baseMult = 0.5; }
+  if (skillIndex === 3) { baseMult = 2.5; skillCooldowns[3] = 5; }
+  
+  let elementMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
+  let rawDamage = Math.floor(stateData.power * baseMult * elementMod);
+  
+  // Hitung Efek Item 💊
+  if (doubleDamageActive) {
+    rawDamage = rawDamage * 2;
+    doubleDamageActive = false;
+  }
+  
+  enemyBattleHp = Math.max(0, enemyBattleHp - rawDamage);
+  
+  let skillNames = ["Strike", "Heavy Smash", "Electro Stun", "Ultimate Burst"];
+  log.innerHTML += `<div>⚔️ You used <b>${skillNames[skillIndex]}</b>! Hit deals <b style='color:#ffff00;'>${rawDamage}</b> damage.</div>`;
+  if(elementMod > 1) log.innerHTML += `<div style='color:#00ff00;font-size:9px;'>↳ Element Advantage! +50% Effective Damage.</div>`;
+
+  // Cek Peluang Efek Stun ⚡
+  let stunSucceeds = false;
+  if (skillIndex === 2 && Math.random() <= 0.50) {
+    stunSucceeds = true;
+    isEnemyStunned = true;
+    log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ Stun Proc! Opponent paralyzed for next turn.</div>`;
+  }
+
+  document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
+  log.scrollTop = log.scrollHeight;
+  
+  // Kurangi status cooldown skill
+  for(let i=0; i<4; i++) { if(i !== skillIndex && skillCooldowns[i] > 0) skillCooldowns[i]--; }
+
+  // Cek Kematian Musuh
+  if (enemyBattleHp <= 0) {
+    handleBattleVictory();
+    return;
+  }
+  
+  // 2. Enemy Turn Counter Action
+  document.getElementById("combatTurnTitle").innerText = "Enemy Turn...";
+  setTimeout(() => {
+    if (isEnemyStunned) {
+      log.innerHTML += `<div style='color:#00ffff;'>💤 ${activeEnemy.name} is stunned and skipped turn!</div>`;
+      isEnemyStunned = false; 
+      endTurnCycle();
+    } else {
+      let eEleMod = checkElementCounter(activeEnemy.element, stateData.activePetElement);
+      let enemyDmg = Math.floor(activeEnemy.dmg * eEleMod);
+      playerBattleHp = Math.max(0, playerBattleHp - enemyDmg);
       
-      let expGained = Math.floor(stateData.maxExp * pct);
-      addExp(expGained);
+      log.innerHTML += `<div style='color:#ff4a4a;'>💥 Enemy strikes back with element fury! Received <b>${enemyDmg}</b> damage.</div>`;
+      if(eEleMod > 1) log.innerHTML += `<div style='color:#ff4a4a;font-size:9px;'>↳ Fatal Counter! Element weakness triggered.</div>`;
       
-      let rewardedFood = loot[Math.floor(Math.random() * loot.length)];
-      foodBag[rewardedFood] += Math.floor(1 + Math.random() * 2);
+      document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
+      log.scrollTop = log.scrollHeight;
       
-      let gotElixir = false; if (Math.random() <= 0.10) { foodBag.elixir++; gotElixir = true; }
-      
-      log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Win Streak: ${stateData.currentStreak}</div>`;
-      if(gotElixir) log.innerHTML += `<div style='color:#00ffff;font-weight:bold;'>🧪 Drop Luck! Found 1x Elixir.</div>`;
-      
-      if (!discoveredBeasts.includes(activeEnemy.name)) discoveredBeasts.push(activeEnemy.name);
-      stateData.hp = pCurrentHp;
-      saveLocalData(); syncInterfaceGraphic();
-      return;
+      if (playerBattleHp <= 0) {
+        handleBattleDefeat();
+      } else {
+        endTurnCycle();
+      }
     }
-    
-    let eDmg = Math.floor(activeEnemy.dmg * (0.8 + Math.random() * 0.4));
-    pCurrentHp = Math.max(0, pCurrentHp - eDmg);
-    log.innerHTML += `<div>💥 Enemy counter-punches for <b>${eDmg}</b> damage.</div>`;
-    document.getElementById("btPlayerHp").innerText = `${pCurrentHp}/${stateData.maxHp} HP`;
-    log.scrollTop = log.scrollHeight;
-    
-    if (pCurrentHp <= 0) {
-      clearInterval(combatInterval);
-      log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Streak reset to 0!</div>`;
-      
-      stateData.currentStreak = 0; // Patahkan streak karena kalah
-      stateData.hp = 0;
-      stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000); // Penalti nunggu 5 jam
-      
-      saveLocalData(); syncInterfaceGraphic();
-      setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
-    }
-  }, 600);
+  }, 1000);
+}
+
+function endTurnCycle() {
+  document.getElementById("combatTurnTitle").innerText = "Your Turn";
+  setRpgBoardInteractive(true);
+  updateRpgActionButtons();
+}
+
+function setRpgBoardInteractive(active) {
+  for(let i=0; i<4; i++) {
+    document.getElementById(`skillBtn${i}`).disabled = !active;
+  }
+  document.getElementById("btnToggleBattleItem").disabled = !active;
+}
+
+function handleBattleVictory() {
+  const log = document.getElementById("battleLogBox");
+  stateData.currentStreak++;
+  if (stateData.currentStreak > stateData.highestStreak) stateData.highestStreak = stateData.currentStreak;
+
+  let pct = 0.20;
+  if(activeEnemy.rarity === "Celestial") pct = 0.65;
+  else if(activeEnemy.rarity === "Mythic") pct = 0.45;
+  
+  let expGained = Math.floor(stateData.maxExp * pct);
+  addExp(expGained);
+  
+  // Chance Drop Serum Suntik 💉 Sebesar 2%
+  let dropMessage = "";
+  if (Math.random() <= 0.02) {
+    foodBag.revive++;
+    dropMessage = `<br><span style='color:#00ffff;font-weight:bold;'>💉 RARE DROP! Found 1x Revive Serum.</span>`;
+  }
+
+  log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Earned ${expGained} EXP.${dropMessage}</div>`;
+  document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
+  
+  stateData.hp = playerBattleHp;
+  if (!discoveredBeasts.includes(activeEnemy.name)) discoveredBeasts.push(activeEnemy.name);
+  saveLocalData(); syncInterfaceGraphic();
+}
+
+function handleBattleDefeat() {
+  const log = document.getElementById("battleLogBox");
+  log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Your pet fainted. Streak reset!</div>`;
+  stateData.currentStreak = 0;
+  stateData.hp = 0;
+  stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000); // Penalti 5 Jam nunggu rekonstruksi
+  saveLocalData(); syncInterfaceGraphic();
+  setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1800);
+}
+
+function useReviveInstant() {
+  if (foodBag.revive <= 0) { alert("Tidak ada stock Revive Serum 💉!"); return; }
+  foodBag.revive--;
+  stateData.deathTimestamp = null;
+  stateData.hp = Math.floor(stateData.maxHp * 0.5); // Pulih 50% HP instan
+  saveLocalData(); syncInterfaceGraphic();
+  alert("💉 Serum Terinjeksi: Pet bangkit instan dengan 50% HP!");
 }
 
 function checkDeathCooldown() {
+  document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   if (stateData.deathTimestamp && Date.now() < stateData.deathTimestamp) {
     document.getElementById("deathOverlay").style.display = "flex";
     let diff = stateData.deathTimestamp - Date.now();
-    let hours = Math.floor(diff / (1000 * 60 * 60));
-    let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    let secs = Math.floor((diff % (1000 * 60)) / 1000);
+    let hours = Math.floor(diff / (1000 * 60 * 60)), mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), secs = Math.floor((diff % (1000 * 60)) / 1000);
     document.getElementById("countdownTimer").innerText = `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
   } else {
     if(stateData.hp === 0 && stateData.deathTimestamp) {
@@ -649,6 +779,14 @@ function checkDeathCooldown() {
     }
     document.getElementById("deathOverlay").style.display = "none";
   }
+}
+
+function getRandomEnemy() {
+  let rand = Math.random(); let cumulative = 0;
+  for (let enemy of enemyPool) {
+    cumulative += enemy.chance; if (rand <= cumulative) return Object.assign({}, enemy);
+  }
+  return Object.assign({}, enemyPool[0]);
 }
 
 function buildBestiaryUI() {
@@ -663,7 +801,20 @@ function buildBestiaryUI() {
   }).join('');
 }
 
-// 🛠️ DEVELOPER MANAGEMENT FIELD ENGINE
+// DRAG SYSTEM
+petActor.addEventListener("mousedown", (e) => { dragActive = true; startX = e.clientX; });
+window.addEventListener("mousemove", (e) => {
+  if (!dragActive) return; currentTransformX = e.clientX - startX;
+  petActor.style.transform = `translateX(${currentTransformX}px)`;
+});
+window.addEventListener("mouseup", () => {
+  if (!dragActive) return; dragActive = false;
+  petActor.style.transition = "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25)";
+  petActor.style.transform = "translateX(0px)";
+  setTimeout(() => { petActor.style.transition = "transform 0.1s ease"; }, 400);
+});
+
+// 🛠️ OWNER CONTROLLER SYSTEM CONFIG
 function syncOwnerFields() {
   document.getElementById("inpDevHp").value = stateData.hp;
   document.getElementById("inpDevMaxHp").value = stateData.maxHp;
@@ -676,55 +827,35 @@ function applyOwnerPetStats() {
   stateData.hp = Math.min(stateData.maxHp, parseInt(document.getElementById("inpDevHp").value) || 0);
   stateData.power = parseInt(document.getElementById("inpDevPower").value) || 15;
   stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
-  
   saveLocalData(); syncInterfaceGraphic();
-  alert("🧪 Owner Override: Pet status injection success.");
+  alert("🧪 Core Injected!");
 }
 
 function generateOwnerLoot() {
   const qty = parseInt(document.getElementById("inpDevLootQty").value) || 10;
   Object.keys(foodBag).forEach(key => { foodBag[key] = qty; });
   saveLocalData(); updateInventoryCounters();
-  alert(`📦 Owner Override: Items stock modified to ${qty}.`);
+  alert(`📦 Stock Core Adjusted: Counts locked to ${qty}.`);
 }
 
 function bypassCooldown() {
-  stateData.deathTimestamp = null;
-  stateData.hp = stateData.maxHp;
+  stateData.deathTimestamp = null; stateData.hp = stateData.maxHp;
   saveLocalData(); syncInterfaceGraphic();
 }
 
-// MULTI RESET EXECUTION CENTER
 function resetOwnerAction(type) {
-  if (!confirm(`Apakah Anda yakin ingin melakukan reset variabel [${type.toUpperCase()}]?`)) return;
-  
-  if (type === 'profile') {
-    localStorage.removeItem("BLDS_BEAST_DISCOVERED");
-    discoveredBeasts = ["Naga1"];
-    alert("🔄 Profile Matrix Reset To Default!");
-  } 
-  else if (type === 'pet') {
-    stateData = { isHatched: false, hatchStreak: 0, activePetName: "Naga1", customPetName: "", level: 1, hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100, power: 15, currentStreak: 0, highestStreak: 0, deathTimestamp: null };
-    foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1 };
-    alert("🔄 Pet Core Data Reset back to Egg Cell!");
-  } 
-  else if (type === 'streak') {
-    // RESET BERIKUT KHUSUS UNTUK STREAK & HIGHEST STREAK
-    stateData.currentStreak = 0;
-    stateData.highestStreak = 0;
-    alert("🔄 Win Streak & Highest Streak successfully wiped back to 0!");
+  if (!confirm(`Confirm Reset [${type.toUpperCase()}]?`)) return;
+  if (type === 'core_stats') {
+    stateData.hp = 100; stateData.maxHp = 100; stateData.power = 15; stateData.exp = 0;
+  } else if (type === 'streak') {
+    stateData.currentStreak = 0; stateData.highestStreak = 0; stateData.hatchStreak = 0;
+  } else if (type === 'profile') {
+    localStorage.removeItem("BLDS_BEAST_DISCOVERED"); discoveredBeasts = ["Naga1"];
+  } else if (type === 'pet') {
+    stateData = { isHatched: false, hatchStreak: 0, activePetName: "Naga1", activePetElement: "Fire", customPetName: "", level: 1, hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100, power: 15, currentStreak: 0, highestStreak: 0, deathTimestamp: null };
+    foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1, pill: 2, revive: 1 };
   }
-  else if (type === 'leaderboard') {
-    // Normalisasi Leaderboard tanpa menghapus database utama
-    localStorage.setItem("BLDS_LEADERBOARD_NORMALIZED", "true");
-    if(window.parent) {
-      window.parent.postMessage({ type: 'RESET_LEADERBOARD_NORMAL' }, '*');
-    }
-    alert("🔄 Leaderboard matrix commands transmitted! Values calibrated back to normal.");
-  }
-  
-  saveLocalData();
-  location.reload();
+  saveLocalData(); syncInterfaceGraphic(); syncOwnerFields();
 }
 
 function openScreen(id) {
