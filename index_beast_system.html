@@ -1,420 +1,412 @@
-<style>
-/* CSS di bawah ini hanya mengontrol elemen yang memiliki awalan kata 'beast' 
-   sehingga mustahil merusak atau menimpa CSS BLDS Core bawaanmu */
-
-#beastModuleContext {
-  max-width: 600px; 
-  margin: 0 auto; 
-  padding: 20px; 
-  text-align: center;
-  color: #fff;
-}
-
-/* Navigasi Internal Menu Beast */
-#beastModuleContext .beast-nav-menu {
-  display: flex; 
-  gap: 10px; 
-  justify-content: center; 
-  margin-bottom: 25px;
-}
-
-/* 🔘 Tombol Khusus Beast - Menggunakan Class Spesifik (Anti-Bentrok) */
-#beastModuleContext .beast-btn,
-.beast-modal-box .beast-btn,
-.odyssey-content-wrapper .beast-btn {
-  background: #000 !important; 
-  color: #fff !important; 
-  border: 1px solid rgba(255,255,255,0.2) !important; 
-  padding: 14px !important; 
-  font-size: 11px !important; 
-  width: 100% !important; 
-  box-sizing: border-box !important; 
-  margin-bottom: 0 !important; 
-  letter-spacing: 1px !important;
-  cursor: pointer !important; 
-  text-transform: uppercase !important; 
-  transition: all 0.2s ease !important;
-  border-radius: 4px !important;
-  display: block !important;
-}
-
-#beastModuleContext .beast-nav-menu .beast-btn {
-  width: auto !important;
-  padding: 12px 24px !important;
-}
-
-#beastModuleContext .beast-btn:hover,
-.beast-modal-box .beast-btn:hover,
-.odyssey-content-wrapper .beast-btn:hover { 
-  background: #fff !important; 
-  color: #000 !important; 
-  border-color: #fff !important; 
-}
-
-#beastModuleContext .beast-btn:disabled { 
-  opacity: 0.3 !important; 
-  cursor: not-allowed !important; 
-  background: transparent !important; 
-  color: #fff !important; 
-}
-
-#beastModuleContext .beast-nav-menu .beast-btn.active-tab {
-  background: #fff !important; 
-  color: #000 !important; 
-  border-color: #fff !important;
-}
-
-/* Dropdown Pathway Core */
-#beastModuleContext .beast-select {
-  background: #000 !important; 
-  color: #fff !important; 
-  border: 1px solid rgba(255,255,255,0.2) !important; 
-  padding: 14px !important; 
-  font-size: 11px !important; 
-  width: 100% !important; 
-  box-sizing: border-box !important;
-  cursor: pointer !important;
-  border-radius: 4px !important;
-}
-
-/* Susunan Konten View */
-#beastModuleContext .view-section { display: none; }
-#beastModuleContext .view-section.active-section { display: block; }
-
-/* 🧬 Susunan Tombol Vertikal Utama (Sesuai Request: Menurun Kebawah) */
-#beastModuleContext .beast-interaction-zone { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 12px; 
-  margin-top: 15px; 
-}
-
-/* HUD Panel & Stats */
-#beastModuleContext .pet-hud-box {
-  background: rgba(255,255,255,0.02); 
-  border: 1px solid rgba(255,255,255,0.12);
-  padding: 25px; 
-  border-radius: 12px; 
-  box-shadow: inset 0 0 15px rgba(255,255,255,0.02);
-}
-#beastModuleContext .pet-name-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
-#beastModuleContext .pet-name-display { font-size: 22px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
-#beastModuleContext .edit-pet-btn { background: transparent !important; border: none !important; color: #fff !important; cursor: pointer; font-size: 16px; opacity: 0.6; width: auto !important; padding: 0 !important; display: inline-block !important; }
-#beastModuleContext .edit-pet-btn:hover { opacity: 1 !important; }
-#beastModuleContext .pet-stage-display { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; margin-bottom: 15px; }
-#beastModuleContext .pet-image-frame { width: 150px; height: 150px; margin: 0 auto 15px auto; display: flex; justify-content: center; align-items: center; }
-
-#beastModuleContext .beast-stats-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px;
-}
-#beastModuleContext .stat-item { text-align: left; font-size: 12px; letter-spacing: 1px; }
-#beastModuleContext .stat-val { font-weight: bold; color: #fff; }
-
-#beastModuleContext .bar-container { background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); }
-#beastModuleContext .bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
-#beastModuleContext .bar-exp { background: #00ff66; }
-#beastModuleContext .bar-hp { background: #ff3355; }
-
-#beastModuleContext .battle-logger-panel {
-  background: #000; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding: 15px; text-align: left;
-  border-radius: 6px; max-height: 150px; overflow-y: auto; font-size: 11px; color: #00ff00; line-height: 1.6;
-}
-
-/* Bestiary Grid System */
-#beastModuleContext .bestiary-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px;
-}
-#beastModuleContext .bestiary-card {
-  background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 8px; padding: 15px 10px; text-align: center; transition: all 0.3s;
-}
-#beastModuleContext .bestiary-card.discovered { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
-#beastModuleContext .bestiary-avatar-box { width: 80px; height: 80px; margin: 0 auto 10px auto; display: flex; justify-content: center; align-items: center; }
-#beastModuleContext .bestiary-card.undiscovered .bestiary-avatar-box img { filter: brightness(0) !important; opacity: 0.15; }
-#beastModuleContext .bestiary-meta-title { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-#beastModuleContext .bestiary-meta-desc { font-size: 10px; color: rgba(255,255,255,0.4); line-height: 1.4; text-align: left; }
-
-#beastModuleContext .path-selector-box { margin-bottom: 20px; text-align: left; }
-#beastModuleContext .path-selector-box label { font-size: 10px; opacity: 0.5; display: block; margin-bottom: 5px; letter-spacing: 1px; }
-
-/* Dynamic Pathway Glow Effects */
-.path-dragon .element-glow-text { color: #a020f0 !important; text-shadow: 0 0 10px #a020f0; animation: bGlit 2s infinite alternate; }
-.path-fish .element-glow-text { color: #00ffff !important; text-shadow: 0 0 10px #00ffff; animation: bPuls 2.5s infinite ease-in-out; }
-.path-wolf .element-glow-text { color: #ff3333 !important; text-shadow: 0 0 10px #ff3333; animation: bFlame 1.8s infinite linear; }
-@keyframes bGlit { 0%, 100% { opacity: 1; } 96% { opacity: 0.7; } }
-@keyframes bPuls { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.01); } }
-@keyframes bFlame { 0%, 100% { text-shadow: 0 0 8px #ff3333; } 50% { text-shadow: 0 0 12px #ff5555; } }
-
-/* Modals & Cinematics Layer */
-.beast-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
-.beast-modal-box { background: #05050a; border: 1px solid rgba(255,255,255,0.2); padding: 25px; text-align: center; border-radius: 8px; max-width: 320px; width: 100%; }
-.beast-modal-box input[type="text"] { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; width: 100%; box-sizing: border-box; margin-bottom: 15px; text-align: center; }
-
-.odyssey-cutscene-layer { position: fixed; inset: 0; background: linear-gradient(to bottom, #000, #03030b); z-index: 999999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-.odyssey-content-wrapper { width: 100%; max-width: 650px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
-.odyssey-logo-holder { width: 140px; height: 140px; opacity: 0; transform: scale(0.05) rotate(-45deg); transition: all 0.3s ease; }
-.odyssey-logo-holder.slam-active { opacity: 1; transform: scale(1) rotate(0deg); }
-.odyssey-text-container { position: relative; min-height: 40px; width: 100%; }
-.odyssey-line { position: absolute; width: 100%; font-size: 16px; letter-spacing: 3px; color: rgba(255, 255, 255, 0.9); opacity: 0; transform: scale(0.95); transition: opacity 0.8s ease, transform 0.8s ease; left: 0; }
-.odyssey-line.active { opacity: 1; transform: scale(1); }
-.odyssey-line.odyssey-grand-title { font-size: 32px; font-weight: 600; color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
-.odyssey-pet-selection-deck { display: none; justify-content: center; gap: 15px; width: 100%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
-.odyssey-pet-selection-deck.active { display: flex; }
-.odyssey-pet-selection-deck.smooth-show { opacity: 1; transform: translateY(0); }
-.odyssey-pet-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px 10px; flex: 1; max-width: 140px; cursor: pointer; transition: all 0.3s ease; }
-.odyssey-pet-card.selected { border-color: #ffffff; background: rgba(255, 255, 255, 0.1); }
-.odyssey-dynamic-lore-block { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 14px; text-align: justify; display: none; }
-.odyssey-evolution-swap-box { width: 100%; max-width: 200px; height: 200px; margin: 20px auto; border: 1px dashed rgba(255,255,255,0.2); display: none; justify-content: center; align-items: center; position: relative; }
-.odyssey-swap-img { width: 75%; height: 75%; position: absolute; transition: opacity 2s linear; }
-</style>
-
-<div id="beastModuleContext" class="path-dragon">
-
-  <h2 style="letter-spacing: 4px; font-size: 20px; margin-bottom: 5px; margin-top:0;">BEAST CORE SYSTEM</h2>
-  <p style="font-size: 11px; opacity: 0.4; margin: 0 0 25px 0;">NODE ENHANCEMENT & SIMULATION FRAMEWORK</p>
-  
-  <div class="beast-nav-menu">
-    <button id="tabBtnEngine" class="beast-btn active-tab" onclick="toggleActiveView('engine')">Grid Engine</button>
-    <button id="tabBtnBook" class="beast-btn" onclick="toggleActiveView('book')">Bestiary Book</button>
-  </div>
-
-  <div id="viewContainerEngine" class="view-section active-section">
-    <div class="path-selector-box">
-      <label style="font-size: 10px; opacity: 0.5; display: block; margin-bottom: 5px;">CHOOSE ACTIVE PATHWAY CORE:</label>
-      <select id="beastPathSelect" class="beast-select" onchange="switchBeastPath()">
-        <option value="dragon">🐉 JALUR NAGA (THE VOID DRAGON)</option>
-        <option value="fish">🐟 JALUR IKAN (THE ABYSS LEVIATHAN)</option>
-        <option value="wolf">🐺 JALUR SERIGALA (THE SHADOW FENRIR)</option>
-      </select>
-    </div>
-
-    <div class="pet-hud-box" id="petHudBox">
-      <div class="pet-name-container">
-        <div class="pet-name-display element-glow-text" id="petNameDisplay">UNNAMED ENTITY</div>
-        <button class="edit-pet-btn" onclick="openRenameModal()" title="Ubah Nickname">✏️</button>
-      </div>
-      <div class="pet-stage-display" id="petStageDisplay">Fase 3</div>
-      
-      <div class="pet-image-frame" id="petImageFrameSlot"></div>
-
-      <div class="beast-stats-grid">
-        <div class="stat-item">LEVEL: <span class="stat-val" id="lblLevel">1</span></div>
-        <div class="stat-item">POWER: <span class="stat-val" id="lblPower">40</span> KP</div>
-        <div class="stat-item" style="grid-column: span 2;">
-          HP (DARAH): <span class="stat-val" id="lblHp">100 / 100</span>
-          <div class="bar-container"><div id="barHpFill" class="bar-fill bar-hp"></div></div>
-        </div>
-        <div class="stat-item" style="grid-column: span 2;">
-          EXP PROGRESSION: <span class="stat-val" id="lblExp">0 / 100</span>
-          <div class="bar-container"><div id="barExpFill" class="bar-fill bar-exp"></div></div>
-        </div>
-      </div>
-
-      <div class="beast-interaction-zone">
-        <button class="beast-btn" onclick="feedBeastNode()">🍖 FEED BEAST (+EXP)</button>
-        <button id="btnBattleTrigger" class="beast-btn" onclick="engageDataAnomaliesBattle()">⚔️ BATTLE ANOMALY</button>
-      </div>
-    </div>
-    
-    <div class="battle-logger-panel" id="battleLogger">
-      [SYSTEM] Beast Core initialized. Ready to intercept data anomalies.
-    </div>
-
-    <br>
-    <button class="beast-btn" onclick="triggerSimulated100Days()" style="border-color: rgba(255,255,255,0.15) !important; font-size:10px !important; opacity:0.6 !important;">TEST CELESTIAL ODYSSEY (100 DAYS LOOP)</button>
-  </div>
-
-  <div id="viewContainerBook" class="view-section">
-    <div class="pet-hud-box" style="text-align: left; padding: 25px;">
-      <h3 style="margin-top: 0; font-size: 14px; letter-spacing: 2px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">📖 ENCYCLOPEDIA CODEX</h3>
-      <div class="bestiary-grid" id="bestiaryGridOutlet"></div>
-    </div>
-  </div>
-
-</div>
-
-<div class="odyssey-cutscene-layer" id="odysseyCutsceneContainer">
-  <div class="odyssey-content-wrapper" id="odysseyWrapper">
-    <div class="odyssey-logo-holder" id="odysseyLogoHolder"><div style="font-size:24px; font-weight:600; letter-spacing:4px; color:#fff;">[BEAST LEGACY]</div></div>
-    <div class="odyssey-text-container">
-      <div class="odyssey-line" id="odyLine1">100 hari lalu, kamu memulainya...</div>
-      <div class="odyssey-line" id="odyLine2">Kamu melatihnya dalam kegelapan...</div>
-      <div class="odyssey-line" id="odyLine3">Kini matrix energinya telah meledak sempurna...</div>
-      <div class="odyssey-line odyssey-grand-title" id="odyLine4">DAYS 100 ACHIEVED</div>
-    </div>
-    <div style="font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.4); display:none; text-transform:uppercase; margin-top:20px;" id="odyDeckTitle">Select one of the ancient god beasts</div>
-    <div class="odyssey-pet-selection-deck" id="odysseyPetDeck">
-      <div class="odyssey-pet-card" id="card-cerberus" onclick="selectLegendaryBeast('cerberus')"><div style="font-size:24px; margin-bottom:5px;">🔥</div><div style="font-size:11px; font-weight:600; color:#fff;">CERBERUS</div></div>
-      <div class="odyssey-pet-card" id="card-phoenix" onclick="selectLegendaryBeast('phoenix')"><div style="font-size:24px; margin-bottom:5px;">☀️</div><div style="font-size:11px; font-weight:600; color:#fff;">PHOENIX</div></div>
-      <div class="odyssey-pet-card" id="card-leviathan" onclick="selectLegendaryBeast('leviathan')"><div style="font-size:24px; margin-bottom:5px;">🌊</div><div style="font-size:11px; font-weight:600; color:#fff;">LEVIATHAN</div></div>
-    </div>
-    <div class="odyssey-dynamic-lore-block" id="odysseyLoreBlock"><div style="font-size:12px; line-height:1.7; color: rgba(255,255,255,0.85);" id="odysseyLoreText"></div></div>
-    <div class="odyssey-evolution-swap-box" id="odysseySwapBox"><div id="swapOldFrame" class="odyssey-swap-img" style="opacity:1;"></div><div id="swapNewFrame" class="odyssey-swap-img" style="opacity:0;"></div></div>
-    <div style="width:100%; max-width:300px; margin: 0 auto;">
-       <button id="odyChangePetBtn" class="beast-btn" onclick="processOldPetFadeSequence()" style="display:none; background:#fff !important; color:#000 !important;">ENGAGE MUTATION LOOP</button>
-       <button id="odyTakeBtn" class="beast-btn" onclick="executeFinalGlitchTakeLock()" style="display:none; background:#fff !important; color:#000 !important;">LOCK NEW ENERGY BLOCK</button>
-    </div>
-  </div>
-</div>
-
-<div class="beast-modal-overlay" id="petNameModal">
-  <div class="beast-modal-box">
-    <h3 style="font-size:14px; letter-spacing:2px; margin-top:0; color:#fff;">MUTATE CORE NAME</h3>
-    <input type="text" id="petNameInput" placeholder="ENTER NICKNAME" maxlength="12">
-    <button class="beast-btn" onclick="savePetCustomName()">BIND CORENODE SIGNATURE</button>
-    <button class="beast-btn" onclick="document.getElementById('petNameModal').style.display='none'" style="border:none !important; color:rgba(255,255,255,0.4) !important; font-size:10px !important; background:transparent !important; margin-top:5px !important; box-shadow:none !important;">CANCEL</button>
-  </div>
-</div>
+<beast-matrix-system></beast-matrix-system>
 
 <script>
-let beastData = { petType: "dragon", petCustomName: "", unlockedOdysseyPet: "", level: 1, exp: 0, currentHp: 100 };
-const BESTIARY_DB = [
-  { id: "dragon", type: "base", name: "Void Dragon", img: "Naga3.png", desc: "Naga purba pengendali distorsi ruang kosong data void." },
-  { id: "fish", type: "base", name: "Abyss Leviathan", img: "Ikan3.png", desc: "Makhluk laut terdalam penyerap anomali kebocoran memori." },
-  { id: "wolf", type: "base", name: "Shadow Fenrir", img: "Serigala3.png", desc: "Serigala pemburu lincah penembus protokol enkripsi sistem." },
-  { id: "cerberus", type: "legendary", name: "God Cerberus", img: "Cerberus.png", desc: "Penjaga gerbang komputasi neraka." },
-  { id: "phoenix", type: "legendary", name: "God Phoenix", img: "Phoenix.png", desc: "Inti regenerator sistem abadi." },
-  { id: "leviathan", type: "legendary", name: "God Leviathan", img: "Leviathan.png", desc: "Penguasa mutlak jaringan samudra raya." }
-];
-
-let odysseyAudioCtx = null;
-let selectedBeastCache = "";
-
-function initAudio() { if (!odysseyAudioCtx) odysseyAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function playSfx(freq, type='sine', duration=0.2) {
-  if(!odysseyAudioCtx) return;
-  let now = odysseyAudioCtx.currentTime;
-  let osc = odysseyAudioCtx.createOscillator(); let gain = odysseyAudioCtx.createGain();
-  osc.type = type; osc.frequency.setValueAtTime(freq, now);
-  gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-  osc.connect(gain); gain.connect(odysseyAudioCtx.destination); osc.start(now); osc.stop(now + duration);
-}
-
-function getMaxHp(lvl) { return lvl * 100; }
-function getPowerValue(lvl) { return (lvl * 15) + 25; }
-function getRequiredExp(lvl) { return lvl * 100; }
-
-function saveBeastState() { localStorage.setItem("BLDS_BEAST_SYSTEM_DATA", JSON.stringify(beastData)); }
-function loadBeastState() {
-  let saved = localStorage.getItem("BLDS_BEAST_SYSTEM_DATA");
-  if(saved) { beastData = JSON.parse(saved); if(beastData.currentHp === undefined) beastData.currentHp = getMaxHp(beastData.level || 1); }
-  const sel = document.getElementById("beastPathSelect");
-  if(sel) sel.value = beastData.petType;
-  switchContextClass(beastData.petType); updateBeastUI(); compileBestiaryDOM();
-}
-
-function toggleActiveView(target) {
-  document.getElementById("viewContainerEngine").classList.remove("active-section");
-  document.getElementById("viewContainerBook").classList.remove("active-section");
-  document.getElementById("tabBtnEngine").classList.remove("active-tab");
-  document.getElementById("tabBtnBook").classList.remove("active-tab");
-  if (target === "engine") {
-    document.getElementById("viewContainerEngine").classList.add("active-section");
-    document.getElementById("tabBtnEngine").classList.add("active-tab");
-  } else {
-    document.getElementById("viewContainerBook").classList.add("active-section");
-    document.getElementById("tabBtnBook").classList.add("active-tab");
-    compileBestiaryDOM();
+class BeastMatrixSystem extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
   }
-}
 
-function switchContextClass(type) {
-  const ctx = document.getElementById("beastModuleContext");
-  if(ctx) {
-    ctx.classList.remove("path-dragon", "path-fish", "path-wolf");
-    ctx.classList.add(`path-${type}`);
+  connectedCallback() {
+    this.render();
+    this.initBeastEngine();
   }
-}
 
-function getBeastImageSource(type) {
-  if (beastData.unlockedOdysseyPet) {
-    let choice = beastData.unlockedOdysseyPet.toLowerCase();
-    if(choice === "cerberus") return "Cerberus.png"; if(choice === "phoenix") return "Phoenix.png"; return "Leviathan.png";
+  render() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        /* ==========================================================================
+           🔒 SHADOW LAYER: CSS INI DIKUNCI MATI, TIDAK AKAN BOCOR KELUAR CORENODE
+           ========================================================================== */
+        :host {
+          display: block;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          text-align: center;
+          color: #fff;
+          font-family: 'Courier New', Courier, monospace;
+        }
+
+        .beast-title { letter-spacing: 4px; font-size: 20px; margin-bottom: 5px; margin-top:0; color: #fff; }
+        .beast-subtitle { font-size: 11px; opacity: 0.4; margin: 0 0 25px 0; color: #fff; }
+
+        /* Navigasi Bar Menu */
+        .beast-nav-menu {
+          display: flex; gap: 10px; justify-content: center; margin-bottom: 25px;
+        }
+
+        /* Tombol Spesifik Beast */
+        .beast-btn {
+          background: #000 !important;
+          color: #fff !important;
+          border: 1px solid rgba(255,255,255,0.2) !important;
+          padding: 14px !important;
+          font-size: 11px !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+          margin-bottom: 0 !important;
+          letter-spacing: 1px !important;
+          cursor: pointer !important;
+          text-transform: uppercase !important;
+          transition: all 0.2s ease !important;
+          border-radius: 4px !important;
+          display: block !important;
+          font-family: inherit;
+        }
+        .beast-nav-menu .beast-btn { width: auto !important; padding: 12px 24px !important; }
+        .beast-btn:hover { background: #fff !important; color: #000 !important; border-color: #fff !important; }
+        .beast-btn:disabled { opacity: 0.3 !important; cursor: not-allowed !important; background: transparent !important; }
+        .beast-btn.active-tab { background: #fff !important; color: #000 !important; border-color: #fff !important; }
+
+        /* Dropdown Selector */
+        .beast-select {
+          background: #000 !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.2) !important;
+          padding: 14px !important; font-size: 11px !important; width: 100% !important; box-sizing: border-box !important;
+          cursor: pointer !important; border-radius: 4px !important; font-family: inherit;
+        }
+
+        .view-section { display: none; }
+        .view-section.active-section { display: block; }
+
+        /* ⬇️ SUSUNAN TOMBOL VERTIKAL (KEBAWAH) */
+        .beast-interaction-zone {
+          display: flex; flex-direction: column; gap: 12px; margin-top: 15px;
+        }
+
+        /* HUD & Stats Panel */
+        .pet-hud-box {
+          background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.12);
+          padding: 25px; border-radius: 12px; box-shadow: inset 0 0 15px rgba(255,255,255,0.02);
+        }
+        .pet-name-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .pet-name-display { font-size: 22px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .edit-pet-btn { background: transparent !important; border: none !important; color: #fff !important; cursor: pointer; font-size: 16px; opacity: 0.6; width: auto !important; }
+        .pet-stage-display { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; margin-bottom: 15px; }
+        .pet-image-frame { width: 150px; height: 150px; margin: 0 auto 15px auto; display: flex; justify-content: center; align-items: center; }
+
+        .beast-stats-grid {
+          display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px;
+        }
+        .stat-item { text-align: left; font-size: 12px; letter-spacing: 1px; }
+        .stat-val { font-weight: bold; color: #fff; }
+
+        .bar-container { background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; border: 1px solid rgba(255,255,255,0.1); }
+        .bar-fill { height: 100%; width: 0%; transition: width 0.4s ease; }
+        .bar-exp { background: #00ff66; }
+        .bar-hp { background: #ff3355; }
+
+        .battle-logger-panel {
+          background: #000; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding: 15px; text-align: left;
+          border-radius: 6px; max-height: 150px; overflow-y: auto; font-size: 11px; color: #00ff00; line-height: 1.6;
+        }
+
+        /* Bestiary Grid */
+        .bestiary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
+        .bestiary-card { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 15px 10px; text-align: center; }
+        .bestiary-card.discovered { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03); }
+        .bestiary-avatar-box { width: 80px; height: 80px; margin: 0 auto 10px auto; display: flex; justify-content: center; align-items: center; }
+        .bestiary-card.undiscovered .bestiary-avatar-box img { filter: brightness(0) !important; opacity: 0.15; }
+        .bestiary-meta-title { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+        .bestiary-meta-desc { font-size: 10px; color: rgba(255,255,255,0.4); line-height: 1.4; text-align: left; }
+
+        .path-selector-box { margin-bottom: 20px; text-align: left; }
+        .path-selector-box label { font-size: 10px; opacity: 0.5; display: block; margin-bottom: 5px; }
+
+        /* Glow Pathways Animation */
+        .path-dragon .element-glow-text { color: #a020f0 !important; text-shadow: 0 0 10px #a020f0; }
+        .path-fish .element-glow-text { color: #00ffff !important; text-shadow: 0 0 10px #00ffff; }
+        .path-wolf .element-glow-text { color: #ff3333 !important; text-shadow: 0 0 10px #ff3333; }
+
+        /* Overlays / Modal Inside Shadow */
+        .beast-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .beast-modal-box { background: #05050a; border: 1px solid rgba(255,255,255,0.2); padding: 25px; text-align: center; border-radius: 8px; max-width: 320px; width: 100%; }
+        .beast-modal-box input[type="text"] { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; width: 100%; box-sizing: border-box; margin-bottom: 15px; text-align: center; font-family: inherit; }
+
+        .odyssey-cutscene-layer { position: fixed; inset: 0; background: linear-gradient(to bottom, #000, #03030b); z-index: 999999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .odyssey-content-wrapper { width: 100%; max-width: 650px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+        .odyssey-logo-holder { width: 140px; height: 140px; opacity: 0; transform: scale(0.05) rotate(-45deg); transition: all 0.3s ease; }
+        .odyssey-logo-holder.slam-active { opacity: 1; transform: scale(1) rotate(0deg); }
+        .odyssey-text-container { position: relative; min-height: 40px; width: 100%; }
+        .odyssey-line { position: absolute; width: 100%; font-size: 16px; letter-spacing: 3px; color: rgba(255, 255, 255, 0.9); opacity: 0; transform: scale(0.95); transition: opacity 0.8s ease, transform 0.8s ease; left: 0; }
+        .odyssey-line.active { opacity: 1; transform: scale(1); }
+        .odyssey-line.odyssey-grand-title { font-size: 32px; font-weight: 600; color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+        .odyssey-pet-selection-deck { display: none; justify-content: center; gap: 15px; width: 100%; opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+        .odyssey-pet-selection-deck.active { display: flex; }
+        .odyssey-pet-selection-deck.smooth-show { opacity: 1; transform: translateY(0); }
+        .odyssey-pet-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px; padding: 15px 10px; flex: 1; max-width: 140px; cursor: pointer; transition: all 0.3s ease; }
+        .odyssey-pet-card.selected { border-color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+        .odyssey-dynamic-lore-block { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 14px; text-align: justify; display: none; }
+        .odyssey-evolution-swap-box { width: 100%; max-width: 200px; height: 200px; margin: 20px auto; border: 1px dashed rgba(255,255,255,0.2); display: none; justify-content: center; align-items: center; position: relative; }
+        .odyssey-swap-img { width: 75%; height: 75%; position: absolute; transition: opacity 2s linear; }
+      </style>
+
+      <div id="beastMainWrapper" class="path-dragon">
+        <h2 class="beast-title">BEAST CORE SYSTEM</h2>
+        <p class="beast-subtitle">NODE ENHANCEMENT & SIMULATION FRAMEWORK</p>
+        
+        <div class="beast-nav-menu">
+          <button id="tabBtnEngine" class="beast-btn active-tab">Grid Engine</button>
+          <button id="tabBtnBook" class="beast-btn">Bestiary Book</button>
+        </div>
+
+        <div id="viewContainerEngine" class="view-section active-section">
+          <div class="path-selector-box">
+            <label>CHOOSE ACTIVE PATHWAY CORE:</label>
+            <select id="beastPathSelect" class="beast-select">
+              <option value="dragon">🐉 JALUR NAGA (THE VOID DRAGON)</option>
+              <option value="fish">🐟 JALUR IKAN (THE ABYSS LEVIATHAN)</option>
+              <option value="wolf">🐺 JALUR SERIGALA (THE SHADOW FENRIR)</option>
+            </select>
+          </div>
+
+          <div class="pet-hud-box">
+            <div class="pet-name-container">
+              <div class="pet-name-display element-glow-text" id="petNameDisplay">UNNAMED ENTITY</div>
+              <button class="edit-pet-btn" id="triggerRenameBtn">✏️</button>
+            </div>
+            <div class="pet-stage-display" id="petStageDisplay">Fase 3</div>
+            <div class="pet-image-frame" id="petImageFrameSlot"></div>
+
+            <div class="beast-stats-grid">
+              <div class="stat-item">LEVEL: <span class="stat-val" id="lblLevel">1</span></div>
+              <div class="stat-item">POWER: <span class="stat-val" id="lblPower">40</span> KP</div>
+              <div class="stat-item" style="grid-column: span 2;">
+                HP (DARAH): <span class="stat-val" id="lblHp">100 / 100</span>
+                <div class="bar-container"><div id="barHpFill" class="bar-fill bar-hp"></div></div>
+              </div>
+              <div class="stat-item" style="grid-column: span 2;">
+                EXP PROGRESSION: <span class="stat-val" id="lblExp">0 / 100</span>
+                <div class="bar-container"><div id="barExpFill" class="bar-fill bar-exp"></div></div>
+              </div>
+            </div>
+
+            <div class="beast-interaction-zone">
+              <button class="beast-btn" id="feedBtn">🍖 FEED BEAST (+EXP)</button>
+              <button class="beast-btn" id="btnBattleTrigger">⚔️ BATTLE ANOMALY</button>
+            </div>
+          </div>
+          
+          <div class="battle-logger-panel" id="battleLogger">
+            [SYSTEM] Beast Core initialized within isolated capsule container.
+          </div>
+
+          <br>
+          <button class="beast-btn" id="trigger100DaysBtn" style="border-color: rgba(255,255,255,0.15) !important; font-size:10px !important; opacity:0.6 !important;">TEST CELESTIAL ODYSSEY (100 DAYS LOOP)</button>
+        </div>
+
+        <div id="viewContainerBook" class="view-section">
+          <div class="pet-hud-box" style="text-align: left; padding: 25px;">
+            <h3 style="margin-top:0; font-size:14px; letter-spacing:2px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">📖 ENCYCLOPEDIA CODEX</h3>
+            <div class="bestiary-grid" id="bestiaryGridOutlet"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="beast-modal-overlay" id="petNameModal">
+        <div class="beast-modal-box">
+          <h3>MUTATE CORE NAME</h3>
+          <input type="text" id="petNameInput" placeholder="ENTER NICKNAME" maxlength="12">
+          <button class="beast-btn" id="saveNameBtn">BIND CORENODE SIGNATURE</button>
+          <button class="beast-btn" id="closeNameBtn" style="border:none !important; color:rgba(255,255,255,0.4) !important; font-size:10px !important; background:transparent !important; margin-top:5px !important;">CANCEL</button>
+        </div>
+      </div>
+
+      <div class="odyssey-cutscene-layer" id="odysseyCutsceneContainer">
+        <div class="odyssey-content-wrapper">
+          <div class="odyssey-logo-holder" id="odysseyLogoHolder"><div style="font-size:24px; font-weight:600; letter-spacing:4px;">[BEAST LEGACY]</div></div>
+          <div class="odyssey-text-container">
+            <div class="odyssey-line" id="odyLine1">100 hari lalu, kamu memulainya...</div>
+            <div class="odyssey-line" id="odyLine2">Kamu melatihnya dalam kegelapan...</div>
+            <div class="odyssey-line" id="odyLine3">Kini matrix energinya telah meledak sempurna...</div>
+            <div class="odyssey-line odyssey-grand-title" id="odyLine4">DAYS 100 ACHIEVED</div>
+          </div>
+          <div style="font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.4); display:none; text-transform:uppercase; margin-top:20px;" id="odyDeckTitle">Select one of the ancient god beasts</div>
+          <div class="odyssey-pet-selection-deck" id="odysseyPetDeck">
+            <div class="odyssey-pet-card" id="card-cerberus"><div style="font-size:24px; margin-bottom:5px;">🔥</div><div style="font-size:11px; font-weight:600;">CERBERUS</div></div>
+            <div class="odyssey-pet-card" id="card-phoenix"><div style="font-size:24px; margin-bottom:5px;">☀️</div><div style="font-size:11px; font-weight:600;">PHOENIX</div></div>
+            <div class="odyssey-pet-card" id="card-leviathan"><div style="font-size:24px; margin-bottom:5px;">🌊</div><div style="font-size:11px; font-weight:600;">LEVIATHAN</div></div>
+          </div>
+          <div class="odyssey-dynamic-lore-block" id="odysseyLoreBlock"><div style="font-size:12px; line-height:1.7; color: rgba(255,255,255,0.85);" id="odysseyLoreText"></div></div>
+          <div class="odyssey-evolution-swap-box" id="odysseySwapBox"><div id="swapOldFrame" class="odyssey-swap-img" style="opacity:1;"></div><div id="swapNewFrame" class="odyssey-swap-img" style="opacity:0;"></div></div>
+          <div style="width:100%; max-width:300px; margin: 0 auto;">
+             <button id="odyChangePetBtn" class="beast-btn" style="display:none; background:#fff !important; color:#000 !important;">ENGAGE MUTATION LOOP</button>
+             <button id="odyTakeBtn" class="beast-btn" style="display:none; background:#fff !important; color:#000 !important;">LOCK NEW ENERGY BLOCK</button>
+          </div>
+        </div>
+      </div>
+    `;
   }
-  return type === "dragon" ? "Naga3.png" : (type === "fish" ? "Ikan3.png" : "Serigala3.png");
-}
 
-function updateBeastUI() {
-  const maxHp = getMaxHp(beastData.level); const power = getPowerValue(beastData.level); const reqExp = getRequiredExp(beastData.level);
-  const nameDisp = document.getElementById("petNameDisplay");
-  if(!nameDisp) return;
-  
-  nameDisp.innerHTML = beastData.petCustomName ? beastData.petCustomName : "UNNAMED BEAST";
-  document.getElementById("petStageDisplay").innerHTML = beastData.unlockedOdysseyPet ? `ANCIENT OVERLORD: ${beastData.unlockedOdysseyPet.toUpperCase()}` : `Fase 3: Intermediate Node Continuum`;
-  document.getElementById("lblLevel").innerHTML = beastData.level;
-  document.getElementById("lblPower").innerHTML = power;
-  document.getElementById("lblHp").innerHTML = `${beastData.currentHp} / ${maxHp}`;
-  document.getElementById("lblExp").innerHTML = `${beastData.exp} / ${reqExp}`;
-  document.getElementById("barHpFill").style.width = `${(beastData.currentHp / maxHp) * 100}%`;
-  document.getElementById("barExpFill").style.width = `${(beastData.exp / reqExp) * 100}%`;
-  document.getElementById("petImageFrameSlot").innerHTML = `<img src="${getBeastImageSource(beastData.petType)}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';">`;
-}
+  initBeastEngine() {
+    const root = this.shadowRoot;
+    
+    let beastData = { petType: "dragon", petCustomName: "", unlockedOdysseyPet: "", level: 1, exp: 0, currentHp: 100 };
+    
+    const BESTIARY_DB = [
+      { id: "dragon", type: "base", name: "Void Dragon", img: "Naga3.png", desc: "Naga purba pengendali distorsi data void." },
+      { id: "fish", type: "base", name: "Abyss Leviathan", img: "Ikan3.png", desc: "Makhluk laut terdalam penyerap anomali memori." },
+      { id: "wolf", type: "base", name: "Shadow Fenrir", img: "Serigala3.png", desc: "Serigala pemburu lincah penembus protokol enkripsi." },
+      { id: "cerberus", type: "legendary", name: "God Cerberus", img: "Cerberus.png", desc: "Penjaga gerbang komputasi neraka thermal." },
+      { id: "phoenix", type: "legendary", name: "God Phoenix", img: "Phoenix.png", desc: "Inti regenerator sistem data abadi." },
+      { id: "leviathan", type: "legendary", name: "God Leviathan", img: "Leviathan.png", desc: "Penguasa mutlak jaringan samudra raya." }
+    ];
 
-function compileBestiaryDOM() {
-  const outlet = document.getElementById("bestiaryGridOutlet"); if (!outlet) return;
-  let streamHTML = "";
-  BESTIARY_DB.forEach(item => {
-    let discovered = (item.type === "base" && beastData.petType === item.id) || (item.type === "legendary" && beastData.unlockedOdysseyPet && beastData.unlockedOdysseyPet.toLowerCase() === item.id);
-    if (discovered) {
-      streamHTML += `<div class="bestiary-card discovered"><div class="bestiary-avatar-box"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div><div class="bestiary-meta-title" style="color: #00ff66;">${item.name}</div><div class="bestiary-meta-desc">${item.desc}</div></div>`;
-    } else {
-      streamHTML += `<div class="bestiary-card undiscovered"><div class="bestiary-avatar-box"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div><div class="bestiary-meta-title" style="color: rgba(255,255,255,0.25);">???</div><div class="bestiary-meta-desc" style="text-align:center; opacity:0.3; font-size:8px;">LOCKED NODE.<br>MUTATE DEEPER.</div></div>`;
-    }
-  });
-  outlet.innerHTML = streamHTML;
-}
+    let odysseyAudioCtx = null;
+    let selectedBeastCache = "";
 
-function switchBeastPath() { beastData.petType = document.getElementById("beastPathSelect").value; switchContextClass(beastData.petType); saveBeastState(); updateBeastUI(); }
-function openRenameModal() { document.getElementById("petNameInput").value = beastData.petCustomName; document.getElementById("petNameModal").style.display = "flex"; }
-function savePetCustomName() { beastData.petCustomName = document.getElementById("petNameInput").value.trim(); saveBeastState(); updateBeastUI(); document.getElementById("petNameModal").style.display = "none"; }
+    const initAudio = () => { if (!odysseyAudioCtx) odysseyAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
+    const playSfx = (freq, type='sine', duration=0.2) => {
+      if(!odysseyAudioCtx) return;
+      let now = odysseyAudioCtx.currentTime;
+      let osc = odysseyAudioCtx.createOscillator(); let gain = odysseyAudioCtx.createGain();
+      osc.type = type; osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.03, now); gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      osc.connect(gain); gain.connect(odysseyAudioCtx.destination); osc.start(now); osc.stop(now + duration);
+    };
 
-function feedBeastNode() {
-  initAudio(); const reqExp = getRequiredExp(beastData.level); const maxHp = getMaxHp(beastData.level);
-  beastData.exp += 25; beastData.currentHp = Math.min(maxHp, beastData.currentHp + Math.round(maxHp * 0.15));
-  logToPanel(`[FEED] Core consumed. +25 EXP. HP Restored.`); playSfx(587.33, 'sine', 0.1);
-  if(beastData.exp >= reqExp) { beastData.exp -= reqExp; beastData.level++; beastData.currentHp = getMaxHp(beastData.level); logToPanel(`[LEVEL UP] Level increased to ${beastData.level}!`); playSfx(880, 'sine', 0.4); }
-  saveBeastState(); updateBeastUI();
-}
+    const getMaxHp = (lvl) => lvl * 100;
+    const getPowerValue = (lvl) => (lvl * 15) + 25;
+    const getRequiredExp = (lvl) => lvl * 100;
 
-function engageDataAnomaliesBattle() {
-  initAudio(); if(beastData.currentHp <= 20) { logToPanel(`[WARNING] HP critical. Feed before battle.`); playSfx(220, 'sawtooth', 0.3); return; }
-  document.getElementById("btnBattleTrigger").disabled = true; logToPanel(`[SCANNING] Hunting anomalies...`); playSfx(350, 'triangle', 0.1);
-  setTimeout(() => {
-    const power = getPowerValue(beastData.level); const anomalyPower = Math.round((power * 0.7) + (Math.random() * (power * 0.5)));
-    logToPanel(`[FOUND] Target Power Index: ${anomalyPower}.`);
-    setTimeout(() => {
-      if (power >= anomalyPower) {
-        let loss = Math.round((anomalyPower / power) * 35); beastData.currentHp = Math.max(10, beastData.currentHp - loss);
-        let rxp = Math.round(40 + (Math.random() * 30)); beastData.exp += rxp;
-        logToPanel(`[VICTORY] Erased! Lost ${loss} HP. +${rxp} EXP.`); playSfx(659.25, 'sine', 0.25);
-        if(beastData.exp >= getRequiredExp(beastData.level)) { beastData.exp -= getRequiredExp(beastData.level); beastData.level++; beastData.currentHp = getMaxHp(beastData.level); logToPanel(`[LEVEL UP] Level up!`); }
-      } else {
-        let loss = Math.round(beastData.currentHp * 0.6); beastData.currentHp = Math.max(5, beastData.currentHp - loss);
-        logToPanel(`[DEFEAT] Compromised. Lost ${loss} HP.`); playSfx(180, 'sawtooth', 0.4);
+    const saveState = () => localStorage.setItem("BLDS_BEAST_SHADOW_DATA", JSON.stringify(beastData));
+    
+    const updateUI = () => {
+      const maxHp = getMaxHp(beastData.level); const power = getPowerValue(beastData.level); const reqExp = getRequiredExp(beastData.level);
+      root.getElementById("petNameDisplay").innerHTML = beastData.petCustomName ? beastData.petCustomName : "UNNAMED BEAST";
+      root.getElementById("petStageDisplay").innerHTML = beastData.unlockedOdysseyPet ? `ANCIENT OVERLORD: ${beastData.unlockedOdysseyPet.toUpperCase()}` : `Fase 3: Intermediate Node Continuum`;
+      root.getElementById("lblLevel").innerHTML = beastData.level;
+      root.getElementById("lblPower").innerHTML = power;
+      root.getElementById("lblHp").innerHTML = `${beastData.currentHp} / ${maxHp}`;
+      root.getElementById("lblExp").innerHTML = `${beastData.exp} / ${reqExp}`;
+      root.getElementById("barHpFill").style.width = `${(beastData.currentHp / maxHp) * 100}%`;
+      root.getElementById("barExpFill").style.width = `${(beastData.exp / reqExp) * 100}%`;
+      
+      let imgFile = beastData.unlockedOdysseyPet ? `${beastData.unlockedOdysseyPet.toLowerCase()}.png` : (beastData.petType === "dragon" ? "Naga3.png" : (beastData.petType === "fish" ? "Ikan3.png" : "Serigala3.png"));
+      root.getElementById("petImageFrameSlot").innerHTML = `<img src="${imgFile}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none';">`;
+    };
+
+    const compileBestiary = () => {
+      const outlet = root.getElementById("bestiaryGridOutlet"); if (!outlet) return;
+      let html = "";
+      BESTIARY_DB.forEach(item => {
+        let discovered = (item.type === "base" && beastData.petType === item.id) || (item.type === "legendary" && beastData.unlockedOdysseyPet && beastData.unlockedOdysseyPet.toLowerCase() === item.id);
+        if (discovered) {
+          html += `<div class="bestiary-card discovered"><div class="bestiary-avatar-box"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div><div class="bestiary-meta-title" style="color:#00ff66;">${item.name}</div><div class="bestiary-meta-desc">${item.desc}</div></div>`;
+        } else {
+          html += `<div class="bestiary-card undiscovered"><div class="bestiary-avatar-box"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div><div class="bestiary-meta-title" style="color:rgba(255,255,255,0.25);">???</div><div class="bestiary-meta-desc" style="text-align:center; opacity:0.3; font-size:8px;">LOCKED NODE.<br>MUTATE DEEPER.</div></div>`;
+        }
+      });
+      outlet.innerHTML = html;
+    };
+
+    const logMsg = (msg) => { const log = root.getElementById("battleLogger"); if(log) { log.innerHTML += `<br> ${msg}`; log.scrollTop = log.scrollHeight; } };
+
+    // Tabs Control
+    root.getElementById("tabBtnEngine").onclick = () => {
+      root.getElementById("viewContainerEngine").classList.add("active-section");
+      root.getElementById("viewContainerBook").classList.remove("active-section");
+      root.getElementById("tabBtnEngine").classList.add("active-tab");
+      root.getElementById("tabBtnBook").classList.remove("active-tab");
+    };
+    root.getElementById("tabBtnBook").onclick = () => {
+      root.getElementById("viewContainerEngine").classList.remove("active-section");
+      root.getElementById("viewContainerBook").classList.add("active-section");
+      root.getElementById("tabBtnEngine").classList.remove("active-tab");
+      root.getElementById("tabBtnBook").classList.add("active-tab");
+      compileBestiary();
+    };
+
+    root.getElementById("beastPathSelect").onchange = (e) => {
+      beastData.petType = e.target.value;
+      const wrap = root.getElementById("beastMainWrapper");
+      wrap.className = `path-${beastData.petType}`;
+      saveState(); updateUI();
+    };
+
+    root.getElementById("triggerRenameBtn").onclick = () => {
+      root.getElementById("petNameInput").value = beastData.petCustomName;
+      root.getElementById("petNameModal").style.display = "flex";
+    };
+    root.getElementById("closeNameBtn").onclick = () => root.getElementById("petNameModal").style.display = "none";
+    root.getElementById("saveNameBtn").onclick = () => {
+      beastData.petCustomName = root.getElementById("petNameInput").value.trim();
+      saveState(); updateUI(); root.getElementById("petNameModal").style.display = "none";
+    };
+
+    root.getElementById("feedBtn").onclick = () => {
+      initAudio(); const reqExp = getRequiredExp(beastData.level); const maxHp = getMaxHp(beastData.level);
+      beastData.exp += 25; beastData.currentHp = Math.min(maxHp, beastData.currentHp + Math.round(maxHp * 0.15));
+      logMsg(`[FEED] Core consumed. +25 EXP. HP Restored.`); playSfx(587.33, 'sine', 0.1);
+      if(beastData.exp >= reqExp) { beastData.exp -= reqExp; beastData.level++; beastData.currentHp = getMaxHp(beastData.level); logMsg(`[LEVEL UP] Advanced to Level ${beastData.level}!`); playSfx(880, 'sine', 0.4); }
+      saveState(); updateUI();
+    };
+
+    root.getElementById("btnBattleTrigger").onclick = () => {
+      initAudio(); if(beastData.currentHp <= 20) { logMsg(`[WARNING] HP critical. Feed before conflict.`); playSfx(220, 'sawtooth', 0.3); return; }
+      root.getElementById("btnBattleTrigger").disabled = true; logMsg(`[SCANNING] Intercepting data conflict...`); playSfx(350, 'triangle', 0.1);
+      setTimeout(() => {
+        const power = getPowerValue(beastData.level); const anomalyPower = Math.round((power * 0.7) + (Math.random() * (power * 0.5)));
+        logMsg(`[FOUND] Target Matrix Node Point: ${anomalyPower}.`);
+        setTimeout(() => {
+          if (power >= anomalyPower) {
+            let loss = Math.round((anomalyPower / power) * 35); beastData.currentHp = Math.max(10, beastData.currentHp - loss);
+            let rxp = Math.round(40 + (Math.random() * 30)); beastData.exp += rxp;
+            logMsg(`[VICTORY] Anomaly vaporized! Lost ${loss} HP. +${rxp} EXP.`); playSfx(659.25, 'sine', 0.25);
+            if(beastData.exp >= getRequiredExp(beastData.level)) { beastData.exp -= getRequiredExp(beastData.level); beastData.level++; beastData.currentHp = getMaxHp(beastData.level); logMsg(`[LEVEL UP] Structural threshold expanded.`); }
+          } else {
+            let loss = Math.round(beastData.currentHp * 0.6); beastData.currentHp = Math.max(5, beastData.currentHp - loss);
+            logMsg(`[DEFEAT] Conflict failed. Matrix compromised. Lost ${loss} HP.`); playSfx(180, 'sawtooth', 0.4);
+          }
+          root.getElementById("btnBattleTrigger").disabled = false; saveState(); updateUI();
+        }, 1200);
+      }, 1000);
+    };
+
+    // 100 Days Cinematic Loop Engine
+    root.getElementById("trigger100DaysBtn").onclick = () => {
+      initAudio(); root.getElementById("odysseyCutsceneContainer").style.display = "flex";
+      const lines = [root.getElementById("odyLine1"), root.getElementById("odyLine2"), root.getElementById("odyLine3"), root.getElementById("odyLine4")];
+      let idx = 0;
+      function run() {
+        if(idx > 0) lines[idx-1].classList.remove("active");
+        if(idx < lines.length) { lines[idx].classList.add("active"); playSfx(440, 'sine', 0.1); idx++; setTimeout(run, 2200); }
+        else { root.getElementById("odysseyLogoHolder").classList.add("slam-active"); playSfx(110, 'triangle', 0.5); setTimeout(() => { lines.forEach(l => l.classList.remove("active")); root.getElementById("odyDeckTitle").style.display = "block"; root.getElementById("odysseyPetDeck").classList.add("active", "smooth-show"); }, 2500); }
       }
-      document.getElementById("btnBattleTrigger").disabled = false; saveBeastState(); updateBeastUI();
-    }, 1200);
-  }, 1000);
-}
+      run();
+    };
 
-function logToPanel(msg) { const log = document.getElementById("battleLogger"); if(log) { log.innerHTML += `<br> ${msg}`; log.scrollTop = log.scrollHeight; } }
+    const LORES = { cerberus: "CERBERUS: Thermal code injection.", phoenix: "PHOENIX: Data healing matrix.", leviathan: "LEVIATHAN: Socket flooding wave." };
+    ['cerberus', 'phoenix', 'leviathan'].forEach(name => {
+      root.getElementById(`card-${name}`).onclick = () => {
+        selectedBeastCache = name;
+        root.querySelectorAll(".odyssey-pet-card").forEach(c => c.classList.remove("selected"));
+        root.getElementById(`card-${name}`).classList.add("selected");
+        root.getElementById("odysseyLoreBlock").style.display = "block";
+        root.getElementById("odysseyLoreText").innerHTML = LORES[name];
+        root.getElementById("odyChangePetBtn").style.display = "block";
+      };
+    });
 
-function triggerSimulated100Days() {
-  initAudio(); document.getElementById("odysseyCutsceneContainer").style.display = "flex";
-  const lines = [document.getElementById("odyLine1"), document.getElementById("odyLine2"), document.getElementById("odyLine3"), document.getElementById("odyLine4")];
-  let idx = 0;
-  function run() {
-    if(idx > 0) lines[idx-1].classList.remove("active");
-    if(idx < lines.length) { lines[idx].classList.add("active"); playSfx(440, 'sine', 0.1); idx++; setTimeout(run, 2200); }
-    else { document.getElementById("odysseyLogoHolder").classList.add("slam-active"); playSfx(110, 'triangle', 0.5); setTimeout(() => { lines.forEach(l => l.classList.remove("active")); document.getElementById("odyDeckTitle").style.display = "block"; document.getElementById("odysseyPetDeck").classList.add("active", "smooth-show"); }, 2500); }
+    root.getElementById("odyChangePetBtn").onclick = () => {
+      root.getElementById("odyChangePetBtn").style.display = "none"; root.getElementById("odysseySwapBox").style.display = "flex";
+      root.getElementById("swapOldFrame").innerHTML = `<img src="${beastData.petType === 'dragon' ? 'Naga3.png' : (beastData.petType === 'fish' ? 'Ikan3.png' : 'Serigala3.png')}" style="width:100%;">`;
+      root.getElementById("swapNewFrame").innerHTML = `<img src="${selectedBeastCache}.png" style="width:100%;">`;
+      setTimeout(() => { root.getElementById("swapOldFrame").style.opacity = "0"; setTimeout(() => { root.getElementById("swapNewFrame").style.opacity = "1"; root.getElementById("odyTakeBtn").style.display = "block"; }, 1500); }, 400);
+    };
+
+    root.getElementById("odyTakeBtn").onclick = () => {
+      playSfx(750, 'sawtooth', 0.4); beastData.unlockedOdysseyPet = selectedBeastCache; saveState(); updateUI();
+      root.getElementById("odysseyCutsceneContainer").style.display = "none"; root.getElementById("odysseySwapBox").style.display = "none"; root.getElementById("odyTakeBtn").style.display = "none"; root.getElementById("odysseyLoreBlock").style.display = "none"; root.getElementById("odyDeckTitle").style.display = "none"; root.getElementById("odysseyPetDeck").classList.remove("active", "smooth-show"); logMsg(`[MUTATION SUCCESS] Matrix shifted to ${selectedBeastCache.toUpperCase()}`);
+    };
+
+    // Load State LocalStorage
+    let saved = localStorage.getItem("BLDS_BEAST_SHADOW_DATA");
+    if(saved) { beastData = JSON.parse(saved); if(beastData.currentHp === undefined) beastData.currentHp = getMaxHp(beastData.level || 1); }
+    root.getElementById("beastPathSelect").value = beastData.petType;
+    root.getElementById("beastMainWrapper").className = `path-${beastData.petType}`;
+    updateUI();
   }
-  run();
 }
-
-const LORES = { cerberus: "CERBERUS: Thermal code streams.", phoenix: "PHOENIX: Core Engine Prototype.", leviathan: "LEVIATHAN: Socket flooding matrix." };
-function selectLegendaryBeast(name) { selectedBeastCache = name; document.querySelectorAll(".odyssey-pet-card").forEach(c => c.classList.remove("selected")); document.getElementById(`card-${name}`).classList.add("selected"); document.getElementById("odysseyLoreBlock").style.display = "block"; document.getElementById("odysseyLoreText").innerHTML = LORES[name]; document.getElementById("odyChangePetBtn").style.display = "block"; }
-function processOldPetFadeSequence() { document.getElementById("odyChangePetBtn").style.display = "none"; document.getElementById("odysseySwapBox").style.display = "flex"; document.getElementById("swapOldFrame").innerHTML = `<img src="${getBeastImageSource(beastData.petType)}" style="width:100%;">`; let targetImg = selectedBeastCache === "cerberus" ? "Cerberus.png" : (selectedBeastCache === "phoenix" ? "Phoenix.png" : "Leviathan.png"); document.getElementById("swapNewFrame").innerHTML = `<img src="${targetImg}" style="width:100%;">`; setTimeout(() => { document.getElementById("swapOldFrame").style.opacity = "0"; setTimeout(() => { document.getElementById("swapNewFrame").style.opacity = "1"; document.getElementById("odyTakeBtn").style.display = "block"; }, 1500); }, 400); }
-function executeFinalGlitchTakeLock() { playSfx(750, 'sawtooth', 0.4); beastData.unlockedOdysseyPet = selectedBeastCache; saveBeastState(); updateBeastUI(); document.getElementById("odysseyCutsceneContainer").style.display = "none"; document.getElementById("odysseySwapBox").style.display = "none"; document.getElementById("odyTakeBtn").style.display = "none"; document.getElementById("odysseyLoreBlock").style.display = "none"; document.getElementById("odyDeckTitle").style.display = "none"; document.getElementById("odysseyPetDeck").classList.remove("active", "smooth-show"); logToPanel(`[MUTATION COMPLETE] Evolved into ${selectedBeastCache.toUpperCase()}`); }
-
-window.addEventListener("DOMContentLoaded", loadBeastState);
+customElements.define('beast-matrix-system', BeastMatrixSystem);
 </script>
