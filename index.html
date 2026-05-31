@@ -1,726 +1,195 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blacklightdoms | Core System</title>
-<style>
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-body {
-  background: #000; color: #fff;
-  font-family: 'Courier New', Courier, monospace; overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.sky {
-  position: fixed; width: 100%; height: 100%; z-index: -2;
-  overflow: hidden; background: radial-gradient(circle at center, #060611 0%, #000000 100%);
-}
-.star {
-  position: absolute; width: 2px; height: 2px; background: #fff;
-  opacity: 0.3; animation: starFloat 10s infinite linear;
-}
-@keyframes starFloat { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10px); } }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLDS HUB SYSTEM</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #020205;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-.enter-transition-overlay {
-  position: fixed; inset: 0; background: #fff; z-index: 999999;
-  opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
-}
-.enter-transition-overlay.active { opacity: 1; }
+        /* Container Pembungkus Gadget/UI Utama */
+        .phone-wrapper {
+            width: 100%;
+            max-width: 430px;
+            height: 780px;
+            border: 4px solid #111122;
+            border-radius: 24px;
+            background: #000000;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
 
-.floating-view-toggle {
-  position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px;
-  background: #fff; color: #000; border-radius: 50%; display: flex;
-  align-items: center; justify-content: center; font-size: 20px;
-  cursor: pointer; z-index: 9999; box-shadow: 0 0 15px rgba(255,255,255,0.3);
-}
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(4px); z-index: 999999; display: none;
-  align-items: center; justify-content: center; padding: 20px;
-}
-.modal-box, .theme-modal-box {
-  background: #05050a; border: 1px solid rgba(255,255,255,0.2);
-  padding: 30px; max-width: 400px; width: 100%; text-align: center;
-  position: relative; border-radius: 8px;
-}
-.theme-options-container { margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
-.theme-option-card {
-  padding: 12px; border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px; cursor: pointer; font-size: 11px; letter-spacing: 1px; transition: all 0.3s;
-}
-.theme-option-card:hover, .theme-option-card.active-choice { border-color: #fff; background: rgba(255,255,255,0.05); }
+        /* 📱 PANEL 1: MENU UTAMA WEBSITE HUB */
+        #mainMenuContainer {
+            display: block; /* Aktif di awal */
+            width: 100%;
+            height: 100%;
+            padding: 30px 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
 
-/* Theme Presets */
-.theme-matrix { color: #00ff00 !important; }
-.theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
-.theme-matrix button, .theme-matrix .menu button { border-color: #00ff00 !important; color: #00ff00 !important; }
-.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
-.theme-matrix .title { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4) !important; }
-.theme-matrix .logo-container { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)); }
-.theme-matrix .text-logo-fallback { border-color: #00ff00 !important; }
+        .hub-title {
+            font-size: 20px;
+            color: #00ffff;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
 
-.theme-crimson { color: #ff3333 !important; }
-.theme-crimson .box, .theme-crimson .theme-modal-box { border-color: #ff3333 !important; background: #050000 !important; }
-.theme-crimson button, .theme-crimson .menu button { border-color: #ff3333 !important; color: #ff3333 !important; }
-.theme-crimson button:hover, .theme-crimson .menu button:hover { background: #ff3333 !important; color: #000 !important; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
-.theme-crimson .title { text-shadow: 0 0 15px rgba(255, 51, 51, 0.8), 0 0 25px rgba(255, 51, 51, 0.4) !important; }
-.theme-crimson .logo-container { filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.7)); }
-.theme-crimson .text-logo-fallback { border-color: #ff3333 !important; }
+        .hub-subtitle {
+            font-size: 11px;
+            color: #8888aa;
+            margin-bottom: 40px;
+        }
 
-.container { 
-  max-width: 850px; 
-  width: 100%;
-  margin: 0 auto; 
-  padding: 40px 20px; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center;
-  flex: 1 0 auto;
-  box-sizing: border-box;
-}
+        /* Tombol Menu Utama Sleek Style */
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-.logo-container { 
-  margin-bottom: 20px; 
-  text-align: center; 
-  min-height: 50px;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
-  animation: glowPulse 3s infinite ease-in-out;
-}
-@keyframes glowPulse {
-  0% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
-  50% { filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.8)); }
-  100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
-}
-.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; border-radius: 4px; }
+        .btn-hub {
+            width: 100%;
+            background: rgba(255,255,255,0.02);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 8px;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
 
-.streak-widget {
-  display: none; flex-direction: column; align-items: center;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
-  padding: 15px 25px; margin-bottom: 30px; letter-spacing: 1px; border-radius: 8px;
-}
+        .btn-hub:hover {
+            background: #00ffff;
+            color: #000000;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0,255,255,0.4);
+            transform: translateY(-2px);
+        }
 
-.title { 
-  font-size: 28px; 
-  letter-spacing: 8px; 
-  margin-bottom: 15px; 
-  text-align: center; 
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
-}
+        /* 🎮 PANEL 2: CONTAINER IFRAME GAME */
+        #beastEngineContainer {
+            display: none; /* Sembunyi di awal, muncul saat klik Beast Engine */
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
 
-.title-pet-display {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 35px;
-  animation: floatAnim 4s infinite ease-in-out;
-}
-@keyframes floatAnim {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-.pet-image-frame {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.12);
-  overflow: hidden;
-  position: relative;
-}
-.pet-image-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.title-pet-details {
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.7);
-}
-
-#enterBtn, .calibration-box button, .admin-btn, .modal-box button {
-  background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
-  padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
-  cursor: pointer; transition: all 0.3s ease;
-  border-radius: 50px;
-}
-#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
-
-.calibration-box button:disabled {
-  background: rgba(255,255,255,0.03) !important;
-  color: rgba(255,255,255,0.25) !important;
-  border-color: rgba(255,255,255,0.08) !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-}
-
-.menu { 
-  display: none; 
-  flex-direction: column;
-  gap: 12px; 
-  width: 100%;
-  max-width: 280px; 
-  margin: 0 auto 40px auto; 
-}
-.menu button {
-  background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
-  padding: 14px 20px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
-  cursor: pointer; transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  border-radius: 50px;
-}
-.menu button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
-
-.page { display: none; width: 100%; margin-bottom: 40px; height: auto; }
-.box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 8px; height: auto; overflow: visible; }
-
-.leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
-.leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-.calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
-.calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 25px; background: rgba(255,255,255,0.01); border-radius: 8px; }
-
-.cyber-code-container { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 10px 0; }
-.cyber-input-wrapper { position: relative; width: 100%; max-width: 320px; }
-.cyber-code-input {
-  background: rgba(255, 255, 255, 0.02) !important; color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important; padding: 14px 20px !important;
-  font-family: inherit; font-size: 13px; letter-spacing: 3px; text-align: center;
-  text-transform: uppercase; width: 100%; box-sizing: border-box; border-radius: 8px !important; transition: all 0.3s ease;
-}
-.cyber-code-input:focus { outline: none; border-color: rgba(255, 255, 255, 0.6) !important; background: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
-.cyber-code-btn {
-  background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 12px 30px; font-family: inherit; font-size: 11px; letter-spacing: 2px;
-  text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.3s ease;
-}
-.cyber-code-btn:hover { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
-
-.matrix-reset-card { margin-top: 30px; padding: 15px; border-top: 1px dashed rgba(255, 74, 74, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.matrix-reset-title { font-size: 10px; letter-spacing: 1px; color: rgba(255, 74, 74, 0.5); }
-.reset-streak-btn {
-  font-size: 10px !important; color: rgba(255, 74, 74, 0.8) !important;
-  border: 1px solid rgba(255, 74, 74, 0.3) !important; background: transparent;
-  padding: 6px 18px; border-radius: 20px; cursor: pointer; letter-spacing: 1px; transition: all 0.3s ease-in-out;
-}
-.reset-streak-btn:hover { background: #ff4a4a !important; color: #000 !important; border-color: #ff4a4a !important; box-shadow: 0 0 10px rgba(255, 74, 74, 0.4); }
-
-input[type="text"], input[type="number"], select { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
-
-/* LORE CYBERPUNK STYLING */
-.lore-section { margin-bottom: 35px; text-align: left; }
-.lore-section h3 { font-size: 16px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; margin-bottom: 15px; text-transform: uppercase; color: #fff; }
-.lore-section p { font-size: 12px; line-height: 1.8; opacity: 0.85; margin: 0 0 12px 0; text-align: justify; }
-.lore-quote { font-style: italic; border-left: 3px solid rgba(255,255,255,0.4); padding-left: 15px; margin: 15px 0; opacity: 0.7; font-size: 12px; }
-.flame-list { list-style: none; padding: 0; margin: 0; }
-.flame-list li { font-size: 12px; line-height: 1.8; margin-bottom: 8px; padding-left: 15px; position: relative; }
-.flame-list li::before { content: "»"; position: absolute; left: 0; color: rgba(255,255,255,0.5); }
-.flame-list strong { letter-spacing: 1px; color: #fff; }
-
-/* OWNER FLOATING PANEL CONTROLLER */
-.admin-trigger-launcher { 
-  position: fixed; top: 25px; left: 25px; background: #fff; color: #000; 
-  padding: 8px 16px; font-size: 11px; font-weight: bold; cursor: grab; 
-  display: none; z-index: 999999; border-radius: 20px; box-shadow: 0 0 15px rgba(255,255,255,0.4);
-}
-.admin-trigger-launcher:active { cursor: grabbing; }
-
-.admin-floating-panel { 
-  position: fixed; top: 12%; left: 5%; width: 360px; max-height: 75vh;
-  background: #050508; border: 1px solid #fff; display: none; 
-  flex-direction: column; z-index: 9999999; border-radius: 8px; 
-  box-shadow: 0 0 25px rgba(0,0,0,0.9);
-}
-.admin-header { 
-  background: #fff; color: #000; padding: 12px; font-size: 11px; 
-  font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
-}
-.admin-body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-.admin-sub-sect { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px; }
-.admin-sub-sect label { font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; }
-
-/* LOADING SCREEN */
-.loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease; }
-.loader.hidden { opacity: 0; pointer-events: none; }
-.loaderCircle { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; animation: spinLoader 0.8s infinite linear !important; }
-.loaderText { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.7); font-weight: bold; }
-
-@keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; flex-shrink: 0; }
-.footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-.footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; }
-</style>
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
+    </style>
 </head>
 <body>
 
-<audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
-
-<div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
-<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">Loading Blacklight Core...</div></div>
-<div class="sky" id="sky"></div>
-<div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
-
-<div class="modal-overlay" id="themeSelectorModal">
-  <div class="theme-modal-box">
-    <h3 style="margin-top:0;">Interface System</h3>
-    <div class="theme-options-container">
-      <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">⚪ Default Eclipse</div>
-      <div class="theme-option-card" id="opt-matrix" onclick="selectThemeOption('matrix')">🟢 Code Matrix</div>
-      <div class="theme-option-card" id="opt-crimson" onclick="selectThemeOption('crimson')">🔴 Crimson Overdrive</div>
-    </div>
-    <button onclick="applySelectedTheme()">Apply Interface</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="nameModal">
-  <div class="modal-box">
-    <h3 id="modalTitle">Main Matrix Registration</h3>
-    <p id="modalSubtext" style="font-size:11px; opacity:0.6; margin-bottom:15px;">Setup your core identity in the matrix.</p>
-    
-    <input type="text" id="dominionNameInput" placeholder="Enter Dominion Name" maxlength="15" style="text-align:center; margin-bottom:15px;">
-    
-    <select id="petSelectInput" style="text-align:center; margin-bottom:20px;">
-      <option value="Naga1">🐉 Dragon Core (Naga)</option>
-      <option value="Serigala1">🐺 Wolf Vanguard (Serigala)</option>
-      <option value="Ikan1">🐟 Abyssal Leviathan (Ikan)</option>
-    </select>
-    
-    <button onclick="saveDominionName()">Register To Core</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="resetConfirmModal">
-  <div class="modal-box">
-    <h3 style="color:#ff4a4a; margin-top:0;">Reset Core Streak?</h3>
-    <p style="font-size:11px; opacity:0.6; margin-bottom:20px;">This action resets your current streak. You will be prompted to choose a new Name and Pet entity.</p>
-    <button onclick="confirmResetStreak()">Confirm Reset</button> <button onclick="closeResetModal()">Cancel</button>
-  </div>
-</div>
-
-<div class="container">
-  <div class="logo-container" id="logoArea">
-    <img src="logo.png" alt="BLDS Logo" style="width:110px;" id="mainLogoFile" onerror="handleLogoMissing()">
-  </div>
-
-  <div class="streak-widget" id="streakWidget">
-    <div>Resonance Streak: <b id="streakCount">0</b> Days | Rank: <span id="rankTitle">Void Walker</span></div>
-    <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days | Owner: <span id="ownerNameDisplay">-</span></div>
-  </div>
-
-  <h1 class="title">Blacklightdoms</h1>
-  
-  <div class="title-pet-display" id="titlePetDisplay">
-    <div class="pet-image-frame" id="petImageFrame"></div>
-    <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
-  </div>
-
-  <button id="enterBtn" onclick="enter()">Enter The Eclipse</button>
-
-  <div class="menu" id="menu">
-    <button onclick="showPage('origin')">Origin</button>
-    <button onclick="showPage('achievement')">Achievements</button>
-    <button onclick="showPage('leaderboardPage')">Leaderboard</button>
-    <button onclick="showPage('archives')">Archives</button>
-    <button onclick="showPage('code')">Code</button>
-    <button onclick="showPage('beastPage')">👾 Beast Engine</button>
-  </div>
-
-  <div class="page" id="origin"><div class="box" id="loreInjectBox"></div></div>
-
-  <div class="page" id="achievement">
-    <div class="box">
-      <h2>Resonance Achievements</h2>
-      <div class="achievement-progress-container">
-        <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 Badges Unlocked</div>
-      </div>
-      <div class="achievement-grid" id="achGrid"></div>
-    </div>
-  </div>
-
-  <div class="page" id="leaderboardPage">
-    <div class="box">
-      <h2>Dominion Leaderboard (Top 20 Live)</h2>
-      <table class="leaderboard-table">
-        <thead><tr><th>Rank</th><th>Dominion Name</th><th>Max Streak</th></tr></thead>
-        <tbody id="leaderboardDataBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="page" id="archives"><div class="box" id="archivesInjectBox"></div></div>
-
-  <div class="page" id="code">
-    <div class="box">
-      <h2>Code System</h2>
-      <div class="cyber-code-container">
-        <div class="cyber-input-wrapper">
-          <input type="text" id="codeInput" class="cyber-code-input" placeholder="Enter encryption code">
+    <div class="phone-wrapper">
+        
+        <div id="mainMenuContainer">
+            <div class="hub-title">BLDS CORE SYSTEM</div>
+            <div class="hub-subtitle">V.109 - BLACKLIGHT DIRECTORY</div>
+            
+            <div class="menu-grid">
+                <button class="btn-hub" onclick="alert('Opening Archives...')">📂 ARCHIVES</button>
+                <button class="btn-hub" onclick="alert('Opening Code Entry...')">🔑 ENTER CODE</button>
+                <button class="btn-hub" style="border-color: #00ffff; color: #00ffff;" onclick="bukaGameBeastEngine()">🎮 BEAST ENGINE SYSTEM</button>
+                <button class="btn-hub" onclick="alert('Opening Lore Panel...')">📜 LORE FLAMES</button>
+            </div>
         </div>
-        <button class="cyber-code-btn" onclick="unlockCode()">Decrypt Core</button>
-      </div>
-    </div>
-  </div>
 
-  <div class="page" id="beastPage">
-    <div class="box" style="padding: 5px; background: #000; border-color: rgba(255,255,255,0.2);">
-      <iframe src="index_beast_system.html" id="beastIframe" style="width:100%; height:700px; border:none; display:block; background:transparent; overflow:hidden;" scrolling="no"></iframe>
-    </div>
-  </div>
+        <div id="beastEngineContainer">
+            <iframe id="beastIframe" src="index_beast_system.html"></iframe>
+        </div>
 
-  <div class="calibration-container" id="calibrationHud">
-    <div class="calibration-box">
-      <p id="calibrationStatus" style="margin-top:0;">System ready for resonance integration</p>
-      <button id="calibrationBtn" onclick="calibrateCore()">Sync With Core</button>
-      
-      <div class="matrix-reset-card">
-        <span class="matrix-reset-title">System Core Parameter</span>
-        <button class="reset-streak-btn" onclick="openResetModal()">Reset & Re-spec Identity</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ Owner Menu</div>
-<div class="admin-floating-panel" id="adminPanel">
-  <div class="admin-header" id="adminPanelHeader"><span>🛡️ Owner Matrix Controller</span><span style="cursor:pointer; font-size:16px;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
-  <div class="admin-body">
-    
-    <div class="admin-sub-sect">
-      <label>Dominion Profile & Rank</label>
-      <input type="text" id="admDomName" placeholder="Override Profile Name" style="margin-bottom:8px;">
-      <input type="number" id="admStreak" placeholder="Override Current Streak" style="margin-bottom:8px;">
-      <input type="number" id="admHighStreak" placeholder="Override Highest Peak">
     </div>
 
-    <div class="admin-sub-sect">
-      <label>Pet Engine Core Configuration</label>
-      <select id="admPetName" style="margin-bottom:8px;">
-        <option value="">-- Select Pet Model --</option>
-        <option value="Naga1">Naga1.png</option>
-        <option value="Serigala1">Serigala1.png</option>
-        <option value="Ikan1">Ikan1.png</option>
-      </select>
-      <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
-    </div>
+    <script>
+        // Data Telemetri Profil Player (Otomatis dilempar ke game saat masuk)
+        let playerProfileData = {
+            dominionName: "X_Doms_Player", 
+            count: 5,                    
+            highestCount: 88              
+        };
 
-    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">Apply Configuration</button>
-  </div>
-</div>
+        let currentActivePet = {
+            name: "Ikan5" 
+        };
 
-<footer>
-  <div class="footer-content">
-    <div class="footer-links"><a href="#">Discord</a><a href="#">WhatsApp</a></div>
-    <div style="font-size:11px; opacity:0.3;">© 2026 Blacklightdoms.</div>
-  </div>
-</footer>
+        // Fungsi pemicu saat tombol "BEAST ENGINE SYSTEM" di web diklik
+        function bukaGameBeastEngine() {
+            // Tukar visibilitas layer panel UI
+            document.getElementById("mainMenuContainer").style.display = "none";
+            document.getElementById("beastEngineContainer").style.display = "block";
+            
+            // Jeda sedikit biar iframe kelar loading, lalu inject data profil
+            setTimeout(() => {
+                let iframeWin = document.getElementById("beastIframe").contentWindow;
+                if(iframeWin) {
+                    iframeWin.postMessage({
+                        type: 'TELEMETRY_UPDATE',
+                        data: playerProfileData,
+                        pet: currentActivePet
+                    }, '*');
+                }
+            }, 400);
+        }
 
-<script>
-const BLDS_LORE = {
-  main_title: "Black Light Dominion Squad // BLDS",
-  subtitle: "Even during the eclipse, the Core still shine.",
-  before_blds: "Before BLDS had a name, before the symbol existed, before the squad was formed... There were only individuals trying to survive their own darkness. Some were ignored. Some were underestimated. Some failed over and over again until they stopped expecting anyone to believe in them. They watched others rise faster. Watched others gain recognition. Watched people quit the moment things became difficult.<br><br>And slowly, they realized something: Most people only shine when the world is bright. But very few can continue moving forward when everything turns dark. That realization became the beginning of BLDS.<br><br>Not a squad created for fame. Not a kingdom built on arrogance. Not a place for people searching only for victory. But a dominion built by those who refused to disappear.",
-  blacklight_core: "At the center of the Eclipse lies the Core. A single star that continues to shine no matter how dark the sky becomes.<br><br>The Core represents the inner purpose carried by every member of BLDS. Not a purpose given by the world. Not a purpose created by attention or popularity. But a purpose discovered through hardship. It is the reminder that: even when everything around you changes... even when people leave... even when failure surrounds you... your inner light can still remain alive.<br><br>BLDS believes the strongest people are not those who never fall. The strongest are the ones who continue standing after every fall. That is why the Core never disappears. Because purpose cannot be erased by fear.",
-  symbol_core: "Our purpose. Our inner light. The source of our strength.",
-  symbol_eclipse: "The world. The darkness. The challenges we face every day.",
-  flame_quote: "Five flames grant strength. Five flames preserve it. Together, they protect the Core.",
-  greater_flames: [
-    { name: "I. Vision", desc: "The ability to see direction even when others are lost." },
-    { name: "II. Discipline", desc: "To continue growing even when nobody is watching." },
-    { name: "III. Loyalty", desc: "To stand together through victory and defeat." },
-    { name: "IV. Ambition", desc: "The desire to surpass limits and continue evolving." },
-    { name: "V. Resilience", desc: "The strength to rise again after every fall." }
-  ],
-  lesser_flames: [
-    { name: "I. Hope", desc: "The light that remains during difficult times." },
-    { name: "II. Awareness", desc: "The ability to stay conscious and understand reality." },
-    { name: "III. Patience", desc: "Growth takes time and endurance." },
-    { name: "IV. Courage", desc: "The will to move forward despite fear." },
-    { name: "V. Unity", desc: "The bond that turns individuals into something greater." }
-  ]
-};
+        // ====================================================================
+        // 📡 JEMBATAN NAVIGASI UTAMA (Mendengarkan Sinyal Keluar Dari Iframe)
+        // ====================================================================
+        window.addEventListener("message", (event) => {
+            
+            // Cek apakah data pesan beneran sinyal tombol BACK dari game
+            if (event.data && event.data.type === 'BEAST_NAVIGATE_BACK') {
+                console.log("Sinyal BACK terdeteksi! Memulihkan navigasi menu utama...");
+                
+                const menuUtama = document.getElementById("mainMenuContainer");
+                const areaGame = document.getElementById("beastEngineContainer");
 
-const BLDS_ARCHIVES = { title: "Core Archives System", history: "The logs inside this data block are historical backups retrieved from the old mainframe network.<br><br>- Data Log #001: The grid structure synchronization established.<br>- Data Log #002: Beast core system integrated with index engines." };
-const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
-const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
+                // Jika elemen ID pembungkusnya cocok dan ketemu di DOM HTML
+                if (menuUtama && areaGame) {
+                    areaGame.style.display = "none";       // Sembunyikan game
+                    menuUtama.style.display = "block";     // Munculkan menu utama lagi
+                } else {
+                    // 🚨 FAILSAFE SYSTEM: Jika ID-nya beda/hilang di kode aslimu,
+                    // reload halaman otomatis agar balik ke menu utama & gak ngeblank!
+                    window.location.reload(); 
+                }
+            }
 
-let tempSelectedTheme = "default";
-let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-let petData = { name: "Naga1", level: 1 };
-let cooldownInterval = null;
-
-const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-function handleLogoMissing() { document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // Core</div>`; }
-
-function injectDatabase() {
-  let greaterHTML = BLDS_LORE.greater_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
-  let lesserHTML = BLDS_LORE.lesser_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
-  document.getElementById("loreInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;"><h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1><div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div></div><div class="lore-section"><h3>Before BLDS</h3><p>${BLDS_LORE.before_blds}</p></div><div class="lore-section"><h3>The Blacklight Core</h3><p>${BLDS_LORE.blacklight_core}</p></div><div class="lore-section"><h3>Meaning Of The Symbols</h3><ul class="flame-list"><li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li><li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li></ul></div><div class="lore-section"><h3>The Ten Flames Of BLDS</h3><div class="lore-quote">"${BLDS_LORE.flame_quote}"</div><h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4><ul class="flame-list">${greaterHTML}</ul><h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4><ul class="flame-list">${lesserHTML}</ul></div>`;
-  document.getElementById("archivesInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;"><h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2></div><div style="font-size:11px; line-height:1.8; opacity:0.8; text-align:left;">${BLDS_ARCHIVES.history}</div>`;
-}
-
-const sky = document.getElementById("sky");
-for(let i=0; i<30; i++) {
-  let star = document.createElement("div"); star.className = "star";
-  star.style.left = Math.random()*100 + "vw"; star.style.animationDelay = Math.random()*8 + "s";
-  sky.appendChild(star);
-}
-
-document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `<div class="achievement-card" id="ach${i+1}"><span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span><h4 style="margin:5px 0;">${name}</h4><p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p></div>`).join('');
-document.getElementById("floatingViewToggleBtn").addEventListener("click", () => document.getElementById("themeSelectorModal").style.display="flex");
-function selectThemeOption(t) { tempSelectedTheme = t; }
-function applySelectedTheme() {
-  document.body.classList.remove("theme-matrix", "theme-crimson");
-  if(tempSelectedTheme !== "default") document.body.classList.add("theme-" + tempSelectedTheme);
-  document.getElementById("themeSelectorModal").style.display="none";
-  broadcastToBeast();
-}
-
-function saveState() { 
-  localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
-  localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(petData));
-  broadcastToBeast();
-  pushStreakToFirebase();
-}
-
-function loadState() {
-  const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
-  if(saved) {
-    streakData = JSON.parse(saved);
-    // Proteksi data korup rekor tertinggi agar minimal bernilai 1 jika sudah punya nama
-    if(streakData.dominionName && streakData.highestCount < 1) {
-      streakData.highestCount = 1;
-    }
-  }
-  const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
-  if(savedPet) petData = JSON.parse(savedPet);
-  updateUI();
-  checkCooldownLoop();
-}
-
-function updateUI() {
-  document.getElementById("streakCount").innerText = streakData.count;
-  document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
-  document.getElementById("ownerNameDisplay").innerText = streakData.dominionName || "-";
-  
-  let rank = "Void Walker";
-  if(streakData.count >= 100) rank = "The Eternal Core";
-  else if(streakData.count >= 50) rank = "Dominion Vanguard";
-  else if(streakData.count >= 7) rank = "Eclipse Synchronizer";
-  document.getElementById("rankTitle").innerText = rank;
-  
-  const fileClean = petData.name + ".png";
-  document.getElementById("petImageFrame").innerHTML = `<img src="${fileClean}" alt="${petData.name}" onerror="this.style.opacity='0.2';">`;
-  document.getElementById("titlePetDetails").innerText = `${fileClean} [Lvl ${petData.level}]`;
-
-  let unlocked = 0;
-  targets.forEach((t, i) => {
-    const card = document.getElementById(`ach${i+1}`);
-    const badge = document.getElementById(`ach` + (i+1) + `Badge`);
-    if(card && streakData.highestCount >= t) {
-      card.classList.add("unlocked"); badge.className="ach-badge unlocked-badge"; badge.innerText="Unlocked"; unlocked++;
-    }
-  });
-  document.getElementById("achProgressBar").style.width = (unlocked/15)*100 + "%";
-  document.getElementById("achProgressText").innerText = `${unlocked} / 15 Badges Unlocked`;
-  fetchCloudLeaderboard();
-}
-
-function pushStreakToFirebase() {
-  if (!FIREBASE_DB_URL || !streakData.dominionName) return;
-  const secureKey = streakData.dominionName.replace(/[.#$\[\]]/g, "_");
-  const payload = { username: secureKey, displayName: streakData.dominionName, streak: streakData.highestCount, hunt: 0, level: petData.level };
-  
-  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, { 
-    method: 'PUT', 
-    headers: { 'Content-Type': 'application/json' }, 
-    body: JSON.stringify(payload) 
-  }).then(res => {
-    if(!res.ok) console.warn("Firebase Database melarang akses penuangan data. Cek Rules Firebase Anda.");
-  }).catch(err => console.error("Koneksi Firebase terhambat:", err));
-}
-
-function fetchCloudLeaderboard() {
-  fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
-    .then(res => res.json())
-    .then(cloudData => {
-      let dataset = [];
-      if (cloudData) { 
-        Object.keys(cloudData).forEach(key => { 
-          // Validasi ekstra agar baris kosong (null) tidak membuat script crash
-          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) { 
-            dataset.push(cloudData[key]); 
-          } 
-        }); 
-      }
-      dataset.sort((a, b) => (b.streak || 0) - (a.streak || 0));
-      let top20List = dataset.slice(0, 20);
-      const tableBody = document.getElementById("leaderboardDataBody");
-      if (top20List.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; opacity:0.5;">No registered core found.</td></tr>`;
-        return;
-      }
-      tableBody.innerHTML = top20List.map((u, i) => {
-        const isCurrentMe = (u.displayName === streakData.dominionName);
-        return `<tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}><td>#${i + 1}</td><td>${u.displayName}</td><td>${u.streak || 0} Days</td></tr>`;
-      }).join('');
-    }).catch(() => {
-      document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Matrix connection error.</td></tr>`;
-    });
-}
-
-function checkCooldownLoop() {
-  if (cooldownInterval) clearInterval(cooldownInterval);
-  cooldownInterval = setInterval(() => {
-    if (!streakData.lastCalibratedTimestamp) { resetCalibrationBtnUI(); return; }
-    const now = Date.now();
-    const targetTime = streakData.lastCalibratedTimestamp + (24 * 60 * 60 * 1000);
-    const diff = targetTime - now;
-    if (diff <= 0) { resetCalibrationBtnUI(); clearInterval(cooldownInterval); } 
-    else {
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      const btn = document.getElementById("calibrationBtn");
-      btn.disabled = true; btn.innerText = `Locked (${hours}h ${minutes}m ${seconds}s)`;
-      document.getElementById("calibrationStatus").innerText = "Resonance system lock active. Cooldown applied globally.";
-    }
-  }, 1000);
-}
-
-function resetCalibrationBtnUI() {
-  const btn = document.getElementById("calibrationBtn");
-  btn.disabled = false; btn.innerText = "Sync With Core";
-  document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
-}
-
-function calibrateCore() {
-  streakData.count++;
-  if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
-  streakData.lastCalibratedTimestamp = Date.now();
-  saveState(); updateUI(); checkCooldownLoop();
-}
-
-function enter() {
-  if(!streakData.dominionName) { 
-    document.getElementById("modalTitle").innerText = "Main Matrix Registration";
-    document.getElementById("nameModal").style.display="flex"; 
-    return; 
-  }
-  const overlay = document.getElementById("smoothEnterOverlay");
-  const ambient = document.getElementById("bgAmbient");
-  if(ambient) { ambient.play().catch(()=>{}); }
-  overlay.classList.add("active");
-  setTimeout(() => {
-    document.getElementById("enterBtn").style.display = "none";
-    document.getElementById("streakWidget").style.display = "flex";
-    document.getElementById("titlePetDisplay").style.display = "flex";
-    document.getElementById("calibrationHud").style.display = "block";
-    document.getElementById("menu").style.display = "flex";
-    showPage('origin');
-    overlay.classList.remove("active");
-  }, 800);
-}
-
-function saveDominionName() {
-  const nameVal = document.getElementById("dominionNameInput").value.trim();
-  const petVal = document.getElementById("petSelectInput").value;
-  
-  if(!nameVal) { alert("Dominion Name cannot be empty, bre!"); return; }
-  
-  streakData.dominionName = nameVal;
-  petData.name = petVal;
-  if (streakData.count === 0) { petData.level = 1; }
-
-  saveState();
-  document.getElementById("nameModal").style.display="none"; 
-  updateUI(); 
-  enter();
-}
-
-function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
-function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
-
-function confirmResetStreak() {
-  streakData.count = 0;
-  streakData.highestCount = 1; // Memaksa reset data rekor lokal ke 1 hari
-  streakData.lastCalibratedTimestamp = null;
-  closeResetModal();
-  
-  document.getElementById("modalTitle").innerText = "Core Re-spec Matrix";
-  document.getElementById("dominionNameInput").value = streakData.dominionName; 
-  document.getElementById("nameModal").style.display = "flex";
-}
-
-function unlockCode() { 
-  if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
-    document.getElementById("adminLauncherBtn").style.display = "block";
-    document.getElementById("adminPanel").style.display = "flex";
-  } else { alert("Access Rejected: Invalid matrix code"); }
-}
-
-function executeAdminUpdate() {
-  streakData.dominionName = document.getElementById("admDomName").value.trim() || streakData.dominionName;
-  if(document.getElementById("admStreak").value) streakData.count = parseInt(document.getElementById("admStreak").value);
-  if(document.getElementById("admHighStreak").value) streakData.highestCount = parseInt(document.getElementById("admHighStreak").value);
-  petData.name = document.getElementById("admPetName").value || petData.name;
-  if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
-  saveState(); updateUI();
-  alert("Changes applied successfully.");
-}
-
-function broadcastToBeast() {
-  const f = document.getElementById("beastIframe");
-  if(f && f.contentWindow) {
-    const activeTheme = document.body.className;
-    f.contentWindow.postMessage({ type: 'TELEMETRY_UPDATE', data: streakData, pet: petData, theme: activeTheme }, '*');
-  }
-}
-
-// 🌐 BRIDGE LISTENER UNTUK MENANGKAP TOMBOL BACK DARI BEAST ENGINE IFRAME
-window.addEventListener("message", (e) => { 
-  if(!e.data) return;
-  if(e.data.type === 'BEAST_HANDSHAKE_REQ') { 
-    broadcastToBeast(); 
-  }
-  // Menangkap perintah kembali dari iframe sistem sebelah
-  if(e.data.type === 'BEAST_NAVIGATE_BACK' || e.data === 'BACK_TO_MAIN') {
-    showPage('origin');
-  }
-});
-
-window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); });
-
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.style.display="none");
-  document.getElementById(id).style.display="block";
-  if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
-  if(id === 'leaderboardPage') { fetchCloudLeaderboard(); }
-}
-
-const launcher = document.getElementById("adminLauncherBtn");
-const panel = document.getElementById("adminPanel");
-const header = document.getElementById("adminPanelHeader");
-launcher.addEventListener("click", () => { panel.style.display = panel.style.display === "flex" ? "none" : "flex"; });
-let isDragging = false; let currentX; let currentY; let initialX; let initialY; let xOffset = 0; let yOffset = 0;
-header.addEventListener("mousedown", dragStart); window.addEventListener("mousemove", drag); window.addEventListener("mouseup", dragEnd);
-function dragStart(e) { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; if (e.target === header || header.contains(e.target)) { isDragging = true; } }
-function drag(e) { if (isDragging) { e.preventDefault(); currentX = e.clientX - initialX; currentY = e.clientY - initialY; xOffset = currentX; yOffset = currentY; panel.style.transform = "translate(" + currentX + "px, " + currentY + "px)"; } }
-function dragEnd() { initialX = currentX; initialY = currentY; isDragging = false; }
-</script>
+            // Merespon handshake otomatis dari dalam game
+            if (event.data && event.data.type === 'BEAST_HANDSHAKE_REQ') {
+                let iframeWin = document.getElementById("beastIframe").contentWindow;
+                if(iframeWin) {
+                    iframeWin.postMessage({
+                        type: 'TELEMETRY_UPDATE',
+                        data: playerProfileData,
+                        pet: currentActivePet
+                    }, '*');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
