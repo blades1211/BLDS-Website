@@ -8,16 +8,25 @@ body {
   margin:0; padding:15px; background:#020205; color:#fff;
   font-family:'Courier New', Courier, monospace; overflow:hidden; box-sizing:border-box;
 }
+/* Sinkronisasi Visual Mengikuti Tema Induk */
+body.theme-matrix { color: #00ff00 !important; background: #000300 !important; }
+body.theme-matrix .wrapper { border-color: #00ff00 !important; }
+body.theme-matrix .btn { border-color: #00ff00 !important; color: #00ff00 !important; }
+body.theme-crimson { color: #ff3333 !important; background: #050000 !important; }
+body.theme-crimson .wrapper { border-color: #ff3333 !important; }
+body.theme-crimson .btn { border-color: #ff3333 !important; color: #ff3333 !important; }
+
 .wrapper {
   border:1px dashed rgba(255,255,255,0.2); border-radius:8px; padding:20px;
-  height:680px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;
+  height:660px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;
+  transition: all 0.3s ease;
 }
 .header { border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; }
 .status { font-size:11px; background:rgba(255,68,68,0.1); color:#ff4444; padding:8px; border:1px solid rgba(255,68,68,0.3); text-align:center; }
 .status.online { background:rgba(0,255,100,0.1); color:#00ff64; border-color:rgba(0,255,100,0.3); }
 .counter-box { background:rgba(255,255,255,0.02); padding:15px; text-align:center; border:1px solid rgba(255,255,255,0.05); }
 .count { font-size:36px; font-weight:bold; text-shadow:0 0 10px rgba(255,255,255,0.3); }
-.terminal { background:#000; border:1px solid rgba(255,255,255,0.1); height:280px; overflow-y:auto; padding:10px; font-size:11px; color:#00ff00; text-align:left; }
+.terminal { background:#000; border:1px solid rgba(255,255,255,0.1); height:260px; overflow-y:auto; padding:10px; font-size:11px; color:#00ff00; text-align:left; }
 .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .btn { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:12px; font-family:inherit; cursor:pointer; text-transform:uppercase; }
 .btn:hover { background:#fff; color:#000; }
@@ -28,7 +37,7 @@ body {
 <div class="wrapper">
   <div class="header">
     <h3 style="margin:0 0 10px 0; letter-spacing:2px;">👾 BEAST ENGINE MAINBOARD</h3>
-    <div class="status" id="nodeStatus">STATUS: AWAITING LINK SIGNAL...</div>
+    <div class="status" id="nodeStatus">STATUS: RE-CONNECTING LOOPING CHANNEL...</div>
   </div>
 
   <div class="counter-box">
@@ -38,7 +47,7 @@ body {
 
   <div class="terminal" id="term">
     [SYSTEM] Beast Engine initialization stand-by...<br>
-    [SYSTEM] Wiring bridge to core channel active.
+    [SYSTEM] Attempting secure telemetry bridge handshake...
   </div>
 
   <div class="actions">
@@ -52,20 +61,45 @@ function addLog(txt) {
   const t = document.getElementById("term");
   t.innerHTML += `[ENGINE] ${txt}<br>`; t.scrollTop = t.scrollHeight;
 }
-function runNode(type) { addLog(`Command ${type} executed successfully.`); }
 
+function runNode(type) { 
+  addLog(`Command ${type} executed successfully.`); 
+}
+
+// 🛡️ LISTENER PENERIMA DATA TELEMETRI INDUK (FIXED)
 window.addEventListener("message", (e) => {
-  if(e.data && e.data.type === 'TELEMETRY') {
+  if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
     const core = e.data.data;
+    const coreTheme = e.data.theme;
+    
+    // 1. Update data numerik ke antarmuka game
     document.getElementById("beastCount").innerText = `${core.count} DAYS`;
+    
+    // 2. Update status koneksi node
     const st = document.getElementById("nodeStatus");
-    st.innerText = `NODE ONLINE // DESIGNATION: ${core.dominionName.toUpperCase()}`;
+    st.innerText = `NODE ONLINE // DESIGNATION: ${core.dominionName ? core.dominionName.toUpperCase() : 'UNKNOWN'}`;
     st.className = "status online";
-    addLog(`Data synchronized. Main core resonance at ${core.count} cycles.`);
+    
+    // 3. Sinkronisasikan tema visual bodi dengan induk
+    document.body.className = coreTheme;
+    
+    addLog(`Handshake Success. Linked data synced at ${core.count} cycles.`);
   }
 });
 
-window.onload = () => { if(window.parent) window.parent.postMessage({ type:'REQ_SYNC' }, '*'); };
+// 🔄 LOOP JABAT TANGAN AKTIF (Akan terus mengecek sampai induk merespon)
+let handshakeInterval = setInterval(() => {
+  if (window.parent) {
+    window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
+  }
+}, 500); // Colek halaman induk setiap 500ms
+
+// Hentikan spamming colek kalau koneksi terdeteksi sudah lancar
+window.addEventListener("message", (e) => {
+  if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
+    clearInterval(handshakeInterval);
+  }
+});
 </script>
 </body>
 </html>
