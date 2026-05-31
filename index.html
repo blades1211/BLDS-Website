@@ -1,1268 +1,335 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | BlackLightDoms</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
+<title>BLACKLIGHTDOMS | CORE SYSTEM</title>
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+/* ==========================================================================
+   🎬 CORE STYLING & INTERFACE
+   ========================================================================== */
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  overflow-x: hidden;
+  transition: filter 0.5s ease;
 }
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  background:#000;
-  color:white;
-  font-family:Poppins,sans-serif;
-  overflow-x:hidden;
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
-  position: relative;
-  transition: filter 0.5s ease, background 0.5s ease;
-}
-
-body.full-invert {
+.full-invert {
   filter: invert(1) hue-rotate(180deg);
 }
-
-/* ==========================================================================
-   🎨 TAMBAHAN BARU: VARIANT THEME TAMPILAN 
-   ========================================================================== */
-body.theme-matrix {
-  background: #021204 !important;
-  color: #00ff33 !important;
-}
-body.theme-matrix .box {
-  border-color: rgba(0, 255, 51, 0.3) !important;
-  background: rgba(0, 10, 2, 0.6) !important;
-}
-body.theme-matrix button {
-  border-color: #00ff33 !important;
-  color: #00ff33 !important;
-}
-body.theme-matrix button:hover {
-  background: #00ff33 !important;
-  color: #000 !important;
-}
-
-body.theme-crimson {
-  background: #140202 !important;
-  color: #ff3333 !important;
-}
-body.theme-crimson .box {
-  border-color: rgba(255, 51, 51, 0.3) !important;
-  background: rgba(20, 0, 0, 0.6) !important;
-}
-body.theme-crimson button {
-  border-color: #ff3333 !important;
-  color: #ff3333 !important;
-}
-body.theme-crimson button:hover {
-  background: #ff3333 !important;
-  color: #000 !important;
-}
-
-/* ==========================================================================
-   UI UTAMA WEBSITE BLDS
-   ========================================================================== */
-.sky{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(to bottom,#000,#050816);
-  z-index:-3;
-}
-
-.star{
-  position:absolute;
-  width:2px;
-  height:2px;
-  background:white;
-  border-radius:50%;
-  opacity:.7;
-  animation:fall linear infinite;
-}
-
-@keyframes fall{
-  from{ transform:translateY(-10vh); }
-  to{ transform:translateY(110vh); }
-}
-
-.eclipse{
-  position:fixed;
-  top:50%;
-  left:50%;
-  width:320px;
-  height:320px;
-  transform:translate(-50%,-50%);
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,.7), rgba(255,255,255,.08), transparent 70%);
-  opacity:.15;
-  z-index:-2;
-  animation:eclipseBackground 8s ease-in-out infinite;
-}
-
-@keyframes eclipseBackground{
-  0%,100%{ transform:translate(-50%,-50%) scale(1); }
-  50%{ transform:translate(-50%,-50%) scale(1.2); }
-}
-
-.container{
-  width:100%;
-  max-width:950px;
-  margin:auto;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:25px;
-  position: relative;
-  z-index: 5;
-  transition: opacity 0.5s ease;
-}
-
-.logo-container {
-  width: 140px;
-  height: 140px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo {
-  width: 110px;
-  height: 110px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
-  animation: floatLogo 4s ease-in-out infinite;
-}
-
-@keyframes floatLogo{
-  0%,100%{ transform:translateY(0); }
-  50%{ transform:translateY(-10px); }
-}
-
-.title{
-  margin-top:12px;
-  letter-spacing:4px;
-  font-size:28px;
-}
-
-.streak-widget {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 10px 18px;
-  border-radius: 20px;
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  display: none;
-}
-
-.streak-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.highest-streak-display {
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 4px;
+.sky {
+  position: fixed;
   width: 100%;
-  text-align: center;
-}
-
-.pet-hud-box {
-  display: none;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 15px;
-  width: 100%;
-  max-width: 280px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.pet-name-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.pet-name-display {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.edit-pet-btn {
-  background: transparent !important;
-  border: none !important;
-  color: rgba(255,255,255,0.4);
-  cursor: pointer;
-  font-size: 11px;
-  padding: 2px !important;
-  margin: 0 !important;
-}
-
-.pet-stage-display {
-  font-size: 9px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.pet-image-frame {
-  width: 130px;
-  height: 130px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-@keyframes petBreathing {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.04); }
-}
-
-.calibration-container {
-  margin-top: 15px;
-  width: 100%;
-  max-width: 320px;
-  display: none;
-}
-
-.calibration-box {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 15px;
-}
-
-.calibration-box p {
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 10px;
-}
-
-button{
-  padding:11px 20px;
-  margin:6px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.35s;
-  font-family:Poppins,sans-serif;
-}
-
-button:hover{
-  background:white;
-  color:black;
-  transform:scale(1.05);
-}
-
-button:disabled {
-  color: rgba(255,255,255,0.3) !important;
-  border-color: rgba(255,255,255,0.1) !important;
-  cursor: not-allowed;
-  transform: none !important;
-  background: transparent !important;
-}
-
-.reset-streak-btn {
-  border-color: rgba(255, 74, 74, 0.4);
-  color: rgba(255, 74, 74, 0.8);
-  font-size: 11px;
-  margin-top: 15px;
-  padding: 6px 14px;
-  letter-spacing: 1px;
-}
-.reset-streak-btn:hover {
-  background: #ff4a4a;
-  color: #000;
-  border-color: #ff4a4a;
-}
-
-.menu{
-  display:none;
-  flex-direction:column;
-  margin-top:18px;
-  width:100%;
-  max-width:320px;
-}
-
-.page{
-  display:none;
-  width:100%;
-  margin-top:25px;
-  animation:pageFade .5s ease;
-}
-
-@keyframes pageFade{
-  from{ opacity:0; transform:translateY(15px); }
-  to{ opacity:1; transform:translateY(0); }
-}
-
-.box{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  padding:30px;
-  border-radius:18px;
-  text-align:left;
-  line-height:1.8;
-  backdrop-filter:blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.box h2 {
-  font-size: 20px;
-  letter-spacing: 2px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-.box h3 {
-  font-size: 15px;
-  letter-spacing: 1px;
-  color: #fff;
-  margin-top: 25px;
-  margin-bottom: 10px;
-  border-left: 3px solid #fff;
-  padding-left: 10px;
-}
-
-.lore-text {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 12px;
-  white-space: pre-line;
-}
-
-.flames-list {
-  list-style: none;
-  margin-bottom: 15px;
-}
-
-.flames-list li {
-  font-size: 13px;
-  margin-bottom: 8px;
-  color: rgba(255,255,255,0.85);
-}
-
-.flames-list b {
-  color: #fff;
-  letter-spacing: 0.5px;
-}
-
-.achievement-progress-container {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  height: 20px;
-  width: 100%;
-  position: relative;
-  margin-bottom: 25px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.achievement-progress-bar {
-  background: linear-gradient(90deg, #555, #fff);
   height: 100%;
-  width: 0%;
-  transition: width 0.5s ease;
+  z-index: -2;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #060611 0%, #000000 100%);
 }
-
-.achievement-progress-text {
+.star {
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #fff;
-  mix-blend-mode: difference;
-}
-
-.achievement-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.achievement-card {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 12px;
-  padding: 15px;
-  transition: 0.3s;
-}
-
-.achievement-card.unlocked {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.ach-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 8px;
-}
-
-.ach-badge.locked-badge {
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.4);
-}
-
-.ach-badge.unlocked-badge {
+  width: 2px;
+  height: 2px;
   background: #fff;
-  color: #000;
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  opacity: 0.3;
+  animation: starFloat infinite linear;
 }
-
-.archive-log {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px dashed rgba(255,255,255,0.08);
+@keyframes starFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
 }
-
-.archive-date {
-  font-size: 11px;
-  color: #fff;
-  font-family: monospace;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.staff-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.staff-group h4 {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-
-.staff-group p {
-  font-size: 13px;
-  color: #fff;
-  font-weight: 600;
-}
-
-input, select {
-  width:100%;
-  padding:12px;
-  background:#000;
-  border:1px solid rgba(255,255,255,.3);
-  border-radius:12px;
-  color:white;
-  margin-top:10px;
-  outline:none;
-  font-family: Poppins, sans-serif;
-}
-
-.modal-overlay {
+.enter-transition-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(8px);
-  z-index: 20000;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.modal-box {
-  background: #050505;
-  border: 1px solid rgba(255,255,255,0.15);
-  max-width: 420px;
-  width: 100%;
-  border-radius: 18px;
-  padding: 30px;
-  text-align: center;
-}
-
-.modal-btn-group {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
-  justify-content: center;
-}
-
-.modal-btn-group button {
-  flex: 1;
-  margin: 0;
-}
-
-/* ==========================================================================
-   👁️ MODUL BARU: FLOATING TOMBOL & MENU PEMILIHAN TAMPILAN
-   ========================================================================== */
-.floating-view-toggle {
-  position: fixed;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 10000;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  transition: all 0.3s ease;
-}
-.floating-view-toggle:hover {
   background: #fff;
-  color: #000;
-  transform: translateY(-50%) scale(1.1);
-}
-
-.theme-modal-box {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  max-width: 400px;
-  width: 100%;
-  border-radius: 18px;
-  padding: 30px;
-  position: relative;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-  animation: pageFade 0.3s ease;
-}
-
-.theme-close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 20px;
-  color: rgba(255,255,255,0.5);
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.theme-close-btn:hover {
-  color: #ff4a4a;
-}
-
-.theme-options-container {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.theme-option-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 14px;
-  cursor: pointer;
-  text-align: left;
-  font-size: 13px;
-  letter-spacing: 1px;
-  transition: all 0.2s;
-}
-.theme-option-card:hover, .theme-option-card.active-choice {
-  border-color: #fff;
-  background: rgba(255,255,255,0.1);
-}
-
-.theme-enter-lbl {
-  margin-top: 25px;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 600;
-  transition: color 0.3s;
-}
-.theme-enter-lbl:hover {
-  color: #ffffff;
-  text-shadow: 0 0 10px rgba(255,255,255,0.5);
-}
-
-/* ==========================================================================
-   SISA STYLING DEFAULT BLDS SYSTEM
-   ========================================================================== */
-.leaderboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  font-size: 12px;
-}
-
-.leaderboard-table th, .leaderboard-table td {
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.leaderboard-table th {
-  color: rgba(255,255,255,0.4);
-}
-
-.rank-highlight {
-  color: #fff;
-  font-weight: 600;
-}
-
-.loader{
-  position:fixed;
-  inset:0;
-  background:black;
-  z-index:99999;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  gap:20px;
-  transition:.5s;
-}
-
-.loader.hidden{
-  opacity:0;
-  pointer-events:none;
-}
-
-.loaderCircle{
-  width:60px;
-  height:60px;
-  border:3px solid rgba(255,255,255,.1);
-  border-top:3px solid white;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{ to{ transform:rotate(360deg); } }
-
-.split-cutscene-container {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  display: none;
+  z-index: 999999;
+  opacity: 0;
   pointer-events: none;
+  transition: opacity 0.8s ease;
 }
-
-.split-left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
+.enter-transition-overlay.active {
+  opacity: 1;
 }
-
-.split-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  backdrop-filter: invert(1) hue-rotate(180deg);
-  -webkit-backdrop-filter: invert(1) hue-rotate(180deg);
-  border-left: 2px dashed rgba(255,255,255,0.3);
-}
-
-.cutscene-hud-alert {
-  position: fixed;
-  top: 12%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.9);
-  border: 1px solid #fff;
-  padding: 12px 24px;
-  border-radius: 8px;
-  text-align: center;
-  z-index: 10005;
-  letter-spacing: 2px;
-  font-size: 12px;
-  animation: pulseGlow 2s infinite ease-in-out;
-  display: none;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-  50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); }
-}
-
 .blds-black-screen-overlay {
   position: fixed;
   inset: 0;
   background: #000;
-  z-index: 999999;
+  z-index: 99999999;
   display: none;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
-
 .blds-overlay-logo {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
-  animation: smoothFloat 3s ease-in-out infinite;
-  margin-bottom: 40px;
+  width: 120px;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 1.5s ease;
+  margin-bottom: 30px;
 }
-
-@keyframes smoothFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
 .blds-overlay-dialog {
-  font-size: 18px;
-  font-weight: 300;
-  letter-spacing: 5px;
-  color: #fff;
+  font-size: 14px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  height: 30px;
+  color: #fff;
   opacity: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  transform: translateY(10px);
+  transition: all 0.5s ease;
 }
-
-footer {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  margin-top: 40px;
+.split-cutscene-container {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  pointer-events: none;
 }
-
-.footer-content {
-  max-width: 950px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
+.split-left, .split-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: transparent;
 }
+.split-left { left: 0; }
+.split-right { right: 0; filter: invert(1) hue-rotate(180deg); background: rgba(0,0,0,0.05); }
 
-.footer-links a {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: none;
-  font-size: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 6px 12px;
-  border-radius: 8px;
-  margin-right: 8px;
+.cutscene-hud-alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid #fff;
+  padding: 8px 16px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  z-index: 100000;
+  display: none;
+  text-align: center;
 }
-
-.admin-trigger-launcher {
+.floating-view-toggle {
   position: fixed;
   bottom: 25px;
   right: 25px;
-  background: #ffffff;
-  color: #000000;
-  border: 2px solid #ffffff;
-  padding: 10px 16px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 11px;
-  letter-spacing: 2px;
-  cursor: grab;
-  z-index: 999998;
-  box-shadow: 0 4px 20px rgba(255,255,255,0.25);
-  display: none;
-  user-select: none;
-  touch-action: none;
-}
-.admin-trigger-launcher:active {
-  cursor: grabbing;
-}
-
-.admin-floating-panel {
-  position: fixed;
-  bottom: 80px;
-  right: 25px;
-  width: 350px;
-  max-height: 75vh;
-  background: rgba(10, 10, 10, 0.98);
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  z-index: 999999;
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  animation: pageFade 0.3s ease;
-}
-
-.admin-header {
-  background: #ffffff;
-  color: #000000;
-  padding: 12px 16px;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 2px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.admin-body {
-  padding: 18px;
-  overflow-y: auto;
-  flex: 1;
-  font-size: 12px;
-}
-
-.admin-section {
-  margin-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 14px;
-}
-
-.admin-section h4 {
-  color: #ffffff;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  font-size: 11px;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-
-.admin-body label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-  display: block;
-  margin-top: 8px;
-}
-
-.admin-body input, .admin-body select {
-  padding: 8px;
-  margin-top: 4px;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: #000;
-  color: #fff;
-}
-
-.admin-body input:focus, .admin-body select:focus {
-  border-color: #ffffff;
-}
-
-.admin-btn {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: none !important;
-  font-weight: 600;
-  padding: 9px 12px;
-  width: 100%;
-  margin: 12px 0 0 0;
-  font-size: 11px;
-  letter-spacing: 1px;
-  border-radius: 8px;
-}
-
-.admin-btn:hover {
-  background: rgba(255,255,255,0.8) !important;
-}
-
-.code-list-box {
-  background: rgba(0,0,0,0.6);
-  border: 1px dashed rgba(255,255,255,0.3);
-  padding: 8px;
-  border-radius: 8px;
-  max-height: 105px;
-  overflow-y: auto;
-  font-family: monospace;
-  font-size: 11px;
-  color: #ffffff;
-  margin-top: 5px;
-  line-height: 1.5;
-}
-
-.enter-transition-overlay {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 15000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.enter-transition-overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* ==========================================================================
-   🎬 ODYSSEY AREA STYLING 
-   ========================================================================== */
-.odyssey-cutscene-layer {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(to bottom, #000000, #03030b);
-  z-index: 9999999;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.odyssey-content-wrapper {
-  width: 100%;
-  max-width: 650px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 20px;
-}
-
-.odyssey-star-field {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.odyssey-logo-holder {
-  width: 140px;
-  height: 140px;
-  opacity: 0;
-  transform: scale(0.05) rotate(-45deg);
-  z-index: 15;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.45);
-}
-
-.odyssey-logo-holder.slam-active {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-}
-
-.odyssey-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.95));
-}
-
-.odyssey-text-container {
-  position: relative;
-  height: auto;
-  min-height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  z-index: 10;
-}
-
-.odyssey-line {
-  position: absolute;
-  width: 100%;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.9);
-  text-transform: uppercase;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.odyssey-line.active {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.odyssey-line.odyssey-grand-title {
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: 6px;
-  color: #ffffff;
-  text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
-}
-
-.odyssey-shake-earthquake {
-  animation: screenEarthquakeAction 0.08s linear infinite;
-}
-
-@keyframes screenEarthquakeAction {
-  0% { transform: translate(5px, 3px) rotate(0deg); }
-  20% { transform: translate(-4px, -5px) rotate(-2deg); }
-  40% { transform: translate(-6px, 1px) rotate(2deg); }
-  60% { transform: translate(5px, 4px) rotate(0deg); }
-  80% { transform: translate(3px, -4px) rotate(2deg); }
-  100% { transform: translate(-3px, 5px) rotate(-2deg); }
-}
-
-.odyssey-logo-float-active {
-  animation: logoSmoothFloatLoop 4s ease-in-out infinite alternate !important;
-}
-
-@keyframes logoSmoothFloatLoop {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-12px); }
-}
-
-.odyssey-pet-selection-deck {
-  display: none; 
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  z-index: 20;
-  width: 100%;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.odyssey-pet-selection-deck.active {
-  display: flex;
-}
-
-.odyssey-pet-selection-deck.smooth-show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.odyssey-pet-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 15px 10px;
-  flex: 1;
-  max-width: 140px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.3s ease, border-color 0.3s, background 0.3s;
-}
-
-.odyssey-pet-card:hover, .odyssey-pet-card.selected {
-  transform: translateY(-5px);
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.odyssey-pet-avatar-slot {
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 8px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.odyssey-pet-avatar-slot img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.odyssey-pet-title-tag {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-.odyssey-pet-sub-tag {
-  font-size: 8px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 2px;
-  text-transform: uppercase;
-}
-
-.odyssey-color-inversion {
-  filter: invert(1) hue-rotate(180deg) !important;
-}
-
-.odyssey-dynamic-lore-block {
-  width: 100%;
-  margin-top: 15px;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.08);
-  padding: 20px;
-  border-radius: 14px;
-  text-align: justify;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 10;
-}
-
-.odyssey-lore-text-content {
-  font-size: 12.5px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.9);
-  letter-spacing: 0.5px;
-  min-height: 40px;
-}
-
-.odyssey-action-btn {
-  margin-top: 15px;
-  background: #ffffff;
-  color: #000000;
-  font-weight: 600;
-  border: 1px solid #fff;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-size: 11px;
-  display: none;
-}
-.odyssey-action-btn:hover {
-  background: transparent;
-  color: #ffffff;
-}
-
-.odyssey-evolution-swap-box {
-  width: 100%;
-  max-width: 200px;
-  height: 200px;
-  margin: 20px auto;
-  border: 1px dashed rgba(255,255,255,0.2);
-  border-radius: 16px;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  background: rgba(255,255,255,0.01);
-}
-
-.odyssey-swap-img {
-  width: 75%;
-  height: 75%;
-  object-fit: contain;
-  position: absolute;
-  transition: opacity 5s linear; 
-}
-
-.glitch-screen-matrix-overlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  z-index: 999999999;
-  pointer-events: none;
-  display: none;
-}
-
-.glitch-slice-block {
-  position: absolute;
+  width: 45px;
+  height: 45px;
   background: #fff;
-  mix-blend-mode: difference;
-  opacity: 0;
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
 }
-
-.odyssey-dark-curtain {
+.modal-overlay {
   position: fixed;
   inset: 0;
-  background: #000000;
-  z-index: 99999999;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 999999;
   display: none;
-  opacity: 0;
-  transition: opacity 1s ease;
-  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
+.modal-box, .theme-modal-box {
+  background: #05050a;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 30px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  border-radius: 8px;
+}
+.theme-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+.theme-options-container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.theme-option-card {
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+.theme-option-card:hover, .theme-option-card.active-choice {
+  border-color: #fff;
+  background: rgba(255,255,255,0.05);
+}
+.theme-enter-lbl {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  margin-top: 15px;
+}
+.loader {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+.loader.hidden { opacity: 0; pointer-events: none; }
+.loaderCircle {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.loaderText { font-size: 11px; letter-spacing: 3px; margin-top: 20px; color: rgba(255,255,255,0.6); }
 
+/* Theme Preset Classes */
+.theme-matrix { color: #00ff00 !important; font-family: monospace; }
+.theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
+.theme-matrix button { border-color: #00ff00 !important; color: #00ff00 !important; background: transparent; }
+.theme-crimson { color: #ff3333 !important; }
+.theme-crimson .box, .theme-crimson .theme-modal-box { border-color: #ff3333 !important; background: #050000 !important; }
+.theme-crimson button { border-color: #ff3333 !important; color: #ff3333 !important; background: transparent; }
+
+/* Main Core Grid Framework */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.logo-container .logo { width: 100px; margin-bottom: 20px; }
+.streak-widget {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 15px 25px;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}
+.highest-streak-display { font-size: 11px; opacity: 0.5; margin-top: 5px; }
+.title { font-size: 28px; letter-spacing: 8px; margin-bottom: 40px; text-align: center; }
+#enterBtn, .menu button, .calibration-box button, .admin-btn, .modal-box button {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+#enterBtn:hover, .menu button:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover {
+  background: #fff;
+  color: #000;
+}
+.menu { display: none; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+.page { display: none; width: 100%; margin-bottom: 40px; }
+.box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 4px; }
+.lore-text { font-size: 13px; line-height: 1.8; opacity: 0.8; text-align: justify; }
+.flames-list { font-size: 13px; line-height: 1.8; opacity: 0.8; padding-left: 20px; }
+.achievement-progress-container { margin-bottom: 25px; background: rgba(255,255,255,0.05); height: 20px; position: relative; border-radius: 10px; overflow: hidden; }
+.achievement-progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; }
+.achievement-progress-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; mix-blend-mode: difference; }
+.achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+.achievement-card { border: 1px solid rgba(255,255,255,0.08); padding: 15px; background: rgba(0,0,0,0.2); }
+.achievement-card.unlocked { border-color: #fff; }
+.ach-badge { font-size: 9px; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 8px; }
+.locked-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+.unlocked-badge { background: #fff; color: #000; }
+.leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
+.leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.leaderboard-table th { opacity: 0.6; letter-spacing: 1px; }
+.archive-log { margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+.archive-date { font-size: 11px; opacity: 0.4; margin-bottom: 5px; }
+.staff-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+.staff-group h4 { margin: 0 0 5px 0; font-size: 12px; opacity: 0.6; }
+.staff-group p { margin: 0; font-size: 14px; }
+.calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
+.calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); }
+#calibrationStatus { font-size: 11px; letter-spacing: 1px; color: rgba(255,255,255,0.5); margin-bottom: 15px; }
+.reset-streak-btn { font-size: 9px !important; margin-top: 15px; opacity: 0.5; border-color: rgba(255,0,0,0.3) !important; color: #ff4a4a !important; }
+.modal-btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+input[type="text"], input[type="number"], select {
+  background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px; font-family: inherit; font-size: 11px; letter-spacing: 1px; margin-bottom: 10px; box-sizing: border-box; width: 100%;
+}
+.admin-trigger-launcher {
+  position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: grab; display: none; z-index: 999999;
+}
+.admin-floating-panel {
+  position: fixed; top: 10%; left: 10%; width: 320px; max-height: 70vh; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+}
+.admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+.admin-body { padding: 15px; overflow-y: auto; flex: 1; }
+.admin-section { border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px; }
+.admin-section h4 { margin: 0 0 10px 0; font-size: 11px; letter-spacing: 1px; opacity: 0.8; text-transform: uppercase; }
+.admin-section label { font-size: 9px; display: block; margin-bottom: 4px; opacity: 0.5; }
+.code-list-box { font-size: 9px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+footer { width: 100%; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; }
+.footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+.footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; letter-spacing: 1px; }
+.footer-links a:hover { color: #fff; }
 @media (max-width: 480px) {
-  .odyssey-content-wrapper { gap: 15px; }
-  .odyssey-logo-holder { width: 100px; height: 100px; }
-  .odyssey-line { font-size: 13px; }
-  .odyssey-line.odyssey-grand-title { font-size: 24px; letter-spacing: 4px; }
-  .odyssey-pet-selection-deck { gap: 8px; }
-  .odyssey-pet-card { padding: 10px 4px; }
-  .odyssey-pet-avatar-slot { width: 35px; height: 35px; }
-  .odyssey-pet-title-tag { font-size: 9px; }
+  .title { font-size: 20px; }
+  .footer-content { flex-direction: column; gap: 10px; text-align: center; }
 }
 </style>
 </head>
-
+ 
 <body>
-
+ 
 <audio id="bgAmbient" loop>
   <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
 </audio>
-
+ 
 <div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
-
+ 
 <div class="blds-black-screen-overlay" id="bldsCutsceneOverlay">
   <img src="logo.png" alt="BLDS Cutscene Logo" class="blds-overlay-logo" id="bldsCutsceneLogo" onerror="this.style.display='none';">
   <div class="blds-overlay-dialog" id="bldsCutsceneDialog"></div>
 </div>
-
+ 
 <div class="split-cutscene-container" id="splitOverlay">
   <div class="split-left"></div>
   <div class="split-right"></div>
 </div>
-
+ 
 <div class="cutscene-hud-alert" id="cutsceneAlert">
   CORE SIGNATURE INJECTED // CALIBRATION PROTOCOL ACTIVE
 </div>
-
+ 
 <div class="floating-view-toggle" id="floatingViewToggleBtn" title="Ubah Tampilan Menu">👁️</div>
-
+ 
 <div class="modal-overlay" id="themeSelectorModal">
   <div class="theme-modal-box">
     <div class="theme-close-btn" onclick="closeThemeModal()">✕</div>
     <h3 style="letter-spacing: 2px; font-size: 16px; border:none; padding:0; margin-bottom: 5px;">INTERFACE SYSTEM</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.4);">Pilih preset visualisasi matrix core utama.</p>
-    
+ 
     <div class="theme-options-container">
       <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">
         ⚪ DEFAULT ECLIPSE (DARK SPACE)
@@ -1274,137 +341,56 @@ footer {
         🔴 CRIMSON OVERDRIVE (HELL REBEL)
       </div>
     </div>
-    
+ 
     <div class="theme-enter-lbl" onclick="applySelectedTheme()">[ Enter untuk Mengubah Tampilan ]</div>
   </div>
 </div>
-
-<div class="odyssey-cutscene-layer" id="odysseyCutsceneContainer">
-  <div class="odyssey-star-field" id="odysseyStarField"></div>
-  
-  <div class="odyssey-content-wrapper" id="odysseyWrapper">
-    <div class="odyssey-logo-holder" id="odysseyLogoHolder">
-      <img src="logo.png" alt="BLDS Mega Core" class="odyssey-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div style="display:none; font-size:20px; font-weight:600; letter-spacing:4px;">[BLDS CORE]</div>
-    </div>
-
-    <div class="odyssey-text-container" id="odysseyTextContainer">
-      <div class="odyssey-line" id="odyLine1">100 hari lalu, kamu memulainya...</div>
-      <div class="odyssey-line" id="odyLine2">Kamu sudah sabar menunggu</div>
-      <div class="odyssey-line" id="odyLine3">Hari ini, dimana kamu mencapainya</div>
-      <div class="odyssey-line odyssey-grand-title" id="odyLine4">DAYS 100 STREAK</div>
-    </div>
-    
-    <div style="font-size:12px; letter-spacing:2px; color:rgba(255,255,255,0.4); display:none; text-transform:uppercase; margin-bottom:-5px;" id="odyDeckTitle">Select one of the pets below to replace your old pet.</div>
-
-    <div class="odyssey-pet-selection-deck" id="odysseyPetDeck">
-      <div class="odyssey-pet-card" id="card-cerberus" onclick="triggerOdysseyPetMeaning('cerberus')">
-        <div class="odyssey-pet-avatar-slot">
-          <img src="Cerberus.png" alt="Cerberus" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div style="display:none; font-size:24px;">🔥</div>
-        </div>
-        <div class="odyssey-pet-title-tag">Cerberus</div>
-        <div class="odyssey-pet-sub-tag">Vigilance Core</div>
-      </div>
-
-      <div class="odyssey-pet-card" id="card-phoenix" onclick="triggerOdysseyPetMeaning('phoenix')">
-        <div class="odyssey-pet-avatar-slot">
-          <img src="Phoenix.png" alt="Phoenix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div style="display:none; font-size:24px;">☀️</div>
-        </div>
-        <div class="odyssey-pet-title-tag">Phoenix</div>
-        <div class="odyssey-pet-sub-tag">Undying Core</div>
-      </div>
-
-      <div class="odyssey-pet-card" id="card-leviathan" onclick="triggerOdysseyPetMeaning('leviathan')">
-        <div class="odyssey-pet-avatar-slot">
-          <img src="Leviathan.png" alt="Leviathan" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div style="display:none; font-size:24px;">🌊</div>
-        </div>
-        <div class="odyssey-pet-title-tag">Leviathan</div>
-        <div class="odyssey-pet-sub-tag">Calm Depth Core</div>
-      </div>
-    </div>
-    
-    <div class="odyssey-dynamic-lore-block" id="odysseyLoreBlock">
-       <div class="odyssey-lore-text-content" id="odysseyLoreText"></div>
-    </div>
-    
-    <div class="odyssey-evolution-swap-box" id="odysseySwapBox">
-       <div id="swapOldFrame" class="odyssey-swap-img" style="opacity:1;"></div>
-       <div id="swapNewFrame" class="odyssey-swap-img" style="opacity:0;"></div>
-    </div>
-    
-    <button class="odyssey-action-btn" id="odyChangePetBtn" onclick="processOldPetFadeSequence()">Change your pet</button>
-    <button class="odyssey-action-btn" id="odyTakeBtn" onclick="executeFinalGlitchTakeLock()" style="background:#fff; color:#000;">Take</button>
-
-  </div>
-</div>
-
-<div class="odyssey-dark-curtain" id="odysseyDarkCurtain"></div>
-<div class="glitch-screen-matrix-overlay" id="glitchOverlay"></div>
-
+ 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
     <h3 id="modalRegTitle" style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MAIN MATRIX REGISTRATION</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name and choose your tracking core type.</p>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name to synchronize with core board.</p>
     <br>
     <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center;">
-    <br>
-    <select id="petTypeSelect">
-      <option value="dragon">🐉 JALUR NAGA (THE VOID DRAGON)</option>
-      <option value="fish">🐟 JALUR IKAN (THE ABYSS LEVIATHAN)</option>
-      <option value="wolf">🐺 JALUR SERIGALA (THE SHADOW FENRIR)</option>
-    </select>
     <br><br>
     <button onclick="saveDominionName()" style="width: 100%; margin: 0;">REGISTER TO MAINBOARD</button>
   </div>
 </div>
-
-<div class="modal-overlay" id="petNameModal">
-  <div class="modal-box">
-    <h3 style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MUTATE CUSTOM NAME</h3>
-    <input type="text" id="petNameInput" placeholder="GIVE NICKNAME" maxlength="12" style="text-align: center;">
-    <br><br>
-    <button onclick="savePetCustomName()" style="width: 100%; margin: 0;">BIND CORENODE SIGNATURE</button>
-  </div>
-</div>
-
+ 
 <div class="modal-overlay" id="collapseModal">
   <div class="modal-box" style="border-color: rgba(255,0,0,0.4);">
     <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">⚠️ SYNC LAPSE DETECTED</h3>
     <p style="font-size: 11px; color: rgba(255,255,255,0.6); text-align: justify;">
-      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0. Wujud pet Anda kembali ke fase awal (telur) kecuali jika Anda sudah pernah mengunci Fase 5 di jenis pet tersebut.
+      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0.
     </p>
     <br>
     <button onclick="closeCollapseModal()" style="width: 100%; margin: 0;">RE-CALIBRATE FRAMEWORK</button>
   </div>
 </div>
-
+ 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box" style="border-color: rgba(255,74,74,0.4);">
     <h3 style="letter-spacing: 1px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">Are you sure Dominioners?</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">This action can change your streak to 0 and also your pet will return to being an egg</p>
+    <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">This action will reset your streak tracking back to 0.</p>
     <div class="modal-btn-group">
       <button onclick="confirmResetStreak()" style="background:#ff4a4a; border-color:#ff4a4a; color:#000; font-weight:600; text-transform: uppercase;">Yes</button>
       <button onclick="closeResetModal()" style="text-transform: uppercase;">No</button>
     </div>
   </div>
 </div>
-
+ 
 <div class="loader" id="loader">
   <div class="loaderCircle"></div>
   <div class="loaderText">ENTERING BLACKLIGHTDOMS</div>
 </div>
-
+ 
 <div class="sky" id="sky"></div>
-<div class="eclipse"></div>
-
+ 
 <div class="container" id="mainWebsiteContainer">
   <div class="logo-container">
     <img src="logo.png" alt="BLDS Logo" class="logo" onerror="this.style.display='none';">
   </div>
-
+ 
   <div class="streak-widget" id="streakWidget">
     <div class="streak-row">
       RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
@@ -1415,20 +401,11 @@ footer {
       HIGHEST PEAK RECORD: <b id="highestStreakDisplayCount" style="color: #fff;">0</b> DAYS
     </div>
   </div>
-
-  <div class="pet-hud-box" id="petHudBox">
-    <div class="pet-name-container">
-      <div class="pet-name-display" id="petNameDisplay">UNNAMED ENTITY</div>
-      <button class="edit-pet-btn" onclick="openRenamePetModal()">✏️</button>
-    </div>
-    <div class="pet-stage-display" id="petStageDisplay">Fase 1</div>
-    <div class="pet-image-frame" id="petImageFrameSlot"></div>
-  </div>
-
+ 
   <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
-
+ 
   <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
-
+ 
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">ORIGIN</button>
     <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
@@ -1436,7 +413,7 @@ footer {
     <button onclick="showPage('archives')">ARCHIVES</button>
     <button onclick="showPage('code')">CODE</button>
   </div>
-
+ 
   <div class="page" id="origin">
     <div class="box">
       <h2>LORE</h2>
@@ -1458,7 +435,7 @@ footer {
       Not a kingdom built on arrogance.
       Not a place for people searching only for victory.
       But a dominion built by those who refused to disappear.</p>
-
+ 
       <h2>BLACKLIGHT CORE</h2>
       <p class="lore-text">At the center of the eclipse lies the Core.
       A single star that continues to shine no matter how dark the sky becomes.
@@ -1474,9 +451,9 @@ footer {
       The strongest are the ones who continue standing after every fall.
       That is why the Core never disappears.
       Because purpose cannot be erased by fear.</p>
-
+ 
       <h2>10 FLAMES OF BLDS</h2>
-
+ 
       <h3>Greater</h3>
       <ul class="flames-list">
         <li><b>I. Vision</b> - The ability to see direction even when others are lost.</li>
@@ -1485,7 +462,7 @@ footer {
         <li><b>IV. Ambition</b> - The desire to surpass limits and continue evolving.</li>
         <li><b>V. Resilience</b> - The strength to rise again after every fall.</li>
       </ul>
-
+ 
       <h3>Lesser</h3>
       <ul class="flames-list">
         <li><b>I. Hope</b> - The light that remains during difficult times.</li>
@@ -1494,16 +471,9 @@ footer {
         <li><b>IV. Courage</b> - The will to move forward despite fear.</li>
         <li><b>V. Unity</b> - The bond that turns individuals into something greater.</li>
       </ul>
-
-      <p class="lore-text" style="font-style: italic; color: rgba(255,255,255,0.6);">Though smaller, these flames are just as important.
-      Because even the brightest Core will fade without what supports it.
-
-      Five flames grant strength.
-      Five flames preserve it.
-      Together, they protect the Core.</p>
     </div>
   </div>
-
+ 
   <div class="page" id="achievement">
     <div class="box">
       <h2>RESONANCE ACHIEVEMENTS</h2>
@@ -1511,7 +481,7 @@ footer {
         <div class="achievement-progress-bar" id="achProgressBar"></div>
         <div class="achievement-progress-text" id="achProgressText">0 / 15 BADGES UNLOCKED</div>
       </div>
-
+ 
       <div class="achievement-grid">
         <div class="achievement-card" id="ach1">
           <span class="ach-badge locked-badge" id="ach1Badge">🔒 Locked</span>
@@ -1538,11 +508,10 @@ footer {
           <h4 style="font-size:14px; margin-bottom:4px;">Penta Resonance</h4>
           <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Reach 5 days milestone on framework tracking.</p>
         </div>
-
         <div class="achievement-card" id="ach6">
           <span class="ach-badge locked-badge" id="ach6Badge">🔒 Locked</span>
           <h4 style="font-size:14px; margin-bottom:4px;">Resonance Synchronizer</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain synchronization for 7 consecutive days. Pet reaches Stage 2.</p>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain synchronization for 7 consecutive days.</p>
         </div>
         <div class="achievement-card" id="ach7">
           <span class="ach-badge locked-badge" id="ach7Badge">🔒 Locked</span>
@@ -1564,7 +533,6 @@ footer {
           <h4 style="font-size:14px; margin-bottom:4px;">Undeca Sector Locked</h4>
           <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Hit 11 days streak inside the dark system.</p>
         </div>
-
         <div class="achievement-card" id="ach11">
           <span class="ach-badge locked-badge" id="ach11Badge">🔒 Locked</span>
           <h4 style="font-size:14px; margin-bottom:4px;">Vanguard Knight</h4>
@@ -1573,12 +541,12 @@ footer {
         <div class="achievement-card" id="ach12">
           <span class="ach-badge locked-badge" id="ach12Badge">🔒 Locked</span>
           <h4 style="font-size:14px; margin-bottom:4px;">Resonance Keeper</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve 30 days peak. Companion evolves to Stage 3.</p>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve 30 days peak performance.</p>
         </div>
         <div class="achievement-card" id="ach13">
           <span class="ach-badge locked-badge" id="ach13Badge">🔒 Locked</span>
           <h4 style="font-size:14px; margin-bottom:4px;">Dominion Master</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve a massive streak of 50 days. Ultimate core mastery unlocked.</p>
+          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve a massive streak of 50 days.</p>
         </div>
         <div class="achievement-card" id="ach14">
           <span class="ach-badge locked-badge" id="ach14Badge">🔒 Locked</span>
@@ -1593,7 +561,7 @@ footer {
       </div>
     </div>
   </div>
-
+ 
   <div class="page" id="leaderboardPage">
     <div class="box">
       <h2>DOMINION LEADERBOARD (TOP 20)</h2>
@@ -1603,74 +571,27 @@ footer {
             <th>RANK</th>
             <th>DOMINION NAME</th>
             <th>STREAK</th>
-            <th>PET TYPE / STAGE</th>
           </tr>
         </thead>
         <tbody id="leaderboardDataBody"></tbody>
       </table>
     </div>
   </div>
-
+ 
   <div class="page" id="archives">
     <div class="box">
       <h2>BLDS KRONOLOGIS ARCHIVES</h2>
-
       <div class="archive-log">
         <div class="archive-date">> CORE DOMINION LEADERSHIP NETWORK</div>
         <div class="staff-grid">
-          <div class="staff-group">
-            <h4>Founder</h4>
-            <p>Michael Lorenzo</p>
-          </div>
-          <div class="staff-group">
-            <h4>Right Hand of BLDS</h4>
-            <p>William Nayottama</p>
-          </div>
-          <div class="staff-group">
-            <h4>Left Hand of BLDS</h4>
-            <p>Prince Felix</p>
-          </div>
+          <div class="staff-group"><h4>Founder</h4><p>Michael Lorenzo</p></div>
+          <div class="staff-group"><h4>Right Hand</h4><p>William Nayottama</p></div>
+          <div class="staff-group"><h4>Left Hand</h4><p>Prince Felix</p></div>
         </div>
-
-        <div class="staff-grid" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
-          <div class="staff-group">
-            <h4>Admin</h4>
-            <p>George Alfred</p>
-          </div>
-          <div class="staff-group">
-            <h4>Admin</h4>
-            <p>Steven Cleo</p>
-          </div>
-          <div class="staff-group">
-            <h4>Admin</h4>
-            <p>Denzel Arnold</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="archive-log">
-        <div class="archive-date">> MARCH 05, 2024 [CORE_LAUNCH]</div>
-        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
-          BLDS Framework officially created and initialized from the dark sectors.
-        </p>
-      </div>
-
-      <div class="archive-log">
-        <div class="archive-date">> NOVEMBER 12, 2024 [DATABASE_UPGRADE]</div>
-        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
-          Integration of global dominion ranking protocols and deployment of companion tracking matrices (Dragon, Leviathan, Fenrir cores).
-        </p>
-      </div>
-
-      <div class="archive-log">
-        <div class="archive-date">> MAY 30, 2026 [VERSION 2.7.5] [DRAGGABLE_HUD_INJECTED]</div>
-        <p style="font-size:13px; color:rgba(255,255,255,0.8);">
-          Pembaruan masif pada panel admin eksternal. Struktur GUI diubah menjadi monokrom (Hitam-Putih), peluncur tombol dipindahkan ke status mengambang bebas yang dapat dipindahkan sesuka hati oleh Pemilik.
-        </p>
       </div>
     </div>
   </div>
-
+ 
   <div class="page" id="code">
     <div class="box">
       <h2>CODE SYSTEM</h2>
@@ -1679,100 +600,40 @@ footer {
       <button onclick="unlockCode()">UNLOCK</button>
     </div>
   </div>
-
+ 
   <div class="calibration-container" id="calibrationHud">
     <div class="calibration-box">
       <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
       <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
       <br>
-      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK & GANTI PATH</button>
+      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK TRACKING</button>
     </div>
   </div>
 </div>
-
+ 
 <div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ OWNER</div>
-
+ 
 <div class="admin-floating-panel" id="adminPanel">
   <div class="admin-header">
     <span>🛡️ BLDS OWNER MATRIX</span>
     <span style="cursor:pointer; font-weight:bold; font-size:14px;" id="adminCloseBtn">✕</span>
   </div>
   <div class="admin-body">
-
     <div class="admin-section">
       <h4>1. Core User Modification</h4>
-
-      <label>Dominion Name:</label>
-      <input type="text" id="admDomName">
-
-      <label>Current Streak Count (Days):</label>
-      <input type="number" id="admStreak">
-
-      <label>Highest Peak Streak (Record):</label>
-      <input type="number" id="admHighStreak">
-
-      <label>Core Path / Pet Type:</label>
-      <select id="admPetType">
-        <option value="dragon">Dragon (Void)</option>
-        <option value="fish">Fish (Abyss)</option>
-        <option value="wolf">Wolf (Shadow)</option>
-      </select>
-
-      <label>Force Evolution Phase Override:</label>
-      <select id="admForceStageSelection">
-        <option value="auto">-- SYSTEM AUTOMATIC (BY STREAK) --</option>
-        <option value="1">Fase 1: Embryo Egg State</option>
-        <option value="2">Fase 2: Hatchling Whelp State</option>
-        <option value="3">Fase 3: Intermediate Drake/Serpent State</option>
-        <option value="4">Fase 4: Alpha Apex Overlord State</option>
-        <option value="5">Fase 5: Locked Cosmic Ancient God State</option>
-      </select>
-
-      <label>Pet Custom Nickname:</label>
-      <input type="text" id="admPetNick">
-
-      <button class="admin-btn" onclick="executeAdminUserUpdate()">APPLY USER CHANGES</button>
+      <label>Dominion Name:</label><input type="text" id="admDomName">
+      <label>Current Streak Count (Days):</label><input type="number" id="admStreak">
+      <label>Highest Peak Streak:</label><input type="number" id="admHighStreak">
+      <button class="admin-btn" onclick="executeAdminUserUpdate()">APPLY CHANGES</button>
     </div>
-
     <div class="admin-section">
       <h4>2. Override Global Rank Title</h4>
-      <label>Custom Force Rank Title:</label>
       <input type="text" id="admForceRank" placeholder="Contoh: GOD OF THE ECLIPSE">
       <button class="admin-btn" onclick="executeAdminRankOverride()">OVERRIDE RANK</button>
     </div>
-
-    <div class="admin-section">
-      <h4>3. Edit Leaderboard Data</h4>
-      <label>Select Target Leaderboard Slot:</label>
-      <select id="admLbIndex" onchange="loadTargetLbSlotData()"></select>
-
-      <label>Edit Name In Slot:</label>
-      <input type="text" id="admLbName">
-
-      <label>Edit Streak In Slot:</label>
-      <input type="number" id="admLbStreak">
-
-      <label>Edit Pet/Stage Label:</label>
-      <input type="text" id="admLbLabel">
-
-      <button class="admin-btn" onclick="executeAdminLbUpdate()">MUTATE LEADERBOARD SLOT</button>
-    </div>
-
-    <div class="admin-section">
-      <h4>4. Core System Code List</h4>
-      <div class="code-list-box">
-        - - - ACTIVE CORE CODES - - -<br>
-        • blds : Inverted split cinematic<br>
-        • black : Full filter screen inverted<br>
-        • white : Normal visual calibration<br>
-        • OWNERONLYBLDS : Trigger Admin Launcher Button<br>
-        • lorenzo / nayottama / prince : Activation keys
-      </div>
-    </div>
-
   </div>
 </div>
-
+ 
 <footer>
   <div class="footer-content">
     <div class="footer-links">
@@ -1782,58 +643,32 @@ footer {
     <div style="font-size: 11px; color: rgba(255, 255, 255, 0.3);">© 2026 BLACKLIGHTDOMS.</div>
   </div>
 </footer>
-
+ 
 <script>
-/* ==========================================================================
-   👁️ ENGINE JAVASCRIPT: FITUR PEMILIHAN TAMPILAN THEME (BARU)
-   ========================================================================== */
 let tempSelectedTheme = "default";
-
 const themeToggleBtn = document.getElementById("floatingViewToggleBtn");
 const themeModal = document.getElementById("themeSelectorModal");
-
-// Buka Menu Pemilihan Tampilan ketika Tombol Samping dipencet
+ 
 themeToggleBtn.addEventListener("click", () => {
   themeModal.style.display = "flex";
-  // Sync state pilihan saat ini dengan kelas yang terpasang di body
-  if(document.body.classList.contains("theme-matrix")) {
-    selectThemeOption("matrix");
-  } else if(document.body.classList.contains("theme-crimson")) {
-    selectThemeOption("crimson");
-  } else {
-    selectThemeOption("default");
-  }
+  if(document.body.classList.contains("theme-matrix")) selectThemeOption("matrix");
+  else if(document.body.classList.contains("theme-crimson")) selectThemeOption("crimson");
+  else selectThemeOption("default");
 });
-
-function closeThemeModal() {
-  themeModal.style.display = "none";
-}
-
+ 
+function closeThemeModal() { themeModal.style.display = "none"; }
 function selectThemeOption(themeName) {
   tempSelectedTheme = themeName;
-  document.querySelectorAll(".theme-option-card").forEach(card => {
-    card.classList.remove("active-choice");
-  });
+  document.querySelectorAll(".theme-option-card").forEach(card => card.classList.remove("active-choice"));
   document.getElementById(`opt-${themeName}`).classList.add("active-choice");
 }
-
 function applySelectedTheme() {
-  // Reset semua class custom theme terlebih dahulu
   document.body.classList.remove("theme-matrix", "theme-crimson");
-  
-  if(tempSelectedTheme === "matrix") {
-    document.body.classList.add("theme-matrix");
-  } else if(tempSelectedTheme === "crimson") {
-    document.body.classList.add("theme-crimson");
-  }
-  
-  // Simpan preferensi ke local storage biar permanen saat refresh
+  if(tempSelectedTheme === "matrix") document.body.classList.add("theme-matrix");
+  else if(tempSelectedTheme === "crimson") document.body.classList.add("theme-crimson");
   localStorage.setItem("BLDS_SELECTED_THEME_PREF", tempSelectedTheme);
-  
   closeThemeModal();
 }
-
-// Auto Load preferensi tampilan saat web dibuka pertama kali
 function initLoadSavedTheme() {
   const savedTheme = localStorage.getItem("BLDS_SELECTED_THEME_PREF");
   if(savedTheme) {
@@ -1842,432 +677,55 @@ function initLoadSavedTheme() {
     if(savedTheme === "crimson") document.body.classList.add("theme-crimson");
   }
 }
-
-/* ==========================================================================
-   🎵 AUDIO ENGINE PROTOCOL (INTEGRATED AND UPDATED SOUND EFFECTS)
-   ========================================================================== */
-let odysseyAudioCtx = null;
-let odysseyBgmNode = null;
-let selectedOdysseyPetCache = ""; 
-
-function initOdysseyAudioEngine() {
-  if (!odysseyAudioCtx) {
-    odysseyAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-}
-
-function playOdyTextSfx() {
-  if (!odysseyAudioCtx) return;
-  const now = odysseyAudioCtx.currentTime;
-  const osc = odysseyAudioCtx.createOscillator();
-  const gain = odysseyAudioCtx.createGain();
-  
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(587.33, now); 
-  osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12); 
-  gain.gain.setValueAtTime(0.12, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-  
-  osc.connect(gain);
-  gain.connect(odysseyAudioCtx.destination);
-  osc.start(now);
-  osc.stop(now + 0.35);
-}
-
-function playOdyLogoSlamSfx() {
-  if (!odysseyAudioCtx) return;
-  const now = odysseyAudioCtx.currentTime;
-  
-  const oscLow = odysseyAudioCtx.createOscillator();
-  const gainLow = odysseyAudioCtx.createGain();
-  oscLow.type = 'triangle';
-  oscLow.frequency.setValueAtTime(90, now);
-  oscLow.frequency.linearRampToValueAtTime(30, now + 0.6);
-  gainLow.gain.setValueAtTime(0.6, now);
-  gainLow.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-  
-  oscLow.connect(gainLow);
-  gainLow.connect(odysseyAudioCtx.destination);
-  oscLow.start(now);
-  oscLow.stop(now + 0.7);
-
-  const bufferSize = odysseyAudioCtx.sampleRate * 0.4;
-  const buffer = odysseyAudioCtx.createBuffer(1, bufferSize, odysseyAudioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) {
-    data[i] = Math.random() * 2 - 1;
-  }
-  
-  const noiseNode = odysseyAudioCtx.createBufferSource();
-  noiseNode.buffer = buffer;
-  const noiseFilter = odysseyAudioCtx.createBiquadFilter();
-  noiseFilter.type = 'lowpass';
-  noiseFilter.frequency.setValueAtTime(250, now);
-  
-  const gainNoise = odysseyAudioCtx.createGain();
-  gainNoise.gain.setValueAtTime(0.3, now);
-  gainNoise.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-  
-  noiseNode.connect(noiseFilter);
-  noiseFilter.connect(gainNoise);
-  gainNoise.connect(odysseyAudioCtx.destination);
-  noiseNode.start(now);
-  noiseNode.stop(now + 0.4);
-}
-
-function playOdyDifferentSelectSfx() {
-  if (!odysseyAudioCtx) return;
-  const now = odysseyAudioCtx.currentTime;
-  const osc = odysseyAudioCtx.createOscillator();
-  const gain = odysseyAudioCtx.createGain();
-  
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(220, now);
-  osc.frequency.linearRampToValueAtTime(440, now + 0.15);
-  
-  const filter = odysseyAudioCtx.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(600, now);
-  
-  gain.gain.setValueAtTime(0.18, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-  
-  osc.connect(filter);
-  filter.connect(gain);
-  gain.connect(odysseyAudioCtx.destination);
-  osc.start(now);
-  osc.stop(now + 0.2);
-}
-
-function startOdysseyCinematicBgm() {
-  if (!odysseyAudioCtx) return;
-  const now = odysseyAudioCtx.currentTime;
-  
-  odysseyBgmNode = odysseyAudioCtx.createOscillator();
-  const bgmGain = odysseyAudioCtx.createGain();
-  
-  odysseyBgmNode.type = 'sawtooth';
-  odysseyBgmNode.frequency.setValueAtTime(55.00, now); 
-  
-  const lowpass = odysseyAudioCtx.createBiquadFilter();
-  lowpass.type = 'lowpass';
-  lowpass.frequency.setValueAtTime(100, now);
-  lowpass.frequency.linearRampToValueAtTime(280, now + 8); 
-  
-  bgmGain.gain.setValueAtTime(0.001, now);
-  bgmGain.gain.linearRampToValueAtTime(0.3, now + 3); 
-  
-  odysseyBgmNode.connect(lowpass);
-  lowpass.connect(bgmGain);
-  bgmGain.connect(odysseyAudioCtx.destination);
-  
-  odysseyBgmNode.start(now);
-}
-
-function stopOdysseyCinematicBgm() {
-  if (odysseyBgmNode) {
-    try {
-      odysseyBgmNode.stop();
-    } catch(e){}
-    odysseyBgmNode = null;
-  }
-}
-
-const bgAmbient = document.getElementById("bgAmbient");
-
-function playClickSound() {
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime); 
-    oscillator.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
-    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.08);
-  } catch(e) {
-    console.log("AudioContext blocked.");
-  }
-}
-
-document.addEventListener("click", (e) => {
-  if (
-    e.target.closest(".odyssey-pet-card") || 
-    e.target.id === "odyChangePetBtn" || 
-    e.target.id === "odyTakeBtn"
-  ) {
-    playOdyDifferentSelectSfx(); 
-    return;
-  }
-  if (
-    e.target.tagName === "BUTTON" || 
-    e.target.closest("button") || 
-    e.target.classList.contains("admin-trigger-launcher") || 
-    e.target.id === "adminCloseBtn" ||
-    e.target.id === "floatingViewToggleBtn"
-  ) {
-    playClickSound();
-  }
-});
-
-/* BACKGROUND STARS EFFECT */
-const sky = document.getElementById("sky");
-for(let i=0; i<100; i++){
-  let star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random()*100+"%";
-  star.style.top = Math.random()*-100+"vh";
-  star.style.animationDuration = (3+Math.random()*5)+"s";
-  sky.appendChild(star);
-}
-
-const odyField = document.getElementById("odysseyStarField");
-for(let j=0; j<80; j++) {
-  let oStar = document.createElement("div");
-  oStar.className = "star";
-  oStar.style.left = Math.random()*100+"%";
-  oStar.style.top = Math.random()*100+"vh";
-  oStar.style.opacity = Math.random();
-  odyField.appendChild(oStar);
-}
-
-window.addEventListener("load",()=>{
-  setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1200);
-});
-
-/* ENGINE SYSTEM DATA DATA DATA STRUCTURE */
-let streakData = {
-  count: 0,
-  highestCount: 0, 
-  lastCalibratedTimestamp: null,
-  dominionName: "",
-  petCustomName: "",
-  petType: "dragon",
-  unlockedPermanently: { dragon: false, fish: false, wolf: false },
-  forcedRankTitle: "",
-  forcedPetStage: "auto",
-  unlockedOdysseyPet: "" 
-};
-
+ 
+let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "", forcedRankTitle: "" };
 let calibrationInterval = null;
-
 let DEFAULT_LEADERBOARD = [
-  { name: "Michael Lorenzo", streak: 152, petLabel: "Fase 5: Overlord Cosmic Dragon" },
-  { name: "William Nayottama", streak: 121, petLabel: "Fase 5: Fenrir God of the Void" },
-  { name: "Prince Felix", streak: 98, petLabel: "Fase 4: Obsidian Eclipse Dragon" },
-  { name: "Rian Void", streak: 84, petLabel: "Fase 4: Abyssal Dark Leviathan" },
-  { name: "Zack Eclipse", streak: 76, petLabel: "Fase 4: Alpha Cosmic Fenrir" },
-  { name: "Darel Shadow", streak: 69, petLabel: "Fase 3: Lightning Void Drake" },
-  { name: "Niko Core", streak: 55, petLabel: "Fase 3: Neon Serpent Fish" },
-  { name: "Vino Nebula", streak: 48, petLabel: "Fase 3: Twilight Shadow Wolf" },
-  { name: "Alex Obsidian", streak: 41, petLabel: "Fase 3: Lightning Void Drake" },
-  { name: "Arka Abyss", streak: 35, petLabel: "Fase 3: Neon Serpent Fish" },
-  { name: "Farel Dark", streak: 29, petLabel: "Fase 2: Shadow Wolf Pup" },
-  { name: "Deva Zenith", streak: 25, petLabel: "Fase 2: Void Dragon Hatchling" },
-  { name: "Roni Star", streak: 22, petLabel: "Fase 2: Abyss Angler Whelp" },
-  { name: "Gani Galaxy", streak: 19, petLabel: "Fase 2: Shadow Wolf Pup" },
-  { name: "Edo Zero", streak: 14, petLabel: "Fase 2: Void Dragon Hatchling" },
-  { name: "Tio Matrix", streak: 11, petLabel: "Fase 2: Abyss Angler Whelp" },
-  { name: "Riko Titan", streak: 9, petLabel: "Fase 2: Void Dragon Hatchling" },
-  { name: "Andi Nova", streak: 6, petLabel: "Fase 1: Shadow Spirit Egg" },
-  { name: "Budi Pulse", streak: 4, petLabel: "Fase 1: Anomaly Dragon Egg" }
+  { name: "Michael Lorenzo", streak: 152 },
+  { name: "William Nayottama", streak: 121 },
+  { name: "Prince Felix", streak: 98 }
 ];
-
-function getPetImageSource(type, count) {
-  let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
-  let checkValue = isCoreLocked ? 100 : count;
-
-  if(streakData.forcedPetStage && streakData.forcedPetStage !== "auto") {
-    let stageForce = parseInt(streakData.forcedPetStage);
-    if(stageForce === 1) checkValue = 0;
-    else if(stageForce === 2) checkValue = 7;
-    else if(stageForce === 3) checkValue = 30;
-    else if(stageForce === 4) checkValue = 50;
-    else if(stageForce === 5) checkValue = 100;
-  }
-
-  if (checkValue >= 100 && streakData.unlockedOdysseyPet) {
-    let chosen = streakData.unlockedOdysseyPet.toLowerCase();
-    if (chosen === "cerberus") return "Cerberus.png";
-    if (chosen === "phoenix") return "Phoenix.png";
-    if (chosen === "leviathan") return "Leviathan.png";
-  }
-
-  if (type === "dragon") {
-    if (checkValue >= 100) return "Naga5.png";
-    if (checkValue >= 50) return "Naga4.png";
-    if (checkValue >= 30) return "Naga3.png";
-    if (checkValue >= 7) return "Naga2.png";
-    return "Naga1.png";
-  } 
-  else if (type === "fish") {
-    if (checkValue >= 100) return "Ikan5.png";
-    if (checkValue >= 50) return "Ikan4.png";
-    if (checkValue >= 30) return "Ikan3.png";
-    if (checkValue >= 7) return "Ikan2.png";
-    return "Ikan1.png";
-  } 
-  else if (type === "wolf") {
-    if (checkValue >= 100) return "Serigala5.png";
-    if (checkValue >= 50) return "Serigala4.png";
-    if (checkValue >= 30) return "Serigala3.png";
-    if (checkValue >= 7) return "Serigala2.png";
-    return "Serigala1.png";
-  }
-  return "Naga1.png";
-}
-
-function getPetSvg(type, count) {
-  let srcFile = getPetImageSource(type, count);
-  return `<img src="${srcFile}" alt="${type}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width:100%; height:100%; object-fit:contain; animation: petBreathing 3s ease-in-out infinite;">
-          <div style="display:none; font-size:12px; color:rgba(255,255,255,0.4); text-transform:uppercase;">[👾 Matrix Core Node Loaded]</div>`;
-}
-
+ 
 function saveState() {
-  localStorage.setItem("BLDS_STR_FINAL_v2", JSON.stringify(streakData));
-  localStorage.setItem("BLDS_ADM_LB_OVERRIDE", JSON.stringify(DEFAULT_LEADERBOARD));
+  localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
 }
-
 function loadState() {
-  initLoadSavedTheme(); // Load tema yang disimpan
-
-  const savedStr = localStorage.getItem("BLDS_STR_FINAL_v2");
-  if(savedStr) {
-    streakData = JSON.parse(savedStr);
-    if (!streakData.unlockedPermanently) {
-      streakData.unlockedPermanently = { dragon: false, fish: false, wolf: false };
-    }
-    if (!streakData.forcedPetStage) streakData.forcedPetStage = "auto";
-    if (!streakData.unlockedOdysseyPet) streakData.unlockedOdysseyPet = "";
-  }
-
-  const savedLb = localStorage.getItem("BLDS_ADM_LB_OVERRIDE");
-  if(savedLb) DEFAULT_LEADERBOARD = JSON.parse(savedLb);
-
-  if (streakData.count >= 100) {
-    streakData.unlockedPermanently[streakData.petType] = true;
-  }
-
+  initLoadSavedTheme();
+  const savedStr = localStorage.getItem("BLDS_CORE_STR_DATA");
+  if(savedStr) streakData = JSON.parse(savedStr);
   if (localStorage.getItem("BLDS_LAUNCHER_ENABLED") === "true") {
     document.getElementById("adminLauncherBtn").style.display = "block";
   }
-
   checkStreakValidity();
   updateWidgetDynamicUI();
   renderLeaderboard();
-  populateAdminPanelDropdowns();
 }
-
 function checkStreakValidity() {
   if (!streakData.lastCalibratedTimestamp) return;
-  const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
-  if (msElapsed >= (48 * 60 * 60 * 1000)) {
+  if (Date.now() - streakData.lastCalibratedTimestamp >= (48 * 60 * 60 * 1000)) {
     document.getElementById("collapseModal").style.display = "flex";
-    streakData.count = 0; 
-    streakData.lastCalibratedTimestamp = null; 
-    streakData.unlockedOdysseyPet = ""; 
+    streakData.count = 0;
+    streakData.lastCalibratedTimestamp = null;
     saveState();
   }
 }
-
 function closeCollapseModal() {
   document.getElementById("collapseModal").style.display = "none";
   updateWidgetDynamicUI();
   updateCalibrationHudUI();
 }
-
-function openResetModal() {
-  document.getElementById("resetConfirmModal").style.display = "flex";
-}
-
-function closeResetModal() {
-  document.getElementById("resetConfirmModal").style.display = "none";
-}
-
+function openResetModal() { document.getElementById("resetConfirmModal").style.display = "flex"; }
+function closeResetModal() { document.getElementById("resetConfirmModal").style.display = "none"; }
 function confirmResetStreak() {
   streakData.count = 0;
   streakData.lastCalibratedTimestamp = null;
-  streakData.unlockedOdysseyPet = "";
   saveState();
   closeResetModal();
-
-  document.getElementById("modalRegTitle").innerHTML = "CHOOSE NEW CORE PATHWAY";
-  document.getElementById("dominionNameInput").value = streakData.dominionName || "";
   document.getElementById("nameModal").style.display = "flex";
 }
-
-function getPetEvolutionEngine(count, type) {
-  let stageText = "";
-  let rank = "VOID WALKER";
-  let glow = "0 0 10px rgba(255,255,255,0.3)";
-
-  let isCoreLocked = streakData.unlockedPermanently && streakData.unlockedPermanently[type];
-  let checkValue = isCoreLocked ? 100 : count;
-
-  let isForced = streakData.forcedPetStage && streakData.forcedPetStage !== "auto";
-  if(isForced) {
-    let stageForce = parseInt(streakData.forcedPetStage);
-    if(stageForce === 1) checkValue = 0;
-    else if(stageForce === 2) checkValue = 7;
-    else if(stageForce === 3) checkValue = 30;
-    else if(stageForce === 4) checkValue = 50;
-    else if(stageForce === 5) checkValue = 100;
-  }
-
-  if (checkValue >= 100) {
-    rank = "THE ETERNAL CORE";
-    if (streakData.unlockedOdysseyPet) {
-      stageText = `Fase 5: God Core ${streakData.unlockedOdysseyPet.toUpperCase()} (LOCKED)`;
-    } else {
-      if (type === "dragon") stageText = "Fase 5: Overlord Cosmic Dragon (LOCKED)";
-      else if (type === "fish") stageText = "Fase 5: Astral Celestial Leviathan (LOCKED)";
-      else stageText = "Fase 5: Fenrir God of the Void (LOCKED)";
-    }
-  } else if (checkValue >= 50) {
-    rank = "DOMINION VANGUARD";
-    if (type === "dragon") stageText = "Fase 4: Obsidian Eclipse Dragon";
-    else if (type === "fish") stageText = "Fase 4: Abyssal Dark Leviathan";
-    else stageText = "Fase 4: Alpha Cosmic Fenrir";
-  } else if (checkValue >= 30) {
-    rank = "RESONANCE KEEPER";
-    if (type === "dragon") stageText = "Fase 3: Lightning Void Drake";
-    else if (type === "fish") stageText = "Fase 3: Neon Serpent Fish";
-    else stageText = "Fase 3: Twilight Shadow Wolf";
-  } else if (checkValue >= 7) {
-    rank = "ECLIPSE SYNCHRONIZER";
-    if (type === "dragon") stageText = "Fase 2: Void Dragon Hatchling";
-    else if (type === "fish") stageText = "Fase 2: Abyss Angler Whelp";
-    else stageText = "Fase 2: Shadow Wolf Pup";
-  } else {
-    rank = "VOID WALKER";
-    if (type === "dragon") stageText = "Fase 1: Anomaly Dragon Egg";
-    else if (type === "fish") stageText = "Fase 1: Biolume Aquatic Egg";
-    else stageText = "Fase 1: Shadow Spirit Egg";
-  }
-
-  if(streakData.forcedRankTitle) {
-    rank = streakData.forcedRankTitle;
-  } else if(isForced) {
-    if(checkValue >= 100) rank = "THE ETERNAL CORE";
-    else if(checkValue >= 50) rank = "DOMINION VANGUARD";
-    else if(checkValue >= 30) rank = "RESONANCE KEEPER";
-    else if(checkValue >= 7) rank = "ECLIPSE SYNCHRONIZER";
-    else rank = "VOID WALKER";
-  }
-
-  return { stage: stageText, rank: rank, glow: glow };
-}
-
 function updateAchievementsUI(highestStreak) {
   let unlockedCount = 0;
   const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
-
   for (let i = 1; i <= 15; i++) {
     const card = document.getElementById(`ach${i}`);
     const badge = document.getElementById(`ach${i}Badge`);
@@ -2284,654 +742,118 @@ function updateAchievementsUI(highestStreak) {
       }
     }
   }
-
-  const progressBar = document.getElementById("achProgressBar");
-  const progressText = document.getElementById("achProgressText");
-  if (progressBar && progressText) {
-    let pct = (unlockedCount / 15) * 100;
-    progressBar.style.width = pct + "%";
-    progressText.innerHTML = `${unlockedCount} / 15 BADLOCKS UNLOCKED`;
-  }
+  let pct = (unlockedCount / 15) * 100;
+  document.getElementById("achProgressBar").style.width = pct + "%";
+  document.getElementById("achProgressText").innerHTML = `${unlockedCount} / 15 BADLOCKS UNLOCKED`;
 }
-
 function updateWidgetDynamicUI() {
-  const engine = getPetEvolutionEngine(streakData.count, streakData.petType);
-
   document.getElementById("streakCount").innerHTML = streakData.count;
-  document.getElementById("rankTitle").innerHTML = engine.rank;
   document.getElementById("highestStreakDisplayCount").innerHTML = streakData.highestCount;
-
-  if (streakData.dominionName) {
-    document.getElementById("petHudBox").style.display = "block";
-    document.getElementById("petNameDisplay").innerHTML = streakData.petCustomName ? streakData.petCustomName : "UNNAMED ENTITY";
-    document.getElementById("petStageDisplay").innerHTML = engine.stage;
-
-    const frame = document.getElementById("petImageFrameSlot");
-    if (frame) {
-      frame.innerHTML = getPetSvg(streakData.petType, streakData.count);
-      frame.style.filter = `drop-shadow(${engine.glow})`;
-    }
-  }
+  
+  let rank = "VOID WALKER";
+  if (streakData.count >= 100) rank = "THE ETERNAL CORE";
+  else if (streakData.count >= 50) rank = "DOMINION VANGUARD";
+  else if (streakData.count >= 30) rank = "RESONANCE KEEPER";
+  else if (streakData.count >= 7) rank = "ECLIPSE SYNCHRONIZER";
+  
+  if(streakData.forcedRankTitle) rank = streakData.forcedRankTitle;
+  document.getElementById("rankTitle").innerHTML = rank;
   updateAchievementsUI(streakData.highestCount);
 }
-
 function renderLeaderboard() {
   const tbody = document.getElementById("leaderboardDataBody");
   if (!tbody) return;
-
   let list = [...DEFAULT_LEADERBOARD];
-
   if (streakData.dominionName) {
-    const currentEngine = getPetEvolutionEngine(streakData.count, streakData.petType);
     const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
-    if (existingIndex !== -1) {
-      list[existingIndex].streak = streakData.count;
-      list[existingIndex].petLabel = currentEngine.stage;
-    } else {
-      list.push({
-        name: streakData.dominionName,
-        streak: streakData.count,
-        petLabel: currentEngine.stage,
-        isCurrentUser: true
-      });
-    }
+    if (existingIndex !== -1) list[existingIndex].streak = streakData.count;
+    else list.push({ name: streakData.dominionName, streak: streakData.count, isCurrentUser: true });
   }
-
   list.sort((a, b) => b.streak - a.streak);
-
   let htmlString = "";
   list.slice(0, 20).forEach((user, index) => {
-    const position = index + 1;
     const isMe = user.isCurrentUser || (streakData.dominionName && user.name.toLowerCase() === streakData.dominionName.toLowerCase());
-    const rowStyle = isMe ? "style='background: rgba(255,255,255,0.15); font-weight: 600;'" : "";
-    const rankClass = position <= 3 ? "class='rank-highlight'" : "";
-
     htmlString += `
-      <tr ${rowStyle}>
-        <td ${rankClass}>#${position}</td>
-        <td>${user.name} ${isMe ? " <span style='font-size:9px; color:#fff;'>(YOU)</span>" : ""}</td>
+      <tr ${isMe ? "style='background:rgba(255,255,255,0.15);'" : ""}>
+        <td>#${index + 1}</td>
+        <td>${user.name} ${isMe ? "(YOU)" : ""}</td>
         <td>${user.streak} Days</td>
-        <td>${user.petLabel}</td>
-      </tr>
-    `;
+      </tr>`;
   });
-
   tbody.innerHTML = htmlString;
 }
-
-function openRenamePetModal() {
-  document.getElementById("petNameInput").value = streakData.petCustomName || "";
-  document.getElementById("petNameModal").style.display = "flex";
-}
-
-function savePetCustomName() {
-  const val = document.getElementById("petNameInput").value.trim();
-  if(!val) return;
-  streakData.petCustomName = val;
-  saveState();
-  document.getElementById("petNameModal").style.display = "none";
-  updateWidgetDynamicUI();
-}
-
 function updateCalibrationHudUI() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
-
   if (!streakData.lastCalibratedTimestamp) {
-    btn.disabled = false; 
-    status.innerHTML = "SYSTEM READY FOR INTEGRATION"; 
-    return;
+    btn.disabled = false; status.innerHTML = "SYSTEM READY FOR INTEGRATION"; return;
   }
-
   const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
-  const duration24h = 24 * 60 * 60 * 1000;
-
-  if (msElapsed < duration24h) {
+  if (msElapsed < (24 * 60 * 60 * 1000)) {
     btn.disabled = true;
-    const timeLeft = duration24h - msElapsed;
-    const hours = Math.floor(timeLeft / (60 * 60 * 1000));
-    const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-    const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
-    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m ${seconds}s`;
+    let timeLeft = (24 * 60 * 60 * 1000) - msElapsed;
+    let hours = Math.floor(timeLeft / (60 * 60 * 1000));
+    let minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m`;
   } else {
-    btn.disabled = false; 
-    status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
+    btn.disabled = false; status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
   }
 }
-
 function startCalibrationTimer() {
   if(calibrationInterval) clearInterval(calibrationInterval);
   updateCalibrationHudUI();
-  calibrationInterval = setInterval(updateCalibrationHudUI, 1000); 
+  calibrationInterval = setInterval(updateCalibrationHudUI, 60000);
 }
-
-/* ==========================================================================
-   🎬 ODYSSEY 100 DAYS LOOP CUTSCENE ENGINE
-   ========================================================================== */
-function runOdyssey100DaysCutscene() {
-  bgAmbient.pause();
-  
-  initOdysseyAudioEngine();
-  startOdysseyCinematicBgm(); 
-
-  const container = document.getElementById("odysseyCutsceneContainer");
-  const mainWeb = document.getElementById("mainWebsiteContainer");
-  const wrapper = document.getElementById("odysseyWrapper");
-  
-  mainWeb.style.opacity = "0";
-  setTimeout(() => { mainWeb.style.display = "none"; }, 500);
-  
-  container.style.display = "flex";
-
-  const lines = [
-    document.getElementById("odyLine1"),
-    document.getElementById("odyLine2"),
-    document.getElementById("odyLine3"),
-    document.getElementById("odyLine4")
-  ];
-  const logoHolder = document.getElementById("odysseyLogoHolder");
-  const petDeck = document.getElementById("odysseyPetDeck");
-  const deckTitle = document.getElementById("odyDeckTitle");
-
-  lines.forEach(line => line.classList.remove("active"));
-  logoHolder.className = "odyssey-logo-holder";
-  petDeck.className = "odyssey-pet-selection-deck"; 
-  deckTitle.style.display = "none";
-  document.getElementById("odysseyLoreBlock").style.display = "none";
-  document.getElementById("odyChangePetBtn").style.display = "none";
-  document.getElementById("odyTakeBtn").style.display = "none";
-  document.getElementById("odysseySwapBox").style.display = "none";
-  wrapper.classList.remove("odyssey-shake-earthquake");
-  container.classList.remove("odyssey-color-inversion");
-
-  let currentLineIndex = 0;
-
-  function showNextOdyLine() {
-    if (currentLineIndex > 0) {
-      lines[currentLineIndex - 1].classList.remove("active");
-    }
-
-    setTimeout(() => {
-      if (currentLineIndex < lines.length) {
-        lines[currentLineIndex].classList.add("active");
-        playOdyTextSfx();
-        currentLineIndex++;
-        
-        if (currentLineIndex === lines.length) {
-          setTimeout(() => {
-            logoHolder.classList.add("slam-active"); 
-            wrapper.classList.add("odyssey-shake-earthquake"); 
-            container.classList.add("odyssey-color-inversion"); 
-            playOdyLogoSlamSfx();
-
-            setTimeout(() => {
-              wrapper.classList.remove("odyssey-shake-earthquake");
-              container.classList.remove("odyssey-color-inversion");
-              
-              logoHolder.classList.add("odyssey-logo-float-active");
-              lines.forEach(line => line.classList.remove("active")); 
-
-              deckTitle.style.display = "block";
-              petDeck.classList.add("active");
-              setTimeout(() => {
-                petDeck.classList.add("smooth-show");
-              }, 50);
-
-            }, 5000); 
-
-          }, 1200);
-        } else {
-          setTimeout(showNextOdyLine, 4000);
-        }
-      }
-    }, 800);
-  }
-
-  setTimeout(showNextOdyLine, 1000);
-}
-
-const ODYSSEY_PET_LORES = {
-  cerberus: "Cerberus is a symbol of loyalty, vigilance, and boundless protection. With three heads constantly watching from all directions, no threat can escape him unnoticed. He seeks neither glory nor praise; his duty is to protect what he deems precious, no matter the cost.\n\nCerberus never shrinks from responsibility. He stands on the front lines when danger strikes and remains even when everyone else would flee. For him, guarding is not just a duty, but an honor.",
-  phoenix: "The Phoenix is ​​a symbol of undying hope. In every destruction, it finds a reason to live again. When the world thinks everything is over, the Phoenix begins a new chapter with greater power than ever before. The fire that consumes its body is not a punishment, but a process of transformation that erases weakness and leaves behind true strength.",
-  leviathan: "Leviathan is a symbol of power hidden behind calm. It lives in the dark depths of the ocean, far from the spotlight of the world. Many people think that calm seas are a sign of weakness, but beneath the surface there is a power that can shake the world.\n\nLeviathan does not need to show its strength all the time. His presence alone was enough to inspire respect. He moved slowly, but every step brought great changes. When it finally rose from the depths, nothing could stop the waves it created."
-};
-
-let odyTypingInterval = null;
-
-function triggerOdysseyPetMeaning(petName) {
-  selectedOdysseyPetCache = petName;
-  
-  document.querySelectorAll(".odyssey-pet-card").forEach(c => c.classList.remove("selected"));
-  document.getElementById(`card-${petName}`).classList.add("selected");
-
-  const loreBlock = document.getElementById("odysseyLoreBlock");
-  const textContainer = document.getElementById("odysseyLoreText");
-  const changeBtn = document.getElementById("odyChangePetBtn");
-
-  loreBlock.style.display = "block";
-  loreBlock.style.opacity = "1";
-  changeBtn.style.display = "block";
-
-  if(odyTypingInterval) clearInterval(odyTypingInterval);
-  textContainer.innerHTML = "";
-
-  const fullText = ODYSSEY_PET_LORES[petName];
-  const wordsArray = fullText.split(" ");
-  let wordIdx = 0;
-
-  odyTypingInterval = setInterval(() => {
-    if (wordIdx < wordsArray.length) {
-      textContainer.innerHTML += wordsArray[wordIdx] + " ";
-      wordIdx++;
-    } else {
-      clearInterval(odyTypingInterval);
-    }
-  }, 120); 
-}
-
-function processOldPetFadeSequence() {
-  document.getElementById("odyChangePetBtn").style.display = "none";
-  document.getElementById("odysseyPetDeck").style.opacity = "0.3";
-  document.getElementById("odyDeckTitle").style.opacity = "0.3";
-  
-  const swapBox = document.getElementById("odysseySwapBox");
-  const oldFrame = document.getElementById("swapOldFrame");
-  const newFrame = document.getElementById("swapNewFrame");
-
-  let oldImgSrc = getPetImageSource(streakData.petType, 50); 
-  oldFrame.innerHTML = `<img src="${oldImgSrc}" style="width:100%; height:100%; object-fit:contain;">`;
-  
-  let newImgSrc = "Naga1.png";
-  if(selectedOdysseyPetCache === "cerberus") newImgSrc = "Cerberus.png";
-  if(selectedOdysseyPetCache === "phoenix") newImgSrc = "Phoenix.png";
-  if(selectedOdysseyPetCache === "leviathan") newImgSrc = "Leviathan.png";
-  newFrame.innerHTML = `<img src="${newImgSrc}" style="width:100%; height:100%; object-fit:contain;">`;
-
-  swapBox.style.display = "flex";
-
-  setTimeout(() => {
-    oldFrame.style.opacity = "0";
-    setTimeout(() => {
-      newFrame.style.opacity = "1";
-      setTimeout(() => {
-        document.getElementById("odyTakeBtn").style.display = "block";
-      }, 5000);
-    }, 5000);
-  }, 100);
-}
-
-function executeFinalGlitchTakeLock() {
-  const glitchOverlay = document.getElementById("glitchOverlay");
-  glitchOverlay.style.display = "block";
-
-  let totalSlices = 0;
-  let glitchInterval = setInterval(() => {
-    for(let k=0; k<8; k++) {
-      let slice = document.createElement("div");
-      slice.className = "glitch-slice-block";
-      slice.style.top = Math.random() * 100 + "vh";
-      slice.style.left = Math.random() * 100 + "vw";
-      slice.style.width = (20 + Math.random() * 180) + "px";
-      slice.style.height = (5 + Math.random() * 40) + "px";
-      slice.style.opacity = Math.random();
-      glitchOverlay.appendChild(slice);
-    }
-    totalSlices += 8;
-    
-    if(totalSlices > 180) {
-      clearInterval(glitchInterval);
-      glitchOverlay.style.background = "#fff";
-      
-      setTimeout(() => {
-        streakData.unlockedOdysseyPet = selectedOdysseyPetCache;
-        saveState();
-
-        stopOdysseyCinematicBgm();
-        document.getElementById("odysseyCutsceneContainer").style.display = "none";
-        
-        const mainWeb = document.getElementById("mainWebsiteContainer");
-        mainWeb.style.display = "flex";
-        mainWeb.style.opacity = "1";
-
-        updateWidgetDynamicUI();
-        renderLeaderboard();
-
-        glitchOverlay.style.background = "transparent";
-        glitchOverlay.innerHTML = "";
-        glitchOverlay.style.display = "none";
-        
-        bgAmbient.play().catch(e => console.log("Ambient resume blocked"));
-
-      }, 600);
-    }
-  }, 60);
-}
-
 function calibrateCore() {
   checkStreakValidity();
-  if (streakData.lastCalibratedTimestamp) {
-    const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
-    if (msElapsed < (24 * 60 * 60 * 1000)) return;
-  }
-
+  if (streakData.lastCalibratedTimestamp && (Date.now() - streakData.lastCalibratedTimestamp < (24 * 60 * 60 * 1000))) return;
   streakData.count++;
-  if (streakData.count > streakData.highestCount) {
-    streakData.highestCount = streakData.count;
-  }
-
-  if (streakData.count >= 100) {
-    if (!streakData.unlockedPermanently) {
-      streakData.unlockedPermanently = { dragon: false, fish: false, wolf: false };
-    }
-    streakData.unlockedPermanently[streakData.petType] = true;
-  }
-
+  if (streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
   streakData.lastCalibratedTimestamp = Date.now();
-  saveState();
-  updateWidgetDynamicUI();
-  startCalibrationTimer();
-  renderLeaderboard();
-
-  if (streakData.count === 100) {
-    runOdyssey100DaysCutscene();
-  }
+  saveState(); updateWidgetDynamicUI(); startCalibrationTimer(); renderLeaderboard();
 }
-
 function enter(){
-  if(!streakData.dominionName) {
-    document.getElementById("nameModal").style.display = "flex"; return;
-  }
-
-  bgAmbient.play().catch(err => console.log("Ambient autoplay blocked."));
-
-  const overlay = document.getElementById("smoothEnterOverlay");
-  overlay.classList.add("active");
-
-  setTimeout(() => {
-    document.getElementById("enterBtn").style.display = "none";
-    document.getElementById("streakWidget").style.display = "inline-flex";
-    document.getElementById("calibrationHud").style.display = "block";
-    document.getElementById("menu").style.display = "flex";
-    startCalibrationTimer();
-
-    setTimeout(() => {
-      overlay.classList.remove("active");
-    }, 300);
-
-  }, 800); 
+  if(!streakData.dominionName) { document.getElementById("nameModal").style.display = "flex"; return; }
+  document.getElementById("bgAmbient").play().catch(err => {});
+  document.getElementById("enterBtn").style.display = "none";
+  document.getElementById("streakWidget").style.display = "inline-flex";
+  document.getElementById("calibrationHud").style.display = "block";
+  document.getElementById("menu").style.display = "flex";
+  startCalibrationTimer();
 }
-
 function saveDominionName() {
   const nameVal = document.getElementById("dominionNameInput").value.trim();
-  const typeVal = document.getElementById("petTypeSelect").value;
-  if(!nameVal) { alert("FIELD CANNOT BE VOID!"); return; }
-
-  streakData.dominionName = nameVal;
-  streakData.petType = typeVal;
-  saveState();
-
+  if(!nameVal) return;
+  streakData.dominionName = nameVal; saveState();
   document.getElementById("nameModal").style.display = "none";
-  updateWidgetDynamicUI();
-  enter();
-  renderLeaderboard();
+  updateWidgetDynamicUI(); enter(); renderLeaderboard();
 }
-
 function showPage(id){
-  document.querySelectorAll(".page").forEach(p => { p.style.display = "none"; });
+  document.querySelectorAll(".page").forEach(p => p.style.display = "none");
   const targetPage = document.getElementById(id);
-  if(targetPage) {
-    targetPage.style.display = "block";
-    targetPage.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  if(targetPage) { targetPage.style.display = "block"; targetPage.scrollIntoView({ behavior: "smooth" }); }
 }
-
-function runBldsCinematicCutscene() {
-  const overlay = document.getElementById("bldsCutsceneOverlay");
-  const logo = document.getElementById("bldsCutsceneLogo");
-  const dialogBox = document.getElementById("bldsCutsceneDialog");
-
-  overlay.style.display = "flex";
-  setTimeout(() => { overlay.style.opacity = "1"; }, 50);
-
-  const dialogSequence = [
-    { text: "Sun", delay: 1000 },
-    { text: "Moon", delay: 2500 },
-    { text: "With the Core inside", delay: 4000 },
-    { text: "BLDS", delay: 6000 }
-  ];
-
-  setTimeout(() => { logo.style.opacity = "1"; }, 1500);
-
-  dialogSequence.forEach(item => {
-    setTimeout(() => {
-      dialogBox.style.opacity = "0";
-      dialogBox.style.transform = "translateY(10px)";
-      setTimeout(() => {
-        dialogBox.innerHTML = item.text;
-        dialogBox.style.opacity = "1";
-        dialogBox.style.transform = "translateY(0)";
-      }, 300);
-    }, item.delay);
-  });
-
-  setTimeout(() => {
-    overlay.style.opacity = "0";
-    setTimeout(() => {
-      overlay.style.display = "none";
-      applyVisualMode("split");
-    }, 800);
-  }, 8500);
-}
-
-function applyVisualMode(mode) {
-  const splitOverlay = document.getElementById("splitOverlay");
-  const alertHud = document.getElementById("cutsceneAlert");
-
-  document.body.classList.remove("full-invert");
-  splitOverlay.style.display = "none";
-  alertHud.style.display = "none";
-
-  if (mode === "split") {
-    splitOverlay.style.display = "block";
-    alertHud.innerHTML = "CODE 'BLDS' ACTIVATED // RIGHT CORE INVERTED";
-    alertHud.style.display = "block";
-  } 
-  else if (mode === "full") {
-    document.body.classList.add("full-invert");
-    alertHud.innerHTML = "CODE 'BLACK' ACTIVATED // OVERALL SCREEN INVERTED";
-    alertHud.style.display = "block";
-  } 
-  else if (mode === "normal") {
-    alertHud.innerHTML = "CODE 'WHITE' ACTIVATED // FRAMEWORK RE-CALIBRATED TO NORMAL";
-    alertHud.style.display = "block";
-    setTimeout(() => { alertHud.style.display = "none"; }, 4000);
-  }
-}
-
 function unlockCode() {
   let v = document.getElementById("codeInput").value.trim();
-  if (!v) { alert("KODE TIDAK BOLEH KOSONG!"); return; }
-
   if (v === "OWNERONLYBLDS") {
     document.getElementById("adminLauncherBtn").style.display = "block";
     localStorage.setItem("BLDS_LAUNCHER_ENABLED", "true");
-    openAdminMatrixPanel();
-    document.getElementById("codeInput").value = "";
-    return;
-  }
-
-  let lowerV = v.toLowerCase();
-  if (lowerV === "blds") {
-    runBldsCinematicCutscene();
-  } 
-  else if (lowerV === "black") {
-    applyVisualMode("full");
-    alert("💀 KODE BLACK BERHASIL: Full Screen Inverted!");
-  } 
-  else if (lowerV === "white") {
-    applyVisualMode("normal");
-    alert("🔄 KODE WHITE BERHASIL: Visual kembali normal!");
-  } 
-  else if (lowerV === "lorenzo" || lowerV === "nayottama" || lowerV === "prince") {
-    alert(`⚡ CORE CODENODE SIGNATURE ${lowerV.toUpperCase()} AKTIF!`);
-  } 
-  else {
-    alert("❌ INVALID CODE: Signature core tidak dikenali.");
-    return;
+    document.getElementById("adminPanel").style.display = "flex";
   }
   document.getElementById("codeInput").value = "";
 }
-
-function toggleAdminPanelUI() {
-  const panel = document.getElementById("adminPanel");
-  if(panel.style.display === "flex") {
-    panel.style.display = "none";
-  } else {
-    openAdminMatrixPanel();
-  }
-}
-
-function openAdminMatrixPanel() {
-  document.getElementById("adminPanel").style.display = "flex";
-  document.getElementById("admDomName").value = streakData.dominionName || "";
-  document.getElementById("admStreak").value = streakData.count;
-  document.getElementById("admHighStreak").value = streakData.highestCount;
-  document.getElementById("admPetType").value = streakData.petType;
-  document.getElementById("admForceStageSelection").value = streakData.forcedPetStage || "auto";
-  document.getElementById("admPetNick").value = streakData.petCustomName || "";
-  document.getElementById("admForceRank").value = streakData.forcedRankTitle || "";
-  loadTargetLbSlotData();
-}
-
-function populateAdminPanelDropdowns() {
-  const select = document.getElementById("admLbIndex");
-  if(!select) return;
-  select.innerHTML = "";
-  DEFAULT_LEADERBOARD.forEach((user, idx) => {
-    let opt = document.createElement("option");
-    opt.value = idx;
-    opt.innerHTML = `Slot #${idx+1} - ${user.name}`;
-    select.appendChild(opt);
-  });
-}
-
-function loadTargetLbSlotData() {
-  const idx = document.getElementById("admLbIndex").value;
-  if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
-
-  const target = DEFAULT_LEADERBOARD[idx];
-  document.getElementById("admLbName").value = target.name;
-  document.getElementById("admLbStreak").value = target.streak;
-  document.getElementById("admLbLabel").value = target.petLabel;
-}
-
 function executeAdminUserUpdate() {
   streakData.dominionName = document.getElementById("admDomName").value.trim();
-  const oldStreak = streakData.count;
   streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
   streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
-  streakData.petType = document.getElementById("admPetType").value;
-  streakData.forcedPetStage = document.getElementById("admForceStageSelection").value; 
-  streakData.petCustomName = document.getElementById("admPetNick").value.trim();
-
-  if (streakData.count < 100) {
-    streakData.unlockedOdysseyPet = "";
-  }
-
-  saveState();
-  updateWidgetDynamicUI();
-  renderLeaderboard();
-  populateAdminPanelDropdowns();
-  startCalibrationTimer();
-  alert("✨ Owner Node: Core User Applied!");
-
-  if (oldStreak !== 100 && streakData.count === 100) {
-    runOdyssey100DaysCutscene();
-  }
+  saveState(); updateWidgetDynamicUI(); renderLeaderboard();
 }
-
 function executeAdminRankOverride() {
   streakData.forcedRankTitle = document.getElementById("admForceRank").value.trim();
-  saveState();
-  updateWidgetDynamicUI();
-  alert("✨ Owner Node: Rank Title Overridden!");
+  saveState(); updateWidgetDynamicUI();
 }
-
-function executeAdminLbUpdate() {
-  const idx = document.getElementById("admLbIndex").value;
-  if(idx === "" || !DEFAULT_LEADERBOARD[idx]) return;
-
-  DEFAULT_LEADERBOARD[idx].name = document.getElementById("admLbName").value.trim();
-  DEFAULT_LEADERBOARD[idx].streak = parseInt(document.getElementById("admLbStreak").value) || 0;
-  DEFAULT_LEADERBOARD[idx].petLabel = document.getElementById("admLbLabel").value.trim();
-
-  saveState();
-  renderLeaderboard();
-  populateAdminPanelDropdowns();
-  alert(`✨ Owner Node: Leaderboard Slot #${parseInt(idx)+1} Mutated!`);
-}
-
-/* DRAG & CLICK ADAPTER LAUNCHER ENGINE */
-const dragBtn = document.getElementById("adminLauncherBtn");
-let isDragging = false;
-let startX = 0, startY = 0;       
-let currentX = 0, currentY = 0;
-let initialX = 0, initialY = 0;
-let totalMovement = 0; 
-
-dragBtn.addEventListener("mousedown", dragStart);
-document.addEventListener("mousemove", drag);
-document.addEventListener("mouseup", dragEnd);
-
-dragBtn.addEventListener("touchstart", dragStart, { passive: false });
-document.addEventListener("touchmove", drag, { passive: false });
-document.addEventListener("touchend", dragEnd);
-
-function dragStart(e) {
-  let clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-  let clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-  startX = clientX;
-  startY = clientY;
-  totalMovement = 0; 
-  initialX = clientX - currentX;
-  initialY = clientY - currentY;
-  if (e.target === dragBtn) {
-    isDragging = true;
-    dragBtn.style.cursor = "grabbing";
-  }
-}
-
-function drag(e) {
-  if (!isDragging) return;
-  if (e.type === "touchmove") e.preventDefault(); 
-  let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-  let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-  let diffX = Math.abs(clientX - (initialX + currentX));
-  let diffY = Math.abs(clientY - (initialY + currentY));
-  totalMovement += (diffX + diffY);
-  currentX = clientX - initialX;
-  currentY = clientY - initialY;
-  dragBtn.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-}
-
-function dragEnd(e) {
-  if (!isDragging) return;
-  isDragging = false;
-  dragBtn.style.cursor = "grab";
-  if (totalMovement < 10) {
-    toggleAdminPanelUI(); 
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadState();
-  const closeBtn = document.getElementById("adminCloseBtn");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      document.getElementById("adminPanel").style.display = "none";
-    });
-  }
-});
+window.addEventListener("load",()=>{ setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1200); loadState(); });
+document.getElementById("adminCloseBtn").addEventListener("click", () => document.getElementById("adminPanel").style.display = "none");
 </script>
 </body>
 </html>
