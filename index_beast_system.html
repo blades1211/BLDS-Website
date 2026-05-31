@@ -316,7 +316,7 @@ body {
     <div class="leaderboard-scroll-area" id="leaderboardRowsContainer"></div>
   </div>
 
-  <div class="screen-overlay" id="gatekeeperScreen" style="background: rgba(2,2,6,0.95);">
+  <div class="screen-overlay" id="gatekeeperScreen" style="background: rgba(2,2,6,0.95); display: none !important;">
     <div class="gatekeeper-box">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:12px;">SECURITY MATRIX VERIFICATION</div>
       <input type="text" id="gatekeeperKeyField" class="dev-input" placeholder="ENTER SECRET CODE...">
@@ -327,7 +327,7 @@ body {
     </div>
   </div>
 
-  <div class="screen-overlay" id="ownerScreen" style="overflow-y:auto;">
+  <div class="screen-overlay" id="ownerScreen" style="overflow-y:auto; display: none !important;">
     <div class="top-nav-container" style="position:static; margin-bottom:15px;">
       <button class="nav-btn" onclick="closeScreen('ownerScreen')">⬅️ Lock Matrix</button>
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-top:5px;">Cybernetic Owner Matrix</div>
@@ -426,13 +426,24 @@ function saveLocalData() {
 
 function loadLocalData() {
   const s = localStorage.getItem("BLDS_GATE_STATE");
-  if(s) stateData = JSON.parse(s);
-  const b = localStorage.getItem("BLDS_GATE_BAG"); if(b) foodBag = JSON.parse(b);
+  if(s) {
+    try { stateData = JSON.parse(s); } catch(e){}
+  }
+  const b = localStorage.getItem("BLDS_GATE_BAG"); 
+  if(b) {
+    try { foodBag = JSON.parse(b); } catch(e){}
+  }
 
-  const fullBodyText = document.body.innerHTML;
-  if(fullBodyText.includes("Ikan5.png") && !s) stateData.activePetFile = "Ikan5";
+  // ⚙️ FIX: Sektor pengecekan body teks yang berisiko crash dibersihkan total
+  if(!s) {
+    stateData.activePetFile = "Ikan5";
+  }
   
   if(window.parent) { window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*'); }
+
+  // Force tutup layar gatekeeper di awal muat halaman
+  closeScreen('gatekeeperScreen');
+  closeScreen('ownerScreen');
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -546,9 +557,9 @@ function renderLeaderboardRows() {
 }
 
 function syncInterfaceGraphic() {
-  const activeLookup = petNamingRegistry[stateData.activePetFile] || { title: "Glitter Fin", element: "Water" };
+  const activeLookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign", element: "Water" };
   document.getElementById("petGraphicFile").src = stateData.activePetFile + ".png";
-  document.getElementById("petLabelTag").innerHTML = `${elementIcons[activeLookup.element]} ${activeLookup.title} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
+  document.getElementById("petLabelTag").innerHTML = `${elementIcons[activeLookup.element] || "💧"} ${activeLookup.title} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
   document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   renderStats();
   updateInventoryCounters();
@@ -589,7 +600,7 @@ function feedPet(item) {
   
   saveLocalData();
   syncInterfaceGraphic();
-  vy = -15; // Dorongan fisika memantul ke atas saat diberi makan
+  vy = -15; 
 }
 
 function useFullElixir() {
@@ -601,7 +612,7 @@ function useFullElixir() {
   syncInterfaceGraphic();
 }
 
-/* 🕹️ PHYSICS SYSTEM ENGINE (MEKANIK LEMPAR PET) */
+/* 🕹️ PHYSICS SYSTEM ENGINE */
 let pet = null; let wrapper = null;
 let isDragging = false;
 let px = 0, py = 0, vx = 0, vy = 0;       
@@ -658,7 +669,6 @@ function doDrag(e) {
   px = targetX; py = targetY;
   pet.style.left = px + "px"; pet.style.top = py + "px";
   
-  // Hitung momentum kecepatan lemparan tangan
   vx = pageX - lastMouseX; 
   vy = pageY - lastMouseY;
   lastMouseX = pageX; lastMouseY = pageY;
@@ -677,11 +687,9 @@ function updatePhysicsFrame() {
   let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
   let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
 
-  // Efek gesekan udara (Makin kecil makin kesat)
   vx *= 0.97; vy *= 0.97;
   px += vx; py += vy;
 
-  // Jika diam/lambat, kembalikan ke pusat layar secara magnetik
   if (Math.abs(vx) < 1.8 && Math.abs(vy) < 1.8) {
     px += (centerX - px) * 0.05; 
     py += (centerY - py) * 0.05;
@@ -690,7 +698,6 @@ function updatePhysicsFrame() {
     }
   }
 
-  // Deteksi tabrakan dinding pentalan (Bouncing Wall Physics)
   if (px < 0) { px = 0; vx *= -0.8; }
   if (px > maxX) { px = maxX; vx *= -0.8; }
   if (py < 0) { py = 0; vy *= -0.8; }
@@ -701,7 +708,7 @@ function updatePhysicsFrame() {
   pet.style.transform = `rotate(${rotation}deg)`;
 }
 
-/* ⚔️ RPG COMBAT SYSTEM (POKEMON STYLE 4 SKILLS) */
+/* ⚔️ RPG COMBAT SYSTEM */
 let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
 let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
 
@@ -757,7 +764,6 @@ function executeRpgTurn(skillIndex) {
   
   let rawDamage = Math.floor(stateData.power * baseMult);
   
-  // Sistem Pengganda 2x Lipat Aktif dari Item Pill
   if (doubleDamageActive) { 
     rawDamage = rawDamage * 2; 
     doubleDamageActive = false; 
@@ -879,7 +885,7 @@ function useBattleItem(type) {
   if(type === 'elixir') {
     if(foodBag.elixir > 0) {
       foodBag.elixir--;
-      playerBattleHp = stateData.maxHp; // 100% Full Heal HP
+      playerBattleHp = stateData.maxHp; 
       log.innerHTML += `<div style='color:#00ffff;'>🧪 Menggunakan Elixir! HP Pet pulih 100% penuh!</div>`;
     } else {
       alert("Stok Elixir Habis!");
@@ -888,7 +894,7 @@ function useBattleItem(type) {
   if(type === 'pill') {
     if(foodBag.pill > 0) {
       foodBag.pill--;
-      doubleDamageActive = true; // Damage berikutnya x2
+      doubleDamageActive = true; 
       log.innerHTML += `<div style='color:#ff00ff;'>💊 Menggunakan Burst Pill! Serangan berikutnya akan menghasilkan 2x LIPAT DAMAGE!</div>`;
     } else {
       alert("Stok Burst Pill Habis!");
@@ -917,8 +923,10 @@ function generateOwnerLoot() {
   saveLocalData(); updateInventoryCounters(); alert("50x Loot Injected!");
 }
 function bypassCooldown() { stateData.deathTimestamp = null; stateData.hp = stateData.maxHp; saveLocalData(); syncInterfaceGraphic(); }
-function openScreen(id) { document.getElementById(id).style.display = "flex"; }
-function closeScreen(id) { document.getElementById(id).style.display = "none"; }
+
+// ⚙️ FIX: Sektor pengaturan buka tutup screen menggunakan inline flex yang tegas
+function openScreen(id) { document.getElementById(id).style.setProperty("display", "flex", "important"); }
+function closeScreen(id) { document.getElementById(id).style.setProperty("display", "none", "important"); }
 
 window.addEventListener("load", loadLocalData);
 </script>
