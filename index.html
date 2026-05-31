@@ -18,6 +18,14 @@ body {
   opacity: 0.3; animation: starFloat 10s infinite linear;
 }
 @keyframes starFloat { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10px); } }
+
+/* 🎬 CUTSCENE TRANSITION OVERLAY EFFECTS */
+.enter-transition-overlay {
+  position: fixed; inset: 0; background: #fff; z-index: 999999;
+  opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
+}
+.enter-transition-overlay.active { opacity: 1; }
+
 .floating-view-toggle {
   position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px;
   background: #fff; color: #000; border-radius: 50%; display: flex;
@@ -109,6 +117,10 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </head>
 <body>
 
+<audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
+
+<div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
+
 <div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">LOADING BLACKLIGHT CORE...</div></div>
 <div class="sky" id="sky"></div>
 <div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
@@ -169,7 +181,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <h2>RESONANCE ACHIEVEMENTS</h2>
       <div class="achievement-progress-container">
         <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADGES UNLOCKED</div>
+        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADOCKED</div>
       </div>
       <div class="achievement-grid" id="achGrid"></div>
     </div>
@@ -290,7 +302,7 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-// Create badges HTML dynamically
+// Create badges HTML
 document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
   <div class="achievement-card" id="ach${i+1}">
     <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
@@ -310,7 +322,6 @@ function applySelectedTheme() {
 
 function saveState() { 
   localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
-  // Setiap kali data disave, semprot ke Beast Engine
   broadcastToBeast();
 }
 
@@ -358,12 +369,32 @@ function calibrateCore() {
   saveState(); updateUI();
 }
 
+// 🎬 REAL SMOOTH CUTSCENE TRANSITION SYSTEM
 function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
-  document.getElementById("enterBtn").style.display="none";
-  document.getElementById("streakWidget").style.display="flex";
-  document.getElementById("calibrationHud").style.display="block";
-  document.getElementById("menu").style.display="flex";
+  
+  const overlay = document.getElementById("smoothEnterOverlay");
+  const ambient = document.getElementById("bgAmbient");
+  
+  // Audio Playback Safety Trigger
+  if(ambient) { ambient.play().catch(()=>{ console.log("Audio triggered via user interaction."); }); }
+  
+  // Tahap 1: Munculkan kilatan transisi (Fade In)
+  overlay.classList.add("active");
+  
+  setTimeout(() => {
+    // Tahap 2: Sembunyikan tombol dan aktifkan layout dashboard di balik layar transisi
+    document.getElementById("enterBtn").style.display = "none";
+    document.getElementById("streakWidget").style.display = "flex";
+    document.getElementById("calibrationHud").style.display = "block";
+    document.getElementById("menu").style.display = "flex";
+    
+    // Default tampilkan halaman origin langsung
+    showPage('origin');
+    
+    // Tahap 3: Turunkan kembali efek transisi (Fade Out) secara mulus
+    overlay.classList.remove("active");
+  }, 800); // Sinkronisasi waktu 800ms pas dengan efek CSS transition
 }
 
 function saveDominionName() {
@@ -383,25 +414,17 @@ function executeAdminUpdate() {
   saveState(); updateUI();
 }
 
-// 📡 SYSTEM TELEMETRI ANTI-BUG (DENGAN PENGECEKAN AKTIF)
+// Telemetri Iframe Linker
 function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
-    // Kirim data streak + preferensi class tema bodi saat ini
     const activeTheme = document.body.className;
-    f.contentWindow.postMessage({ 
-      type: 'TELEMETRY_UPDATE', 
-      data: streakData,
-      theme: activeTheme
-    }, '*');
+    f.contentWindow.postMessage({ type: 'TELEMETRY_UPDATE', data: streakData, theme: activeTheme }, '*');
   }
 }
 
-// Dengarkan sinyal jabat tangan dari Beast Module
 window.addEventListener("message", (e) => {
-  if(e.data && e.data.type === 'BEAST_HANDSHAKE_REQ') {
-    broadcastToBeast();
-  }
+  if(e.data && e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); }
 });
 
 window.addEventListener("load", () => { 
@@ -413,10 +436,7 @@ window.addEventListener("load", () => {
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
   document.getElementById(id).style.display="block";
-  // Paksa sinkronisasi ulang saat halaman game dibuka
-  if(id === 'beastPage') {
-    setTimeout(broadcastToBeast, 100);
-  }
+  if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
 }
 </script>
 </body>
