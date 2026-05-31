@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLACKLIGHTDOMS | CORE SYSTEM</title>
+<title>Blacklightdoms | Core System</title>
 <style>
 html, body {
   height: 100%;
@@ -92,7 +92,7 @@ body {
   animation: glowPulse 3s infinite ease-in-out;
 }
 @keyframes glowPulse {
-  0 { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
+  0% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
   50% { filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.8)); }
   100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
 }
@@ -107,12 +107,12 @@ body {
 .title { 
   font-size: 28px; 
   letter-spacing: 8px; 
-  margin-bottom: 10px; 
+  margin-bottom: 15px; 
   text-align: center; 
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* 🐉 IMAGE PET DISPLAY SYSTEM - ENGINE INTEGRATED */
+/* 🐉 BINGKAI ULTRA AMAN - ANTI TERPOTONG */
 .title-pet-display {
   display: none;
   flex-direction: column;
@@ -125,39 +125,34 @@ body {
   50% { transform: translateY(-6px); }
 }
 .pet-image-frame {
-  width: 70px;
-  height: 70px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.12);
   overflow: hidden;
+  position: relative;
 }
 .pet-image-frame img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-}
-.pet-image-fallback {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.4);
-  padding: 5px;
+  display: block;
 }
 .title-pet-details {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.6);
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.7);
 }
 
 #enterBtn, .calibration-box button, .admin-btn, .modal-box button {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
-  cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
+  cursor: pointer; transition: all 0.3s ease;
   border-radius: 50px;
 }
 #enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
@@ -181,7 +176,7 @@ body {
 .menu button {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 14px 20px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
-  cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
+  cursor: pointer; transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
@@ -198,7 +193,7 @@ body {
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 25px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 
-/* 🛡️ ULTRA CLEAN CYBERPUNK STREAK RESET BOX */
+/* 🛡️ DESIGN PARAMETER RESET STREAK MALAM */
 .matrix-reset-card {
   margin-top: 30px;
   padding: 15px;
@@ -212,7 +207,6 @@ body {
   font-size: 10px;
   letter-spacing: 1px;
   color: rgba(255, 74, 74, 0.5);
-  text-transform: uppercase;
 }
 .reset-streak-btn {
   font-size: 10px !important;
@@ -259,10 +253,10 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
   border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px;
 }
 .admin-sub-sect label {
-  font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; text-transform: uppercase;
+  font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px;
 }
 
-/* 🔄 LOADING SCREEN ROTATE REPAIR INJECTION */
+/* 🔄 FIX ANIMASI LOADING SCREEN MUTAR TOTAL */
 .loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease; }
 .loader.hidden { opacity: 0; pointer-events: none; }
 .loaderCircle { 
@@ -270,7 +264,7 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
   border: 3px solid rgba(255,255,255,0.1); 
   border-top-color: #fff; 
   border-radius: 50%; 
-  animation: spinLoader 1s infinite linear !important; 
+  animation: spinLoader 0.8s infinite linear !important; 
 }
 .loaderText { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.7); font-weight: bold; }
 
@@ -289,35 +283,35 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 <audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
 
 <div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
-<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">LOADING BLACKLIGHT CORE...</div></div>
+<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">Loading Blacklight Core...</div></div>
 <div class="sky" id="sky"></div>
 <div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
 
 <div class="modal-overlay" id="themeSelectorModal">
   <div class="theme-modal-box">
-    <h3 style="margin-top:0;">INTERFACE SYSTEM</h3>
+    <h3 style="margin-top:0;">Interface System</h3>
     <div class="theme-options-container">
-      <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">⚪ DEFAULT ECLIPSE</div>
-      <div class="theme-option-card" id="opt-matrix" onclick="selectThemeOption('matrix')">🟢 CODE MATRIX</div>
-      <div class="theme-option-card" id="opt-crimson" onclick="selectThemeOption('crimson')">🔴 CRIMSON OVERDRIVE</div>
+      <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">⚪ Default Eclipse</div>
+      <div class="theme-option-card" id="opt-matrix" onclick="selectThemeOption('matrix')">🟢 Code Matrix</div>
+      <div class="theme-option-card" id="opt-crimson" onclick="selectThemeOption('crimson')">🔴 Crimson Overdrive</div>
     </div>
-    <button onclick="applySelectedTheme()">APPLY INTERFACE</button>
+    <button onclick="applySelectedTheme()">Apply Interface</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3>MAIN MATRIX REGISTRATION</h3>
-    <input type="text" id="dominionNameInput" placeholder="ENTER DOMINION NAME" maxlength="15" style="text-align:center;"><br><br>
-    <button onclick="saveDominionName()">REGISTER TO CORE</button>
+    <h3>Main Matrix Registration</h3>
+    <input type="text" id="dominionNameInput" placeholder="Enter Dominion Name" maxlength="15" style="text-align:center;"><br><br>
+    <button onclick="saveDominionName()">Register To Core</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box">
-    <h3 style="color:#ff4a4a; margin-top:0;">RESET CORE STREAK?</h3>
+    <h3 style="color:#ff4a4a; margin-top:0;">Reset Core Streak?</h3>
     <p style="font-size:11px; opacity:0.6; margin-bottom:20px;">This action is permanent and cannot be reversed inside the core matrix.</p>
-    <button onclick="confirmResetStreak()">CONFIRM RESET</button> <button onclick="closeResetModal()">CANCEL</button>
+    <button onclick="confirmResetStreak()">Confirm Reset</button> <button onclick="closeResetModal()">Cancel</button>
   </div>
 </div>
 
@@ -327,37 +321,37 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   </div>
 
   <div class="streak-widget" id="streakWidget">
-    <div>RESONANCE STREAK: <b id="streakCount">0</b> DAYS | RANK: <span id="rankTitle">VOID WALKER</span></div>
-    <div style="font-size:11px; opacity:0.5; margin-top:5px;">HIGHEST PEAK RECORD: <b id="highestStreakDisplayCount">0</b> DAYS</div>
+    <div>Resonance Streak: <b id="streakCount">0</b> Days | Rank: <span id="rankTitle">Void Walker</span></div>
+    <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days</div>
   </div>
 
-  <h1 class="title">BLACKLIGHTDOMS</h1>
+  <h1 class="title">Blacklightdoms</h1>
   
   <div class="title-pet-display" id="titlePetDisplay">
     <div class="pet-image-frame" id="petImageFrame">
       </div>
-    <div class="title-pet-details" id="titlePetDetails">Naga1.png [LVL 1]</div>
+    <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
   </div>
 
-  <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
+  <button id="enterBtn" onclick="enter()">Enter The Eclipse</button>
 
   <div class="menu" id="menu">
-    <button onclick="showPage('origin')">ORIGIN</button>
-    <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
-    <button onclick="showPage('leaderboardPage')">LEADERBOARD</button>
-    <button onclick="showPage('archives')">ARCHIVES</button>
-    <button onclick="showPage('code')">CODE</button>
-    <button onclick="showPage('beastPage')">👾 BEAST ENGINE</button>
+    <button onclick="showPage('origin')">Origin</button>
+    <button onclick="showPage('achievement')">Achievements</button>
+    <button onclick="showPage('leaderboardPage')">Leaderboard</button>
+    <button onclick="showPage('archives')">Archives</button>
+    <button onclick="showPage('code')">Code</button>
+    <button onclick="showPage('beastPage')">👾 Beast Engine</button>
   </div>
 
   <div class="page" id="origin"><div class="box" id="loreInjectBox"></div></div>
 
   <div class="page" id="achievement">
     <div class="box">
-      <h2>RESONANCE ACHIEVEMENTS</h2>
+      <h2>Resonance Achievements</h2>
       <div class="achievement-progress-container">
         <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADGES UNLOCKED</div>
+        <div class="achievement-progress-text" id="achProgressText">0 / 15 Badges Unlocked</div>
       </div>
       <div class="achievement-grid" id="achGrid"></div>
     </div>
@@ -365,9 +359,9 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="page" id="leaderboardPage">
     <div class="box">
-      <h2>DOMINION LEADERBOARD</h2>
+      <h2>Dominion Leaderboard</h2>
       <table class="leaderboard-table">
-        <thead><tr><th>RANK</th><th>DOMINION NAME</th><th>STREAK</th></tr></thead>
+        <thead><tr><th>Rank</th><th>Dominion Name</th><th>Streak</th></tr></thead>
         <tbody id="leaderboardDataBody"></tbody>
       </table>
     </div>
@@ -377,9 +371,9 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="page" id="code">
     <div class="box">
-      <h2>CODE SYSTEM</h2>
-      <input type="text" id="codeInput" placeholder="enter security code"><br><br>
-      <button onclick="unlockCode()">UNLOCK SYSTEM</button>
+      <h2>Code System</h2>
+      <input type="text" id="codeInput" placeholder="Enter security code"><br><br>
+      <button onclick="unlockCode()">Unlock System</button>
     </div>
   </div>
 
@@ -391,20 +385,20 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="calibration-container" id="calibrationHud">
     <div class="calibration-box">
-      <p id="calibrationStatus" style="margin-top:0;">SYSTEM READY FOR RESONANCE INTEGRATION</p>
-      <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
+      <p id="calibrationStatus" style="margin-top:0;">System ready for resonance integration</p>
+      <button id="calibrationBtn" onclick="calibrateCore()">Sync With Core</button>
       
       <div class="matrix-reset-card">
         <span class="matrix-reset-title">System Core Parameter</span>
-        <button class="reset-streak-btn" onclick="openResetModal()">RESET STREAK TRACKING</button>
+        <button class="reset-streak-btn" onclick="openResetModal()">Reset Streak Tracking</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ OWNER MENU</div>
+<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ Owner Menu</div>
 <div class="admin-floating-panel" id="adminPanel">
-  <div class="admin-header" id="adminPanelHeader"><span>🛡️ OWNER MATRIX CONTROLLER</span><span style="cursor:pointer; font-size:16px;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
+  <div class="admin-header" id="adminPanelHeader"><span>🛡️ Owner Matrix Controller</span><span style="cursor:pointer; font-size:16px;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
   <div class="admin-body">
     
     <div class="admin-sub-sect">
@@ -417,7 +411,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     <div class="admin-sub-sect">
       <label>Pet Engine Core Configuration</label>
       <select id="admPetName" style="margin-bottom:8px;">
-        <option value="">-- SELECT PET MODEL --</option>
+        <option value="">-- Select Pet Model --</option>
         <option value="Naga1">Naga1.png</option>
         <option value="Naga2">Naga2.png</option>
         <option value="Naga3">Naga3.png</option>
@@ -436,8 +430,8 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       </select>
       <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-        <button class="admin-btn" style="font-size:9px; padding:6px;" onclick="ownerTriggerBeastAction('STABILIZE_LOOP')">STABILIZE LOOP</button>
-        <button class="admin-btn" style="font-size:9px; padding:6px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerTriggerBeastAction('IGNITE_BURST')">BEAST BURST</button>
+        <button class="admin-btn" style="font-size:9px; padding:6px;" onclick="ownerTriggerBeastAction('STABILIZE_LOOP')">Stabilize Loop</button>
+        <button class="admin-btn" style="font-size:9px; padding:6px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerTriggerBeastAction('IGNITE_BURST')">Beast Burst</button>
       </div>
     </div>
 
@@ -446,28 +440,27 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <input type="text" id="admLbName" placeholder="Competitor Name" style="margin-bottom:8px;">
       <input type="number" id="admLbStreak" placeholder="Streak Value" style="margin-bottom:8px;">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button class="admin-btn" style="font-size:9px; padding:8px;" onclick="ownerAddLeaderboard()">➕ ADD USER</button>
-        <button class="admin-btn" style="font-size:9px; padding:8px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerClearLeaderboard()">🗑️ WIPE FAKES</button>
+        <button class="admin-btn" style="font-size:9px; padding:8px;" onclick="ownerAddLeaderboard()">➕ Add User</button>
+        <button class="admin-btn" style="font-size:9px; padding:8px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerClearLeaderboard()">🗑️ Wipe Fakes</button>
       </div>
     </div>
 
-    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">APPLY CONFIGURATION</button>
+    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">Apply Configuration</button>
   </div>
 </div>
 
 <footer>
   <div class="footer-content">
-    <div class="footer-links"><a href="#">DISCORD</a><a href="#">WHATSAPP</a></div>
-    <div style="font-size:11px; opacity:0.3;">© 2026 BLACKLIGHTDOMS.</div>
+    <div class="footer-links"><a href="#">Discord</a><a href="#">WhatsApp</a></div>
+    <div style="font-size:11px; opacity:0.3;">© 2026 Blacklightdoms.</div>
   </div>
 </footer>
 
 <script>
 const BLDS_LORE = {
-  main_title: "BLACK LIGHT DOMINION SQUAD // BLDS",
+  main_title: "Black Light Dominion Squad // BLDS",
   subtitle: "Even during the eclipse, the Core still shine.",
-  lore_text: `BEFORE BLDS HAD A NAME,<br>BEFORE THE SYMBOL EXISTED,<br>BEFORE THE SQUAD WAS FORMED...<br>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.<br>SOME WERE IGNORED.<br>SOME WERE UNDERESTIMATED.<br>SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.<br>THEY WATCHED OTHERS RISE FASTER.<br>WATCHED OTHERS GAIN RECOGNITION.<br>WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.<br>AND SLOWLY, THEY REALIZED SOMETHING:<br>MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT.<br>BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.<br>THAT REALIZATION BECAME THE BEGINNING OF BLDS.<br>NOT A SQUAD CREATED FOR FAME.<br>NOT A KINGDOM BUILT ON ARROGANCE.<br>NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY.<br>BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.`,
-  core_text: `AT THE CENTER OF THE ECLIPSE LIES THE CORE.<br>A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.<br>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS.<br>NOT A PURPOSE GIVEN BY THE WORLD.<br>NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY.<br>BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.<br>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES...<br>EVEN WHEN PEOPLE LEAVE...<br>EVEN WHEN FAILURE SURROUNDS YOU...<br>YOUR INNER LIGHT CAN STILL REMAIN ALIVE.<br>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL.<br>THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL.<br>THAT IS WHY THE CORE NEVER DISAPPEARS.<br>BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.`
+  lore_text: `Before BLDS had a name,<br>before the symbol existed,<br>before the squad was formed...<br>There were only individuals trying to survive their own darkness.<br>Some were ignored.<br>Some were underestimated.<br>Some failed over and over again until they stopped expecting anyone to believe in them.<br>They watched others rise faster.<br>Watched others gain recognition.<br>Watched people quit the moment things became difficult.<br>And slowly, they realized something:<br>Most people only shine when the world is bright.<br>But very few can continue moving forward when everything turns dark.<br>That realization became the beginning of BLDS.<br>Not a squad created for fame.<br>Not a kingdom built on arrogance.<br>Not a place for people searching only for victory.<br>But a dominion built by those who refused to disappear.`
 };
 
 const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
@@ -475,25 +468,24 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-let petData = { name: "Naga1", level: 1 }; // Default aman jika localStorage kosong
+let petData = { name: "Naga1", level: 1 };
 let fakeCompetitors = [];
 let cooldownInterval = null;
 
 function handleLogoMissing() {
-  document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // CORE</div>`;
+  document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // Core</div>`;
 }
 
 function injectDatabase() {
   document.getElementById("loreInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
       <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
-      <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle.toUpperCase()}</div>
+      <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div>
     </div>
     <div style="font-size:11px; line-height:1.7; opacity:0.85; text-align:left;">${BLDS_LORE.lore_text}</div>
   `;
 }
 
-// Background Stars Engine
 const sky = document.getElementById("sky");
 for(let i=0; i<30; i++) {
   let star = document.createElement("div"); star.className = "star";
@@ -531,8 +523,7 @@ function loadState() {
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
   if(savedPet) {
     petData = JSON.parse(savedPet);
-    // 🛡️ SECURITY FALLBACK REPAIR: Cegah bug string kosmetik lama tertinggal
-    if(petData.name.includes(" ") || petData.name === "Void Hatchling") {
+    if(petData.name.includes(" ") || petData.name === "Void Hatchling" || !petData.name) {
       petData.name = "Naga1";
     }
   }
@@ -546,19 +537,16 @@ function updateUI() {
   document.getElementById("streakCount").innerText = streakData.count;
   document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
   
-  let rank = "VOID WALKER";
-  if(streakData.count >= 100) rank = "THE ETERNAL CORE";
-  else if(streakData.count >= 50) rank = "DOMINION VANGUARD";
-  else if(streakData.count >= 7) rank = "ECLIPSE SYNCHRONIZER";
+  let rank = "Void Walker";
+  if(streakData.count >= 100) rank = "The Eternal Core";
+  else if(streakData.count >= 50) rank = "Dominion Vanguard";
+  else if(streakData.count >= 7) rank = "Eclipse Synchronizer";
   document.getElementById("rankTitle").innerText = rank;
   
-  // 🐉 LOAD DYNAMIC REAL IMAGE FOR PET LOGO WITH FALLBACK SYSTEM (.png Fixes)
-  const filename = `${petData.name}.png`;
-  document.getElementById("petImageFrame").innerHTML = `
-    <img src="${filename}" alt="${petData.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="pet-image-fallback">[NOT FOUND: ${filename.toUpperCase()}]</div>
-  `;
-  document.getElementById("titlePetDetails").innerText = `${filename} [LVL ${petData.level}]`;
+  // 🐉 LOAD GAMBAR AMAN & BERSIH TANPA NOT FOUND MENUMPUK
+  const fileClean = petData.name + ".png";
+  document.getElementById("petImageFrame").innerHTML = `<img src="${fileClean}" alt="${petData.name}" onerror="this.style.opacity='0.2';">`;
+  document.getElementById("titlePetDetails").innerText = `${fileClean} [Lvl ${petData.level}]`;
 
   let unlocked = 0;
   targets.forEach((t, i) => {
@@ -569,7 +557,7 @@ function updateUI() {
     }
   });
   document.getElementById("achProgressBar").style.width = (unlocked/15)*100 + "%";
-  document.getElementById("achProgressText").innerText = `${unlocked} / 15 BADGES UNLOCKED`;
+  document.getElementById("achProgressText").innerText = `${unlocked} / 15 Badges Unlocked`;
   renderLeaderboard();
 }
 
@@ -583,7 +571,6 @@ function renderLeaderboard() {
   `).join('');
 }
 
-// ⏳ TIMELOCK COOLDOWN (GLOBAL ENFORCEMENT)
 function checkCooldownLoop() {
   if (cooldownInterval) clearInterval(cooldownInterval);
   
@@ -607,8 +594,8 @@ function checkCooldownLoop() {
       
       const btn = document.getElementById("calibrationBtn");
       btn.disabled = true;
-      btn.innerText = `LOCKED (${hours}h ${minutes}m ${seconds}s)`;
-      document.getElementById("calibrationStatus").innerText = "RESONANCE SYSTEM LOCK ACTIVE. COOLDOWN APPLIED GLOBALLY.";
+      btn.innerText = `Locked (${hours}h ${minutes}m ${seconds}s)`;
+      document.getElementById("calibrationStatus").innerText = "Resonance system lock active. Cooldown applied globally.";
     }
   }, 1000);
 }
@@ -616,8 +603,8 @@ function checkCooldownLoop() {
 function resetCalibrationBtnUI() {
   const btn = document.getElementById("calibrationBtn");
   btn.disabled = false;
-  btn.innerText = "SYNC WITH CORE";
-  document.getElementById("calibrationStatus").innerText = "SYSTEM READY FOR RESONANCE INTEGRATION";
+  btn.innerText = "Sync With Core";
+  document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
 }
 
 function calibrateCore() {
@@ -633,7 +620,7 @@ function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
-  if(ambient) { ambient.play().catch(()=>{ console.log("Audio deferred."); }); }
+  if(ambient) { ambient.play().catch(()=>{}); }
   overlay.classList.add("active");
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
@@ -661,14 +648,14 @@ function unlockCode() {
     document.getElementById("adminLauncherBtn").style.display = "block";
     document.getElementById("adminPanel").style.display = "flex";
   } else {
-    alert("ACCESS REJECTED: INVALID MATRIX CODE");
+    alert("Access Rejected: Invalid matrix code");
   }
 }
 
 function ownerAddLeaderboard() {
   const nameInput = document.getElementById("admLbName").value.trim();
   const streakInput = parseInt(document.getElementById("admLbStreak").value);
-  if(!nameInput || isNaN(streakInput)) { alert("Isi nama & streak kompetitor!"); return; }
+  if(!nameInput || isNaN(streakInput)) { return; }
   fakeCompetitors.push({ name: nameInput, streak: streakInput });
   document.getElementById("admLbName").value = "";
   document.getElementById("admLbStreak").value = "";
@@ -677,16 +664,12 @@ function ownerAddLeaderboard() {
 function ownerClearLeaderboard() {
   fakeCompetitors = [];
   saveState(); updateUI();
-  alert("Fake Leaderboard cleared.");
 }
 
 function ownerTriggerBeastAction(actionType) {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
     f.contentWindow.postMessage({ type: 'BEAST_COMMAND_EXECUTE', action: actionType }, '*');
-    alert(`COMMAND SENT TO BEAST ENGINE: ${actionType}`);
-  } else {
-    alert("Beast Engine Iframe not loaded yet.");
   }
 }
 
@@ -699,7 +682,7 @@ function executeAdminUpdate() {
   if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
 
   saveState(); updateUI();
-  alert("Changes Applied Successfully.");
+  alert("Changes applied successfully.");
 }
 
 function broadcastToBeast() {
@@ -731,7 +714,6 @@ function showPage(id) {
   if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
 }
 
-// DRAGGABLE HUB INTERFACE
 const launcher = document.getElementById("adminLauncherBtn");
 const panel = document.getElementById("adminPanel");
 const header = document.getElementById("adminPanelHeader");
