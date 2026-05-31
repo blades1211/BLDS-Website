@@ -45,9 +45,10 @@ body.split-state::after {
 }
 @keyframes starFloat { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10px); } }
 
+/* REQ: Modifikasi overlay transisi klik tombol menjadi GELAP perlahan */
 .enter-transition-overlay {
-  position: fixed; inset: 0; background: #fff; z-index: 999999;
-  opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
+  position: fixed; inset: 0; background: #000; z-index: 999999;
+  opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
 }
 .enter-transition-overlay.active { opacity: 1; }
 
@@ -78,7 +79,7 @@ body.split-state::after {
 .theme-matrix { color: #00ff00 !important; }
 .theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
 .theme-matrix button, .theme-matrix .menu button { border-color: #00ff00 !important; color: #00ff00 !important; }
-.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
+.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #00px !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
 .theme-matrix .title { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4) !important; }
 .theme-matrix .logo-container { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)); }
 .theme-matrix .text-logo-fallback { border-color: #00ff00 !important; }
@@ -298,10 +299,29 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   display: none; flex-direction: column; align-items: center; justify-content: center;
   padding: 40px; box-sizing: border-box; text-align: center;
 }
-.cutscene-logo { width: 150px; opacity: 0; transition: opacity 2s ease; margin-bottom: 30px; }
+
+/* REQ: Animasi Bersinar (Glow) untuk Logo BLDS & Teks */
+.cutscene-logo { 
+  width: 150px; opacity: 0; transition: opacity 2s ease; margin-bottom: 30px; 
+}
+.cutscene-logo-glow {
+  animation: logoGlowPulse 2s infinite ease-in-out;
+}
+@keyframes logoGlowPulse {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)); }
+  50% { filter: drop-shadow(0 0 35px rgba(255, 255, 255, 1)); transform: scale(1.03); }
+}
+
 .cutscene-text {
   font-size: 20px; letter-spacing: 4px; min-height: 40px; opacity: 0;
-  transition: opacity 1s ease; color: #fff; max-width: 600px; line-height: 1.6;
+  transition: opacity 1s ease, color 1s ease; color: #fff; max-width: 600px; line-height: 1.6;
+}
+.cutscene-text-glow {
+  animation: textGlowPulse 2s infinite ease-in-out;
+}
+@keyframes textGlowPulse {
+  0%, 100% { text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+  50% { text-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 0 35px rgba(255, 255, 255, 0.7); }
 }
 
 /* LORE FULLSCREEN WRAPPER UNTUK LAYAR FULL RAHASIA */
@@ -817,13 +837,7 @@ function resetCalibrationBtnUI() {
   document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
 }
 
-function calibrateCore() {
-  streakData.count++;
-  if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
-  streakData.lastCalibratedTimestamp = Date.now();
-  saveState(); updateUI(); checkCooldownLoop();
-}
-
+// REQ: Modifikasi saat klik tombol ada transisi GELAP perlahan
 function enter() {
   if(!streakData.dominionName) { 
     document.getElementById("modalTitle").innerText = "Main Matrix Registration";
@@ -833,13 +847,25 @@ function enter() {
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   if(ambient) { ambient.play().catch(()=>{}); }
+  
+  // Mengaktifkan overlay hitam memudar masuk perlahan selama 1.5 detik
   overlay.classList.add("active");
+  
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("menu").style.display = "flex";
     exitFullscreenPage(); 
+    
+    // Memudarkan kembali overlay hitam secara halus setelah menu terbuka
     overlay.classList.remove("active");
-  }, 800);
+  }, 1500); 
+}
+
+function calibrateCore() {
+  streakData.count++;
+  if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
+  streakData.lastCalibratedTimestamp = Date.now();
+  saveState(); updateUI(); checkCooldownLoop();
 }
 
 function saveDominionName() {
@@ -885,8 +911,10 @@ function unlockCode() {
   else if (codeVal === "BLACK") {
     document.body.classList.add("inverted-state");
   } 
+  // REQ: Perbaikan kode WHITE buat bikin layar kembali normal sembuh bug
   else if (codeVal === "WHITE") {
     document.body.classList.remove("inverted-state");
+    document.body.classList.remove("split-state");
   } 
   else if (codeVal === "BLDS") {
     runBldsCutscene();
@@ -902,7 +930,7 @@ function unlockCode() {
   }
 }
 
-// 🎬 Sekuens Cinematic: Kode BLDS
+// 🎬 REQ: Perbaikan Urutan Cutscene & Efek Bersinar Logo + Teks BLDS
 function runBldsCutscene() {
   const theater = document.getElementById("cutsceneTheater");
   const logo = document.getElementById("cutsceneLogo");
@@ -910,45 +938,53 @@ function runBldsCutscene() {
   
   theater.style.display = "flex";
   theater.style.backgroundColor = "#000";
+  txt.style.color = "#fff";
+  txt.innerText = "";
   
-  setTimeout(() => { logo.style.opacity = "1"; }, 1000);
+  // Memunculkan logo dengan class GLOW efek bersinar blds bawaan beast
+  setTimeout(() => { 
+    logo.classList.add("cutscene-logo-glow");
+    logo.style.opacity = "1"; 
+  }, 1000);
   
-  const dialogs = [
-    { text: "Sun", delay: 3000 },
-    { text: "Moon", delay: 5000 },
-    { text: "With the core inside", delay: 7000 },
-    { text: "This is BLDS", delay: 10000, big: true }
-  ];
+  // Sekuens dialog bertahap awal
+  setTimeout(() => { showTextStep(txt, "Sun"); }, 3000);
+  setTimeout(() => { showTextStep(txt, "Moon"); }, 6000);
+  setTimeout(() => { showTextStep(txt, "With the core inside"); }, 9000);
   
-  dialogs.forEach(d => {
-    setTimeout(() => {
-      txt.style.opacity = "0";
-      setTimeout(() => {
-        txt.innerText = d.text;
-        txt.style.fontSize = d.big ? "32px" : "20px";
-        txt.style.fontWeight = d.big ? "bold" : "normal";
-        txt.style.opacity = "1";
-      }, 400);
-    }, d.delay);
-  });
-  
-  // Transisi Layar Putih Perlahan Sekali
+  // Bagian Utama: Dialog "This is BLDS"
   setTimeout(() => {
-    theater.style.transition = "background-color 4s ease";
-    theater.style.backgroundColor = "#fff";
-    txt.style.color = "#000";
-  }, 13000);
+    txt.style.opacity = "0";
+    setTimeout(() => {
+      txt.innerText = "This is BLDS";
+      txt.style.fontSize = "32px";
+      txt.style.fontWeight = "bold";
+      txt.classList.add("cutscene-text-glow"); // Teks ikutan bersinar bersinar
+      txt.style.opacity = "1";
+    }, 400);
+  }, 12000);
   
-  // Selesai Cutscene, Kembali ke awal dengan split screen vertikal inversi kanan
+  // REQ FIX: Teks dihilangin dulu total, baru transisi warna putih perlahan
+  setTimeout(() => {
+    txt.style.opacity = "0"; // Teks hilang duluan bersih pas dialog selesai
+  }, 15500);
+
+  setTimeout(() => {
+    // Baru transisi warna putih perlahan (benerin dlu di switch ease theater)
+    theater.style.transition = "background-color 4.5s ease-in-out";
+    theater.style.backgroundColor = "#fff";
+  }, 16200);
+  
+  // Selesai Cutscene total, transisi ke split-view
   setTimeout(() => {
     theater.style.display = "none";
     logo.style.opacity = "0";
-    txt.style.opacity = "0";
-    txt.style.color = "#fff";
+    logo.classList.remove("cutscene-logo-glow");
+    txt.classList.remove("cutscene-text-glow");
     theater.style.transition = "none";
     
     document.body.classList.add("split-state");
-  }, 18000);
+  }, 21500);
 }
 
 // 🎬 Sekuens Cinematic: FORGOTTEN & 12 FLAMES
@@ -959,6 +995,7 @@ function runCinematicSequence(type) {
   
   theater.style.display = "flex";
   theater.style.backgroundColor = "#000";
+  logo.classList.add("cutscene-logo-glow");
   
   setTimeout(() => { logo.style.opacity = "1"; }, 800);
   
@@ -990,6 +1027,7 @@ function runCinematicSequence(type) {
   setTimeout(() => {
     theater.style.display = "none";
     logo.style.opacity = "0";
+    logo.classList.remove("cutscene-logo-glow");
     txt.style.opacity = "0";
     document.getElementById(targetViewer).style.display = "block";
   }, 12000);
