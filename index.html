@@ -279,6 +279,16 @@ body {
 
 input[type="text"], input[type="number"], select { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
 
+/* LORE CYBERPUNK STYLING */
+.lore-section { margin-bottom: 35px; text-align: left; }
+.lore-section h3 { font-size: 16px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; margin-bottom: 15px; text-transform: uppercase; color: #fff; }
+.lore-section p { font-size: 12px; line-height: 1.8; opacity: 0.85; margin: 0 0 12px 0; text-align: justify; }
+.lore-quote { font-style: italic; border-left: 3px solid rgba(255,255,255,0.4); padding-left: 15px; margin: 15px 0; opacity: 0.7; font-size: 12px; }
+.flame-list { list-style: none; padding: 0; margin: 0; }
+.flame-list li { font-size: 12px; line-height: 1.8; margin-bottom: 8px; padding-left: 15px; position: relative; }
+.flame-list li::before { content: "»"; position: absolute; left: 0; color: rgba(255,255,255,0.5); }
+.flame-list strong { letter-spacing: 1px; color: #fff; }
+
 /* OWNER FLOATING PANEL CONTROLLER */
 .admin-trigger-launcher { 
   position: fixed; top: 25px; left: 25px; background: #fff; color: #000; 
@@ -379,8 +389,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   <h1 class="title">Blacklightdoms</h1>
   
   <div class="title-pet-display" id="titlePetDisplay">
-    <div class="pet-image-frame" id="petImageFrame">
-      </div>
+    <div class="pet-image-frame" id="petImageFrame"></div>
     <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
   </div>
 
@@ -410,9 +419,9 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="page" id="leaderboardPage">
     <div class="box">
-      <h2>Dominion Leaderboard</h2>
+      <h2>Dominion Leaderboard (Top 20 Live)</h2>
       <table class="leaderboard-table">
-        <thead><tr><th>Rank</th><th>Dominion Name</th><th>Streak</th></tr></thead>
+        <thead><tr><th>Rank</th><th>Dominion Name</th><th>Max Streak</th></tr></thead>
         <tbody id="leaderboardDataBody"></tbody>
       </table>
     </div>
@@ -490,16 +499,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       </div>
     </div>
 
-    <div class="admin-sub-sect">
-      <label>Leaderboard Controller</label>
-      <input type="text" id="admLbName" placeholder="Competitor Name" style="margin-bottom:8px;">
-      <input type="number" id="admLbStreak" placeholder="Streak Value" style="margin-bottom:8px;">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button class="admin-btn" style="font-size:9px; padding:8px;" onclick="ownerAddLeaderboard()">➕ Add User</button>
-        <button class="admin-btn" style="font-size:9px; padding:8px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerClearLeaderboard()">🗑️ Wipe Fakes</button>
-      </div>
-    </div>
-
     <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">Apply Configuration</button>
   </div>
 </div>
@@ -512,10 +511,35 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </footer>
 
 <script>
+// 📜 INTEGRASI DATABASE LORE POSTER LENGKAP MILIK BLDS
 const BLDS_LORE = {
   main_title: "Black Light Dominion Squad // BLDS",
   subtitle: "Even during the eclipse, the Core still shine.",
-  lore_text: `Before BLDS had a name,<br>before the symbol existed,<br>before the squad was formed...<br>There were only individuals trying to survive their own darkness.<br>Some were ignored.<br>Some were underestimated.<br>Some failed over and over again until they stopped expecting anyone to believe in them.<br>They watched others rise faster.<br>Watched others gain recognition.<br>Watched people quit the moment things became difficult.<br>And slowly, they realized something:<br>Most people only shine when the world is bright.<br>But very few can continue moving forward when everything turns dark.<br>That realization became the beginning of BLDS.<br>Not a squad created for fame.<br>Not a kingdom built on arrogance.<br>Not a place for people searching only for victory.<br>But a dominion built by those who refused to disappear.`
+  
+  before_blds: "Before BLDS had a name, before the symbol existed, before the squad was formed... There were only individuals trying to survive their own darkness. Some were ignored. Some were underestimated. Some failed over and over again until they stopped expecting anyone to believe in them. They watched others rise faster. Watched others gain recognition. Watched people quit the moment things became difficult.<br><br>And slowly, they realized something: Most people only shine when the world is bright. But very few can continue moving forward when everything turns dark. That realization became the beginning of BLDS.<br><br>Not a squad created for fame. Not a kingdom built on arrogance. Not a place for people searching only for victory. But a dominion built by those who refused to disappear.",
+  
+  blacklight_core: "At the center of the Eclipse lies the Core. A single star that continues to shine no matter how dark the sky becomes.<br><br>The Core represents the inner purpose carried by every member of BLDS. Not a purpose given by the world. Not a purpose created by attention or popularity. But a purpose discovered through hardship. It is the reminder that: even when everything around you changes... even when people leave... even when failure surrounds you... your inner light can still remain alive.<br><br>BLDS believes the strongest people are not those who never fall. The strongest are the ones who continue standing after every fall. That is why the Core never disappears. Because purpose cannot be erased by fear.",
+  
+  symbol_core: "Our purpose. Our inner light. The source of our strength.",
+  symbol_eclipse: "The world. The darkness. The challenges we face every day.",
+  
+  flame_quote: "Five flames grant strength. Five flames preserve it. Together, they protect the Core.",
+  
+  greater_flames: [
+    { name: "I. Vision", desc: "The ability to see direction even when others are lost." },
+    { name: "II. Discipline", desc: "To continue growing even when nobody is watching." },
+    { name: "III. Loyalty", desc: "To stand together through victory and defeat." },
+    { name: "IV. Ambition", desc: "The desire to surpass limits and continue evolving." },
+    { name: "V. Resilience", desc: "The strength to rise again after every fall." }
+  ],
+  
+  lesser_flames: [
+    { name: "I. Hope", desc: "The light that remains during difficult times." },
+    { name: "II. Awareness", desc: "The ability to stay conscious and understand reality." },
+    { name: "III. Patience", desc: "Growth takes time and endurance." },
+    { name: "IV. Courage", desc: "The will to move forward despite fear." },
+    { name: "V. Unity", desc: "The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it." }
+  ]
 };
 
 const BLDS_ARCHIVES = {
@@ -532,24 +556,56 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
 let petData = { name: "Naga1", level: 1 };
-let fakeCompetitors = [];
 let cooldownInterval = null;
+
+// --- URL DATABASE UTAMA ---
+const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 function handleLogoMissing() {
   document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // Core</div>`;
 }
 
+// 📦 ENGINE MERENDER LORE DI MENU ORIGIN SECARA LENGKAP & INTERAKTIF
 function injectDatabase() {
-  // Inject Origin
+  let greaterHTML = BLDS_LORE.greater_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
+  let lesserHTML = BLDS_LORE.lesser_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
+
   document.getElementById("loreInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
       <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
       <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div>
     </div>
-    <div style="font-size:11px; line-height:1.7; opacity:0.85; text-align:left;">${BLDS_LORE.lore_text}</div>
+    
+    <div class="lore-section">
+      <h3>Before BLDS</h3>
+      <p>${BLDS_LORE.before_blds}</p>
+    </div>
+
+    <div class="lore-section">
+      <h3>The Blacklight Core</h3>
+      <p>${BLDS_LORE.blacklight_core}</p>
+    </div>
+
+    <div class="lore-section">
+      <h3>Meaning Of The Symbols</h3>
+      <ul class="flame-list">
+        <li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li>
+        <li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li>
+      </ul>
+    </div>
+
+    <div class="lore-section">
+      <h3>The Ten Flames Of BLDS</h3>
+      <div class="lore-quote">"${BLDS_LORE.flame_quote}"</div>
+      
+      <h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4>
+      <ul class="flame-list">${greaterHTML}</ul>
+
+      <h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4>
+      <ul class="flame-list">${lesserHTML}</ul>
+    </div>
   `;
 
-  // Inject Archives (Fix data hilang)
   document.getElementById("archivesInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;">
       <h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2>
@@ -585,8 +641,8 @@ function applySelectedTheme() {
 function saveState() { 
   localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
   localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(petData));
-  localStorage.setItem("BLDS_CORE_FAKE_LEADER", JSON.stringify(fakeCompetitors));
   broadcastToBeast();
+  pushStreakToFirebase();
 }
 
 function loadState() {
@@ -599,8 +655,6 @@ function loadState() {
       petData.name = "Naga1";
     }
   }
-  const savedLb = localStorage.getItem("BLDS_CORE_FAKE_LEADER");
-  if(savedLb) fakeCompetitors = JSON.parse(savedLb);
   updateUI();
   checkCooldownLoop();
 }
@@ -622,41 +676,69 @@ function updateUI() {
   let unlocked = 0;
   targets.forEach((t, i) => {
     const card = document.getElementById(`ach${i+1}`);
-    const badge = document.getElementById(`ach${i+1}Badge`);
+    const badge = document.getElementById(`ach` + (i+1) + `Badge`);
     if(card && streakData.highestCount >= t) {
       card.classList.add("unlocked"); badge.className="ach-badge unlocked-badge"; badge.innerText="Unlocked"; unlocked++;
     }
   });
   document.getElementById("achProgressBar").style.width = (unlocked/15)*100 + "%";
   document.getElementById("achProgressText").innerText = `${unlocked} / 15 Badges Unlocked`;
-  renderLeaderboard();
+  fetchCloudLeaderboard();
 }
 
-// 🏆 LEADERBOARD ENGINE - RENDER MAKSIMAL 20 DATA
-function renderLeaderboard() {
-  let baseList = [
-    {name: "Michael Lorenzo", streak: 152}, {name: "William N", streak: 121},
-    {name: "Zack Storm", streak: 94}, {name: "Alpha Prime", streak: 88},
-    {name: "Shadow Walker", streak: 76}, {name: "Delta Core", streak: 65},
-    {name: "Phoenix Rising", streak: 59}, {name: "Apex Hunter", streak: 44},
-    {name: "Quantum Void", streak: 38}, {name: "Vortex Driver", streak: 31},
-    {name: "Nexus Guard", streak: 27}, {name: "Cipher King", streak: 22},
-    {name: "Ghost Shell", streak: 19}, {name: "Neon Light", streak: 14},
-    {name: "Zero Absolute", streak: 9}, {name: "Vector Line", streak: 5}
-  ];
-  
-  let combined = baseList.concat(fakeCompetitors);
-  if(streakData.dominionName) combined.push({name: streakData.dominionName, streak: streakData.count, isMe: true});
-  
-  // Sort tertinggi ke terendah
-  combined.sort((a,b)=>b.streak-a.streak);
-  
-  // Potong hanya sampai maksimal 20 baris data
-  let limitedList = combined.slice(0, 20);
-  
-  document.getElementById("leaderboardDataBody").innerHTML = limitedList.map((u,i)=>`
-    <tr ${u.isMe?'style="background:rgba(255,255,255,0.15);"':''}><td>#${i+1}</td><td>${u.name}</td><td>${u.streak} Days</td></tr>
-  `).join('');
+function pushStreakToFirebase() {
+  if (!FIREBASE_DB_URL || !streakData.dominionName) return;
+
+  const secureKey = streakData.dominionName.replace(/[.#$\[\]]/g, "_");
+  const payload = {
+    username: secureKey,
+    displayName: streakData.dominionName,
+    streak: streakData.highestCount,
+    hunt: 0, 
+    level: petData.level
+  };
+
+  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+}
+
+function fetchCloudLeaderboard() {
+  fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
+    .then(res => res.json())
+    .then(cloudData => {
+      let dataset = [];
+      if (cloudData) {
+        Object.keys(cloudData).forEach(key => {
+          if (cloudData[key]) dataset.push(cloudData[key]);
+        });
+      }
+      
+      dataset.sort((a, b) => b.streak - a.streak);
+      let top20List = dataset.slice(0, 20);
+      
+      const tableBody = document.getElementById("leaderboardDataBody");
+      if (top20List.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; opacity:0.5;">Belum ada Dominion terdaftar. Jadi yang pertama!</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = top20List.map((u, i) => {
+        const isCurrentMe = (u.displayName === streakData.dominionName);
+        return `
+          <tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}>
+            <td>#${i + 1}</td>
+            <td>${u.displayName}</td>
+            <td>${u.streak} Days</td>
+          </tr>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Gagal memuat matrix jaringan cloud.</td></tr>`;
+    });
 }
 
 function checkCooldownLoop() {
@@ -740,20 +822,6 @@ function unlockCode() {
   }
 }
 
-function ownerAddLeaderboard() {
-  const nameInput = document.getElementById("admLbName").value.trim();
-  const streakInput = parseInt(document.getElementById("admLbStreak").value);
-  if(!nameInput || isNaN(streakInput)) { return; }
-  fakeCompetitors.push({ name: nameInput, streak: streakInput });
-  document.getElementById("admLbName").value = "";
-  document.getElementById("admLbStreak").value = "";
-  saveState(); updateUI();
-}
-function ownerClearLeaderboard() {
-  fakeCompetitors = [];
-  saveState(); updateUI();
-}
-
 function ownerTriggerBeastAction(actionType) {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
@@ -800,6 +868,7 @@ function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
   document.getElementById(id).style.display="block";
   if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
+  if(id === 'leaderboardPage') { fetchCloudLeaderboard(); }
 }
 
 const launcher = document.getElementById("adminLauncherBtn");
