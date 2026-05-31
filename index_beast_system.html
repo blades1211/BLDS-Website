@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Ultimate Pet Core</title>
+<title>BLDS | Beast Engine Evolution</title>
 <style>
 body {
   background: transparent; color: #fff;
@@ -18,26 +18,29 @@ body {
   overflow: hidden; box-sizing: border-box;
 }
 
-/* 🧭 NAVIGATION UTAMA */
-.top-nav {
-  position: absolute; top: 15px; left: 15px; right: 15px;
-  display: flex; justify-content: space-between; align-items: center; z-index: 100;
+/* 🧭 NAVIGATION & FIX LAYOUT KETABRAK */
+.top-nav-container {
+  position: absolute; top: 12px; left: 12px; right: 12px;
+  display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
+  gap: 10px;
 }
-.nav-left { display: flex; gap: 8px; }
+.nav-left { display: flex; flex-direction: column; gap: 6px; }
 .nav-btn {
-  background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.4);
-  padding: 8px 14px; font-size: 11px; cursor: pointer; border-radius: 4px;
+  background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px;
   font-family: inherit; text-transform: uppercase; transition: all 0.2s;
+  white-space: nowrap;
 }
-.nav-btn:hover { background: #fff; color: #000; }
+.nav-btn:hover:not(:disabled) { background: #fff; color: #000; }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* 📊 DASHBOARD STATUS BAR */
+/* 📊 HUD STATUS SYSTEM */
 .status-panel {
-  position: absolute; top: 15px; right: 15px;
-  background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px; border-radius: 6px; width: 140px; font-size: 10px;
+  background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 10px; border-radius: 6px; width: 145px; font-size: 10px;
 }
-.bar-row { margin-bottom: 6px; }
+.bar-row { margin-bottom: 5px; }
+.bar-row:last-child { margin-bottom: 0; }
 .bar-label { display: flex; justify-content: space-between; margin-bottom: 2px; }
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
@@ -49,7 +52,7 @@ body {
   z-index: 10; pointer-events: none;
 }
 .pet-draggable-area {
-  width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
+  width: 170px; height: 170px; display: flex; align-items: center; justify-content: center;
   cursor: grab; pointer-events: auto; position: relative;
   transition: transform 0.1s ease;
 }
@@ -61,26 +64,26 @@ body {
 }
 @keyframes petIdleFloat {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-8px) scale(1.02); }
+  50% { transform: translateY(-6px) scale(1.02); }
 }
 .pet-title-tag {
-  font-size: 13px; font-weight: bold; margin-top: 10px; letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(255,255,255,0.4);
+  font-size: 12px; font-weight: bold; margin-top: 12px; letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4); text-align: center;
 }
 
 /* 🎒 BAG & FEEDING CONTROLLER */
 .bottom-controls {
   position: absolute; bottom: 15px; left: 15px; right: 15px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 100;
 }
 .inventory-belt {
-  display: flex; gap: 8px; background: rgba(0,0,0,0.7);
-  padding: 8px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+  display: flex; gap: 6px; background: rgba(0,0,0,0.8);
+  padding: 6px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
 }
 .food-slot {
-  width: 38px; height: 38px; background: rgba(255,255,255,0.05);
+  width: 36px; height: 36px; background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
   cursor: pointer; position: relative; transition: transform 0.2s;
 }
 .food-slot:hover { transform: scale(1.1); border-color: #fff; }
@@ -96,7 +99,7 @@ body {
   display: none; flex-direction: column; padding: 15px; box-sizing: border-box;
 }
 .battle-arena-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 40px 0 15px 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 45px 0 15px 0;
 }
 .fighter-card {
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
@@ -106,19 +109,18 @@ body {
 .rarity-tag { font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; }
 
 .combat-log-screen {
-  background: #000; border: 1px solid rgba(255,255,255,0.1); height: 110px;
+  background: #000; border: 1px solid rgba(255,255,255,0.1); height: 130px;
   overflow-y: auto; padding: 8px; font-size: 10px; color: #00ff00; border-radius: 4px;
 }
 
-/* 📖 BESTIARY & PARTY MANAGEMENT GRID */
-.grid-bestiary, .grid-party {
+/* 📖 BESTIARY GRID */
+.grid-bestiary {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
   margin-top: 45px; max-height: 540px; overflow-y: auto; padding-right: 5px;
 }
 .beast-card-slot {
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
   border-radius: 6px; padding: 8px; text-align: center; font-size: 9px; opacity: 0.4;
-  position: relative;
 }
 .beast-card-slot.discovered { opacity: 1; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
 .beast-card-slot img { width: 45px; height: 45px; object-fit: contain; filter: brightness(0); }
@@ -130,92 +132,78 @@ body {
   width: 100%; display: none;
 }
 .beast-card-slot.discovered .select-party-btn { display: block; }
+
+/* ⏳ RESPOND MATRIX TIMER */
+.cooldown-blocker {
+  position: absolute; inset: 0; background: rgba(2,2,6,0.95); z-index: 999;
+  display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+}
 </style>
 </head>
 <body>
 
 <script>
-// Web Audio API Sound Generator (Biar gak ketergantungan file mp3 luar, kita buat generator otomatis)
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 function playGrowlSound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  const filter = audioCtx.createBiquadFilter();
-  
-  osc.type = 'sawtooth';
-  // Menggeram frekuensi rendah bergoyang
-  osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const filter = audioCtx.createBiquadFilter();
+  osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, audioCtx.currentTime);
   osc.frequency.linearRampToValueAtTime(45, audioCtx.currentTime + 0.4);
-  
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(300, audioCtx.currentTime);
-  
-  gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-  
-  osc.connect(filter);
-  filter.connect(gain);
-  gain.connect(audioCtx.destination);
-  
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.4);
+  filter.type = 'lowpass'; filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.4, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+  osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.4);
 }
-
 function playPurrSound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-  osc.frequency.setValueAtTime(120, audioCtx.currentTime + 0.15);
-  
-  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-  
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.25);
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+  osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + 0.25);
 }
 </script>
 
+<div class="cooldown-blocker" id="deathOverlay">
+  <div style="font-size: 32px; margin-bottom: 10px;">💀</div>
+  <div style="font-size: 14px; font-weight: bold; color: #ff4a4a; letter-spacing: 1px;">BEAST INCAPACITATED</div>
+  <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin: 8px 0 15px 0; max-width: 240px;">Your pet fainted. Cybernetic reconstruction in progress.</div>
+  <div id="countdownTimer" style="font-size: 18px; font-weight: bold; color: #ffff00;">05:00:00</div>
+</div>
+
 <div class="main-wrapper">
   
-  <div class="top-nav" id="mainTopNav">
+  <div class="top-nav-container">
     <div class="nav-left">
-      <button class="nav-btn" onclick="openScreen('bestiaryScreen')">📖 Bestiary & Switch</button>
+      <button class="nav-btn" onclick="openScreen('bestiaryScreen')">📖 Bestiary</button>
     </div>
-    <button class="nav-btn" style="border-color:#ff4a4a; color:#ff4a4a;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
-  </div>
-
-  <div class="status-panel" id="mainStatusHud">
-    <div class="bar-row">
-      <div class="bar-label"><span>HP</span><span id="txtHp">100/100</span></div>
-      <div class="bar-bg"><div class="bar-fill" id="fillHp" style="background:#ff4a4a;"></div></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label"><span>Hunger</span><span id="txtHunger">100/100</span></div>
-      <div class="bar-bg"><div class="bar-fill" id="fillHunger" style="background:#ffa500;"></div></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label"><span>EXP</span><span id="txtExp">0%</span></div>
-      <div class="bar-bg"><div class="bar-fill" id="fillExp" style="background:#00ff00; width:0%;"></div></div>
+    
+    <div class="status-panel" id="mainStatusHud">
+      <div class="bar-row">
+        <div class="bar-label"><span>HP</span><span id="txtHp">100/100</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="fillHp" style="background:#ff4a4a;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span>Hunger</span><span id="txtHunger">100/100</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="fillHunger" style="background:#ffa500;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span>EXP</span><span id="txtExp">0%</span></div>
+        <div class="bar-bg"><div class="bar-fill" id="fillExp" style="background:#00ff00; width:0%;"></div></div>
+      </div>
     </div>
   </div>
 
   <div class="pet-center-stage" id="mainStage">
-    <div class="pet-draggable-area" id="petActor" onclick="playPurrSound()">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Naga1.png" alt="Pet Core" onerror="this.style.opacity='0.3';">
+    <div class="pet-draggable-area" id="petActor" onclick="handlePetClick()">
+      <img id="petGraphicFile" class="pet-main-graphic" src="Telor.png" alt="Pet Graphic" onerror="this.style.opacity='0.5';">
     </div>
-    <div class="pet-title-tag" id="petLabelTag">Naga1 [Lvl 1]</div>
+    <div class="pet-title-tag" id="petLabelTag">Egg [Unhatched]</div>
+    <button class="nav-btn" id="huntWildTopBtn" style="margin-top:12px; border-color:#ff4a4a; color:#ff4a4a; pointer-events:auto;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
   </div>
 
   <div class="bottom-controls" id="mainBottomControls">
-    <div style="font-size:10px; opacity:0.5; letter-spacing:1px;">Feed Pet Items</div>
+    <div style="font-size:9px; opacity:0.5; letter-spacing:1px;">Feed Active Monster Core</div>
     <div class="inventory-belt">
       <div class="food-slot" onclick="feedPet('apple')">🍎<span class="food-count" id="count-apple">0</span></div>
       <div class="food-slot" onclick="feedPet('candy')">🍬<span class="food-count" id="count-candy">0</span></div>
@@ -223,19 +211,19 @@ function playPurrSound() {
       <div class="food-slot" onclick="feedPet('bread')">🍞<span class="food-count" id="count-bread">0</span></div>
       <div class="food-slot" onclick="feedPet('burger')">🍔<span class="food-count" id="count-burger">0</span></div>
       <div class="food-slot" onclick="feedPet('pizza')">🍕<span class="food-count" id="count-pizza">0</span></div>
-      <div class="food-slot elixir-slot" onclick="useFullElixir()" style="font-size:16px;">🧪<span class="food-count" id="count-elixir" style="background:#00ffff;">0</span></div>
+      <div class="food-slot elixir-slot" onclick="useFullElixir()">🧪<span class="food-count" id="count-elixir" style="background:#00ffff;">0</span></div>
     </div>
   </div>
 
   <div class="screen-overlay" id="battleScreen">
-    <div class="top-nav">
+    <div class="top-nav-container" style="position:static; margin-bottom:10px;">
       <button class="nav-btn" onclick="closeScreen('battleScreen')">⬅️ Back</button>
-      <div style="font-size:11px; font-weight:bold; letter-spacing:1px; color:#ff4a4a;">Wild Hunting Domain</div>
+      <div style="font-size:11px; font-weight:bold; color:#ff4a4a; margin-top:5px;">Wild Hunting Domain</div>
     </div>
     
     <div class="battle-arena-grid">
       <div class="fighter-card">
-        <img id="btPlayerImg" class="fighter-img" src="Naga1.png" alt="Player" onerror="this.style.opacity='0.3';">
+        <img id="btPlayerImg" class="fighter-img" src="Telor.png" alt="Player" onerror="this.style.opacity='0.3';">
         <div id="btPlayerName" style="font-size:11px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
@@ -252,9 +240,9 @@ function playPurrSound() {
   </div>
 
   <div class="screen-overlay" id="bestiaryScreen">
-    <div class="top-nav">
+    <div class="top-nav-container" style="position:static; margin-bottom:10px;">
       <button class="nav-btn" onclick="closeScreen('bestiaryScreen')">⬅️ Back</button>
-      <div style="font-size:11px; font-weight:bold; letter-spacing:1px; color:#ffff00;">Bestiary Database & Deployment</div>
+      <div style="font-size:11px; font-weight:bold; color:#ffff00; margin-top:5px;">Bestiary & Switch Panel</div>
     </div>
     <div class="grid-bestiary" id="bestiaryGridContainer"></div>
   </div>
@@ -262,8 +250,19 @@ function playPurrSound() {
 </div>
 
 <script>
-// Database & Setup Global Parameter
-let corePet = { name: "Naga1", level: 1, hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100 };
+// Core Parameter & Data Persist
+let stateData = {
+  isHatched: false,
+  hatchStreak: 0,
+  activePetName: "Naga1",
+  level: 1,
+  hp: 100, maxHp: 100,
+  hunger: 100, maxHunger: 100,
+  exp: 0, maxExp: 100,
+  power: 15,
+  deathTimestamp: null
+};
+
 let foodBag = { apple: 3, candy: 2, juice: 2, bread: 1, burger: 0, pizza: 0, elixir: 1 };
 let discoveredBeasts = ["Naga1"]; 
 
@@ -276,12 +275,15 @@ const foodValues = {
   pizza:  { xp: 60, hp: 60, hunger: 65 }
 };
 
-const potentialEnemies = [
-  { name: "Void Slime", rarity: "Common", multiplier: 1, img: "Serigala1.png" },
-  { name: "Shadow Basilisk", rarity: "Rare", multiplier: 1.4, img: "Ikan1.png" },
-  { name: "Phantom Griffin", rarity: "Epic", multiplier: 2, img: "Serigala2.png" },
-  { name: "Inferno Drake", rarity: "Mythic", multiplier: 3.5, img: "Naga2.png" },
-  { name: "Amaterasu Core", rarity: "Celestial", multiplier: 5, img: "Naga3.png" }
+// Roll Probability Table Acak Musuh
+const enemyPool = [
+  { name: "Void Slime", rarity: "Common", multiplier: 1.0, chance: 0.27, img: "Serigala1.png" },
+  { name: "Gorgon Larva", rarity: "Uncommon", multiplier: 1.2, chance: 0.23, img: "Ikan1.png" },
+  { name: "Shadow Basilisk", rarity: "Rare", multiplier: 1.6, chance: 0.20, img: "Ikan2.png" },
+  { name: "Phantom Griffin", rarity: "Epic", multiplier: 2.2, chance: 0.15, img: "Serigala2.png" },
+  { name: "Mecha Golem", rarity: "Legendary", multiplier: 3.0, chance: 0.12, img: "Serigala3.png" },
+  { name: "Inferno Drake", rarity: "Mythic", multiplier: 4.2, chance: 0.07, img: "Naga2.png" },
+  { name: "Amaterasu Core", rarity: "Celestial", multiplier: 6.0, chance: 0.01, img: "Naga3.png" }
 ];
 
 const allBeastList = [
@@ -295,39 +297,49 @@ let dragActive = false;
 let startX, currentTransformX = 0;
 const petActor = document.getElementById("petActor");
 
-// LOAD & SAVE ENGINE LOCALSTORAGE
 function saveLocalData() {
+  localStorage.setItem("BLDS_STATE_SYSTEM", JSON.stringify(stateData));
   localStorage.setItem("BLDS_BEAST_BAG", JSON.stringify(foodBag));
   localStorage.setItem("BLDS_BEAST_DISCOVERED", JSON.stringify(discoveredBeasts));
-  localStorage.setItem("BLDS_BEAST_ALIVE_STATUS", JSON.stringify(corePet));
 }
 
 function loadLocalData() {
+  const s = localStorage.getItem("BLDS_STATE_SYSTEM"); if(s) stateData = JSON.parse(s);
   const b = localStorage.getItem("BLDS_BEAST_BAG"); if(b) foodBag = JSON.parse(b);
   const d = localStorage.getItem("BLDS_BEAST_DISCOVERED"); if(d) discoveredBeasts = JSON.parse(d);
-  const s = localStorage.getItem("BLDS_BEAST_ALIVE_STATUS");
-  if(s) {
-    const loaded = JSON.parse(s);
-    corePet = loaded;
-  }
+  
+  checkDeathCooldown();
   syncInterfaceGraphic();
+  setInterval(checkDeathCooldown, 1000); // Cek timer real-time tiap detik
 }
 
 function syncInterfaceGraphic() {
-  document.getElementById("petGraphicFile").src = corePet.name + ".png";
-  document.getElementById("petLabelTag").innerText = `${corePet.name}.png [Lvl ${corePet.level}]`;
+  const graphicEl = document.getElementById("petGraphicFile");
+  const labelEl = document.getElementById("petLabelTag");
+  const huntBtn = document.getElementById("huntWildTopBtn");
+
+  if (!stateData.isHatched) {
+    graphicEl.src = "Telor.png";
+    labelEl.innerHTML = `Egg Matrix<br><span style="font-size:9px;color:#ffff00;">Streak Required: ${stateData.hatchStreak}/2 untuk Netes</span>`;
+    huntBtn.disabled = true;
+    huntBtn.innerText = "🔒 Need Hatching";
+  } else {
+    graphicEl.src = stateData.activePetName + ".png";
+    labelEl.innerText = `${stateData.activePetName}.png [Lvl ${stateData.level}]`;
+    huntBtn.disabled = false;
+    huntBtn.innerText = "⚔️ Hunt Wild";
+  }
   renderStats();
   updateInventoryCounters();
 }
 
 function renderStats() {
-  document.getElementById("txtHp").innerText = `${corePet.hp}/${corePet.maxHp}`;
-  document.getElementById("fillHp").style.width = `${(corePet.hp / corePet.maxHp) * 100}%`;
+  document.getElementById("txtHp").innerText = `${stateData.hp}/${stateData.maxHp}`;
+  document.getElementById("fillHp").style.width = `${(stateData.hp / stateData.maxHp) * 100}%`;
+  document.getElementById("txtHunger").innerText = `${stateData.hunger}/${stateData.maxHunger}`;
+  document.getElementById("fillHunger").style.width = `${(stateData.hunger / stateData.maxHunger) * 100}%`;
   
-  document.getElementById("txtHunger").innerText = `${corePet.hunger}/${corePet.maxHunger}`;
-  document.getElementById("fillHunger").style.width = `${(corePet.hunger / corePet.maxHunger) * 100}%`;
-  
-  const expPct = (corePet.exp / corePet.maxExp) * 100;
+  const expPct = (stateData.exp / stateData.maxExp) * 100;
   document.getElementById("txtExp").innerText = `${Math.floor(expPct)}%`;
   document.getElementById("fillExp").style.width = `${expPct}%`;
 }
@@ -339,25 +351,44 @@ function updateInventoryCounters() {
   });
 }
 
-// 🧬 SWITCH PET ENGINE
-function switchActivePet(targetPetName) {
-  corePet.name = targetPetName;
+// 🥚 MEKANIK TETAS TELOR VIA CLICK / STREAK
+function handlePetClick() {
+  if (!stateData.isHatched) {
+    stateData.hatchStreak++;
+    playPurrSound();
+    if (stateData.hatchStreak >= 2) {
+      stateData.isHatched = true;
+      stateData.hp = stateData.maxHp;
+      alert("🎉 BOOM! Telur berhasil netes! Monster pertamamu siap digunakan bertarung.");
+      playGrowlSound();
+    }
+    saveLocalData();
+    syncInterfaceGraphic();
+  } else {
+    playPurrSound();
+  }
+}
+
+// 🧬 INTERFACES GANTI HEWAN ACTIVE PET
+function switchActivePet(targetName) {
+  if(!stateData.isHatched) return;
+  stateData.activePetName = targetName;
   playGrowlSound();
   saveLocalData();
   syncInterfaceGraphic();
   closeScreen('bestiaryScreen');
 }
 
-// 🍏 FEED SYSTEM & RECOVERY
+// 🍏 RECOVERY & INPUT FEEDING ITEM
 function feedPet(itemKey) {
-  if (foodBag[itemKey] <= 0) { alert("Food item empty! Hunt down some wild beast."); return; }
-  if (corePet.hunger >= corePet.maxHunger && corePet.hp >= corePet.maxHp) { alert("Your pet status is fully loaded."); return; }
+  if (!stateData.isHatched) { alert("Egg cannot consume items. Click it to hatch first!"); return; }
+  if (foodBag[itemKey] <= 0) { alert("Item out of stock!"); return; }
   
   foodBag[itemKey]--;
   const effect = foodValues[itemKey];
   
-  corePet.hp = Math.min(corePet.maxHp, corePet.hp + effect.hp);
-  corePet.hunger = Math.min(corePet.maxHunger, corePet.hunger + effect.hunger);
+  stateData.hp = Math.min(stateData.maxHp, stateData.hp + effect.hp);
+  stateData.hunger = Math.min(stateData.maxHunger, stateData.hunger + effect.hunger);
   
   addExp(effect.xp);
   playPurrSound();
@@ -366,60 +397,70 @@ function feedPet(itemKey) {
   updateInventoryCounters();
 }
 
-// 🧪 LAB INJECTION ELIXIR FULL RECOVERY
+// 🧪 FULL ELIXIR RECOVERY
 function useFullElixir() {
-  if (foodBag.elixir <= 0) { alert("You don't have any Elixir! Drop rate is 10% from combat."); return; }
-  if (corePet.hp >= corePet.maxHp) { alert("Health matrix is already at peak performance!"); return; }
+  if (!stateData.isHatched) return;
+  if (foodBag.elixir <= 0) { alert("No Elixir available."); return; }
   
   foodBag.elixir--;
-  corePet.hp = corePet.maxHp; // Instan Full HP
+  stateData.hp = stateData.maxHp;
   
   playPurrSound();
   saveLocalData();
   renderStats();
   updateInventoryCounters();
-  alert("🧪 Elixir Synced! Health fully restored to 100%.");
 }
 
 function addExp(amount) {
-  corePet.exp += amount;
-  if (corePet.exp >= corePet.maxExp) {
-    corePet.exp -= corePet.maxExp;
-    corePet.level++;
-    corePet.maxHp = 100 + (corePet.level * 10);
-    corePet.maxExp = 100 + (corePet.level * 25);
-    alert(`🎉 Level Up! Deployed Core reached Level ${corePet.level}!`);
+  stateData.exp += amount;
+  if (stateData.exp >= stateData.maxExp) {
+    stateData.exp -= stateData.maxExp;
+    stateData.level++;
+    // Skala Stat: Semakin banyak exp/level, darah + power meningkat!
+    stateData.maxHp = 100 + (stateData.level * 15);
+    stateData.hp = stateData.maxHp;
+    stateData.power = 15 + (stateData.level * 4);
+    stateData.maxExp = 100 + (stateData.level * 30);
+    alert(`✨ Level Up! Your pet reached Level ${stateData.level}. Power & HP increased.`);
   }
 }
 
-// 🕹️ DRAG SYSTEM (SMOOTH TOM BEHAVIOR + SOUND TRACKING)
+// 🕹️ DRAG & SNAP SMOOTH BACK ANIMATION
 petActor.addEventListener("mousedown", (e) => { dragActive = true; startX = e.clientX; });
 window.addEventListener("mousemove", (e) => {
   if (!dragActive) return;
   currentTransformX = e.clientX - startX;
   petActor.style.transform = `translateX(${currentTransformX}px)`;
-  if(Math.abs(currentTransformX) > 80 && Math.random() < 0.05) { playGrowlSound(); }
 });
 window.addEventListener("mouseup", () => {
-  if (!dragActive) return;
-  dragActive = false;
-  petActor.style.transition = "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+  if (!dragActive) return; dragActive = false;
+  petActor.style.transition = "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25)";
   petActor.style.transform = "translateX(0px)";
-  setTimeout(() => { petActor.style.transition = "transform 0.1s ease"; }, 500);
+  setTimeout(() => { petActor.style.transition = "transform 0.1s ease"; }, 400);
 });
 
-// ⚔️ AUTOMATIC COMBAT LOGIC FOR FOOD AND EXP HUNTING
+// ⚔️ GACHA RANDOM PROBABILITY ENEMY SPARK
+function getRandomEnemy() {
+  let rand = Math.random();
+  let cumulative = 0;
+  for (let enemy of enemyPool) {
+    cumulative += enemy.chance;
+    if (rand <= cumulative) return Object.assign({}, enemy);
+  }
+  return Object.assign({}, enemyPool[0]); // Fallback ke Common
+}
+
 function prepareBattle() {
-  activeEnemy = Object.assign({}, potentialEnemies[Math.floor(Math.random() * potentialEnemies.length)]);
-  const lvlMod = Math.floor(corePet.level * (0.8 + Math.random() * 0.5)) || 1;
+  activeEnemy = getRandomEnemy();
+  const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.5)) || 1;
   
-  activeEnemy.maxHp = Math.floor((40 + (lvlMod * 8)) * activeEnemy.multiplier);
+  activeEnemy.maxHp = Math.floor((40 + (lvlMod * 10)) * activeEnemy.multiplier);
   activeEnemy.hp = activeEnemy.maxHp;
-  activeEnemy.dmg = Math.floor((8 + (lvlMod * 2)) * activeEnemy.multiplier);
+  activeEnemy.dmg = Math.floor((6 + (lvlMod * 3)) * activeEnemy.multiplier);
   
-  document.getElementById("btPlayerImg").src = corePet.name + ".png";
-  document.getElementById("btPlayerName").innerText = corePet.name;
-  document.getElementById("btPlayerHp").innerText = `${corePet.hp}/${corePet.maxHp} HP`;
+  document.getElementById("btPlayerImg").src = stateData.activePetName + ".png";
+  document.getElementById("btPlayerName").innerText = stateData.activePetName;
+  document.getElementById("btPlayerHp").innerText = `${stateData.hp}/${stateData.maxHp} HP`;
   
   document.getElementById("btEnemyImg").src = activeEnemy.img;
   document.getElementById("btEnemyName").innerText = `${activeEnemy.name} [Lvl ${lvlMod}]`;
@@ -427,106 +468,132 @@ function prepareBattle() {
   
   const tag = document.getElementById("btEnemyRarity");
   tag.innerText = activeEnemy.rarity;
+  
+  // Set Color-code label rarity
   if(activeEnemy.rarity === "Celestial") tag.style.background = "#ffff00", tag.style.color="#000";
   else if(activeEnemy.rarity === "Mythic") tag.style.background = "#ff3333", tag.style.color="#fff";
+  else if(activeEnemy.rarity === "Legendary") tag.style.background = "#ffa500", tag.style.color="#fff";
+  else if(activeEnemy.rarity === "Epic") tag.style.background = "#bf55ec", tag.style.color="#fff";
   else tag.style.background = "#ffffff", tag.style.color="#000";
   
-  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Confrontation matrix initialized against a wild ${activeEnemy.rarity} encounter.</div>`;
+  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Warning: Confronting wild ${activeEnemy.rarity} tier lifeform.</div>`;
   document.getElementById("btActionBtn").disabled = false;
 }
 
 function startCombatEngine() {
   document.getElementById("btActionBtn").disabled = true;
   const log = document.getElementById("battleLogBox");
-  let pCurrentHp = corePet.hp;
-  
+  let pCurrentHp = stateData.hp;
   let turn = 0;
-  let interval = setInterval(() => {
+  
+  let combatInterval = setInterval(() => {
     turn++;
-    // Player Attack Phase
-    let pDmg = Math.floor((15 + (corePet.level * 3)) * (0.8 + Math.random() * 0.4));
+    // Serang Musuh
+    let pDmg = Math.floor(stateData.power * (0.8 + Math.random() * 0.4));
     activeEnemy.hp = Math.max(0, activeEnemy.hp - pDmg);
-    log.innerHTML += `<div>⚔️ Turn ${turn}: Your ${corePet.name} hits for <b>${pDmg}</b> damage.</div>`;
+    log.innerHTML += `<div>⚔️ Turn ${turn}: Hit dealt <b>${pDmg}</b> damage.</div>`;
     document.getElementById("btEnemyHp").innerText = `${activeEnemy.hp}/${activeEnemy.maxHp} HP`;
     log.scrollTop = log.scrollHeight;
     
     if (activeEnemy.hp <= 0) {
-      clearInterval(interval);
+      clearInterval(combatInterval);
       
-      // Hitung EXP Persentase Berdasarkan Rarity
-      let pctReward = 0.15; 
-      let lootItems = ["apple", "candy"];
+      // Hitung EXP Persentase Berdasarkan Rarity Musuh
+      let pct = 0.15; // Common
+      let loot = ["apple"];
       
-      if (activeEnemy.rarity === "Celestial") { pctReward = 0.60; lootItems = ["burger", "pizza", "juice"]; }
-      else if (activeEnemy.rarity === "Mythic") { pctReward = 0.45; lootItems = ["burger", "bread", "pizza"]; }
-      else if (activeEnemy.rarity === "Epic") { pctReward = 0.35; lootItems = ["bread", "juice"]; }
-      else if (activeEnemy.rarity === "Rare") { pctReward = 0.25; lootItems = ["juice", "candy"]; }
+      if (activeEnemy.rarity === "Celestial") { pct = 0.60; loot = ["pizza", "burger", "juice"]; }
+      else if (activeEnemy.rarity === "Mythic") { pct = 0.45; loot = ["burger", "pizza"]; }
+      else if (activeEnemy.rarity === "Legendary") { pct = 0.35; loot = ["bread", "burger"]; }
+      else if (activeEnemy.rarity === "Epic") { pct = 0.28; loot = ["juice", "bread"]; }
+      else if (activeEnemy.rarity === "Rare") { pct = 0.22; loot = ["candy", "juice"]; }
+      else if (activeEnemy.rarity === "Uncommon") { pct = 0.18; loot = ["apple", "candy"]; }
       
-      let expGained = Math.floor(corePet.maxExp * pctReward);
+      let expGained = Math.floor(stateData.maxExp * pct);
       addExp(expGained);
       
-      // Berikan Loot Makanan Acak
-      let rewardItem = lootItems[Math.floor(Math.random() * lootItems.length)];
-      foodBag[rewardItem] += Math.floor(1 + Math.random() * 2);
+      // Drop loot acak makanan
+      let rewardedFood = loot[Math.floor(Math.random() * loot.length)];
+      foodBag[rewardedFood] += Math.floor(1 + Math.random() * 2);
       
-      // 🧪 CHANCE DROP ELIXIR FULL RECOVERY (STRICT 10%)
-      let elixirDropped = false;
-      if (Math.random() <= 0.10) {
-        foodBag.elixir++;
-        elixirDropped = true;
-      }
+      // Drop 10% Chance Elixir 🧪
+      let gotElixir = false;
+      if (Math.random() <= 0.10) { foodBag.elixir++; gotElixir = true; }
       
-      log.innerHTML += `<div style='color:#00ff00; font-weight:bold;'>🏆 Victory! Earned ${expGained} EXP (${Math.floor(pctReward * 100)}%).</div>`;
-      if (elixirDropped) {
-        log.innerHTML += `<div style='color:#00ffff; font-weight:bold;'>🧪 BONUS DROP: Obtained 1x Ultra Full Elixir (10% Chance Luck)!</div>`;
-      }
+      log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! +${expGained} EXP gained.</div>`;
+      if(gotElixir) log.innerHTML += `<div style='color:#00ffff;font-weight:bold;'>🧪 Drop Luck! Found 1x Elixir.</div>`;
       
       if (!discoveredBeasts.includes(activeEnemy.name)) discoveredBeasts.push(activeEnemy.name);
       
-      corePet.hp = pCurrentHp; 
+      stateData.hp = pCurrentHp;
       saveLocalData(); syncInterfaceGraphic();
       return;
     }
     
-    // Enemy Attack Phase
+    // Giliran Musuh Menyerang Balik
     let eDmg = Math.floor(activeEnemy.dmg * (0.8 + Math.random() * 0.4));
     pCurrentHp = Math.max(0, pCurrentHp - eDmg);
-    log.innerHTML += `<div style='color:#ff4a4a;'>💥 Turn ${turn}: Enemy retaliates dealing <b>${eDmg}</b> damage.</div>`;
-    document.getElementById("btPlayerHp").innerText = `${pCurrentHp}/${corePet.maxHp} HP`;
+    log.innerHTML += `<div style='color:#ff4a4a;'>💥 Turn ${turn}: Enemy counter-punches for <b>${eDmg}</b> damage.</div>`;
+    document.getElementById("btPlayerHp").innerText = `${pCurrentHp}/${stateData.maxHp} HP`;
     log.scrollTop = log.scrollHeight;
     
+    // KRITIKAL: JIKA PET MATI (RESPAWN 5 JAM + COOLDOWN NYALA)
     if (pCurrentHp <= 0) {
-      clearInterval(interval);
-      log.innerHTML += `<div style='color:#ff4a4a; font-weight:bold;'>❌ Defeated. Your pet fainted from the arena.</div>`;
-      corePet.hp = 5; // Sisakan 5 HP agar tidak mati total
-      saveLocalData(); syncInterfaceGraphic();
+      clearInterval(combatInterval);
+      log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Your pet has fallen in battle.</div>`;
+      
+      stateData.hp = 0;
+      stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000); // 5 Jam kedepan
+      saveLocalData();
+      syncInterfaceGraphic();
+      setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
     }
   }, 600);
 }
 
-// 📖 BESTIARY BUILDER SCREEN (DENGAN TOMBOL SWITCH GANTI HEWAN)
+// 🕒 TRACKER RESPOND TIMER DETEKTIF COOLDOWN OVERLAY
+function checkDeathCooldown() {
+  if (stateData.deathTimestamp && Date.now() < stateData.deathTimestamp) {
+    document.getElementById("deathOverlay").style.display = "flex";
+    let diff = stateData.deathTimestamp - Date.now();
+    
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    let secs = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // Formatting 00:00:00
+    document.getElementById("countdownTimer").innerText = 
+      `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+  } else {
+    if(stateData.hp === 0 && stateData.deathTimestamp) {
+      stateData.hp = Math.floor(stateData.maxHp * 0.3); // Auto recovery 30% setelah nunggu 5 jam
+      stateData.deathTimestamp = null;
+      saveLocalData();
+      syncInterfaceGraphic();
+    }
+    document.getElementById("deathOverlay").style.display = "none";
+  }
+}
+
+// 📖 RENDERING PANEL BESTIARY
 function buildBestiaryUI() {
   const container = document.getElementById("bestiaryGridContainer");
-  container.innerHTML = allBeastList.map(beastName => {
-    const isFound = discoveredBeasts.includes(beastName);
-    const isCurrentlyActive = (corePet.name === beastName);
-    
+  container.innerHTML = allBeastList.map(name => {
+    const isFound = discoveredBeasts.includes(name);
+    const isCurrent = (stateData.activePetName === name);
     return `
       <div class="beast-card-slot ${isFound ? 'discovered' : ''}">
-        <img src="${beastName}.png" alt="Beast" onerror="this.style.opacity='0.2';">
-        <div style="margin-top:5px; font-weight:bold; overflow:hidden; text-overflow:ellipsis;">${isFound ? beastName : 'Unknown'}</div>
-        ${isFound ? 
-          (isCurrentlyActive ? 
-            `<button class="select-party-btn" style="background:#00ff00; color:#000;" disabled>Deployed</button>` : 
-            `<button class="select-party-btn" onclick="switchActivePet('${beastName}')">Deploy</button>`
-          ) : ''
+        <img src="${name}.png" alt="Beast" onerror="this.style.opacity='0.2';">
+        <div style="margin-top:4px; font-weight:bold;">${isFound ? name : 'Unknown'}</div>
+        ${isFound ? (isCurrent ? 
+          `<button class="select-party-btn" style="background:#00ff00;" disabled>Active</button>` : 
+          `<button class="select-party-btn" onclick="switchActivePet('${name}')">Deploy</button>`) : ''
         }
       </div>
     `;
   }).join('');
 }
 
-// NAVIGATION CONTROLLER
 function openScreen(id) {
   document.getElementById(id).style.display = "flex";
   if(id === "bestiaryScreen") buildBestiaryUI();
