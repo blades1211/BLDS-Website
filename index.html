@@ -110,9 +110,33 @@ body {
 .title { 
   font-size: 28px; 
   letter-spacing: 8px; 
-  margin-bottom: 40px; 
+  margin-bottom: 10px; 
   text-align: center; 
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 👾 LIVE PET DISPLAY POSITION SYSTEM */
+.title-pet-display {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 35px;
+  animation: floatAnim 4s infinite ease-in-out;
+}
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.title-pet-avatar {
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.title-pet-details {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
 }
 
 #enterBtn, .calibration-box button, .admin-btn, .modal-box button {
@@ -122,6 +146,15 @@ body {
   border-radius: 50px;
 }
 #enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+
+/* Lock Cooldown Custom Style */
+.calibration-box button:disabled {
+  background: rgba(255,255,255,0.05) !important;
+  color: rgba(255,255,255,0.3) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
 
 .menu { 
   display: none; 
@@ -174,7 +207,6 @@ body {
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 
-/* 🛡️ REFIX CLEAN RESET BUTTON WINDOW (ANTI INTERFERENCE) */
 .reset-container-block { margin-top: 15px; text-align: center; }
 .reset-streak-btn { font-size: 10px !important; color: #ff4a4a !important; border: 1px solid rgba(255,74,74,0.3) !important; background: transparent; padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
 .reset-streak-btn:hover { background: #ff4a4a !important; color: #000 !important; box-shadow: 0 0 12px rgba(255,74,74,0.5); }
@@ -266,6 +298,12 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   </div>
 
   <h1 class="title">BLACKLIGHTDOMS</h1>
+  
+  <div class="title-pet-display" id="titlePetDisplay">
+    <div class="title-pet-avatar" id="titlePetAvatar">🥚</div>
+    <div class="title-pet-details" id="titlePetDetails">Void Hatchling [LVL 1]</div>
+  </div>
+
   <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
 
   <div class="menu" id="menu">
@@ -345,12 +383,12 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
       <select id="admPetStage" style="margin-bottom:8px;">
         <option value="">-- SELECT FORM --</option>
-        <option value="EGG">EGG SYSTEM</option>
-        <option value="LARVA">LARVA FORM</option>
-        <option value="BEAST">BEAST MODE</option>
-        <option value="MYTHICAL">MYTHICAL ASCENSION</option>
+        <option value="EGG">EGG SYSTEM (🥚)</option>
+        <option value="LARVA">LARVA FORM (🐛)</option>
+        <option value="BEAST">BEAST MODE (👾)</option>
+        <option value="MYTHICAL">MYTHICAL ASCENSION (🐉)</option>
       </select>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
         <button class="admin-btn" style="font-size:9px; padding:6px;" onclick="ownerTriggerBeastAction('STABILIZE_LOOP')">STABILIZE LOOP</button>
         <button class="admin-btn" style="font-size:9px; padding:6px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerTriggerBeastAction('IGNITE_BURST')">BEAST BURST</button>
       </div>
@@ -364,6 +402,11 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
         <button class="admin-btn" style="font-size:9px; padding:8px;" onclick="ownerAddLeaderboard()">➕ ADD USER</button>
         <button class="admin-btn" style="font-size:9px; padding:8px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerClearLeaderboard()">🗑️ WIPE FAKES</button>
       </div>
+    </div>
+
+    <div class="admin-sub-sect">
+      <label>System Integrity Debug</label>
+      <button class="admin-btn" style="width:100%; font-size:10px; border-color:#ffcc00; color:#ffcc00; padding:8px;" onclick="bypassCooldownInstant()">⏳ RESET COOLDOWN INSTANT</button>
     </div>
 
     <div class="admin-sub-sect">
@@ -445,6 +488,14 @@ let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
 let petData = { name: "Void Hatchling", level: 1, stage: "EGG" };
 let fakeCompetitors = [];
+let cooldownInterval = null;
+
+const stageAvatars = {
+  "EGG": "🥚",
+  "LARVA": "🐛",
+  "BEAST": "👾",
+  "MYTHICAL": "🐉"
+};
 
 function handleLogoMissing() {
   document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // CORE</div>`;
@@ -557,6 +608,7 @@ function loadState() {
   const savedLb = localStorage.getItem("BLDS_CORE_FAKE_LEADER");
   if(savedLb) fakeCompetitors = JSON.parse(savedLb);
   updateUI();
+  checkCooldownLoop();
 }
 
 function updateUI() {
@@ -569,6 +621,11 @@ function updateUI() {
   else if(streakData.count >= 7) rank = "ECLIPSE SYNCHRONIZER";
   document.getElementById("rankTitle").innerText = rank;
   
+  // Update Live Pet Telemetry under Main Title
+  const avatar = stageAvatars[petData.stage] || "🥚";
+  document.getElementById("titlePetAvatar").innerText = avatar;
+  document.getElementById("titlePetDetails").innerText = `${petData.name} [LVL ${petData.level}]`;
+
   let unlocked = 0;
   targets.forEach((t, i) => {
     const card = document.getElementById(`ach${i+1}`);
@@ -592,11 +649,58 @@ function renderLeaderboard() {
   `).join('');
 }
 
+// ⏳ 24 HOURS COOLDOWN ENGINE RULES
+function checkCooldownLoop() {
+  if (cooldownInterval) clearInterval(cooldownInterval);
+  
+  cooldownInterval = setInterval(() => {
+    if (!streakData.lastCalibratedTimestamp) {
+      resetCalibrationBtnUI();
+      return;
+    }
+
+    const now = Date.now();
+    const targetTime = streakData.lastCalibratedTimestamp + (24 * 60 * 60 * 1000);
+    const diff = targetTime - now;
+
+    if (diff <= 0) {
+      resetCalibrationBtnUI();
+      clearInterval(cooldownInterval);
+    } else {
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      const btn = document.getElementById("calibrationBtn");
+      btn.disabled = true;
+      btn.innerText = `LOCKED (${hours}h ${minutes}m ${seconds}s)`;
+      document.getElementById("calibrationStatus").innerText = "RESONANCE STABILIZING. PLEASE WAIT FOR NEXT INJECTION.";
+    }
+  }, 1000);
+}
+
+function resetCalibrationBtnUI() {
+  const btn = document.getElementById("calibrationBtn");
+  btn.disabled = false;
+  btn.innerText = "SYNC WITH CORE";
+  document.getElementById("calibrationStatus").innerText = "SYSTEM READY FOR RESONANCE INTEGRATION";
+}
+
 function calibrateCore() {
   streakData.count++;
   if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
   streakData.lastCalibratedTimestamp = Date.now();
-  saveState(); updateUI();
+  saveState(); 
+  updateUI();
+  checkCooldownLoop();
+}
+
+function bypassCooldownInstant() {
+  streakData.lastCalibratedTimestamp = null;
+  saveState();
+  resetCalibrationBtnUI();
+  if (cooldownInterval) clearInterval(cooldownInterval);
+  alert("OWNER BYPASS: Cooldown lock has been completely removed.");
 }
 
 function enter() {
@@ -608,6 +712,7 @@ function enter() {
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("streakWidget").style.display = "flex";
+    document.getElementById("titlePetDisplay").style.display = "flex";
     document.getElementById("calibrationHud").style.display = "block";
     document.getElementById("menu").style.display = "flex";
     showPage('origin');
@@ -634,7 +739,6 @@ function unlockCode() {
   }
 }
 
-/* 🏆 CONTROLLER HUB LEADERBOARD UTK OWNER */
 function ownerAddLeaderboard() {
   const nameInput = document.getElementById("admLbName").value.trim();
   const streakInput = parseInt(document.getElementById("admLbStreak").value);
@@ -650,7 +754,6 @@ function ownerClearLeaderboard() {
   alert("Fake Leaderboard cleared.");
 }
 
-/* ⚡ OPERASIONAL EVENT BEAST ACTION (STABILIZE & IGNITE) */
 function ownerTriggerBeastAction(actionType) {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
