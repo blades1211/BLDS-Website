@@ -16,16 +16,23 @@ body {
 
 .beast-container { max-width: 600px; margin: 0 auto; padding: 40px 20px; text-align: center; }
 
-/* Navigation Tab Menu */
+/* Navigation Tab Menu - MENU UTAMA */
 .beast-nav-menu {
   display: flex; gap: 10px; justify-content: center; margin-bottom: 25px;
 }
 .beast-nav-menu button {
-  padding: 10px 20px; font-size: 11px; font-weight: bold;
+  padding: 12px 24px; font-size: 11px; font-weight: bold; cursor: pointer;
   background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff;
+  text-transform: uppercase; transition: all 0.2s;
 }
 .beast-nav-menu button.active-tab {
   background: #fff; color: #000; border-color: #fff;
+}
+.beast-nav-menu button:hover {
+  background: rgba(255,255,255,0.1); color: #fff;
+}
+.beast-nav-menu button.active-tab:hover {
+  background: #fff; color: #000;
 }
 
 .view-section { display: none; }
@@ -90,28 +97,28 @@ body {
 }
 
 /* ==========================================================================
-   📖 BESTIARY SYSTEEM GRID (SILHOUETTE ENGINE)
+   📖 BESTIARY SYSTEM GRID (SILHOUETTE ENGINE)
    ========================================================================== */
 .bestiary-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-top: 20px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px;
 }
 .bestiary-card {
-  background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05);
   border-radius: 8px; padding: 15px 10px; text-align: center; transition: all 0.3s;
 }
 .bestiary-card.discovered {
-  border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03);
 }
 .bestiary-avatar-box {
-  width: 70px; height: 70px; margin: 0 auto 10px auto; display: flex; justify-content: center; align-items: center;
+  width: 80px; height: 80px; margin: 0 auto 10px auto; display: flex; justify-content: center; align-items: center;
 }
-/* Silhouette Logic Style Override */
+/* Efek otomatis membuat siluet hitam pekat */
 .bestiary-card.undiscovered .bestiary-avatar-box img {
-  filter: brightness(0) contrast(1) !important; /* Membuat gambar otomatis menjadi siluet hitam */
-  opacity: 0.25;
+  filter: brightness(0) !important;
+  opacity: 0.15;
 }
-.bestiary-meta-title { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-.bestiary-meta-desc { font-size: 9px; color: rgba(255,255,255,0.4); line-height: 1.3; }
+.bestiary-meta-title { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.bestiary-meta-desc { font-size: 10px; color: rgba(255,255,255,0.4); line-height: 1.4; text-align: left; }
 
 /* Systems Modals & Sub-layers */
 .odyssey-cutscene-layer {
@@ -145,9 +152,6 @@ body {
 .modal-box { background: #05050a; border: 1px solid rgba(255,255,255,0.2); padding: 25px; text-align: center; border-radius: 8px; max-width: 320px; width: 100%; }
 
 input[type="text"], select, button { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 12px; font-family: inherit; font-size: 11px; width: 100%; box-sizing: border-box; margin-bottom: 10px; letter-spacing: 1px; }
-button { cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
-button:hover { background: #fff; color: #000; border-color: #fff; }
-button:disabled { opacity: 0.3; cursor: not-allowed; background: transparent; color: #fff; }
 .path-selector-box { margin-bottom: 20px; text-align: left; }
 .path-selector-box label { font-size: 10px; opacity: 0.5; display: block; margin-bottom: 5px; letter-spacing: 1px; }
 </style>
@@ -158,14 +162,14 @@ button:disabled { opacity: 0.3; cursor: not-allowed; background: transparent; co
 
 <div class="beast-container">
   <h2 style="letter-spacing: 4px; font-size: 20px; margin-bottom: 5px;">BEAST CORE SYSTEM</h2>
-  <p style="font-size: 11px; opacity: 0.4; margin: 0 0 20px 0;">NODE ENHANCEMENT & SIMULATION FRAMEWORK</p>
+  <p style="font-size: 11px; opacity: 0.4; margin: 0 0 25px 0;">NODE ENHANCEMENT & SIMULATION FRAMEWORK</p>
   
   <div class="beast-nav-menu">
-    <button id="tabBtnHud" class="active-tab" onclick="switchViewSection('hud')">🎮 MAIN ENGINE</button>
-    <button id="tabBtnBestiary" onclick="switchViewSection('bestiary')">📖 BESTIARY BOOK</button>
+    <button id="tabBtnEngine" class="active-tab" onclick="toggleActiveView('engine')">Grid Engine</button>
+    <button id="tabBtnBook" onclick="toggleActiveView('book')">Bestiary Book</button>
   </div>
 
-  <div id="sectionHud" class="view-section active-section">
+  <div id="viewContainerEngine" class="view-section active-section">
     <div class="path-selector-box">
       <label>CHOOSE ACTIVE PATHWAY CORE:</label>
       <select id="beastPathSelect" onchange="switchBeastPath()">
@@ -215,13 +219,12 @@ button:disabled { opacity: 0.3; cursor: not-allowed; background: transparent; co
     <button onclick="triggerSimulated100Days()" style="border-color: rgba(255,255,255,0.15); font-size:10px; opacity:0.6;">TEST CELESTIAL ODYSSEY (100 DAYS LOOP)</button>
   </div>
 
-  <div id="sectionBestiary" class="view-section">
-    <div class="pet-hud-box" style="text-align: left; padding: 20px;">
-      <h3 style="margin-top:0; font-size:14px; letter-spacing:1px;">📚 BLDS DATA CODEX</h3>
-      <p style="font-size:10px; opacity:0.5; margin:0;">Mutasi wujud dan level pet kamu untuk mendeteksi data core tersembunyi.</p>
+  <div id="viewContainerBook" class="view-section">
+    <div class="pet-hud-box" style="text-align: left; padding: 25px;">
+      <h3 style="margin-top: 0; font-size: 14px; letter-spacing: 2px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">📖 ENCYCLOPEDIA CODEX</h3>
       
-      <div class="bestiary-grid" id="bestiaryGridContainer">
-         </div>
+      <div class="bestiary-grid" id="bestiaryGridOutlet">
+        </div>
     </div>
   </div>
 
@@ -282,14 +285,14 @@ let beastData = {
   level: 1, exp: 0, currentHp: 100
 };
 
-// Full database listing for silhouette verification mapping
-const BESTIARY_DATABASE = [
-  { id: "dragon_base", pathway: "dragon", type: "base", name: "Void Dragon", img: "Naga3.png", desc: "Naga kegelapan pengendali sinyal ruang kosong void." },
-  { id: "fish_base", pathway: "fish", type: "base", name: "Abyss Leviathan", img: "Ikan3.png", desc: "Makhluk laut dalam pemangsa sisa-sisa badai korupsi data." },
-  { id: "wolf_base", pathway: "wolf", type: "base", name: "Shadow Fenrir", img: "Serigala3.png", desc: "Serigala pemburu lincah penembus dinding enkripsi matrix." },
-  { id: "cerberus_leg", pathway: "any", type: "legendary", name: "God Cerberus", img: "Cerberus.png", desc: "Penguasa gerbang neraka data, penyembur api thermal overwriting." },
-  { id: "phoenix_leg", pathway: "any", type: "legendary", name: "God Phoenix", img: "Phoenix.png", desc: "Prototipe regenerasi abadi, penyeimbang sistem yang terbakar habis." },
-  { id: "leviathan_leg", pathway: "any", type: "legendary", name: "God Leviathan", img: "Leviathan.png", desc: "Penguasa absolut samudra data, penghancur soket server utama." }
+// Database Indeks Peta Koleksi Bestiary
+const BESTIARY_DB = [
+  { id: "dragon", type: "base", name: "Void Dragon", img: "Naga3.png", desc: "Naga purba pengendali distorsi ruang kosong data void." },
+  { id: "fish", type: "base", name: "Abyss Leviathan", img: "Ikan3.png", desc: "Makhluk laut terdalam penyerap anomali kebocoran memori." },
+  { id: "wolf", type: "base", name: "Shadow Fenrir", img: "Serigala3.png", desc: "Serigala pemburu lincah penembus protokol enkripsi sistem." },
+  { id: "cerberus", type: "legendary", name: "God Cerberus", img: "Cerberus.png", desc: "Penjaga gerbang komputasi neraka. Mengunci musuh dengan api thermal." },
+  { id: "phoenix", type: "legendary", name: "God Phoenix", img: "Phoenix.png", desc: "Inti regenerator sistem abadi. Memulihkan sektor data hancur." },
+  { id: "leviathan", type: "legendary", name: "God Leviathan", img: "Leviathan.png", desc: "Penguasa mutlak jaringan samudra raya, pelumpuh core utama server." }
 ];
 
 let odysseyAudioCtx = null;
@@ -324,20 +327,23 @@ function loadBeastState() {
   document.getElementById("beastPathSelect").value = beastData.petType;
   switchContextClass(beastData.petType);
   updateBeastUI();
-  renderBestiaryBook();
+  compileBestiaryDOM();
 }
 
-function switchViewSection(target) {
-  document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active-section"));
-  document.querySelectorAll(".beast-nav-menu button").forEach(b => b.classList.remove("active-tab"));
-  
-  if(target === 'hud') {
-    document.getElementById("sectionHud").classList.add("active-section");
-    document.getElementById("tabBtnHud").classList.add("active-tab");
+/* 🔄 INTERFACE MENU SWITCHING SYSTEM */
+function toggleActiveView(target) {
+  document.getElementById("viewContainerEngine").classList.remove("active-section");
+  document.getElementById("viewContainerBook").classList.remove("active-section");
+  document.getElementById("tabBtnEngine").classList.remove("active-tab");
+  document.getElementById("tabBtnBook").classList.remove("active-tab");
+
+  if (target === "engine") {
+    document.getElementById("viewContainerEngine").classList.add("active-section");
+    document.getElementById("tabBtnEngine").classList.add("active-tab");
   } else {
-    document.getElementById("sectionBestiary").classList.add("active-section");
-    document.getElementById("tabBtnBestiary").classList.add("active-tab");
-    renderBestiaryBook(); // Live compilation check
+    document.getElementById("viewContainerBook").classList.add("active-section");
+    document.getElementById("tabBtnBook").classList.add("active-tab");
+    compileBestiaryDOM(); // Refresh siluet berdasarkan state terbaru
   }
 }
 
@@ -390,56 +396,58 @@ function updateBeastUI() {
 }
 
 /* ==========================================================================
-   ⚙️ RENDERING SYSTEM BESTIARY (DISCOVERY MAPPING)
+   ⚙️ AUTO-DISCOVERY BESTIARY MATRIX COMPILER
    ========================================================================== */
-function renderBestiaryBook() {
-  const container = document.getElementById("bestiaryGridContainer");
-  if(!container) return;
-  
-  let htmlOutput = "";
-  
-  BESTIARY_DATABASE.forEach(beast => {
-    let isDiscovered = false;
-    
-    if (beast.type === "base") {
-      // Jalur dasar otomatis terbuka kalau user sedang atau pernah memilih tipe itu
-      if (beastData.petType === beast.pathway) isDiscovered = true;
-    } else if (beast.type === "legendary") {
-      // Tipe legendaris baru terbuka kalau kunci odyssey sudah terisi nama beast tersebut
-      if (beastData.unlockedOdysseyPet && beastData.unlockedOdysseyPet.toLowerCase() === beast.id.split("_")[0]) {
-        isDiscovered = true;
+function compileBestiaryDOM() {
+  const outlet = document.getElementById("bestiaryGridOutlet");
+  if (!outlet) return;
+
+  let streamHTML = "";
+
+  BESTIARY_DB.forEach(item => {
+    let discovered = false;
+
+    if (item.type === "base") {
+      // Jalur dasar terbuka jika user sedang mengaktifkan tipe jalur tersebut
+      if (beastData.petType === item.id) discovered = true;
+    } else if (item.type === "legendary") {
+      // Terbuka jika nama peliharaan legendaris terdaftar di state hasil Odyssey
+      if (beastData.unlockedOdysseyPet && beastData.unlockedOdysseyPet.toLowerCase() === item.id) {
+        discovered = true;
       }
     }
-    
-    if (isDiscovered) {
-      htmlOutput += `
+
+    if (discovered) {
+      streamHTML += `
         <div class="bestiary-card discovered">
           <div class="bestiary-avatar-box">
-            <img src="${beast.img}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.opacity=0.3;">
+            <img src="${item.img}" style="width:100%; height:100%; object-fit:contain;">
           </div>
-          <div class="bestiary-meta-title" style="color:#00ff66;">${beast.name}</div>
-          <div class="bestiary-meta-desc">${beast.desc}</div>
+          <div class="bestiary-meta-title" style="color: #00ff66;">${item.name}</div>
+          <div class="bestiary-meta-desc">${item.desc}</div>
         </div>`;
     } else {
-      // Jika belum ditemukan, paksakan gambar memuat file bunderan default/atau gambarnya disembunyikan total ke siluet hitam di CSS
-      htmlOutput += `
+      streamHTML += `
         <div class="bestiary-card undiscovered">
           <div class="bestiary-avatar-box">
-            <img src="${beast.img}" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.opacity=0;">
+            <img src="${item.img}" style="width:100%; height:100%; object-fit:contain;">
           </div>
-          <div class="bestiary-meta-title" style="color:rgba(255,255,255,0.25);">???</div>
-          <div class="bestiary-meta-desc" style="text-align:center; opacity:0.3;">DATA CORRUPTED. REACH LEVEL / LOOP THRESHOLD TO DECRYPT.</div>
+          <div class="bestiary-meta-title" style="color: rgba(255,255,255,0.25);">???</div>
+          <div class="bestiary-meta-desc" style="text-align:center; opacity:0.3; font-size:8px;">LOCKED NODE.<br>MUTATE DEEPER TO DISCOVER.</div>
         </div>`;
     }
   });
-  
-  container.innerHTML = htmlOutput;
+
+  outlet.innerHTML = streamHTML;
 }
 
 function switchBeastPath() {
   beastData.petType = document.getElementById("beastPathSelect").value;
   switchContextClass(beastData.petType);
   saveBeastState(); updateBeastUI();
+  if(document.getElementById("viewContainerBook").classList.contains("active-section")) {
+    compileBestiaryDOM();
+  }
 }
 
 function openRenameModal() {
