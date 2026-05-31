@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Auto-Sync System</title>
+<title>BLDS | Beast Engine Physics Sync System</title>
 <style>
 body {
   background: transparent; color: #fff;
   font-family: 'Courier New', Courier, monospace;
   margin: 0; padding: 10px;
   overflow: hidden; box-sizing: border-box;
+  user-select: none;
 }
 .main-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -18,15 +19,15 @@ body {
   overflow: hidden; box-sizing: border-box;
 }
 
-/* 🧭 NAVIGATION */
+/* 🧭 NAVIGATION & HUD */
 .top-nav-container {
   position: absolute; top: 12px; left: 12px; right: 12px;
   display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
-  gap: 10px;
+  gap: 10px; pointer-events: none;
 }
-.nav-left { display: flex; flex-direction: column; gap: 6px; }
+.nav-left { display: flex; flex-direction: column; gap: 6px; pointer-events: auto; }
 .nav-btn {
-  background: rgba(0,0,0,0.75); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.85); color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px;
   font-family: inherit; text-transform: uppercase; transition: all 0.2s;
   white-space: nowrap;
@@ -34,10 +35,9 @@ body {
 .nav-btn:hover:not(:disabled) { background: #fff; color: #000; }
 .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* 📊 HUD STATUS SYSTEM */
 .status-panel {
-  background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 8px 10px; border-radius: 6px; width: 145px; font-size: 10px;
+  background: rgba(0, 0, 0, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 10px; border-radius: 6px; width: 145px; font-size: 10px; pointer-events: auto;
 }
 .bar-row { margin-bottom: 5px; }
 .bar-row:last-child { margin-bottom: 0; }
@@ -45,44 +45,53 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 HUB TENGAH */
+/* 🐉 PHYSICS SYSTEM STAGE */
 .pet-center-stage {
   position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 10; pointer-events: none;
 }
 .pet-draggable-area {
-  width: 170px; height: 170px; display: flex; align-items: center; justify-content: center;
-  cursor: grab; pointer-events: auto; position: relative;
-  transition: transform 0.1s ease;
+  width: 140px; height: 140px; display: flex; align-items: center; justify-content: center;
+  cursor: grab; pointer-events: auto; 
+  position: absolute; /* Menggunakan koordinat absolut untuk sistem fisika lempar */
+  left: calc(50% - 70px); top: calc(50% - 70px);
+  touch-action: none;
 }
+.pet-draggable-area:active { cursor: grabbing; }
 .pet-main-graphic {
   width: 100%; height: 100%; object-fit: contain;
-  animation: petIdleFloat 3.5s infinite ease-in-out;
   user-select: none; -webkit-user-drag: none;
 }
+.pet-floating-anim {
+  animation: petIdleFloat 3.5s infinite ease-in-out;
+}
 @keyframes petIdleFloat {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-6px) scale(1.02); }
-}
-.pet-title-container {
-  display: flex; align-items: center; gap: 6px; margin-top: 12px; pointer-events: auto;
-}
-.pet-title-tag {
-  font-size: 12px; font-weight: bold; letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(255,255,255,0.4); text-align: center;
-}
-.btn-rename {
-  background: none; border: none; color: #00ff00; cursor: pointer; font-size: 12px; padding: 2px;
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-/* 🎒 BAG & FEEDING CONTROLLER */
+/* Wadah teks statis agar tidak ikut pusing berputar saat dilempar */
+.static-title-hud {
+  position: absolute; top: 220px; left: 0; right: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 5; pointer-events: none;
+}
+.pet-title-tag {
+  font-size: 13px; font-weight: bold; letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 5px rgba(0,255,255,0.4); text-align: center;
+}
+.hunt-trigger-wrapper {
+  position: absolute; bottom: 85px; left: 0; right: 0;
+  display: flex; justify-content: center; z-index: 90;
+}
+
+/* 🎒 INVENTORY BAG */
 .bottom-controls {
   position: absolute; bottom: 15px; left: 15px; right: 15px;
   display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 100;
 }
 .inventory-belt {
-  display: flex; gap: 6px; background: rgba(0,0,0,0.8);
+  display: flex; gap: 6px; background: rgba(0,0,0,0.85);
   padding: 6px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
 }
 .food-slot {
@@ -97,7 +106,7 @@ body {
   font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 6px;
 }
 
-/* ⚔️ SCREEN OVERLAYS & RPG PANEL */
+/* ⚔️ SCREEN OVERLAYS */
 .screen-overlay {
   position: absolute; inset: 0; background: #020206; z-index: 500;
   display: none; flex-direction: column; padding: 15px; box-sizing: border-box;
@@ -115,13 +124,10 @@ body {
   position: absolute; top: 6px; right: 6px; font-size: 10px;
   background: rgba(0,0,0,0.6); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);
 }
-
 .combat-log-screen {
   background: #000; border: 1px solid rgba(255,255,255,0.1); height: 110px;
   overflow-y: auto; padding: 8px; font-size: 10px; color: #00ff00; border-radius: 4px; margin-bottom: 10px;
 }
-
-/* 🎮 RPG ACTION BOARD */
 .rpg-action-board {
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: auto;
 }
@@ -139,8 +145,6 @@ body {
   background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
   padding: 8px; border-radius: 6px; margin-top: 8px; display: none;
 }
-
-/* ⏳ COOLDOWN LAYERS */
 .cooldown-blocker {
   position: absolute; inset: 0; background: rgba(2,2,6,0.95); z-index: 999;
   display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
@@ -159,11 +163,10 @@ body {
   </div>
 </div>
 
-<div class="main-wrapper">
+<div class="main-wrapper" id="windowBox">
   
   <div class="top-nav-container">
     <div class="nav-left">
-      <button class="nav-btn" onclick="openScreen('bestiaryScreen')">📖 Bestiary</button>
       <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; font-weight:bold;" onclick="openScreen('ownerScreen'); syncOwnerFields();">🛠️ Owner Panel</button>
     </div>
     
@@ -183,17 +186,18 @@ body {
     </div>
   </div>
 
+  <div class="static-title-hud">
+    <div class="pet-title-tag" id="petLabelTag">Syncing Neural Core...</div>
+  </div>
+  
+  <div class="hunt-trigger-wrapper">
+    <button class="nav-btn" id="huntWildTopBtn" style="border-color:#ff4a4a; color:#ff4a4a;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
+  </div>
+
   <div class="pet-center-stage" id="mainStage">
-    <div class="pet-draggable-area" id="petActor" onclick="handlePetClick()">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Telor.png" alt="Pet Graphic">
+    <div class="pet-draggable-area pet-floating-anim" id="petActor">
+      <img id="petGraphicFile" class="pet-main-graphic" src="Void_Egg.png" alt="Pet Graphic">
     </div>
-    
-    <div class="pet-title-container">
-      <div class="pet-title-tag" id="petLabelTag">Loading Profile...</div>
-      <button class="btn-rename" id="btnRenamePet" onclick="triggerRenamePet()">✏️</button>
-    </div>
-    
-    <button class="nav-btn" id="huntWildTopBtn" style="margin-top:12px; border-color:#ff4a4a; color:#ff4a4a; pointer-events:auto;" onclick="openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
   </div>
 
   <div class="bottom-controls" id="mainBottomControls">
@@ -217,13 +221,13 @@ body {
     <div class="battle-arena-grid">
       <div class="fighter-card">
         <span class="element-badge" id="btPlayerElement">💧</span>
-        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player">
+        <img id="btPlayerImg" class="fighter-img" src="Leviathan_Alpha.png" alt="Player">
         <div id="btPlayerName" style="font-size:11px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
       <div class="fighter-card">
         <span class="element-badge" id="btEnemyElement">🔥</span>
-        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy">
+        <img id="btEnemyImg" class="fighter-img" src="Fenrir_Chub.png" alt="Enemy">
         <div id="btEnemyName" style="font-size:11px; font-weight:bold;">Opponent</div>
         <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:3px;">Common</div>
         <div id="btEnemyHp" style="font-size:10px; opacity:0.6; margin-top:4px;">50/50 HP</div>
@@ -260,14 +264,6 @@ body {
     </div>
   </div>
 
-  <div class="screen-overlay" id="bestiaryScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:10px;">
-      <button class="nav-btn" onclick="closeScreen('bestiaryScreen')">⬅️ Back</button>
-      <div style="font-size:11px; font-weight:bold; color:#ffff00; margin-top:5px;">Bestiary Matrix</div>
-    </div>
-    <div class="grid-bestiary" id="bestiaryGridContainer"></div>
-  </div>
-
   <div class="screen-overlay" id="ownerScreen" style="overflow-y:auto;">
     <div class="top-nav-container" style="position:static; margin-bottom:15px;">
       <button class="nav-btn" onclick="closeScreen('ownerScreen')">⬅️ Back</button>
@@ -275,26 +271,19 @@ body {
     </div>
 
     <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px;">
-      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📊 OWNER MATRIX CONTROLLER</div>
+      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📊 INITIAL INJECTION OVERRIDE</div>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <div class="dev-form-group"><label>Set HP</label><input type="number" id="inpDevHp" class="dev-input"></div>
-        <div class="dev-form-group"><label>Set Max HP</label><input type="number" id="inpDevMaxHp" class="dev-input"></div>
-        <div class="dev-form-group"><label>Set Attack Power</label><input type="number" id="inpDevPower" class="dev-input"></div>
-        <div class="dev-form-group"><label>Set Current EXP</label><input type="number" id="inpDevExp" class="dev-input"></div>
+        <div class="dev-form-group"><label>Set HP</label><input type="number" id="inpDevHp" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
+        <div class="dev-form-group"><label>Set Max HP</label><input type="number" id="inpDevMaxHp" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
+        <div class="dev-form-group"><label>Set Attack Power</label><input type="number" id="inpDevPower" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
+        <div class="dev-form-group"><label>Set Current EXP</label><input type="number" id="inpDevExp" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
       </div>
-      <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;">
-        <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; width:100%;" onclick="applyOwnerPetStats()">Inject Core Status</button>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-          <button class="nav-btn btn-danger" onclick="resetOwnerAction('core_stats')">Reset Stats Only</button>
-          <button class="nav-btn btn-danger" onclick="resetOwnerAction('streak')">Reset Streak Only</button>
-        </div>
-      </div>
+      <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; width:100%; margin-top:12px;" onclick="applyOwnerPetStats()">Inject Core Status</button>
     </div>
 
-    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px;">
-      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📦 INVENTORY ITEM GENERATOR</div>
-      <div class="dev-form-group"><label>Quantity</label><input type="number" id="inpDevLootQty" class="dev-input" value="50"></div>
-      <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00;" onclick="generateOwnerLoot()">Inject Items Stock</button>
+    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px;">
+      <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📦 ITEM STOCKS OVERRIDE</div>
+      <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00;" onclick="generateOwnerLoot()">Inject 50x All Items Stock</button>
     </div>
   </div>
 </div>
@@ -303,21 +292,18 @@ body {
 // State Utama
 let stateData = {
   isHatched: true,
-  hatchStreak: 2,
-  activePetName: "Ikan5", // 🔴 DIUBAH OTOMATIS MENGIKUTI SRENSHOT USER
-  activePetElement: "Water", // Ikan = Water, Naga = Fire, Serigala = Earth
-  customPetName: "", 
-  level: 10,                 // 🔴 DIUBAH KE LVL 10 SESUAI PROFIL USER
+  activePetName: "Leviathan_Alpha", // 🔴 FIX SINKRONISASI UTAMA: Bernama Keren & Terkunci Otomatis ke Fase 5 Ikan Kamu!
+  activePetElement: "Water", 
+  level: 10,                 
   hp: 100, maxHp: 100,
   hunger: 100, maxHunger: 100,
   exp: 0, maxExp: 400,
-  power: 55,                 // Power disesuaikan lvl 10
+  power: 65,                 
   currentStreak: 0, highestStreak: 0,
   deathTimestamp: null
 };
 
-let foodBag = { apple: 3, candy: 2, juice: 3, bread: 1, burger: 0, pizza: 0, elixir: 0, pill: 2, revive: 1 };
-let discoveredBeasts = ["Ikan5"]; 
+let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 1, pill: 3, revive: 1 };
 
 const foodValues = {
   apple: { xp: 10, hp: 15, hunger: 20 }, candy: { xp: 15, hp: 10, hunger: 15 },
@@ -326,57 +312,42 @@ const foodValues = {
 };
 
 const enemyPool = [
-  { name: "Void Slime", rarity: "Common", multiplier: 1.0, chance: 0.35, img: "Serigala1.png", element: "Water" },
-  { name: "Gorgon Larva", rarity: "Uncommon", multiplier: 1.2, chance: 0.25, img: "Ikan1.png", element: "Earth" },
-  { name: "Shadow Basilisk", rarity: "Rare", multiplier: 1.6, chance: 0.20, img: "Ikan2.png", element: "Fire" },
-  { name: "Inferno Drake", rarity: "Mythic", multiplier: 4.2, chance: 0.15, img: "Naga2.png", element: "Fire" }
+  { name: "Tidal Guppy", multiplier: 1.0, img: "Tidal_Guppy.png", element: "Water", rarity: "Common" },
+  { name: "Coral Stalker", multiplier: 1.4, img: "Coral_Stalker.png", element: "Earth", rarity: "Rare" },
+  { name: "Fenrir Chub", multiplier: 1.1, img: "Fenrir_Chub.png", element: "Earth", rarity: "Uncommon" },
+  { name: "Ignis Drake", multiplier: 3.5, img: "Ignis_Drake.png", element: "Fire", rarity: "Mythic" }
 ];
 
-const allBeastList = ["Naga1", "Naga2", "Ikan5", "Serigala1"];
-let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
-let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false; 
 const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 
 function saveLocalData() {
-  localStorage.setItem("BLDS_STATE_SYSTEM", JSON.stringify(stateData));
-  localStorage.setItem("BLDS_BEAST_BAG", JSON.stringify(foodBag));
-  localStorage.setItem("BLDS_BEAST_DISCOVERED", JSON.stringify(discoveredBeasts));
+  localStorage.setItem("BLDS_PHYSICS_STATE", JSON.stringify(stateData));
+  localStorage.setItem("BLDS_PHYSICS_BAG", JSON.stringify(foodBag));
 }
 
-// FIX UTAMA: Sync otomatis data agar tidak tertimpa variabel Telor default
+// PERBAIKAN SINKRONISASI CORE AGAR AMAN DARI BUG TIMPA DATA DEFAULT
 function loadLocalData() {
-  const s = localStorage.getItem("BLDS_STATE_SYSTEM"); 
+  const s = localStorage.getItem("BLDS_PHYSICS_STATE");
   if(s) {
     stateData = JSON.parse(s);
   } else {
-    // Jika data local kosong, paksa inisialisasi awal ke Ikan5 agar tidak balik jadi telur naga!
-    stateData.activePetName = "Ikan5";
+    // Dipaksa langsung sinkronisasi dari awal ke Ikan Fase 5 legendaris kamu!
+    stateData.activePetName = "Leviathan_Alpha";
     stateData.activePetElement = "Water";
     stateData.level = 10;
-    stateData.isHatched = true;
     saveLocalData();
   }
-  const b = localStorage.getItem("BLDS_BEAST_BAG"); if(b) foodBag = JSON.parse(b);
-  const d = localStorage.getItem("BLDS_BEAST_DISCOVERED"); if(d) discoveredBeasts = JSON.parse(d);
-  if(!discoveredBeasts.includes(stateData.activePetName)) discoveredBeasts.push(stateData.activePetName);
+  const b = localStorage.getItem("BLDS_PHYSICS_BAG"); if(b) foodBag = JSON.parse(b);
 
   checkDeathCooldown();
   syncInterfaceGraphic();
+  initPhysicsEngine(); // Jalankan mesin Talking Tom Physics
   setInterval(checkDeathCooldown, 1000);
 }
 
 function syncInterfaceGraphic() {
-  const graphicEl = document.getElementById("petGraphicFile");
-  const labelEl = document.getElementById("petLabelTag");
-  const huntBtn = document.getElementById("huntWildTopBtn");
-
-  graphicEl.src = stateData.activePetName + ".png";
-  let displayName = stateData.customPetName ? stateData.customPetName : `${stateData.activePetName}.png`;
-  labelEl.innerHTML = `${elementIcons[stateData.activePetElement]} ${displayName} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
-  
-  huntBtn.disabled = false;
-  huntBtn.innerText = "⚔️ Hunt Wild";
-  
+  document.getElementById("petGraphicFile").src = stateData.activePetName + ".png";
+  document.getElementById("petLabelTag").innerHTML = `${elementIcons[stateData.activePetElement]} ${stateData.activePetName}.png [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
   document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   renderStats();
   updateInventoryCounters();
@@ -397,27 +368,183 @@ function updateInventoryCounters() {
   });
 }
 
-function handlePetClick() {
-  // Animasi/Suara feedback klik ringan
-  const actor = document.getElementById("petActor");
-  actor.style.transform = "scale(0.95)";
-  setTimeout(() => actor.style.transform = "scale(1)", 100);
+function feedPet(item) {
+  if (foodBag[item] <= 0 || stateData.hp <= 0) return;
+  foodBag[item]--;
+  
+  const val = foodValues[item];
+  stateData.hunger = Math.min(stateData.maxHunger, stateData.hunger + val.hunger);
+  stateData.hp = Math.min(stateData.maxHp, stateData.hp + val.hp);
+  stateData.exp += val.xp;
+  
+  if (stateData.exp >= stateData.maxExp) {
+    stateData.exp = 0;
+    stateData.level++;
+    stateData.power += 6;
+    stateData.maxHp += 15;
+    stateData.hp = stateData.maxHp;
+  }
+  
+  saveLocalData();
+  syncInterfaceGraphic();
+  
+  // Efek lompat kecil saat dikasih makan
+  vy = -12; 
 }
 
-// ⚔️ ENGINE STRATEGI TURN-BASED COUNTER
+function useFullElixir() {
+  if(foodBag.elixir <= 0) return;
+  foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger;
+  saveLocalData(); syncInterfaceGraphic();
+}
+
+/* 🕹️ MY TALKING TOM PHYSICS ENGINE CODE (ANTI KELUAR BOX + AUTO RETURN) */
+let pet = null; let wrapper = null;
+let isDragging = false;
+let px = 0, py = 0;       // Posisi Pet saat ini
+let vx = 0, vy = 0;       // Kecepatan lemparan (Velocity)
+let lastMouseX = 0, lastMouseY = 0;
+let dragOffsetX = 0, dragOffsetY = 0;
+
+function initPhysicsEngine() {
+  pet = document.getElementById("petActor");
+  wrapper = document.getElementById("windowBox");
+
+  // Posisi tengah default awal
+  px = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
+  py = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
+  
+  pet.style.left = px + "px";
+  pet.style.top = py + "px";
+
+  // Mouse Events
+  pet.addEventListener("mousedown", startDrag);
+  window.addEventListener("mousemove", doDrag);
+  window.addEventListener("mouseup", stopDrag);
+
+  // Touch Events (Untuk HP)
+  pet.addEventListener("touchstart", startDrag, {passive: false});
+  window.addEventListener("touchmove", doDrag, {passive: false});
+  window.addEventListener("touchend", stopDrag);
+
+  // Loop Fisika Berjalan Realtime 60 FPS
+  setInterval(updatePhysicsFrame, 1000 / 60);
+}
+
+function startDrag(e) {
+  isDragging = true;
+  pet.classList.remove("pet-floating-anim"); // Matikan animasi css bawaan saat ditarik tangan
+  
+  let pageX = e.pageX || e.touches[0].pageX;
+  let pageY = e.pageY || e.touches[0].pageY;
+
+  let rect = pet.getBoundingClientRect();
+  dragOffsetX = pageX - (rect.left + window.scrollX);
+  dragOffsetY = pageY - (rect.top + window.scrollY);
+
+  lastMouseX = pageX;
+  lastMouseY = pageY;
+  vx = 0; vy = 0;
+  if(e.cancelable) e.preventDefault();
+}
+
+function doDrag(e) {
+  if (!isDragging) return;
+
+  let pageX = e.pageX || e.touches[0].pageX;
+  let pageY = e.pageY || e.touches[0].pageY;
+
+  let wrapperRect = wrapper.getBoundingClientRect();
+
+  // Hitung posisi target berdasarkan tarikan kursor/jari kamu
+  let targetX = pageX - wrapperRect.left - dragOffsetX;
+  let targetY = pageY - wrapperRect.top - dragOffsetY;
+
+  // BATAS KOTAK (ANTI LUAR KOTAK BOX CONTROL)
+  let maxX = wrapper.clientWidth - pet.clientWidth;
+  let maxY = wrapper.clientHeight - pet.clientHeight;
+
+  if (targetX < 0) targetX = 0;
+  if (targetX > maxX) targetX = maxX;
+  if (targetY < 0) targetY = 0;
+  if (targetY > maxY) targetY = maxY;
+
+  px = targetX;
+  py = targetY;
+
+  pet.style.left = px + "px";
+  pet.style.top = py + "px";
+
+  // Kalkulasi momentum kecepatan lempar berbanding jarak tarikan terakhir
+  vx = pageX - lastMouseX;
+  vy = pageY - lastMouseY;
+
+  lastMouseX = pageX;
+  lastMouseY = pageY;
+}
+
+function stopDrag() {
+  if(!isDragging) return;
+  isDragging = false;
+}
+
+function updatePhysicsFrame() {
+  if (isDragging) return; // Jika masih dipegang jari, abaikan kalkulasi gerak liar fisika
+
+  let maxX = wrapper.clientWidth - pet.clientWidth;
+  let maxY = wrapper.clientHeight - pet.clientHeight;
+
+  // Posisi Jangkar Pusat Tengah Layar
+  let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
+  let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
+
+  // 1. Efek Gesekan Udara (Friction Dampening) agar lemparan melambat natural
+  vx *= 0.95;
+  vy *= 0.95;
+
+  // 2. Tambahkan Kecepatan ke Titik Posisi Pet saat ini
+  px += vx;
+  py += vy;
+
+  // 3. AUTO RETURN LOGIC (Menarik lembut kembali ke tengah secara perlahan jika lemparan mulai loyo)
+  if (Math.abs(vx) < 1.5 && Math.abs(vy) < 1.5) {
+    px += (centerX - px) * 0.06; // Menarik perlahan sumbu X
+    py += (centerY - py) * 0.06; // Menarik perlahan sumbu Y
+  }
+
+  // 4. FISIKA PANTULAN DINDING KOTAK (Bounce Guard)
+  if (px < 0) { px = 0; vx *= -0.7; }
+  if (px > maxX) { px = maxX; vx *= -0.7; }
+  if (py < 0) { py = 0; vy *= -0.7; }
+  if (py > maxY) { py = maxY; vy *= -0.7; }
+
+  // Terapkan ke koordinat elemen visual real-time
+  pet.style.left = px + "px";
+  pet.style.top = py + "px";
+
+  // Efek Rotasi visual Talking Tom berdasarkan tingkat keagresifan lemparan kursor
+  let rotation = vx * 1.8;
+  pet.style.transform = `rotate(${rotation}deg)`;
+}
+
+
+/* ⚔️ RPG COMBAT COUNTER ENGINE SYSTEM */
 function checkElementCounter(attackerEle, defenderEle) {
-  if (attackerEle === "Water" && defenderEle === "Fire") return 1.5; // Air menang vs Api (+50% Dmg)
-  if (attackerEle === "Fire" && defenderEle === "Earth") return 1.5; // Api menang vs Bumi
-  if (attackerEle === "Earth" && defenderEle === "Water") return 1.5; // Bumi menang vs Air
+  if (attackerEle === "Water" && defenderEle === "Fire") return 1.5;
+  if (attackerEle === "Fire" && defenderEle === "Earth") return 1.5;
+  if (attackerEle === "Earth" && defenderEle === "Water") return 1.5;
   return 1.0;
 }
 
+let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
+let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
+
 function prepareBattle() {
-  activeEnemy = getRandomEnemy();
-  const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.3)) || 1;
-  activeEnemy.maxHp = Math.floor((50 + (lvlMod * 8)) * activeEnemy.multiplier);
+  activeEnemy = enemyPool[Math.floor(Math.random() * enemyPool.length)];
+  const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.4)) || 1;
+  activeEnemy.maxHp = Math.floor((55 + (lvlMod * 9)) * activeEnemy.multiplier);
   activeEnemy.hp = activeEnemy.maxHp;
-  activeEnemy.dmg = Math.floor((6 + (lvlMod * 2)) * activeEnemy.multiplier);
+  activeEnemy.dmg = Math.floor((7 + (lvlMod * 2)) * activeEnemy.multiplier);
   
   playerBattleHp = stateData.hp;
   enemyBattleHp = activeEnemy.hp;
@@ -425,7 +552,7 @@ function prepareBattle() {
   isEnemyStunned = false; doubleDamageActive = false;
 
   document.getElementById("btPlayerImg").src = stateData.activePetName + ".png";
-  document.getElementById("btPlayerName").innerText = stateData.customPetName || stateData.activePetName;
+  document.getElementById("btPlayerName").innerText = stateData.activePetName;
   document.getElementById("btPlayerElement").innerText = elementIcons[stateData.activePetElement];
   
   document.getElementById("btEnemyImg").src = activeEnemy.img;
@@ -433,7 +560,7 @@ function prepareBattle() {
   document.getElementById("btEnemyElement").innerText = elementIcons[activeEnemy.element];
   document.getElementById("btEnemyRarity").innerText = activeEnemy.rarity;
   
-  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Entering battle matrix. Choose your skill!</div>`;
+  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Combat Matrix Loaded. Select Attack Protocol!</div>`;
   document.getElementById("btnExitBattle").innerText = "⬅️ Run";
   updateRpgActionButtons();
 }
@@ -444,20 +571,12 @@ function updateRpgActionButtons() {
 
   let pMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
   
-  // TAMPILKAN DAMAGE FIX SEBELUM DIPENCET
-  let d0 = Math.floor(stateData.power * 1.0 * pMod);
-  let d1 = Math.floor(stateData.power * 1.5 * pMod);
-  let d2 = Math.floor(stateData.power * 0.5 * pMod);
-  let d3 = Math.floor(stateData.power * 2.5 * pMod);
+  document.getElementById("skillDmg0").innerText = `Dmg: ${Math.floor(stateData.power * 1.0 * pMod)} ${pMod > 1 ? '🔥Counter' : ''}`;
+  document.getElementById("skillDmg1").innerText = `Dmg: ${Math.floor(stateData.power * 1.5 * pMod)} [CD: ${skillCooldowns[1]}]`;
+  document.getElementById("skillDmg2").innerText = `Dmg: ${Math.floor(stateData.power * 0.5 * pMod)} (50% Stun)`;
+  document.getElementById("skillDmg3").innerText = `Dmg: ${Math.floor(stateData.power * 2.6 * pMod)} [CD: ${skillCooldowns[3]}]`;
 
-  document.getElementById("skillDmg0").innerText = `Dmg: ${d0} ${pMod > 1 ? '🔥Counter' : ''}`;
-  document.getElementById("skillDmg1").innerText = `Dmg: ${d1} [CD: ${skillCooldowns[1]}]`;
-  document.getElementById("skillDmg2").innerText = `Dmg: ${d2} (50% Stun)`;
-  document.getElementById("skillDmg3").innerText = `Dmg: ${d3} [CD: ${skillCooldowns[3]}]`;
-
-  for(let i=0; i<4; i++) {
-    document.getElementById(`skillBtn${i}`).disabled = (skillCooldowns[i] > 0);
-  }
+  for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = (skillCooldowns[i] > 0);
   document.getElementById("b-stock-elixir").innerText = foodBag.elixir;
   document.getElementById("b-stock-pill").innerText = foodBag.pill;
 }
@@ -469,41 +588,35 @@ function executeRpgTurn(skillIndex) {
   let baseMult = 1.0;
   if (skillIndex === 1) { baseMult = 1.5; skillCooldowns[1] = 3; }
   if (skillIndex === 2) { baseMult = 0.5; }
-  if (skillIndex === 3) { baseMult = 2.5; skillCooldowns[3] = 5; }
+  if (skillIndex === 3) { baseMult = 2.6; skillCooldowns[3] = 5; }
   
   let elementMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
   let rawDamage = Math.floor(stateData.power * baseMult * elementMod);
   
-  if (doubleDamageActive) { rawDamage = rawDamage * 2; doubleDamageActive = false; }
+  if (doubleDamageActive) { rawDamage *= 2; doubleDamageActive = false; }
   enemyBattleHp = Math.max(0, enemyBattleHp - rawDamage);
   
   let skillNames = ["Strike", "Heavy Smash", "Electro Stun", "Ultimate Burst"];
-  log.innerHTML += `<div>⚔️ Used <b>${skillNames[skillIndex]}</b>! Deals <b style='color:#ffff00;'>${rawDamage}</b> damage.</div>`;
-  if(elementMod > 1) log.innerHTML += `<div style='color:#00ff00;font-size:9px;'>↳ Element Counter! Damage Increased by 50%</div>`;
+  log.innerHTML += `<div>⚔️ Cast <b>${skillNames[skillIndex]}</b>! Deals <b style='color:#ffff00;'>${rawDamage}</b> dmg.</div>`;
 
   if (skillIndex === 2 && Math.random() <= 0.50) {
-    isEnemyStunned = true;
-    log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ STUN SUCCESSFUL! Enemy locked down.</div>`;
+    isEnemyStunned = true; log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ PARALYZED! Opponent skips turn.</div>`;
   }
 
-  document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
   for(let i=0; i<4; i++) { if(i !== skillIndex && skillCooldowns[i] > 0) skillCooldowns[i]--; }
-
   if (enemyBattleHp <= 0) { handleBattleVictory(); return; }
   
   document.getElementById("combatTurnTitle").innerText = "Enemy Turn...";
   setTimeout(() => {
     if (isEnemyStunned) {
-      log.innerHTML += `<div style='color:#00ffff;'>💤 Enemy is paralyzed! Turn skipped.</div>`;
+      log.innerHTML += `<div style='color:#00ffff;'>💤 Enemy stunned! Action skipped.</div>`;
       isEnemyStunned = false; endTurnCycle();
     } else {
       let eEleMod = checkElementCounter(activeEnemy.element, stateData.activePetElement);
       let enemyDmg = Math.floor(activeEnemy.dmg * eEleMod);
       playerBattleHp = Math.max(0, playerBattleHp - enemyDmg);
       
-      log.innerHTML += `<div style='color:#ff4a4a;'>💥 Opponent counter-attacks! Took <b>${enemyDmg}</b> damage.</div>`;
-      if(eEleMod > 1) log.innerHTML += `<div style='color:#ff4a4a;font-size:9px;'>↳ Weakness Exploded! Enemy elements counter you.</div>`;
-      
+      log.innerHTML += `<div style='color:#ff4a4a;'>💥 Opponent counter-strikes! Sustained <b>${enemyDmg}</b> damage.</div>`;
       if (playerBattleHp <= 0) { handleBattleDefeat(); } else { endTurnCycle(); }
     }
   }, 1000);
@@ -514,9 +627,9 @@ function endTurnCycle() {
   setRpgBoardInteractive(true); updateRpgActionButtons();
 }
 
-function setRpgBoardInteractive(active) {
-  for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = !active;
-  document.getElementById("btnToggleBattleItem").disabled = !active;
+function setRpgBoardInteractive(act) {
+  for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = !act;
+  document.getElementById("btnToggleBattleItem").disabled = !act;
 }
 
 function handleBattleVictory() {
@@ -524,36 +637,22 @@ function handleBattleVictory() {
   stateData.currentStreak++;
   if (stateData.currentStreak > stateData.highestStreak) stateData.highestStreak = stateData.currentStreak;
 
-  let expGained = Math.floor(stateData.maxExp * 0.25);
+  let expGained = Math.floor(stateData.maxExp * 0.30);
   stateData.exp += expGained;
-  if(stateData.exp >= stateData.maxExp) { stateData.exp = 0; stateData.level++; stateData.power += 5; }
+  if(stateData.exp >= stateData.maxExp) { stateData.exp = 0; stateData.level++; stateData.power += 6; }
   
-  let dropMessage = "";
-  if (Math.random() <= 0.02) { // 2% Drop Chance Revive 💉
-    foodBag.revive++;
-    dropMessage = `<br><span style='color:#00ffff;font-weight:bold;'>💉 DRIPPED: Found 1x Revive Serum!</span>`;
-  }
-
-  log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Clear! Earned ${expGained} EXP.${dropMessage}</div>`;
+  log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Acquired ${expGained} EXP.</div>`;
   document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
   stateData.hp = playerBattleHp;
   saveLocalData(); syncInterfaceGraphic();
 }
 
 function handleBattleDefeat() {
-  const log = document.getElementById("battleLogBox");
-  log.innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ K.O. Matrix System down.</div>`;
+  document.getElementById("battleLogBox").innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ Critical Defeat.</div>`;
   stateData.currentStreak = 0; stateData.hp = 0;
   stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000);
   saveLocalData(); syncInterfaceGraphic();
   setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
-}
-
-function useReviveInstant() {
-  if (foodBag.revive <= 0) return;
-  foodBag.revive--; stateData.deathTimestamp = null;
-  stateData.hp = Math.floor(stateData.maxHp * 0.5); // HP pulih 50%
-  saveLocalData(); syncInterfaceGraphic();
 }
 
 function checkDeathCooldown() {
@@ -562,23 +661,24 @@ function checkDeathCooldown() {
     let diff = stateData.deathTimestamp - Date.now();
     let hours = Math.floor(diff / (1000 * 60 * 60)), mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), secs = Math.floor((diff % (1000 * 60)) / 1000);
     document.getElementById("countdownTimer").innerText = `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-  } else {
-    document.getElementById("deathOverlay").style.display = "none";
-  }
+  } else { document.getElementById("deathOverlay").style.display = "none"; }
+}
+
+function useReviveInstant() {
+  if (foodBag.revive <= 0) return;
+  foodBag.revive--; stateData.deathTimestamp = null; stateData.hp = Math.floor(stateData.maxHp * 0.5);
+  saveLocalData(); syncInterfaceGraphic();
 }
 
 function toggleBattleItemPanel() {
   const panel = document.getElementById("battleItemPanel");
   panel.style.display = (panel.style.display === "grid") ? "none" : "grid";
 }
-
 function useBattleItem(type) {
-  if(type === 'elixir' && foodBag.elixir > 0) { foodBag.elixir--; playerBattleHp = stateData.maxHp; } 
+  if(type === 'elixir' && foodBag.elixir > 0) { foodBag.elixir--; playerBattleHp = stateData.maxHp; }
   if(type === 'pill' && foodBag.pill > 0) { foodBag.pill--; doubleDamageActive = true; }
   toggleBattleItemPanel(); updateRpgActionButtons();
 }
-
-function getRandomEnemy() { return Object.assign({}, enemyPool[Math.floor(Math.random() * enemyPool.length)]); }
 function syncOwnerFields() {
   document.getElementById("inpDevHp").value = stateData.hp;
   document.getElementById("inpDevMaxHp").value = stateData.maxHp;
@@ -588,20 +688,19 @@ function syncOwnerFields() {
 function applyOwnerPetStats() {
   stateData.maxHp = parseInt(document.getElementById("inpDevMaxHp").value) || 100;
   stateData.hp = parseInt(document.getElementById("inpDevHp").value) || 100;
-  stateData.power = parseInt(document.getElementById("inpDevPower").value) || 15;
+  stateData.power = parseInt(document.getElementById("inpDevPower").value) || 65;
+  stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
   saveLocalData(); syncInterfaceGraphic(); alert("Core Modified!");
 }
 function generateOwnerLoot() {
-  const qty = parseInt(document.getElementById("inpDevLootQty").value) || 10;
-  Object.keys(foodBag).forEach(key => { foodBag[key] = qty; });
-  saveLocalData(); updateInventoryCounters(); alert("Items Injected!");
+  Object.keys(foodBag).forEach(key => { foodBag[key] = 50; });
+  saveLocalData(); updateInventoryCounters(); alert("50x Loot Injected!");
 }
 function bypassCooldown() { stateData.deathTimestamp = null; stateData.hp = stateData.maxHp; saveLocalData(); syncInterfaceGraphic(); }
-function resetOwnerAction(t) { if(t==='core_stats') { stateData.hp=100; stateData.level=10; stateData.activePetName="Ikan5"; } saveLocalData(); syncInterfaceGraphic(); }
 function openScreen(id) { document.getElementById(id).style.display = "flex"; }
 function closeScreen(id) { document.getElementById(id).style.display = "none"; }
 
-window.addEventListener("load", () => { loadLocalData(); });
+window.addEventListener("load", loadLocalData);
 </script>
 </body>
 </html>
