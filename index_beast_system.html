@@ -383,7 +383,7 @@ let stateData = {
   currentStreak: 0, highestStreak: 0,
   totalHunts: 0, 
   deathTimestamp: null,
-  dominionName: "Player" // Menampung nama dari parent window
+  dominionName: "Player"
 };
 
 let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 1, pill: 3, revive: 1 };
@@ -402,11 +402,9 @@ const enemyPool = [
 
 const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
-
-// URL Database Firebase Realtime (Tinggal ganti link URL Firebase-mu jika diperlukan)
 const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-// 📡 HUB KONEKSI: Menangkap sinkronisasi nama profil dari parent window utama
+// 📡 BRIDGE TELEMETRY: Menangkap sinkronisasi nama dan profile utama dari index.html
 window.addEventListener("message", (e) => {
   if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
     if (e.data.data && e.data.data.dominionName) {
@@ -432,7 +430,10 @@ function loadLocalData() {
   if(s) stateData = JSON.parse(s);
   const b = localStorage.getItem("BLDS_GATE_BAG"); if(b) foodBag = JSON.parse(b);
 
-  // Memicu handshake awal meminta lemparan data ke parent window luar
+  const fullBodyText = document.body.innerHTML;
+  if(fullBodyText.includes("Ikan5.png") && !s) stateData.activePetFile = "Ikan5";
+  
+  // Handshake pemicu awal meminta data profile dari core utama parent
   if(window.parent) {
     window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
   }
@@ -457,13 +458,13 @@ function verifyGatekeeperKey() {
   }
 }
 
-// 📊 TABBED LEADERBOARD SYSTEM (LIVE LIVE LIVE DATABASE SINKRONISASI)
+// 📊 TRIPLE TAB LEADERBOARD SYSTEM (LIVE KONEKSI FIREBASE)
 function openLeaderboardScreen() {
   openScreen('leaderboardScreen');
   switchLeaderboardTab(currentActiveTab);
 }
 
-// FIX: Fungsi penutupan panel leaderboard sekaligus melempar navigasi kembali ke parent
+// FIX NAVIGATION: Fungsi tombol back melempar perintah keluar ke parent window utama
 function closeLeaderboardAndGoHome() {
   closeScreen('leaderboardScreen');
   if(window.parent) {
@@ -486,7 +487,7 @@ function switchLeaderboardTab(tab) {
 
 function renderLeaderboardRows() {
   const box = document.getElementById("leaderboardRowsContainer");
-  box.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.5;">Connecting to cloud matrix...</div>`;
+  box.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.5;">Loading live global matrix...</div>`;
 
   fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
     .then(res => res.json())
@@ -505,7 +506,7 @@ function renderLeaderboardRows() {
         });
       }
 
-      // Selipkan data lokal player ke dalam kalkulasi peringkat tabel global jika belum terdaftar
+      // Pastikan data milik player lokal terdaftar di dalam perhitungan tabel array
       if (!dataset.some(u => u.name === stateData.dominionName)) {
         dataset.push({
           name: stateData.dominionName,
@@ -514,7 +515,7 @@ function renderLeaderboardRows() {
           level: stateData.level
         });
       } else {
-        // Jika sudah ada, update datanya dengan statistik tertinggi miliknya saat ini
+        // Update baris player lokal dengan nilai paling mutakhir saat ini
         dataset.forEach(u => {
           if(u.name === stateData.dominionName) {
             u.streak = Math.max(u.streak, stateData.highestStreak);
@@ -550,7 +551,7 @@ function renderLeaderboardRows() {
       });
     })
     .catch(() => {
-      box.innerHTML = `<div style="text-align:center; padding:20px; color:#ff4a4a; font-size:11px;">Failed to load cloud live leaderboard.</div>`;
+      box.innerHTML = `<div style="text-align:center; padding:20px; color:#ff4a4a; font-size:11px;">Failed to link cloud database matrix.</div>`;
     });
 }
 
@@ -789,7 +790,7 @@ function handleBattleVictory() {
   
   saveLocalData(); 
   syncInterfaceGraphic();
-  pushUpdateToCloud(); // Push otomatis ke cloud leaderboard Firebase saat menang
+  pushUpdateToCloud();
 }
 
 function handleBattleDefeat() {
@@ -799,13 +800,9 @@ function handleBattleDefeat() {
   setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
 }
 
-// 📦 INJEKSI CLOUD TRANSMISSION: Mengirimkan rekap kemajuan statistik game ke node Firebase
 function pushUpdateToCloud() {
   if (!stateData.dominionName || stateData.dominionName === "Player") return;
-  
-  // Mengamankan penamaan karakter agar tidak merusak path URL Firebase Realtime Database
   const secureKey = stateData.dominionName.replace(/[.#$\[\]]/g, "_");
-  
   const payload = {
     username: secureKey,
     displayName: stateData.dominionName,
@@ -813,12 +810,11 @@ function pushUpdateToCloud() {
     hunt: stateData.totalHunts,
     level: stateData.level
   };
-
   fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
-  }).catch(err => console.error("Koneksi cloud database terhambat:", err));
+  }).catch(err => console.error("Koneksi Firebase terhambat:", err));
 }
 
 function checkDeathCooldown() {
