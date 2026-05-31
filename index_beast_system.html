@@ -386,7 +386,7 @@ let stateData = {
   dominionName: "Player"
 };
 
-let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 1, pill: 3, revive: 1 };
+let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 2, pill: 3, revive: 1 };
 const foodValues = {
   apple: { xp: 10, hp: 15, hunger: 20 }, candy: { xp: 15, hp: 10, hunger: 15 },
   juice: { xp: 20, hp: 20, hunger: 25 }, bread: { xp: 25, hp: 30, hunger: 35 },
@@ -440,7 +440,6 @@ function loadLocalData() {
   setInterval(checkDeathCooldown, 1000);
 }
 
-// FIX SECURITY: Mewajibkan kode rahasia sebelum membuka matrix owner panel
 function verifyGatekeeperKey() {
   const field = document.getElementById("gatekeeperKeyField");
   if(field.value === "OWNERONLYBLDS") {
@@ -459,7 +458,6 @@ function openLeaderboardScreen() {
   switchLeaderboardTab(currentActiveTab);
 }
 
-// FIX NAVIGATION: Mengirim sinyal inter-window agar parent induk menutup full-screen iframe
 function closeLeaderboardAndGoHome() {
   closeScreen('leaderboardScreen');
   if(window.parent) {
@@ -591,16 +589,19 @@ function feedPet(item) {
   
   saveLocalData();
   syncInterfaceGraphic();
-  vy = -12;
+  vy = -15; // Dorongan fisika memantul ke atas saat diberi makan
 }
 
 function useFullElixir() {
   if(foodBag.elixir <= 0) return;
-  foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger;
-  saveLocalData(); syncInterfaceGraphic();
+  foodBag.elixir--; 
+  stateData.hp = stateData.maxHp; 
+  stateData.hunger = stateData.maxHunger;
+  saveLocalData(); 
+  syncInterfaceGraphic();
 }
 
-/* 🕹️ PHYSICS SYSTEM ENGINE */
+/* 🕹️ PHYSICS SYSTEM ENGINE (MEKANIK LEMPAR PET) */
 let pet = null; let wrapper = null;
 let isDragging = false;
 let px = 0, py = 0, vx = 0, vy = 0;       
@@ -614,12 +615,15 @@ function initPhysicsEngine() {
   py = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
   
   pet.style.left = px + "px"; pet.style.top = py + "px";
+  
   pet.addEventListener("mousedown", startDrag);
   window.addEventListener("mousemove", doDrag);
   window.addEventListener("mouseup", stopDrag);
+  
   pet.addEventListener("touchstart", startDrag, {passive: false});
   window.addEventListener("touchmove", doDrag, {passive: false});
   window.addEventListener("touchend", stopDrag);
+  
   setInterval(updatePhysicsFrame, 1000 / 60);
 }
 
@@ -653,11 +657,18 @@ function doDrag(e) {
 
   px = targetX; py = targetY;
   pet.style.left = px + "px"; pet.style.top = py + "px";
-  vx = pageX - lastMouseX; vy = pageY - lastMouseY;
+  
+  // Hitung momentum kecepatan lemparan tangan
+  vx = pageX - lastMouseX; 
+  vy = pageY - lastMouseY;
   lastMouseX = pageX; lastMouseY = pageY;
 }
 
-function stopDrag() { if(isDragging) isDragging = false; }
+function stopDrag() { 
+  if(isDragging) {
+    isDragging = false;
+  }
+}
 
 function updatePhysicsFrame() {
   if (isDragging) return; 
@@ -666,24 +677,31 @@ function updatePhysicsFrame() {
   let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
   let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
 
-  vx *= 0.95; vy *= 0.95;
+  // Efek gesekan udara (Makin kecil makin kesat)
+  vx *= 0.97; vy *= 0.97;
   px += vx; py += vy;
 
-  if (Math.abs(vx) < 1.5 && Math.abs(vy) < 1.5) {
-    px += (centerX - px) * 0.06; py += (centerY - py) * 0.06;
+  // Jika diam/lambat, kembalikan ke pusat layar secara magnetik
+  if (Math.abs(vx) < 1.8 && Math.abs(vy) < 1.8) {
+    px += (centerX - px) * 0.05; 
+    py += (centerY - py) * 0.05;
+    if(!pet.classList.contains("pet-floating-anim") && Math.abs(px - centerX) < 5) {
+       pet.classList.add("pet-floating-anim");
+    }
   }
 
-  if (px < 0) { px = 0; vx *= -0.7; }
-  if (px > maxX) { px = maxX; vx *= -0.7; }
-  if (py < 0) { py = 0; vy *= -0.7; }
-  if (py > maxY) { py = maxY; vy *= -0.7; }
+  // Deteksi tabrakan dinding pentalan (Bouncing Wall Physics)
+  if (px < 0) { px = 0; vx *= -0.8; }
+  if (px > maxX) { px = maxX; vx *= -0.8; }
+  if (py < 0) { py = 0; vy *= -0.8; }
+  if (py > maxY) { py = maxY; vy *= -0.8; }
 
   pet.style.left = px + "px"; pet.style.top = py + "px";
-  let rotation = vx * 1.8;
+  let rotation = vx * 2;
   pet.style.transform = `rotate(${rotation}deg)`;
 }
 
-/* ⚔️ RPG COMBAT SYSTEM */
+/* ⚔️ RPG COMBAT SYSTEM (POKEMON STYLE 4 SKILLS) */
 let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
 let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
 
@@ -707,7 +725,7 @@ function prepareBattle() {
   document.getElementById("btEnemyElement").innerText = elementIcons[activeEnemy.element];
   document.getElementById("btEnemyRarity").innerText = activeEnemy.rarity;
   
-  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Combat Matrix Loaded. Select Attack Protocol!</div>`;
+  document.getElementById("battleLogBox").innerHTML = `<div style='color:#ffff00;'>Battle Arena Loaded. Pilih Protocol Serangan!</div>`;
   document.getElementById("btnExitBattle").innerText = "⬅️ Run";
   updateRpgActionButtons();
 }
@@ -720,8 +738,8 @@ function updateRpgActionButtons() {
   
   document.getElementById("skillDmg0").innerText = `Dmg: ${Math.floor(stateData.power * 1.0 * pMod)}`;
   document.getElementById("skillDmg1").innerText = `Dmg: ${Math.floor(stateData.power * 1.5 * pMod)} [CD: ${skillCooldowns[1]}]`;
-  document.getElementById("skillDmg2").innerText = `Dmg: ${Math.floor(stateData.power * 0.5 * pMod)} (50% Stun)`;
-  document.getElementById("skillDmg3").innerText = `Dmg: ${Math.floor(stateData.power * 2.6 * pMod)} [CD: ${skillCooldowns[3]}]`;
+  document.getElementById("skillDmg2").innerText = `Dmg: ${Math.floor(stateData.power * 0.6 * pMod)} (50% Stun)`;
+  document.getElementById("skillDmg3").innerText = `Dmg: ${Math.floor(stateData.power * 2.5 * pMod)} [CD: ${skillCooldowns[3]}]`;
 
   for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = (skillCooldowns[i] > 0);
   document.getElementById("b-stock-elixir").innerText = foodBag.elixir;
@@ -732,39 +750,61 @@ function executeRpgTurn(skillIndex) {
   setRpgBoardInteractive(false);
   const log = document.getElementById("battleLogBox");
   let baseMult = 1.0;
-  if (skillIndex === 1) { baseMult = 1.5; skillCooldowns[1] = 3; }
-  if (skillIndex === 2) { baseMult = 0.5; }
-  if (skillIndex === 3) { baseMult = 2.6; skillCooldowns[3] = 5; }
+  
+  if (skillIndex === 1) { baseMult = 1.5; skillCooldowns[1] = 2; }
+  if (skillIndex === 2) { baseMult = 0.6; }
+  if (skillIndex === 3) { baseMult = 2.5; skillCooldowns[3] = 4; }
   
   let rawDamage = Math.floor(stateData.power * baseMult);
-  if (doubleDamageActive) { rawDamage *= 2; doubleDamageActive = false; }
+  
+  // Sistem Pengganda 2x Lipat Aktif dari Item Pill
+  if (doubleDamageActive) { 
+    rawDamage = rawDamage * 2; 
+    doubleDamageActive = false; 
+  }
+  
   enemyBattleHp = Math.max(0, enemyBattleHp - rawDamage);
   
   let skillNames = ["Strike", "Heavy Smash", "Electro Stun", "Ultimate Burst"];
-  log.innerHTML += `<div>⚔️ Cast <b>${skillNames[skillIndex]}</b>! Deals <b style='color:#ffff00;'>${rawDamage}</b> dmg.</div>`;
+  log.innerHTML += `<div>⚔️ Pet melepas <b>${skillNames[skillIndex]}</b>! Menghasilkan <b style='color:#ffff00;'>${rawDamage}</b> dmg.</div>`;
 
   if (skillIndex === 2 && Math.random() <= 0.50) {
-    isEnemyStunned = true; log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ PARALYZED! Opponent turn skipped.</div>`;
+    isEnemyStunned = true; 
+    log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ PARALYZED! Turn musuh akan terlewati.</div>`;
   }
 
-  for(let i=0; i<4; i++) { if(i !== skillIndex && skillCooldowns[i] > 0) skillCooldowns[i]--; }
+  for(let i=0; i<4; i++) { 
+    if(i !== skillIndex && skillCooldowns[i] > 0) skillCooldowns[i]--; 
+  }
+  
   if (enemyBattleHp <= 0) { handleBattleVictory(); return; }
   
   setTimeout(() => {
     if (isEnemyStunned) {
-      log.innerHTML += `<div style='color:#00ffff;'>💤 Enemy stunned! Action skipped.</div>`;
-      isEnemyStunned = false; endTurnCycle();
+      log.innerHTML += `<div style='color:#00ffff;'>💤 Musuh Terbujur Kaku! Aksi mereka ter-skip.</div>`;
+      isEnemyStunned = false; 
+      endTurnCycle();
     } else {
       let enemyDmg = activeEnemy.dmg;
       playerBattleHp = Math.max(0, playerBattleHp - enemyDmg);
-      log.innerHTML += `<div style='color:#ff4a4a;'>💥 Opponent counter-strikes! Sustained <b>${enemyDmg}</b> damage.</div>`;
+      log.innerHTML += `<div style='color:#ff4a4a;'>💥 Musuh membalas hantaman! Menerima <b>${enemyDmg}</b> damage.</div>`;
       if (playerBattleHp <= 0) { handleBattleDefeat(); } else { endTurnCycle(); }
     }
   }, 1000);
 }
 
-function endTurnCycle() { document.getElementById("combatTurnTitle").innerText = "Your Turn"; setRpgBoardInteractive(true); updateRpgActionButtons(); }
-function setRpgBoardInteractive(act) { for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = !act; }
+function endTurnCycle() { 
+  document.getElementById("combatTurnTitle").innerText = "Your Turn"; 
+  setRpgBoardInteractive(true); 
+  updateRpgActionButtons(); 
+}
+
+function setRpgBoardInteractive(act) { 
+  for(let i=0; i<4; i++) {
+    if(act && skillCooldowns[i] > 0) continue;
+    document.getElementById(`skillBtn${i}`).disabled = !act; 
+  }
+}
 
 function handleBattleVictory() {
   const log = document.getElementById("battleLogBox");
@@ -772,12 +812,17 @@ function handleBattleVictory() {
   stateData.totalHunts++; 
   if (stateData.currentStreak > stateData.highestStreak) stateData.highestStreak = stateData.currentStreak;
 
-  let expGained = Math.floor(stateData.maxExp * 0.30);
+  let expGained = Math.floor(stateData.maxExp * 0.35);
   stateData.exp += expGained;
-  if(stateData.exp >= stateData.maxExp) { stateData.exp = 0; stateData.level++; stateData.power += 6; }
+  if(stateData.exp >= stateData.maxExp) { 
+    stateData.exp = 0; 
+    stateData.level++; 
+    stateData.power += 6; 
+    stateData.maxHp += 15;
+  }
   
-  log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Acquired ${expGained} EXP.</div>`;
-  document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
+  log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Mendapat ${expGained} EXP.</div>`;
+  document.getElementById("btnExitBattle").innerText = "⬅️ Keluar Arena";
   stateData.hp = playerBattleHp;
   
   saveLocalData(); 
@@ -828,11 +873,31 @@ function toggleBattleItemPanel() {
   const panel = document.getElementById("battleItemPanel");
   panel.style.display = (panel.style.display === "grid") ? "none" : "grid";
 }
+
 function useBattleItem(type) {
-  if(type === 'elixir' && foodBag.elixir > 0) { foodBag.elixir--; playerBattleHp = stateData.maxHp; }
-  if(type === 'pill' && foodBag.pill > 0) { foodBag.pill--; doubleDamageActive = true; }
-  toggleBattleItemPanel(); updateRpgActionButtons();
+  const log = document.getElementById("battleLogBox");
+  if(type === 'elixir') {
+    if(foodBag.elixir > 0) {
+      foodBag.elixir--;
+      playerBattleHp = stateData.maxHp; // 100% Full Heal HP
+      log.innerHTML += `<div style='color:#00ffff;'>🧪 Menggunakan Elixir! HP Pet pulih 100% penuh!</div>`;
+    } else {
+      alert("Stok Elixir Habis!");
+    }
+  }
+  if(type === 'pill') {
+    if(foodBag.pill > 0) {
+      foodBag.pill--;
+      doubleDamageActive = true; // Damage berikutnya x2
+      log.innerHTML += `<div style='color:#ff00ff;'>💊 Menggunakan Burst Pill! Serangan berikutnya akan menghasilkan 2x LIPAT DAMAGE!</div>`;
+    } else {
+      alert("Stok Burst Pill Habis!");
+    }
+  }
+  toggleBattleItemPanel(); 
+  updateRpgActionButtons();
 }
+
 function syncOwnerFields() {
   document.getElementById("inpDevHp").value = stateData.hp;
   document.getElementById("inpDevMaxHp").value = stateData.maxHp;
