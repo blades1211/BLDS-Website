@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLACKLIGHTDOMS | CORE SYSTEM</title>
 <style>
-/* ==========================================================================
-   🎬 CORE STYLING & INTERFACE
-   ========================================================================== */
 body {
   margin: 0;
   padding: 0;
@@ -15,99 +12,13 @@ body {
   color: #fff;
   font-family: 'Courier New', Courier, monospace;
   overflow-x: hidden;
-  transition: filter 0.5s ease;
-}
-.full-invert {
-  filter: invert(1) hue-rotate(180deg);
 }
 .sky {
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: -2;
-  overflow: hidden;
   background: radial-gradient(circle at center, #060611 0%, #000000 100%);
-}
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: #fff;
-  opacity: 0.3;
-  animation: starFloat infinite linear;
-}
-@keyframes starFloat {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(100vh); }
-}
-.enter-transition-overlay {
-  position: fixed;
-  inset: 0;
-  background: #fff;
-  z-index: 999999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.8s ease;
-}
-.enter-transition-overlay.active {
-  opacity: 1;
-}
-.blds-black-screen-overlay {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 99999999;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-.blds-overlay-logo {
-  width: 120px;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-  margin-bottom: 30px;
-}
-.blds-overlay-dialog {
-  font-size: 14px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #fff;
-  opacity: 0;
-  transition: all 0.5s ease;
-}
-.split-cutscene-container {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: none;
-  pointer-events: none;
-}
-.split-left, .split-right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  background: transparent;
-}
-.split-left { left: 0; }
-.split-right { right: 0; filter: invert(1) hue-rotate(180deg); background: rgba(0,0,0,0.05); }
-
-.cutscene-hud-alert {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.1);
-  border: 1px solid #fff;
-  padding: 8px 16px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  z-index: 100000;
-  display: none;
-  text-align: center;
 }
 .floating-view-toggle {
   position: fixed;
@@ -124,7 +35,6 @@ body {
   font-size: 20px;
   cursor: pointer;
   z-index: 9999;
-  box-shadow: 0 0 15px rgba(255,255,255,0.3);
 }
 .modal-overlay {
   position: fixed;
@@ -137,46 +47,14 @@ body {
   justify-content: center;
   padding: 20px;
 }
-.modal-box, .theme-modal-box {
+.modal-box {
   background: #05050a;
   border: 1px solid rgba(255,255,255,0.2);
   padding: 30px;
   max-width: 400px;
   width: 100%;
   text-align: center;
-  position: relative;
   border-radius: 8px;
-}
-.theme-close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
-  opacity: 0.6;
-}
-.theme-options-container {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.theme-option-card {
-  padding: 12px;
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer;
-  font-size: 11px;
-  letter-spacing: 1px;
-  transition: all 0.3s;
-}
-.theme-option-card:hover, .theme-option-card.active-choice {
-  border-color: #fff;
-  background: rgba(255,255,255,0.05);
-}
-.theme-enter-lbl {
-  font-size: 10px;
-  color: rgba(255,255,255,0.4);
-  cursor: pointer;
-  margin-top: 15px;
 }
 .loader {
   position: fixed;
@@ -201,15 +79,6 @@ body {
 @keyframes spin { 100% { transform: rotate(360deg); } }
 .loaderText { font-size: 11px; letter-spacing: 3px; margin-top: 20px; color: rgba(255,255,255,0.6); }
 
-/* Theme Preset Classes */
-.theme-matrix { color: #00ff00 !important; font-family: monospace; }
-.theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
-.theme-matrix button { border-color: #00ff00 !important; color: #00ff00 !important; background: transparent; }
-.theme-crimson { color: #ff3333 !important; }
-.theme-crimson .box, .theme-crimson .theme-modal-box { border-color: #ff3333 !important; background: #050000 !important; }
-.theme-crimson button { border-color: #ff3333 !important; color: #ff3333 !important; background: transparent; }
-
-/* Main Core Grid Framework */
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -218,7 +87,6 @@ body {
   flex-direction: column;
   align-items: center;
 }
-.logo-container .logo { width: 100px; margin-bottom: 20px; }
 .streak-widget {
   display: none;
   flex-direction: column;
@@ -227,9 +95,7 @@ body {
   border: 1px solid rgba(255,255,255,0.1);
   padding: 15px 25px;
   margin-bottom: 30px;
-  letter-spacing: 1px;
 }
-.highest-streak-display { font-size: 11px; opacity: 0.5; margin-top: 5px; }
 .title { font-size: 28px; letter-spacing: 8px; margin-bottom: 40px; text-align: center; }
 #enterBtn, .menu button, .calibration-box button, .admin-btn, .modal-box button {
   background: transparent;
@@ -250,8 +116,6 @@ body {
 .menu { display: none; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
 .page { display: none; width: 100%; margin-bottom: 40px; }
 .box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 4px; }
-.lore-text { font-size: 13px; line-height: 1.8; opacity: 0.8; text-align: justify; }
-.flames-list { font-size: 13px; line-height: 1.8; opacity: 0.8; padding-left: 20px; }
 .achievement-progress-container { margin-bottom: 25px; background: rgba(255,255,255,0.05); height: 20px; position: relative; border-radius: 10px; overflow: hidden; }
 .achievement-progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; }
 .achievement-progress-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; mix-blend-mode: difference; }
@@ -263,604 +127,180 @@ body {
 .unlocked-badge { background: #fff; color: #000; }
 .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
 .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.leaderboard-table th { opacity: 0.6; letter-spacing: 1px; }
-.archive-log { margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-.archive-date { font-size: 11px; opacity: 0.4; margin-bottom: 5px; }
-.staff-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-.staff-group h4 { margin: 0 0 5px 0; font-size: 12px; opacity: 0.6; }
-.staff-group p { margin: 0; font-size: 14px; }
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); }
-#calibrationStatus { font-size: 11px; letter-spacing: 1px; color: rgba(255,255,255,0.5); margin-bottom: 15px; }
-.reset-streak-btn { font-size: 9px !important; margin-top: 15px; opacity: 0.5; border-color: rgba(255,0,0,0.3) !important; color: #ff4a4a !important; }
-.modal-btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-input[type="text"], input[type="number"], select {
-  background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px; font-family: inherit; font-size: 11px; letter-spacing: 1px; margin-bottom: 10px; box-sizing: border-box; width: 100%;
+input[type="text"], input[type="number"] {
+  background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px; font-family: inherit; font-size: 11px; width: 100%; box-sizing: border-box;
 }
-.admin-trigger-launcher {
-  position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: grab; display: none; z-index: 999999;
-}
-.admin-floating-panel {
-  position: fixed; top: 10%; left: 10%; width: 320px; max-height: 70vh; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; box-shadow: 0 0 30px rgba(0,0,0,0.8);
-}
-.admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+.admin-trigger-launcher { position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; z-index: 999999; }
+.admin-floating-panel { position: fixed; top: 10%; left: 10%; width: 320px; max-height: 70vh; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; }
+.admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; }
 .admin-body { padding: 15px; overflow-y: auto; flex: 1; }
-.admin-section { border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px; }
-.admin-section h4 { margin: 0 0 10px 0; font-size: 11px; letter-spacing: 1px; opacity: 0.8; text-transform: uppercase; }
-.admin-section label { font-size: 9px; display: block; margin-bottom: 4px; opacity: 0.5; }
-.code-list-box { font-size: 9px; color: rgba(255,255,255,0.4); line-height: 1.5; }
-footer { width: 100%; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; }
+footer { width: 100%; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; }
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-.footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; letter-spacing: 1px; }
-.footer-links a:hover { color: #fff; }
-@media (max-width: 480px) {
-  .title { font-size: 20px; }
-  .footer-content { flex-direction: column; gap: 10px; text-align: center; }
-}
 </style>
 </head>
- 
 <body>
- 
-<audio id="bgAmbient" loop>
-  <source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg">
-</audio>
- 
-<div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
- 
-<div class="blds-black-screen-overlay" id="bldsCutsceneOverlay">
-  <img src="logo.png" alt="BLDS Cutscene Logo" class="blds-overlay-logo" id="bldsCutsceneLogo" onerror="this.style.display='none';">
-  <div class="blds-overlay-dialog" id="bldsCutsceneDialog"></div>
-</div>
- 
-<div class="split-cutscene-container" id="splitOverlay">
-  <div class="split-left"></div>
-  <div class="split-right"></div>
-</div>
- 
-<div class="cutscene-hud-alert" id="cutsceneAlert">
-  CORE SIGNATURE INJECTED // CALIBRATION PROTOCOL ACTIVE
-</div>
- 
-<div class="floating-view-toggle" id="floatingViewToggleBtn" title="Ubah Tampilan Menu">👁️</div>
- 
-<div class="modal-overlay" id="themeSelectorModal">
-  <div class="theme-modal-box">
-    <div class="theme-close-btn" onclick="closeThemeModal()">✕</div>
-    <h3 style="letter-spacing: 2px; font-size: 16px; border:none; padding:0; margin-bottom: 5px;">INTERFACE SYSTEM</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.4);">Pilih preset visualisasi matrix core utama.</p>
- 
-    <div class="theme-options-container">
-      <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">
-        ⚪ DEFAULT ECLIPSE (DARK SPACE)
-      </div>
-      <div class="theme-option-card" id="opt-matrix" onclick="selectThemeOption('matrix')">
-        🟢 CODE MATRIX (CYBER DIGITAL)
-      </div>
-      <div class="theme-option-card" id="opt-crimson" onclick="selectThemeOption('crimson')">
-        🔴 CRIMSON OVERDRIVE (HELL REBEL)
-      </div>
-    </div>
- 
-    <div class="theme-enter-lbl" onclick="applySelectedTheme()">[ Enter untuk Mengubah Tampilan ]</div>
-  </div>
-</div>
- 
+
+<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">ENTERING SYSTEM</div></div>
+<div class="sky"></div>
+
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3 id="modalRegTitle" style="letter-spacing: 2px; font-size: 16px; margin-bottom: 10px; border:none; padding:0;">MAIN MATRIX REGISTRATION</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5);">Input designation name to synchronize with core board.</p>
-    <br>
-    <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DOMINION NAME" maxlength="15" style="text-align: center;">
-    <br><br>
-    <button onclick="saveDominionName()" style="width: 100%; margin: 0;">REGISTER TO MAINBOARD</button>
+    <h3>MAIN MATRIX REGISTRATION</h3>
+    <input type="text" id="dominionNameInput" placeholder="ENTER YOUR DESIGNATION" maxlength="15" style="text-align: center;"><br><br>
+    <button onclick="saveDominionName()">REGISTER</button>
   </div>
 </div>
- 
-<div class="modal-overlay" id="collapseModal">
-  <div class="modal-box" style="border-color: rgba(255,0,0,0.4);">
-    <h3 style="letter-spacing: 2px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">⚠️ SYNC LAPSE DETECTED</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.6); text-align: justify;">
-      Anda melewati jendela kalibrasi harian. Streak kembali menjadi 0.
-    </p>
-    <br>
-    <button onclick="closeCollapseModal()" style="width: 100%; margin: 0;">RE-CALIBRATE FRAMEWORK</button>
-  </div>
-</div>
- 
-<div class="modal-overlay" id="resetConfirmModal">
-  <div class="modal-box" style="border-color: rgba(255,74,74,0.4);">
-    <h3 style="letter-spacing: 1px; font-size: 16px; color: #ff4a4a; margin-bottom: 10px; border:none; padding:0;">Are you sure Dominioners?</h3>
-    <p style="font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 20px;">This action will reset your streak tracking back to 0.</p>
-    <div class="modal-btn-group">
-      <button onclick="confirmResetStreak()" style="background:#ff4a4a; border-color:#ff4a4a; color:#000; font-weight:600; text-transform: uppercase;">Yes</button>
-      <button onclick="closeResetModal()" style="text-transform: uppercase;">No</button>
-    </div>
-  </div>
-</div>
- 
-<div class="loader" id="loader">
-  <div class="loaderCircle"></div>
-  <div class="loaderText">ENTERING BLACKLIGHTDOMS</div>
-</div>
- 
-<div class="sky" id="sky"></div>
- 
-<div class="container" id="mainWebsiteContainer">
-  <div class="logo-container">
-    <img src="logo.png" alt="BLDS Logo" class="logo" onerror="this.style.display='none';">
-  </div>
- 
+
+<div class="container">
   <div class="streak-widget" id="streakWidget">
-    <div class="streak-row">
-      RESONANCE STREAK: <b id="streakCount">0</b> DAYS 
-      <span style="color: rgba(255,255,255,0.3); margin: 0 4px;">|</span> 
-      RANK: <span id="rankTitle" style="font-weight:600;">VOID WALKER</span>
-    </div>
-    <div class="highest-streak-display">
-      HIGHEST PEAK RECORD: <b id="highestStreakDisplayCount" style="color: #fff;">0</b> DAYS
-    </div>
+    <div>RESONANCE STREAK: <b id="streakCount">0</b> DAYS | RANK: <span id="rankTitle">VOID WALKER</span></div>
+    <div style="font-size: 11px; opacity: 0.5; margin-top: 5px;">HIGHEST RECORD: <b id="highestStreakDisplayCount">0</b> DAYS</div>
   </div>
- 
-  <h1 class="title" id="mainTitle">BLACKLIGHTDOMS</h1>
- 
+
+  <h1 class="title">BLACKLIGHTDOMS</h1>
   <button id="enterBtn" onclick="enter()">ENTER THE ECLIPSE</button>
- 
+
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">ORIGIN</button>
     <button onclick="showPage('achievement')">ACHIEVEMENTS</button>
-    <button onclick="showPage('leaderboardPage')">LEADERBOARD (TOP 20)</button>
-    <button onclick="showPage('archives')">ARCHIVES</button>
-    <button onclick="showPage('code')">CODE</button>
+    <button onclick="showPage('leaderboardPage')">LEADERBOARD</button>
     <button onclick="showPage('beastPage')">👾 BEAST ENGINE</button>
   </div>
- 
+
   <div class="page" id="origin">
-    <div class="box">
-      <h2>LORE</h2>
-      <p class="lore-text">before BLDS had a name,
-      before the symbol existed,
-      before the squad was formed…
-      there were only individuals trying to survive their own darkness.
-      Some were ignored.
-      Some were underestimated.
-      Some failed over and over again until they stopped expecting anyone to believe in them.
-      They watched others rise faster.
-      Watched others gain recognition.
-      Watched people quit the moment things became difficult.
-      And slowly, they realized something:
-      Most people only shine when the world is bright.
-      But very few can continue moving forward when everything turns dark.
-      That realization became the beginning of BLDS.
-      Not a squad created for fame.
-      Not a kingdom built on arrogance.
-      Not a place for people searching only for victory.
-      But a dominion built by those who refused to disappear.</p>
- 
-      <h2>BLACKLIGHT CORE</h2>
-      <p class="lore-text">At the center of the eclipse lies the Core.
-      A single star that continues to shine no matter how dark the sky becomes.
-      The Core represents the inner purpose carried by every member of BLDS.
-      Not a purpose given by the world.
-      Not a purpose created by attention or popularity.
-      But a purpose discovered through hardship.
-      It is the reminder that: even when everything around you changes…
-      even when people leave…
-      even when failure surrounds you…
-      your inner light can still remain alive.
-      BLDS believes the strongest people are not those who never fall.
-      The strongest are the ones who continue standing after every fall.
-      That is why the Core never disappears.
-      Because purpose cannot be erased by fear.</p>
- 
-      <h2>10 FLAMES OF BLDS</h2>
- 
-      <h3>Greater</h3>
-      <ul class="flames-list">
-        <li><b>I. Vision</b> - The ability to see direction even when others are lost.</li>
-        <li><b>II. Discipline</b> - To continue growing even when nobody is watching.</li>
-        <li><b>III. Loyalty</b> - To stand together through victory and defeat.</li>
-        <li><b>IV. Ambition</b> - The desire to surpass limits and continue evolving.</li>
-        <li><b>V. Resilience</b> - The strength to rise again after every fall.</li>
-      </ul>
- 
-      <h3>Lesser</h3>
-      <ul class="flames-list">
-        <li><b>I. Hope</b> - The light that remains during difficult times.</li>
-        <li><b>II. Awareness</b> - The ability to stay conscious and understand reality.</li>
-        <li><b>III. Patience</b> - Growth takes time and endurance.</li>
-        <li><b>IV. Courage</b> - The will to move forward despite fear.</li>
-        <li><b>V. Unity</b> - The bond that turns individuals into something greater.</li>
-      </ul>
-    </div>
+    <div class="box"><h2>LORE</h2><p>Welcome to the Core Framework.</p></div>
   </div>
- 
+
   <div class="page" id="achievement">
     <div class="box">
-      <h2>RESONANCE ACHIEVEMENTS</h2>
+      <h2>ACHIEVEMENTS</h2>
       <div class="achievement-progress-container">
         <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADGES UNLOCKED</div>
+        <div class="achievement-progress-text" id="achProgressText">0 / 3 UNLOCKED</div>
       </div>
- 
       <div class="achievement-grid">
-        <div class="achievement-card" id="ach1">
-          <span class="ach-badge locked-badge" id="ach1Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Eclipse Ignition</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Complete day 1 calibration synchronization.</p>
-        </div>
-        <div class="achievement-card" id="ach2">
-          <span class="ach-badge locked-badge" id="ach2Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Dual Spark</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain resonance for 2 consecutive days.</p>
-        </div>
-        <div class="achievement-card" id="ach3">
-          <span class="ach-badge locked-badge" id="ach3Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Tri-Matrix Sync</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Synchronize continuously for 3 days.</p>
-        </div>
-        <div class="achievement-card" id="ach4">
-          <span class="ach-badge locked-badge" id="ach4Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Quarto Core</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve a 4-day streak resonance.</p>
-        </div>
-        <div class="achievement-card" id="ach5">
-          <span class="ach-badge locked-badge" id="ach5Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Penta Resonance</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Reach 5 days milestone on framework tracking.</p>
-        </div>
-        <div class="achievement-card" id="ach6">
-          <span class="ach-badge locked-badge" id="ach6Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Resonance Synchronizer</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain synchronization for 7 consecutive days.</p>
-        </div>
-        <div class="achievement-card" id="ach7">
-          <span class="ach-badge locked-badge" id="ach7Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Octa Dominion</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Lock down an 8-day consecutive peak performance.</p>
-        </div>
-        <div class="achievement-card" id="ach8">
-          <span class="ach-badge locked-badge" id="ach8Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Nona Overdrive</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Successfully complete 9 days of cosmic calibration.</p>
-        </div>
-        <div class="achievement-card" id="ach9">
-          <span class="ach-badge locked-badge" id="ach9Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Deca Flame Master</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Reach 10 days milestone. Ignite the inner flames.</p>
-        </div>
-        <div class="achievement-card" id="ach10">
-          <span class="ach-badge locked-badge" id="ach10Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Undeca Sector Locked</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Hit 11 days streak inside the dark system.</p>
-        </div>
-        <div class="achievement-card" id="ach11">
-          <span class="ach-badge locked-badge" id="ach11Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Vanguard Knight</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Keep the loop active for 20 days straight.</p>
-        </div>
-        <div class="achievement-card" id="ach12">
-          <span class="ach-badge locked-badge" id="ach12Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Resonance Keeper</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve 30 days peak performance.</p>
-        </div>
-        <div class="achievement-card" id="ach13">
-          <span class="ach-badge locked-badge" id="ach13Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">Dominion Master</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Achieve a massive streak of 50 days.</p>
-        </div>
-        <div class="achievement-card" id="ach14">
-          <span class="ach-badge locked-badge" id="ach14Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">The Cosmic Ancient</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Maintain synchronization for 75 days.</p>
-        </div>
-        <div class="achievement-card" id="ach15">
-          <span class="ach-badge locked-badge" id="ach15Badge">🔒 Locked</span>
-          <h4 style="font-size:14px; margin-bottom:4px;">The Eternal Overlord</h4>
-          <p style="font-size:11px; color:rgba(255,255,255,0.5); line-height:1.4;">Hit a monumental 100-day peak milestone. Permanent loop lock.</p>
-        </div>
+        <div class="achievement-card" id="ach1"><span class="ach-badge locked-badge" id="ach1Badge">🔒 Locked</span><h4>First Sync</h4></div>
+        <div class="achievement-card" id="ach2"><span class="ach-badge locked-badge" id="ach2Badge">🔒 Locked</span><h4>Resonance Echo</h4></div>
+        <div class="achievement-card" id="ach3"><span class="ach-badge locked-badge" id="ach3Badge">🔒 Locked</span><h4>Core Master</h4></div>
       </div>
     </div>
   </div>
- 
+
   <div class="page" id="leaderboardPage">
     <div class="box">
-      <h2>DOMINION LEADERBOARD (TOP 20)</h2>
+      <h2>LEADERBOARD</h2>
       <table class="leaderboard-table">
-        <thead>
-          <tr>
-            <th>RANK</th>
-            <th>DOMINION NAME</th>
-            <th>STREAK</th>
-          </tr>
-        </thead>
+        <thead><tr><th>RANK</th><th>NAME</th><th>STREAK</th></tr></thead>
         <tbody id="leaderboardDataBody"></tbody>
       </table>
     </div>
   </div>
- 
-  <div class="page" id="archives">
-    <div class="box">
-      <h2>BLDS KRONOLOGIS ARCHIVES</h2>
-      <div class="archive-log">
-        <div class="archive-date">> CORE DOMINION LEADERSHIP NETWORK</div>
-        <div class="staff-grid">
-          <div class="staff-group"><h4>Founder</h4><p>Michael Lorenzo</p></div>
-          <div class="staff-group"><h4>Right Hand</h4><p>William Nayottama</p></div>
-          <div class="staff-group"><h4>Left Hand</h4><p>Prince Felix</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <div class="page" id="code">
-    <div class="box">
-      <h2>CODE SYSTEM</h2>
-      <input type="text" id="codeInput" placeholder="enter code">
-      <br><br>
-      <button onclick="unlockCode()">UNLOCK</button>
+
+  <div class="page" id="beastPage">
+    <div class="box" style="padding: 10px; background: #020205; border-color: rgba(255,255,255,0.15); width: 100%; box-sizing: border-box;">
+      <iframe src="index_beast_system.html" style="width: 100%; height: 600px; border: none; display: block; background: transparent; overflow: hidden;" scrolling="no" id="beastIframe"></iframe>
     </div>
   </div>
 
-  <div class="page" id="beastPage">
-    <div class="box" style="padding: 10px; background: #020205; border-color: rgba(255,255,255,0.15); max-width: 600px; margin: 0 auto; border-radius: 12px;">
-      <iframe src="beast.html" style="width: 100%; height: 740px; border: none; display: block; background: transparent;" scrolling="no"></iframe>
-    </div>
-  </div>
- 
   <div class="calibration-container" id="calibrationHud">
     <div class="calibration-box">
-      <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
+      <p id="calibrationStatus">READY FOR CALIBRATION</p>
       <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
-      <br>
-      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK TRACKING</button>
     </div>
   </div>
 </div>
- 
-<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ OWNER</div>
- 
-<div class="admin-floating-panel" id="adminPanel">
-  <div class="admin-header">
-    <span>🛡️ BLDS OWNER MATRIX</span>
-    <span style="cursor:pointer; font-weight:bold; font-size:14px;" id="adminCloseBtn">✕</span>
-  </div>
-  <div class="admin-body">
-    <div class="admin-section">
-      <h4>1. Core User Modification</h4>
-      <label>Dominion Name:</label><input type="text" id="admDomName">
-      <label>Current Streak Count (Days):</label><input type="number" id="admStreak">
-      <label>Highest Peak Streak:</label><input type="number" id="admHighStreak">
-      <button class="admin-btn" onclick="executeAdminUserUpdate()">APPLY CHANGES</button>
-    </div>
-    <div class="admin-section">
-      <h4>2. Override Global Rank Title</h4>
-      <input type="text" id="admForceRank" placeholder="Contoh: GOD OF THE ECLIPSE">
-      <button class="admin-btn" onclick="executeAdminRankOverride()">OVERRIDE RANK</button>
-    </div>
-  </div>
-</div>
- 
-<footer>
-  <div class="footer-content">
-    <div class="footer-links">
-      <a href="https://discord.gg/r4dM4QFteV" target="_blank">DISCORD</a>
-      <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR" target="_blank">WHATSAPP</a>
-    </div>
-    <div style="font-size: 11px; color: rgba(255, 255, 255, 0.3);">© 2026 BLACKLIGHTDOMS.</div>
-  </div>
-</footer>
- 
+
 <script>
-let tempSelectedTheme = "default";
-const themeToggleBtn = document.getElementById("floatingViewToggleBtn");
-const themeModal = document.getElementById("themeSelectorModal");
- 
-themeToggleBtn.addEventListener("click", () => {
-  themeModal.style.display = "flex";
-  if(document.body.classList.contains("theme-matrix")) selectThemeOption("matrix");
-  else if(document.body.classList.contains("theme-crimson")) selectThemeOption("crimson");
-  else selectThemeOption("default");
-});
- 
-function closeThemeModal() { themeModal.style.display = "none"; }
-function selectThemeOption(themeName) {
-  tempSelectedTheme = themeName;
-  document.querySelectorAll(".theme-option-card").forEach(card => card.classList.remove("active-choice"));
-  document.getElementById(`opt-${themeName}`).classList.add("active-choice");
-}
-function applySelectedTheme() {
-  document.body.classList.remove("theme-matrix", "theme-crimson");
-  if(tempSelectedTheme === "matrix") document.body.classList.add("theme-matrix");
-  else if(tempSelectedTheme === "crimson") document.body.classList.add("theme-crimson");
-  localStorage.setItem("BLDS_SELECTED_THEME_PREF", tempSelectedTheme);
-  closeThemeModal();
-}
-function initLoadSavedTheme() {
-  const savedTheme = localStorage.getItem("BLDS_SELECTED_THEME_PREF");
-  if(savedTheme) {
-    document.body.classList.remove("theme-matrix", "theme-crimson");
-    if(savedTheme === "matrix") document.body.classList.add("theme-matrix");
-    if(savedTheme === "crimson") document.body.classList.add("theme-crimson");
-  }
-}
- 
-let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "", forcedRankTitle: "" };
-let calibrationInterval = null;
-let DEFAULT_LEADERBOARD = [
-  { name: "Michael Lorenzo", streak: 152 },
-  { name: "William Nayottama", streak: 121 },
-  { name: "Prince Felix", streak: 98 }
-];
- 
-function saveState() {
-  localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
-}
+let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
+
+function saveState() { localStorage.setItem("BLDS_CORE_DATA", JSON.stringify(streakData)); }
 function loadState() {
-  initLoadSavedTheme();
-  const savedStr = localStorage.getItem("BLDS_CORE_STR_DATA");
-  if(savedStr) streakData = JSON.parse(savedStr);
-  if (localStorage.getItem("BLDS_LAUNCHER_ENABLED") === "true") {
-    document.getElementById("adminLauncherBtn").style.display = "block";
-  }
-  checkStreakValidity();
-  updateWidgetDynamicUI();
+  const saved = localStorage.getItem("BLDS_CORE_DATA");
+  if(saved) streakData = JSON.parse(saved);
+  updateUI();
+}
+function updateUI() {
+  document.getElementById("streakCount").innerText = streakData.count;
+  document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
+  updateAchievements();
   renderLeaderboard();
+  updateCalibrationHud();
 }
-function checkStreakValidity() {
-  if (!streakData.lastCalibratedTimestamp) return;
-  if (Date.now() - streakData.lastCalibratedTimestamp >= (48 * 60 * 60 * 1000)) {
-    document.getElementById("collapseModal").style.display = "flex";
-    streakData.count = 0;
-    streakData.lastCalibratedTimestamp = null;
-    saveState();
-  }
-}
-function closeCollapseModal() {
-  document.getElementById("collapseModal").style.display = "none";
-  updateWidgetDynamicUI();
-  updateCalibrationHudUI();
-}
-function openResetModal() { document.getElementById("resetConfirmModal").style.display = "flex"; }
-function closeResetModal() { document.getElementById("resetConfirmModal").style.display = "none"; }
-function confirmResetStreak() {
-  streakData.count = 0;
-  streakData.lastCalibratedTimestamp = null;
-  saveState();
-  closeResetModal();
-  document.getElementById("nameModal").style.display = "flex";
-}
-function updateAchievementsUI(highestStreak) {
-  let unlockedCount = 0;
-  const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
-  for (let i = 1; i <= 15; i++) {
+function updateAchievements() {
+  let unlocked = 0;
+  const targets = [1, 5, 10];
+  for(let i=1; i<=3; i++) {
     const card = document.getElementById(`ach${i}`);
     const badge = document.getElementById(`ach${i}Badge`);
-    if (card && badge) {
-      if (highestStreak >= targets[i - 1]) {
-        card.classList.add("unlocked");
-        badge.className = "ach-badge unlocked-badge";
-        badge.innerHTML = "Unlocked";
-        unlockedCount++;
-      } else {
-        card.classList.remove("unlocked");
-        badge.className = "ach-badge locked-badge";
-        badge.innerHTML = "🔒 Locked";
-      }
+    if(streakData.highestCount >= targets[i-1]) {
+      card.classList.add("unlocked");
+      badge.className = "ach-badge unlocked-badge";
+      badge.innerText = "Unlocked";
+      unlocked++;
     }
   }
-  let pct = (unlockedCount / 15) * 100;
+  let pct = (unlocked / 3) * 100;
   document.getElementById("achProgressBar").style.width = pct + "%";
-  document.getElementById("achProgressText").innerHTML = `${unlockedCount} / 15 BADLOCKS UNLOCKED`;
-}
-function updateWidgetDynamicUI() {
-  document.getElementById("streakCount").innerHTML = streakData.count;
-  document.getElementById("highestStreakDisplayCount").innerHTML = streakData.highestCount;
-  
-  let rank = "VOID WALKER";
-  if (streakData.count >= 100) rank = "THE ETERNAL CORE";
-  else if (streakData.count >= 50) rank = "DOMINION VANGUARD";
-  else if (streakData.count >= 30) rank = "RESONANCE KEEPER";
-  else if (streakData.count >= 7) rank = "ECLIPSE SYNCHRONIZER";
-  
-  if(streakData.forcedRankTitle) rank = streakData.forcedRankTitle;
-  document.getElementById("rankTitle").innerHTML = rank;
-  updateAchievementsUI(streakData.highestCount);
+  document.getElementById("achProgressText").innerText = `${unlocked} / 3 UNLOCKED`;
 }
 function renderLeaderboard() {
   const tbody = document.getElementById("leaderboardDataBody");
-  if (!tbody) return;
-  let list = [...DEFAULT_LEADERBOARD];
-  if (streakData.dominionName) {
-    const existingIndex = list.findIndex(item => item.name.toLowerCase() === streakData.dominionName.toLowerCase());
-    if (existingIndex !== -1) list[existingIndex].streak = streakData.count;
-    else list.push({ name: streakData.dominionName, streak: streakData.count, isCurrentUser: true });
-  }
-  list.sort((a, b) => b.streak - a.streak);
-  let htmlString = "";
-  list.slice(0, 20).forEach((user, index) => {
-    const isMe = user.isCurrentUser || (streakData.dominionName && user.name.toLowerCase() === streakData.dominionName.toLowerCase());
-    htmlString += `
-      <tr ${isMe ? "style='background:rgba(255,255,255,0.15);'" : ""}>
-        <td>#${index + 1}</td>
-        <td>${user.name} ${isMe ? "(YOU)" : ""}</td>
-        <td>${user.streak} Days</td>
-      </tr>`;
-  });
-  tbody.innerHTML = htmlString;
+  let list = [{name: "Michael", streak: 50}, {name: "William", streak: 40}];
+  if(streakData.dominionName) list.push({name: streakData.dominionName, streak: streakData.count});
+  list.sort((a,b) => b.streak - a.streak);
+  tbody.innerHTML = list.map((u, i) => `<tr><td>#${i+1}</td><td>${u.name}</td><td>${u.streak} Days</td></tr>`).join('');
 }
-function updateCalibrationHudUI() {
+function updateCalibrationHud() {
   const btn = document.getElementById("calibrationBtn");
   const status = document.getElementById("calibrationStatus");
-  if (!streakData.lastCalibratedTimestamp) {
-    btn.disabled = false; status.innerHTML = "SYSTEM READY FOR INTEGRATION"; return;
-  }
-  const msElapsed = Date.now() - streakData.lastCalibratedTimestamp;
-  if (msElapsed < (24 * 60 * 60 * 1000)) {
+  if(!streakData.lastCalibratedTimestamp) { btn.disabled = false; status.innerText = "READY"; return; }
+  const elapsed = Date.now() - streakData.lastCalibratedTimestamp;
+  if(elapsed < 24*60*60*1000) {
     btn.disabled = true;
-    let timeLeft = (24 * 60 * 60 * 1000) - msElapsed;
-    let hours = Math.floor(timeLeft / (60 * 60 * 1000));
-    let minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-    status.innerHTML = `NEXT SYNC AVAILABLE IN: ${hours}h ${minutes}m`;
-  } else {
-    btn.disabled = false; status.innerHTML = "CORE DISCONNECTED! RUN CALIBRATION NOW!";
-  }
-}
-function startCalibrationTimer() {
-  if(calibrationInterval) clearInterval(calibrationInterval);
-  updateCalibrationHudUI();
-  calibrationInterval = setInterval(updateCalibrationHudUI, 60000);
+    status.innerText = "SYNCHRONIZED FOR TODAY";
+  } else { btn.disabled = false; status.innerText = "CORE DISCONNECTED"; }
 }
 function calibrateCore() {
-  checkStreakValidity();
-  if (streakData.lastCalibratedTimestamp && (Date.now() - streakData.lastCalibratedTimestamp < (24 * 60 * 60 * 1000))) return;
   streakData.count++;
-  if (streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
+  if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
   streakData.lastCalibratedTimestamp = Date.now();
-  saveState(); updateWidgetDynamicUI(); startCalibrationTimer(); renderLeaderboard();
+  saveState(); updateUI();
+  
+  // Mengirim pembaruan data ke dalam iframe Beast Engine agar sinkron
+  const iframe = document.getElementById("beastIframe");
+  if(iframe && iframe.contentWindow) {
+    iframe.contentWindow.postMessage({ type: 'STREAK_UPDATE', data: streakData }, '*');
+  }
 }
-function enter(){
+function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display = "flex"; return; }
-  document.getElementById("bgAmbient").play().catch(err => {});
   document.getElementById("enterBtn").style.display = "none";
-  document.getElementById("streakWidget").style.display = "inline-flex";
+  document.getElementById("streakWidget").style.display = "flex";
   document.getElementById("calibrationHud").style.display = "block";
   document.getElementById("menu").style.display = "flex";
-  startCalibrationTimer();
 }
 function saveDominionName() {
-  const nameVal = document.getElementById("dominionNameInput").value.trim();
-  if(!nameVal) return;
-  streakData.dominionName = nameVal; saveState();
+  const v = document.getElementById("dominionNameInput").value.trim();
+  if(!v) return;
+  streakData.dominionName = v; saveState();
   document.getElementById("nameModal").style.display = "none";
-  updateWidgetDynamicUI(); enter(); renderLeaderboard();
+  updateUI(); enter();
 }
+window.addEventListener("message", function(event) {
+  if (event.data && event.data.type === 'REQUEST_STREAK_DATA') {
+    const iframe = document.getElementById("beastIframe");
+    if(iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage({ type: 'STREAK_UPDATE', data: streakData }, '*');
+    }
+  }
+});
+window.addEventListener("load", () => { document.getElementById("loader").classList.add("hidden"); loadState(); });
 function showPage(id){
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-  const targetPage = document.getElementById(id);
-  if(targetPage) { targetPage.style.display = "block"; targetPage.scrollIntoView({ behavior: "smooth" }); }
+  document.getElementById(id).style.display = "block";
 }
-function unlockCode() {
-  let v = document.getElementById("codeInput").value.trim();
-  if (v === "OWNERONLYBLDS") {
-    document.getElementById("adminLauncherBtn").style.display = "block";
-    localStorage.setItem("BLDS_LAUNCHER_ENABLED", "true");
-    document.getElementById("adminPanel").style.display = "flex";
-  }
-  document.getElementById("codeInput").value = "";
-}
-function executeAdminUserUpdate() {
-  streakData.dominionName = document.getElementById("admDomName").value.trim();
-  streakData.count = parseInt(document.getElementById("admStreak").value) || 0;
-  streakData.highestCount = parseInt(document.getElementById("admHighStreak").value) || 0;
-  saveState(); updateWidgetDynamicUI(); renderLeaderboard();
-}
-function executeAdminRankOverride() {
-  streakData.forcedRankTitle = document.getElementById("admForceRank").value.trim();
-  saveState(); updateWidgetDynamicUI();
-}
-window.addEventListener("load",()=>{ setTimeout(()=>{ document.getElementById("loader").classList.add("hidden"); },1200); loadState(); });
-document.getElementById("adminCloseBtn").addEventListener("click", () => document.getElementById("adminPanel").style.display = "none");
 </script>
 </body>
 </html>
