@@ -74,7 +74,7 @@ body {
 .theme-crimson .logo-container { filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.7)); }
 .theme-crimson .text-logo-fallback { border-color: #ff3333 !important; }
 
-/* Main Container - Auto Extended Height */
+/* Main Container */
 .container { 
   max-width: 850px; 
   width: 100%;
@@ -87,7 +87,6 @@ body {
   box-sizing: border-box;
 }
 
-/* ✨ GLOWING LOGO LAYER */
 .logo-container { 
   margin-bottom: 20px; 
   text-align: center; 
@@ -108,7 +107,6 @@ body {
   padding: 15px 25px; margin-bottom: 30px; letter-spacing: 1px; border-radius: 8px;
 }
 
-/* ✨ GLOWING TEXT TITLE */
 .title { 
   font-size: 28px; 
   letter-spacing: 8px; 
@@ -117,7 +115,6 @@ body {
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* Standard Interface Buttons with Rounded Edges */
 #enterBtn, .calibration-box button, .admin-btn, .modal-box button {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
@@ -126,7 +123,6 @@ body {
 }
 #enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-/* 🟥 VERTICAL STACK CAPSULE MENU */
 .menu { 
   display: none; 
   flex-direction: column;
@@ -146,77 +142,21 @@ body {
 }
 .menu button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-/* Pages System Layouts - Fully Dynamic Height (Anti-Potong) */
-.page { 
-  display: none; 
-  width: 100%; 
-  margin-bottom: 40px;
-  height: auto; 
-}
-.box { 
-  background: rgba(255,255,255,0.01); 
-  border: 1px solid rgba(255,255,255,0.08); 
-  padding: 35px; 
-  border-radius: 8px;
-  height: auto; 
-  overflow: visible; 
-}
+.page { display: none; width: 100%; margin-bottom: 40px; height: auto; }
+.box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 8px; height: auto; overflow: visible; }
 
-/* Custom Sub-layouts for Lore Data Columns */
-.lore-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  text-align: left;
-}
-@media (max-width: 768px) {
-  .lore-grid { grid-template-columns: 1fr; }
-}
+.lore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; text-align: left; }
+@media (max-width: 768px) { .lore-grid { grid-template-columns: 1fr; } }
 
-.flames-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  text-align: left;
-  margin-top: 20px;
-}
-@media (max-width: 768px) {
-  .flames-layout { grid-template-columns: 1fr; }
-}
+.flames-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left; margin-top: 20px; }
+@media (max-width: 768px) { .flames-layout { grid-template-columns: 1fr; } }
 
-/* Archive Grid & Timeline Layout */
-.staff-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-.staff-row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.timeline-section {
-  margin-top: 35px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 25px;
-  text-align: left;
-}
-.timeline-item {
-  display: flex;
-  margin-bottom: 12px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.timeline-date {
-  min-width: 110px;
-  font-weight: bold;
-  color: rgba(255,255,255,0.6);
-}
-.timeline-desc {
-  flex: 1;
-  opacity: 0.85;
-}
+.staff-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+.staff-row { display: flex; gap: 20px; flex-wrap: wrap; }
+.timeline-section { margin-top: 35px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; text-align: left; }
+.timeline-item { display: flex; margin-bottom: 12px; font-size: 13px; line-height: 1.6; }
+.timeline-date { min-width: 110px; font-weight: bold; color: rgba(255,255,255,0.6); }
+.timeline-desc { flex: 1; opacity: 0.85; }
 
 .achievement-progress-container { margin-bottom: 25px; background: rgba(255,255,255,0.05); height: 20px; position: relative; border-radius: 10px; overflow: hidden; }
 .achievement-progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; }
@@ -235,33 +175,43 @@ body {
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 .reset-streak-btn { font-size: 9px !important; margin-top: 15px; opacity: 0.5; color: #ff4a4a !important; border-color: rgba(255,0,0,0.3) !important;}
 
-input[type="text"], input[type="number"] { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
-.admin-trigger-launcher { position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; z-index: 999999; border-radius: 20px; }
-.admin-floating-panel { position: fixed; top: 10%; left: 10%; width: 320px; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; border-radius: 8px; overflow: hidden; }
-.admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; display: flex; justify-content: space-between; }
-.admin-body { padding: 15px; }
+input[type="text"], input[type="number"], select { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
 
-/* 🧲 STICKY FOOTER BOTTOM LAYER */
-footer { 
-  width: 100%; 
-  border-top: 1px solid rgba(255,255,255,0.05); 
-  padding: 20px 0; 
-  background: #000; 
-  flex-shrink: 0;
+/* 🛠️ OWNER MENU ADVANCED SYSTEM (SCROLLABLE & PANEL CONTROL) */
+.admin-trigger-launcher { 
+  position: fixed; top: 25px; left: 25px; background: #fff; color: #000; 
+  padding: 8px 16px; font-size: 11px; font-weight: bold; cursor: grab; 
+  display: none; z-index: 999999; border-radius: 20px; box-shadow: 0 0 15px rgba(255,255,255,0.4);
 }
+.admin-trigger-launcher:active { cursor: grabbing; }
+
+.admin-floating-panel { 
+  position: fixed; top: 12%; left: 5%; width: 350px; max-height: 75vh;
+  background: #050508; border: 1px solid #fff; display: none; 
+  flex-direction: column; z-index: 9999999; border-radius: 8px; 
+  box-shadow: 0 0 25px rgba(0,0,0,0.9);
+}
+.admin-header { 
+  background: #fff; color: #000; padding: 12px; font-size: 11px; 
+  font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
+}
+.admin-body { 
+  padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;
+}
+.admin-sub-sect {
+  border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px;
+}
+.admin-sub-sect label {
+  font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; text-transform: uppercase;
+}
+
+footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; flex-shrink: 0; }
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
 .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; }
 
-.loader {
-  position: fixed; inset: 0; background: #000; z-index: 9999999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.5s ease;
-}
+.loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
 .loader.hidden { opacity: 0; pointer-events: none; }
-.loaderCircle {
-  width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.1);
-  border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear;
-}
+.loaderCircle { width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 </head>
@@ -270,7 +220,6 @@ footer {
 <audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
 
 <div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
-
 <div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">LOADING BLACKLIGHT CORE...</div></div>
 <div class="sky" id="sky"></div>
 <div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
@@ -297,7 +246,7 @@ footer {
 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box">
-    <h3 style="color:#ff4a4a;">RESET CORE STREAK?</h3><br>
+    <h3 style="color:#ff4a4a;">RESET CORE STREAK?</h3>br>
     <button onclick="confirmResetStreak()">YES</button> <button onclick="closeResetModal()">NO</button>
   </div>
 </div>
@@ -372,13 +321,46 @@ footer {
   </div>
 </div>
 
-<div class="admin-trigger-launcher" id="adminLauncherBtn" onclick="document.getElementById('adminPanel').style.display='flex'">⚡ OWNER</div>
+<div class="admin-trigger-launcher" id="adminLauncherBtn">⚡ OWNER MENU</div>
 <div class="admin-floating-panel" id="adminPanel">
-  <div class="admin-header"><span>🛡️ OWNER MATRIX</span><span style="cursor:pointer" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
+  <div class="admin-header" id="adminPanelHeader"><span>🛡️ OWNER MATRIX CONTROLLER</span><span style="cursor:pointer; font-size:16px;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
   <div class="admin-body">
-    <input type="text" id="admDomName" placeholder="Override Name"><br><br>
-    <input type="number" id="admStreak" placeholder="Override Streak"><br><br>
-    <button class="admin-btn" onclick="executeAdminUpdate()">APPLY OVERRIDE</button>
+    
+    <div class="admin-sub-sect">
+      <label>Dominion Profile</label>
+      <input type="text" id="admDomName" placeholder="Change Name" style="margin-bottom:8px;">
+      <input type="number" id="admStreak" placeholder="Set Streak (Days)" style="margin-bottom:8px;">
+      <input type="number" id="admHighStreak" placeholder="Set Highest Streak Record">
+    </div>
+
+    <div class="admin-sub-sect">
+      <label>Pet Engine Matrix</label>
+      <input type="text" id="admPetName" placeholder="Change Pet Name" style="margin-bottom:8px;">
+      <input type="number" id="admPetLevel" placeholder="Set Pet Level" style="margin-bottom:8px;">
+      <select id="admPetStage">
+        <option value="">-- SELECT PET STAGE --</option>
+        <option value="EGG">EGG SYSTEM</option>
+        <option value="LARVA">LARVA FORM</option>
+        <option value="BEAST">BEAST MODE</option>
+        <option value="MYTHICAL">MYTHICAL ASCENSION</option>
+      </select>
+    </div>
+
+    <div class="admin-sub-sect">
+      <label>Leaderboard Injection</label>
+      <button class="admin-btn" style="width:100%; font-size:10px; padding:8px;" onclick="injectFakeLeaderboardData()">GENERATE MOCK COMPETITORS</button>
+    </div>
+
+    <div class="admin-sub-sect">
+      <label>System Code Registry</label>
+      <div style="background:#111; font-size:11px; padding:10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); max-height:60px; overflow-y:auto; font-family:monospace; color:#aaa;">
+        • OWNERONLYBLDS (Owner Access)<br>
+        • RECOVERY_MATRIX_2026<br>
+        • DEV_BEAST_TEST
+      </div>
+    </div>
+
+    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">APPLY CHANGES</button>
   </div>
 </div>
 
@@ -416,7 +398,6 @@ const BLDS_LORE = {
   flames_footer: "Five flames grant strength.<br>Five flames preserve it.<br>Together, they protect the Core."
 };
 
-// 🗂️ UPDATE DATA ARCHIVES & TIMELINE KRONOLOGIS UTUH
 const BLDS_ARCHIVES = {
   title: "BLDS KRONOLOGIS ARCHIVES",
   sub: "> CORE DOMINION LEADERSHIP NETWORK",
@@ -448,12 +429,15 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
 
+// Database tambahan untuk integrasi Pet System
+let petData = { name: "Void Hatchling", level: 1, stage: "EGG" };
+let fakeCompetitors = [];
+
 function handleLogoMissing() {
   document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // CORE</div>`;
 }
 
 function injectDatabase() {
-  // Inject Halaman Origin
   document.getElementById("loreInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
       <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
@@ -498,11 +482,9 @@ function injectDatabase() {
     </div>
   `;
   
-  // Inject Halaman Archives (Dengan Admin Baru & Struktur Timeline)
   document.getElementById("archivesInjectBox").innerHTML = `
     <h2>${BLDS_ARCHIVES.title}</h2>
     <div style="font-size:11px; opacity:0.4; margin-bottom:20px;">${BLDS_ARCHIVES.sub}</div>
-    
     <div class="staff-group">
       <div class="staff-row">
         ${BLDS_ARCHIVES.leaders.map(s => `<div><h4 style="margin:0; font-size:11px; opacity:0.5; letter-spacing:1px;">${s.r.toUpperCase()}</h4><p style="margin:5px 0 0 0; font-size:14px; font-weight:bold; letter-spacing:1px;">${s.n}</p></div>`).join('')}
@@ -511,7 +493,6 @@ function injectDatabase() {
         ${BLDS_ARCHIVES.admins.map(a => `<div><h4 style="margin:0; font-size:11px; opacity:0.5; letter-spacing:1px;">${a.r.toUpperCase()}</h4><p style="margin:5px 0 0 0; font-size:14px; font-weight:bold; color:#ccc; letter-spacing:1px;">${a.n}</p></div>`).join('')}
       </div>
     </div>
-
     <div class="timeline-section">
       <h3 style="font-size:15px; letter-spacing:2px; margin-bottom:20px; color:#fff; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px;">DOMINION TIMELINE LOGS</h3>
       ${BLDS_ARCHIVES.timeline.map(t => `
@@ -524,7 +505,7 @@ function injectDatabase() {
   `;
 }
 
-// Starfield FX
+// FX System Starfield
 const sky = document.getElementById("sky");
 for(let i=0; i<30; i++) {
   let star = document.createElement("div"); star.className = "star";
@@ -532,7 +513,7 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-// Generate badges HTML
+// Generate Badges List Matrix
 document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
   <div class="achievement-card" id="ach${i+1}">
     <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
@@ -552,18 +533,23 @@ function applySelectedTheme() {
 
 function saveState() { 
   localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
+  localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(petData));
   broadcastToBeast();
 }
 
 function loadState() {
   const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
   if(saved) streakData = JSON.parse(saved);
+  const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
+  if(savedPet) petData = JSON.parse(savedPet);
   updateUI();
 }
 
 function updateUI() {
   document.getElementById("streakCount").innerText = streakData.count;
   document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
+  
+  // Dynamic Rank Engine
   let rank = "VOID WALKER";
   if(streakData.count >= 100) rank = "THE ETERNAL CORE";
   else if(streakData.count >= 50) rank = "DOMINION VANGUARD";
@@ -584,10 +570,11 @@ function updateUI() {
 }
 
 function renderLeaderboard() {
-  let list = [{name: "Michael Lorenzo", streak: 152}, {name: "William N", streak: 121}];
-  if(streakData.dominionName) list.push({name: streakData.dominionName, streak: streakData.count, isMe: true});
-  list.sort((a,b)=>b.streak-a.streak);
-  document.getElementById("leaderboardDataBody").innerHTML = list.map((u,i)=>`
+  let baseList = [{name: "Michael Lorenzo", streak: 152}, {name: "William N", streak: 121}];
+  let combined = baseList.concat(fakeCompetitors);
+  if(streakData.dominionName) combined.push({name: streakData.dominionName, streak: streakData.count, isMe: true});
+  combined.sort((a,b)=>b.streak-a.streak);
+  document.getElementById("leaderboardDataBody").innerHTML = combined.map((u,i)=>`
     <tr ${u.isMe?'style="background:rgba(255,255,255,0.15);"':''}><td>#${i+1}</td><td>${u.name}</td><td>${u.streak} Days</td></tr>
   `).join('');
 }
@@ -601,20 +588,15 @@ function calibrateCore() {
 
 function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
-  
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
-  
   if(ambient) { ambient.play().catch(()=>{ console.log("Audio deferred."); }); }
-  
   overlay.classList.add("active");
-  
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("streakWidget").style.display = "flex";
     document.getElementById("calibrationHud").style.display = "block";
     document.getElementById("menu").style.display = "flex";
-    
     showPage('origin');
     overlay.classList.remove("active");
   }, 800);
@@ -629,19 +611,50 @@ function saveDominionName() {
 function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
 function confirmResetStreak() { streakData.count = 0; saveState(); updateUI(); closeResetModal(); }
-function unlockCode() { if(document.getElementById("codeInput").value === "OWNERONLYBLDS") document.getElementById("adminLauncherBtn").style.display="block"; }
+
+// 🔑 SECURITY CHECK & FORCE ACTIVATE HUB
+function unlockCode() { 
+  if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
+    document.getElementById("adminLauncherBtn").style.display = "block";
+    document.getElementById("adminPanel").style.display = "flex";
+  } else {
+    alert("ACCESS REJECTED: INVALID MATRIX CODE Key");
+  }
+}
+
+function injectFakeLeaderboardData() {
+  fakeCompetitors = [
+    { name: "Alpha_Dominion", streak: Math.floor(Math.random() * 80) + 10 },
+    { name: "Shadow_Core", streak: Math.floor(Math.random() * 140) + 20 }
+  ];
+  renderLeaderboard();
+  alert("MOCK COMPETITORS SUNTIKED TO LEADERBOARD");
+}
 
 function executeAdminUpdate() {
-  streakData.dominionName = document.getElementById("admDomName").value || streakData.dominionName;
-  streakData.count = parseInt(document.getElementById("admStreak").value) || streakData.count;
+  streakData.dominionName = document.getElementById("admDomName").value.trim() || streakData.dominionName;
+  if(document.getElementById("admStreak").value) streakData.count = parseInt(document.getElementById("admStreak").value);
+  if(document.getElementById("admHighStreak").value) streakData.highestCount = parseInt(document.getElementById("admHighStreak").value);
+  
+  // Injecting custom data updates for Pet telemetry
+  petData.name = document.getElementById("admPetName").value.trim() || petData.name;
+  if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
+  petData.stage = document.getElementById("admPetStage").value || petData.stage;
+
   saveState(); updateUI();
+  alert("CORE SYSTEM STATE MODIFIED SUCCESSFULLY.");
 }
 
 function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
     const activeTheme = document.body.className;
-    f.contentWindow.postMessage({ type: 'TELEMETRY_UPDATE', data: streakData, theme: activeTheme }, '*');
+    f.contentWindow.postMessage({ 
+      type: 'TELEMETRY_UPDATE', 
+      data: streakData, 
+      pet: petData, 
+      theme: activeTheme 
+    }, '*');
   }
 }
 
@@ -660,6 +673,32 @@ function showPage(id) {
   document.getElementById(id).style.display="block";
   if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
 }
+
+// 🎚️ SCRIPT DRAGGABLE INTERFACE FOR OWNER PANEL
+const launcher = document.getElementById("adminLauncherBtn");
+const panel = document.getElementById("adminPanel");
+const header = document.getElementById("adminPanelHeader");
+
+launcher.addEventListener("click", () => { panel.style.display = panel.style.display === "flex" ? "none" : "flex"; });
+
+let isDragging = false; let currentX; let currentY; let initialX; let initialY; let xOffset = 0; let yOffset = 0;
+header.addEventListener("mousedown", dragStart);
+window.addEventListener("mousemove", drag);
+window.addEventListener("mouseup", dragEnd);
+
+function dragStart(e) {
+  initialX = e.clientX - xOffset; initialY = e.clientY - yOffset;
+  if (e.target === header || header.contains(e.target)) { isDragging = true; }
+}
+function drag(e) {
+  if (isDragging) {
+    e.preventDefault();
+    currentX = e.clientX - initialX; currentY = e.clientY - initialY;
+    xOffset = currentX; yOffset = currentY;
+    panel.style.transform = "translate(" + currentX + "px, " + currentY + "px)";
+  }
+}
+function dragEnd() { initialX = currentX; initialY = currentY; isDragging = false; }
 </script>
 </body>
 </html>
