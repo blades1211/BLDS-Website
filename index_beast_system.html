@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Physics Sync System</title>
+<title>BLDS | Beast Engine Perfect Sync</title>
 <style>
 body {
   background: transparent; color: #fff;
@@ -45,16 +45,15 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 PHYSICS SYSTEM STAGE */
+/* 🐉 PHYSICS SYSTEM STAGE (TALKING TOM STYLE) */
 .pet-center-stage {
-  position: absolute; inset: 0;
-  z-index: 10; pointer-events: none;
+  position: absolute; inset: 0; z-index: 10; pointer-events: none;
 }
 .pet-draggable-area {
-  width: 140px; height: 140px; display: flex; align-items: center; justify-content: center;
+  width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;
   cursor: grab; pointer-events: auto; 
-  position: absolute; /* Menggunakan koordinat absolut untuk sistem fisika lempar */
-  left: calc(50% - 70px); top: calc(50% - 70px);
+  position: absolute; 
+  left: calc(50% - 75px); top: calc(50% - 75px);
   touch-action: none;
 }
 .pet-draggable-area:active { cursor: grabbing; }
@@ -70,14 +69,13 @@ body {
   50% { transform: translateY(-8px); }
 }
 
-/* Wadah teks statis agar tidak ikut pusing berputar saat dilempar */
 .static-title-hud {
   position: absolute; top: 220px; left: 0; right: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 5; pointer-events: none;
 }
 .pet-title-tag {
-  font-size: 13px; font-weight: bold; letter-spacing: 1px;
+  font-size: 13px; font-weight: bold; letter-spacing: 1px; line-height: 1.4;
   text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 5px rgba(0,255,255,0.4); text-align: center;
 }
 .hunt-trigger-wrapper {
@@ -85,7 +83,7 @@ body {
   display: flex; justify-content: center; z-index: 90;
 }
 
-/* 🎒 INVENTORY BAG */
+/* 🎒 INVENTORY */
 .bottom-controls {
   position: absolute; bottom: 15px; left: 15px; right: 15px;
   display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 100;
@@ -187,7 +185,7 @@ body {
   </div>
 
   <div class="static-title-hud">
-    <div class="pet-title-tag" id="petLabelTag">Syncing Neural Core...</div>
+    <div class="pet-title-tag" id="petLabelTag">Mencari Frekuensi Core...</div>
   </div>
   
   <div class="hunt-trigger-wrapper">
@@ -196,7 +194,7 @@ body {
 
   <div class="pet-center-stage" id="mainStage">
     <div class="pet-draggable-area pet-floating-anim" id="petActor">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Void_Egg.png" alt="Pet Graphic">
+      <img id="petGraphicFile" class="pet-main-graphic" src="Ikan5.png" alt="Pet Graphic">
     </div>
   </div>
 
@@ -221,13 +219,13 @@ body {
     <div class="battle-arena-grid">
       <div class="fighter-card">
         <span class="element-badge" id="btPlayerElement">💧</span>
-        <img id="btPlayerImg" class="fighter-img" src="Leviathan_Alpha.png" alt="Player">
+        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player">
         <div id="btPlayerName" style="font-size:11px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
       <div class="fighter-card">
         <span class="element-badge" id="btEnemyElement">🔥</span>
-        <img id="btEnemyImg" class="fighter-img" src="Fenrir_Chub.png" alt="Enemy">
+        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy">
         <div id="btEnemyName" style="font-size:11px; font-weight:bold;">Opponent</div>
         <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:3px;">Common</div>
         <div id="btEnemyHp" style="font-size:10px; opacity:0.6; margin-top:4px;">50/50 HP</div>
@@ -277,6 +275,7 @@ body {
         <div class="dev-form-group"><label>Set Max HP</label><input type="number" id="inpDevMaxHp" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
         <div class="dev-form-group"><label>Set Attack Power</label><input type="number" id="inpDevPower" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
         <div class="dev-form-group"><label>Set Current EXP</label><input type="number" id="inpDevExp" class="dev-input" style="background:#000;color:#00ff00;border:1px solid #333;padding:4px;width:90%"></div>
+        <div class="dev-form-group"><label style="color:#ffff00;">Set File Code (ex: Ikan5)</label><input type="text" id="inpDevFileCode" class="dev-input" style="background:#000;color:#ffff00;border:1px solid #333;padding:4px;width:90%" value="Ikan5"></div>
       </div>
       <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; width:100%; margin-top:12px;" onclick="applyOwnerPetStats()">Inject Core Status</button>
     </div>
@@ -289,11 +288,37 @@ body {
 </div>
 
 <script>
+// 🧭 DICTIONARY MATRIX RE-DESIGN (NAMA FILENAME PNG TETAP SAMA AGAR GAMBAR TIDAK PECAH)
+const petNamingRegistry = {
+  // Jalur Telur & Default
+  "Telor": { title: "Void Egg", element: "Water" },
+  "Naga1": { title: "Pyre Hatchling", element: "Fire" },
+  
+  // Jalur Ikan Mas (Fase 1 - 5)
+  "Ikan1": { title: "Glitter Fin", element: "Water" },
+  "Ikan2": { title: "Aqua Brocade", element: "Water" },
+  "Ikan3": { title: "Torrent Glimmer", element: "Water" },
+  "Ikan4": { title: "Abyssal Koi", element: "Water" },
+  "Ikan5": { title: "Aurelius Sovereign", element: "Water" }, // Ikan Mas Fase 5 Kamu!
+
+  // Jalur Naga (Fase 1 - 5)
+  "Naga2": { title: "Ember Scale", element: "Fire" },
+  "Naga3": { title: "Blaze Wing", element: "Fire" },
+  "Naga4": { title: "Ignis Dread", element: "Fire" },
+  "Naga5": { title: "Astral Sovereign", element: "Fire" },
+
+  // Jalur Serigala (Fase 1 - 5)
+  "Serigala1": { title: "Lupin Pup", element: "Earth" },
+  "Serigala2": { title: "Wild Fang", element: "Earth" },
+  "Serigala3": { title: "Alpha Claw", element: "Earth" },
+  "Serigala4": { title: "Fenrir Shard", element: "Earth" },
+  "Serigala5": { title: "Apex Sovereign", element: "Earth" }
+};
+
 // State Utama
 let stateData = {
   isHatched: true,
-  activePetName: "Leviathan_Alpha", // 🔴 FIX SINKRONISASI UTAMA: Bernama Keren & Terkunci Otomatis ke Fase 5 Ikan Kamu!
-  activePetElement: "Water", 
+  activePetFile: "Ikan5", // Menggunakan Ikan5 agar langsung sync ke gambar Ikan5.png kamu
   level: 10,                 
   hp: 100, maxHp: 100,
   hunger: 100, maxHunger: 100,
@@ -312,42 +337,58 @@ const foodValues = {
 };
 
 const enemyPool = [
-  { name: "Tidal Guppy", multiplier: 1.0, img: "Tidal_Guppy.png", element: "Water", rarity: "Common" },
-  { name: "Coral Stalker", multiplier: 1.4, img: "Coral_Stalker.png", element: "Earth", rarity: "Rare" },
-  { name: "Fenrir Chub", multiplier: 1.1, img: "Fenrir_Chub.png", element: "Earth", rarity: "Uncommon" },
-  { name: "Ignis Drake", multiplier: 3.5, img: "Ignis_Drake.png", element: "Fire", rarity: "Mythic" }
+  { name: "Lupin Pup Wild", multiplier: 1.0, img: "Serigala1.png", element: "Earth", rarity: "Common" },
+  { name: "Glitter Fin Rogue", multiplier: 1.1, img: "Ikan1.png", element: "Water", rarity: "Common" },
+  { name: "Aqua Brocade Mutant", multiplier: 1.4, img: "Ikan2.png", element: "Water", rarity: "Rare" },
+  { name: "Ember Scale Drake", multiplier: 3.5, img: "Naga2.png", element: "Fire", rarity: "Mythic" }
 ];
 
 const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 
 function saveLocalData() {
-  localStorage.setItem("BLDS_PHYSICS_STATE", JSON.stringify(stateData));
-  localStorage.setItem("BLDS_PHYSICS_BAG", JSON.stringify(foodBag));
+  localStorage.setItem("BLDS_PERFECT_STATE", JSON.stringify(stateData));
+  localStorage.setItem("BLDS_PERFECT_BAG", JSON.stringify(foodBag));
 }
 
-// PERBAIKAN SINKRONISASI CORE AGAR AMAN DARI BUG TIMPA DATA DEFAULT
+// 🛡️ DETEKSI AUTOMATIC SYNC BERDASARKAN TEXT PROFIL UTAMA
 function loadLocalData() {
-  const s = localStorage.getItem("BLDS_PHYSICS_STATE");
+  const s = localStorage.getItem("BLDS_PERFECT_STATE");
   if(s) {
     stateData = JSON.parse(s);
   } else {
     // Dipaksa langsung sinkronisasi dari awal ke Ikan Fase 5 legendaris kamu!
-    stateData.activePetName = "Leviathan_Alpha";
-    stateData.activePetElement = "Water";
+    stateData.activePetFile = "Ikan5";
     stateData.level = 10;
     saveLocalData();
   }
-  const b = localStorage.getItem("BLDS_PHYSICS_BAG"); if(b) foodBag = JSON.parse(b);
+  
+  // SCANNER: Cek jika ada text mentah h1/div di hostingan kamu yang tertulis "Ikan5.png" atau "Naga1.png"
+  // Ini mendeteksi tulisan di atas tombol Menu utama agar sinkronisasi 100% mutlak tanpa ngebug lagi.
+  const bodyText = document.body.innerHTML;
+  if(bodyText.includes("Ikan5.png")) {
+     stateData.activePetFile = "Ikan5";
+  } else if(bodyText.includes("Naga1.png")) {
+     stateData.activePetFile = "Naga1";
+  }
+
+  const b = localStorage.getItem("BLDS_PERFECT_BAG"); if(b) foodBag = JSON.parse(b);
 
   checkDeathCooldown();
   syncInterfaceGraphic();
-  initPhysicsEngine(); // Jalankan mesin Talking Tom Physics
+  initPhysicsEngine(); 
   setInterval(checkDeathCooldown, 1000);
 }
 
 function syncInterfaceGraphic() {
-  document.getElementById("petGraphicFile").src = stateData.activePetName + ".png";
-  document.getElementById("petLabelTag").innerHTML = `${elementIcons[stateData.activePetElement]} ${stateData.activePetName}.png [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
+  // Ambil nama terjemahan RPG dari registry map
+  const activeLookup = petNamingRegistry[stateData.activePetFile] || { title: "Unknown Beast", element: "Water" };
+  
+  // Set file asset gambar asli (Ikan5.png) agar tidak broken image lagi!
+  document.getElementById("petGraphicFile").src = stateData.activePetFile + ".png";
+  
+  // Cetak teks nama RPG kerennya di layar bawah logo
+  document.getElementById("petLabelTag").innerHTML = `${elementIcons[activeLookup.element]} ${activeLookup.title} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">Streak: ${stateData.currentStreak} | High: ${stateData.highestStreak}</span>`;
+  
   document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   renderStats();
   updateInventoryCounters();
@@ -387,9 +428,7 @@ function feedPet(item) {
   
   saveLocalData();
   syncInterfaceGraphic();
-  
-  // Efek lompat kecil saat dikasih makan
-  vy = -12; 
+  vy = -12; // Efek mental ke atas sedikit pas makan
 }
 
 function useFullElixir() {
@@ -398,11 +437,11 @@ function useFullElixir() {
   saveLocalData(); syncInterfaceGraphic();
 }
 
-/* 🕹️ MY TALKING TOM PHYSICS ENGINE CODE (ANTI KELUAR BOX + AUTO RETURN) */
+/* 🕹️ MY TALKING TOM PHYSICS ENGINE CODE (ANTI KELUAR BOX + AUTO CENTER) */
 let pet = null; let wrapper = null;
 let isDragging = false;
-let px = 0, py = 0;       // Posisi Pet saat ini
-let vx = 0, vy = 0;       // Kecepatan lemparan (Velocity)
+let px = 0, py = 0;       
+let vx = 0, vy = 0;       
 let lastMouseX = 0, lastMouseY = 0;
 let dragOffsetX = 0, dragOffsetY = 0;
 
@@ -410,30 +449,26 @@ function initPhysicsEngine() {
   pet = document.getElementById("petActor");
   wrapper = document.getElementById("windowBox");
 
-  // Posisi tengah default awal
   px = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
   py = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
   
   pet.style.left = px + "px";
   pet.style.top = py + "px";
 
-  // Mouse Events
   pet.addEventListener("mousedown", startDrag);
   window.addEventListener("mousemove", doDrag);
   window.addEventListener("mouseup", stopDrag);
 
-  // Touch Events (Untuk HP)
   pet.addEventListener("touchstart", startDrag, {passive: false});
   window.addEventListener("touchmove", doDrag, {passive: false});
   window.addEventListener("touchend", stopDrag);
 
-  // Loop Fisika Berjalan Realtime 60 FPS
   setInterval(updatePhysicsFrame, 1000 / 60);
 }
 
 function startDrag(e) {
   isDragging = true;
-  pet.classList.remove("pet-floating-anim"); // Matikan animasi css bawaan saat ditarik tangan
+  pet.classList.remove("pet-floating-anim"); 
   
   let pageX = e.pageX || e.touches[0].pageX;
   let pageY = e.pageY || e.touches[0].pageY;
@@ -453,34 +488,28 @@ function doDrag(e) {
 
   let pageX = e.pageX || e.touches[0].pageX;
   let pageY = e.pageY || e.touches[0].pageY;
-
   let wrapperRect = wrapper.getBoundingClientRect();
 
-  // Hitung posisi target berdasarkan tarikan kursor/jari kamu
   let targetX = pageX - wrapperRect.left - dragOffsetX;
   let targetY = pageY - wrapperRect.top - dragOffsetY;
 
-  // BATAS KOTAK (ANTI LUAR KOTAK BOX CONTROL)
   let maxX = wrapper.clientWidth - pet.clientWidth;
   let maxY = wrapper.clientHeight - pet.clientHeight;
 
+  // STRICT BARRIER: Mengunci koordinat agar mustahil tembus keluar frame box!
   if (targetX < 0) targetX = 0;
   if (targetX > maxX) targetX = maxX;
   if (targetY < 0) targetY = 0;
   if (targetY > maxY) targetY = maxY;
 
-  px = targetX;
-  py = targetY;
-
+  px = targetX; py = targetY;
   pet.style.left = px + "px";
   pet.style.top = py + "px";
 
-  // Kalkulasi momentum kecepatan lempar berbanding jarak tarikan terakhir
   vx = pageX - lastMouseX;
   vy = pageY - lastMouseY;
 
-  lastMouseX = pageX;
-  lastMouseY = pageY;
+  lastMouseX = pageX; lastMouseY = pageY;
 }
 
 function stopDrag() {
@@ -489,53 +518,39 @@ function stopDrag() {
 }
 
 function updatePhysicsFrame() {
-  if (isDragging) return; // Jika masih dipegang jari, abaikan kalkulasi gerak liar fisika
+  if (isDragging) return; 
 
   let maxX = wrapper.clientWidth - pet.clientWidth;
   let maxY = wrapper.clientHeight - pet.clientHeight;
 
-  // Posisi Jangkar Pusat Tengah Layar
   let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
   let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
 
-  // 1. Efek Gesekan Udara (Friction Dampening) agar lemparan melambat natural
-  vx *= 0.95;
-  vy *= 0.95;
+  vx *= 0.95; vy *= 0.95; // Friction
 
-  // 2. Tambahkan Kecepatan ke Titik Posisi Pet saat ini
-  px += vx;
-  py += vy;
+  px += vx; py += vy;
 
-  // 3. AUTO RETURN LOGIC (Menarik lembut kembali ke tengah secara perlahan jika lemparan mulai loyo)
+  // PULL-CENTER: Menarik pelan-pelan kembali ke koordinat tengah jika tidak di-drag
   if (Math.abs(vx) < 1.5 && Math.abs(vy) < 1.5) {
-    px += (centerX - px) * 0.06; // Menarik perlahan sumbu X
-    py += (centerY - py) * 0.06; // Menarik perlahan sumbu Y
+    px += (centerX - px) * 0.06;
+    py += (centerY - py) * 0.06;
   }
 
-  // 4. FISIKA PANTULAN DINDING KOTAK (Bounce Guard)
+  // BOUNCE LOGIC (Efek mantul pas kepentok dinding kotak wrapper)
   if (px < 0) { px = 0; vx *= -0.7; }
   if (px > maxX) { px = maxX; vx *= -0.7; }
   if (py < 0) { py = 0; vy *= -0.7; }
   if (py > maxY) { py = maxY; vy *= -0.7; }
 
-  // Terapkan ke koordinat elemen visual real-time
   pet.style.left = px + "px";
   pet.style.top = py + "px";
 
-  // Efek Rotasi visual Talking Tom berdasarkan tingkat keagresifan lemparan kursor
   let rotation = vx * 1.8;
   pet.style.transform = `rotate(${rotation}deg)`;
 }
 
 
-/* ⚔️ RPG COMBAT COUNTER ENGINE SYSTEM */
-function checkElementCounter(attackerEle, defenderEle) {
-  if (attackerEle === "Water" && defenderEle === "Fire") return 1.5;
-  if (attackerEle === "Fire" && defenderEle === "Earth") return 1.5;
-  if (attackerEle === "Earth" && defenderEle === "Water") return 1.5;
-  return 1.0;
-}
-
+/* ⚔️ RPG COMBAT SYSTEM */
 let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
 let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
 
@@ -551,9 +566,11 @@ function prepareBattle() {
   skillCooldowns = [0, 0, 0, 0];
   isEnemyStunned = false; doubleDamageActive = false;
 
-  document.getElementById("btPlayerImg").src = stateData.activePetName + ".png";
-  document.getElementById("btPlayerName").innerText = stateData.activePetName;
-  document.getElementById("btPlayerElement").innerText = elementIcons[stateData.activePetElement];
+  const currentLookup = petNamingRegistry[stateData.activePetFile] || { title: "Beast", element: "Water" };
+
+  document.getElementById("btPlayerImg").src = stateData.activePetFile + ".png";
+  document.getElementById("btPlayerName").innerText = currentLookup.title;
+  document.getElementById("btPlayerElement").innerText = elementIcons[currentLookup.element];
   
   document.getElementById("btEnemyImg").src = activeEnemy.img;
   document.getElementById("btEnemyName").innerText = `${activeEnemy.name} [Lvl ${lvlMod}]`;
@@ -569,9 +586,10 @@ function updateRpgActionButtons() {
   document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
   document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
 
-  let pMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
+  const currentLookup = petNamingRegistry[stateData.activePetFile] || { element: "Water" };
+  let pMod = (currentLookup.element === "Water" && activeEnemy.element === "Fire") ? 1.5 : 1.0;
   
-  document.getElementById("skillDmg0").innerText = `Dmg: ${Math.floor(stateData.power * 1.0 * pMod)} ${pMod > 1 ? '🔥Counter' : ''}`;
+  document.getElementById("skillDmg0").innerText = `Dmg: ${Math.floor(stateData.power * 1.0 * pMod)}`;
   document.getElementById("skillDmg1").innerText = `Dmg: ${Math.floor(stateData.power * 1.5 * pMod)} [CD: ${skillCooldowns[1]}]`;
   document.getElementById("skillDmg2").innerText = `Dmg: ${Math.floor(stateData.power * 0.5 * pMod)} (50% Stun)`;
   document.getElementById("skillDmg3").innerText = `Dmg: ${Math.floor(stateData.power * 2.6 * pMod)} [CD: ${skillCooldowns[3]}]`;
@@ -590,9 +608,7 @@ function executeRpgTurn(skillIndex) {
   if (skillIndex === 2) { baseMult = 0.5; }
   if (skillIndex === 3) { baseMult = 2.6; skillCooldowns[3] = 5; }
   
-  let elementMod = checkElementCounter(stateData.activePetElement, activeEnemy.element);
-  let rawDamage = Math.floor(stateData.power * baseMult * elementMod);
-  
+  let rawDamage = Math.floor(stateData.power * baseMult);
   if (doubleDamageActive) { rawDamage *= 2; doubleDamageActive = false; }
   enemyBattleHp = Math.max(0, enemyBattleHp - rawDamage);
   
@@ -600,22 +616,19 @@ function executeRpgTurn(skillIndex) {
   log.innerHTML += `<div>⚔️ Cast <b>${skillNames[skillIndex]}</b>! Deals <b style='color:#ffff00;'>${rawDamage}</b> dmg.</div>`;
 
   if (skillIndex === 2 && Math.random() <= 0.50) {
-    isEnemyStunned = true; log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ PARALYZED! Opponent skips turn.</div>`;
+    isEnemyStunned = true; log.innerHTML += `<div style='color:#00ffff;font-size:9px;'>↳ ⚡ PARALYZED! Opponent turn skipped.</div>`;
   }
 
   for(let i=0; i<4; i++) { if(i !== skillIndex && skillCooldowns[i] > 0) skillCooldowns[i]--; }
   if (enemyBattleHp <= 0) { handleBattleVictory(); return; }
   
-  document.getElementById("combatTurnTitle").innerText = "Enemy Turn...";
   setTimeout(() => {
     if (isEnemyStunned) {
       log.innerHTML += `<div style='color:#00ffff;'>💤 Enemy stunned! Action skipped.</div>`;
       isEnemyStunned = false; endTurnCycle();
     } else {
-      let eEleMod = checkElementCounter(activeEnemy.element, stateData.activePetElement);
-      let enemyDmg = Math.floor(activeEnemy.dmg * eEleMod);
+      let enemyDmg = activeEnemy.dmg;
       playerBattleHp = Math.max(0, playerBattleHp - enemyDmg);
-      
       log.innerHTML += `<div style='color:#ff4a4a;'>💥 Opponent counter-strikes! Sustained <b>${enemyDmg}</b> damage.</div>`;
       if (playerBattleHp <= 0) { handleBattleDefeat(); } else { endTurnCycle(); }
     }
@@ -629,7 +642,6 @@ function endTurnCycle() {
 
 function setRpgBoardInteractive(act) {
   for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = !act;
-  document.getElementById("btnToggleBattleItem").disabled = !act;
 }
 
 function handleBattleVictory() {
@@ -642,13 +654,12 @@ function handleBattleVictory() {
   if(stateData.exp >= stateData.maxExp) { stateData.exp = 0; stateData.level++; stateData.power += 6; }
   
   log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Acquired ${expGained} EXP.</div>`;
-  document.getElementById("btnExitBattle").innerText = "⬅️ Exit Arena";
+  document.getElementById("btnExitBattle").innerText = "⬅ shrink Arena";
   stateData.hp = playerBattleHp;
   saveLocalData(); syncInterfaceGraphic();
 }
 
 function handleBattleDefeat() {
-  document.getElementById("battleLogBox").innerHTML += `<div style='color:#ff4a4a;font-weight:bold;'>❌ Critical Defeat.</div>`;
   stateData.currentStreak = 0; stateData.hp = 0;
   stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000);
   saveLocalData(); syncInterfaceGraphic();
@@ -690,6 +701,7 @@ function applyOwnerPetStats() {
   stateData.hp = parseInt(document.getElementById("inpDevHp").value) || 100;
   stateData.power = parseInt(document.getElementById("inpDevPower").value) || 65;
   stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
+  stateData.activePetFile = document.getElementById("inpDevFileCode").value || "Ikan5";
   saveLocalData(); syncInterfaceGraphic(); alert("Core Modified!");
 }
 function generateOwnerLoot() {
