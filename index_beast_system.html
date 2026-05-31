@@ -8,7 +8,6 @@ body {
   margin:0; padding:15px; background:#020205; color:#fff;
   font-family:'Courier New', Courier, monospace; overflow:hidden; box-sizing:border-box;
 }
-/* Sinkronisasi Visual Mengikuti Tema Induk */
 body.theme-matrix { color: #00ff00 !important; background: #000300 !important; }
 body.theme-matrix .wrapper { border-color: #00ff00 !important; }
 body.theme-matrix .btn { border-color: #00ff00 !important; color: #00ff00 !important; }
@@ -61,44 +60,27 @@ function addLog(txt) {
   const t = document.getElementById("term");
   t.innerHTML += `[ENGINE] ${txt}<br>`; t.scrollTop = t.scrollHeight;
 }
+function runNode(type) { addLog(`Command ${type} executed successfully.`); }
 
-function runNode(type) { 
-  addLog(`Command ${type} executed successfully.`); 
-}
-
-// 🛡️ LISTENER PENERIMA DATA TELEMETRI INDUK (FIXED)
 window.addEventListener("message", (e) => {
   if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
     const core = e.data.data;
     const coreTheme = e.data.theme;
-    
-    // 1. Update data numerik ke antarmuka game
     document.getElementById("beastCount").innerText = `${core.count} DAYS`;
-    
-    // 2. Update status koneksi node
     const st = document.getElementById("nodeStatus");
     st.innerText = `NODE ONLINE // DESIGNATION: ${core.dominionName ? core.dominionName.toUpperCase() : 'UNKNOWN'}`;
     st.className = "status online";
-    
-    // 3. Sinkronisasikan tema visual bodi dengan induk
     document.body.className = coreTheme;
-    
     addLog(`Handshake Success. Linked data synced at ${core.count} cycles.`);
   }
 });
 
-// 🔄 LOOP JABAT TANGAN AKTIF (Akan terus mengecek sampai induk merespon)
 let handshakeInterval = setInterval(() => {
-  if (window.parent) {
-    window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
-  }
-}, 500); // Colek halaman induk setiap 500ms
+  if (window.parent) { window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*'); }
+}, 500);
 
-// Hentikan spamming colek kalau koneksi terdeteksi sudah lancar
 window.addEventListener("message", (e) => {
-  if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
-    clearInterval(handshakeInterval);
-  }
+  if (e.data && e.data.type === 'TELEMETRY_UPDATE') { clearInterval(handshakeInterval); }
 });
 </script>
 </body>
