@@ -112,7 +112,6 @@ body {
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-/* 🐉 BINGKAI ULTRA AMAN - ANTI TERPOTONG */
 .title-pet-display {
   display: none;
   flex-direction: column;
@@ -193,7 +192,59 @@ body {
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 25px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 
-/* 🛡️ DESIGN PARAMETER RESET STREAK MALAM */
+/* 🔐 MODERN CYBERPUNK CODE INTERFACE */
+.cyber-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+.cyber-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+.cyber-code-input {
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 14px 20px !important;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
+}
+.cyber-code-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+.cyber-code-btn {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 30px;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+.cyber-code-btn:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
 .matrix-reset-card {
   margin-top: 30px;
   padding: 15px;
@@ -256,7 +307,7 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
   font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px;
 }
 
-/* 🔄 FIX ANIMASI LOADING SCREEN MUTAR TOTAL */
+/* LOADING SCREEN */
 .loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease; }
 .loader.hidden { opacity: 0; pointer-events: none; }
 .loaderCircle { 
@@ -372,8 +423,12 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   <div class="page" id="code">
     <div class="box">
       <h2>Code System</h2>
-      <input type="text" id="codeInput" placeholder="Enter security code"><br><br>
-      <button onclick="unlockCode()">Unlock System</button>
+      <div class="cyber-code-container">
+        <div class="cyber-input-wrapper">
+          <input type="text" id="codeInput" class="cyber-code-input" placeholder="Enter encryption code">
+        </div>
+        <button class="cyber-code-btn" onclick="unlockCode()">Decrypt Core</button>
+      </div>
     </div>
   </div>
 
@@ -463,6 +518,14 @@ const BLDS_LORE = {
   lore_text: `Before BLDS had a name,<br>before the symbol existed,<br>before the squad was formed...<br>There were only individuals trying to survive their own darkness.<br>Some were ignored.<br>Some were underestimated.<br>Some failed over and over again until they stopped expecting anyone to believe in them.<br>They watched others rise faster.<br>Watched others gain recognition.<br>Watched people quit the moment things became difficult.<br>And slowly, they realized something:<br>Most people only shine when the world is bright.<br>But very few can continue moving forward when everything turns dark.<br>That realization became the beginning of BLDS.<br>Not a squad created for fame.<br>Not a kingdom built on arrogance.<br>Not a place for people searching only for victory.<br>But a dominion built by those who refused to disappear.`
 };
 
+const BLDS_ARCHIVES = {
+  title: "Core Archives System",
+  history: `The logs inside this data block are historical backups retrieved from the old mainframe network.<br><br>
+  - Data Log #001: The grid structure synchronization established.<br>
+  - Data Log #002: Beast core system integrated with index engines.<br>
+  - Data Log #003: Core encryption update applied. Security code protocol integrated into hidden sub-layers.`
+};
+
 const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
 const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
 
@@ -477,12 +540,21 @@ function handleLogoMissing() {
 }
 
 function injectDatabase() {
+  // Inject Origin
   document.getElementById("loreInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
       <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
       <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div>
     </div>
     <div style="font-size:11px; line-height:1.7; opacity:0.85; text-align:left;">${BLDS_LORE.lore_text}</div>
+  `;
+
+  // Inject Archives (Fix data hilang)
+  document.getElementById("archivesInjectBox").innerHTML = `
+    <div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;">
+      <h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2>
+    </div>
+    <div style="font-size:11px; line-height:1.8; opacity:0.8; text-align:left;">${BLDS_ARCHIVES.history}</div>
   `;
 }
 
@@ -543,7 +615,6 @@ function updateUI() {
   else if(streakData.count >= 7) rank = "Eclipse Synchronizer";
   document.getElementById("rankTitle").innerText = rank;
   
-  // 🐉 LOAD GAMBAR AMAN & BERSIH TANPA NOT FOUND MENUMPUK
   const fileClean = petData.name + ".png";
   document.getElementById("petImageFrame").innerHTML = `<img src="${fileClean}" alt="${petData.name}" onerror="this.style.opacity='0.2';">`;
   document.getElementById("titlePetDetails").innerText = `${fileClean} [Lvl ${petData.level}]`;
@@ -561,12 +632,29 @@ function updateUI() {
   renderLeaderboard();
 }
 
+// 🏆 LEADERBOARD ENGINE - RENDER MAKSIMAL 20 DATA
 function renderLeaderboard() {
-  let baseList = [{name: "Michael Lorenzo", streak: 152}, {name: "William N", streak: 121}];
+  let baseList = [
+    {name: "Michael Lorenzo", streak: 152}, {name: "William N", streak: 121},
+    {name: "Zack Storm", streak: 94}, {name: "Alpha Prime", streak: 88},
+    {name: "Shadow Walker", streak: 76}, {name: "Delta Core", streak: 65},
+    {name: "Phoenix Rising", streak: 59}, {name: "Apex Hunter", streak: 44},
+    {name: "Quantum Void", streak: 38}, {name: "Vortex Driver", streak: 31},
+    {name: "Nexus Guard", streak: 27}, {name: "Cipher King", streak: 22},
+    {name: "Ghost Shell", streak: 19}, {name: "Neon Light", streak: 14},
+    {name: "Zero Absolute", streak: 9}, {name: "Vector Line", streak: 5}
+  ];
+  
   let combined = baseList.concat(fakeCompetitors);
   if(streakData.dominionName) combined.push({name: streakData.dominionName, streak: streakData.count, isMe: true});
+  
+  // Sort tertinggi ke terendah
   combined.sort((a,b)=>b.streak-a.streak);
-  document.getElementById("leaderboardDataBody").innerHTML = combined.map((u,i)=>`
+  
+  // Potong hanya sampai maksimal 20 baris data
+  let limitedList = combined.slice(0, 20);
+  
+  document.getElementById("leaderboardDataBody").innerHTML = limitedList.map((u,i)=>`
     <tr ${u.isMe?'style="background:rgba(255,255,255,0.15);"':''}><td>#${i+1}</td><td>${u.name}</td><td>${u.streak} Days</td></tr>
   `).join('');
 }
