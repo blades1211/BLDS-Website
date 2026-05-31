@@ -173,11 +173,15 @@ body {
 
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); border-radius: 8px; }
-.reset-streak-btn { font-size: 9px !important; margin-top: 15px; opacity: 0.5; color: #ff4a4a !important; border-color: rgba(255,0,0,0.3) !important;}
+
+/* 🛡️ REFIX CLEAN RESET BUTTON WINDOW (ANTI INTERFERENCE) */
+.reset-container-block { margin-top: 15px; text-align: center; }
+.reset-streak-btn { font-size: 10px !important; color: #ff4a4a !important; border: 1px solid rgba(255,74,74,0.3) !important; background: transparent; padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all 0.3s; }
+.reset-streak-btn:hover { background: #ff4a4a !important; color: #000 !important; box-shadow: 0 0 12px rgba(255,74,74,0.5); }
 
 input[type="text"], input[type="number"], select { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
 
-/* 🛠️ OWNER MENU ADVANCED SYSTEM (SCROLLABLE & PANEL CONTROL) */
+/* 🛠️ OWNER PANEL CONTROL SYSTEM PRO MAX (SCROLLABLE & MOUNT TRACKED) */
 .admin-trigger-launcher { 
   position: fixed; top: 25px; left: 25px; background: #fff; color: #000; 
   padding: 8px 16px; font-size: 11px; font-weight: bold; cursor: grab; 
@@ -186,7 +190,7 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
 .admin-trigger-launcher:active { cursor: grabbing; }
 
 .admin-floating-panel { 
-  position: fixed; top: 12%; left: 5%; width: 350px; max-height: 75vh;
+  position: fixed; top: 12%; left: 5%; width: 360px; max-height: 75vh;
   background: #050508; border: 1px solid #fff; display: none; 
   flex-direction: column; z-index: 9999999; border-radius: 8px; 
   box-shadow: 0 0 25px rgba(0,0,0,0.9);
@@ -246,7 +250,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box">
-    <h3 style="color:#ff4a4a;">RESET CORE STREAK?</h3>br>
+    <h3 style="color:#ff4a4a; margin-top:0;">RESET CORE STREAK?</h3>
     <button onclick="confirmResetStreak()">YES</button> <button onclick="closeResetModal()">NO</button>
   </div>
 </div>
@@ -314,9 +318,11 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="calibration-container" id="calibrationHud">
     <div class="calibration-box">
-      <p id="calibrationStatus">SYSTEM READY FOR RESONANCE INTEGRATION</p>
-      <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button><br>
-      <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK TRACKING</button>
+      <p id="calibrationStatus" style="margin-top:0;">SYSTEM READY FOR RESONANCE INTEGRATION</p>
+      <button id="calibrationBtn" onclick="calibrateCore()">SYNC WITH CORE</button>
+      <div class="reset-container-block">
+        <button class="reset-streak-btn" onclick="openResetModal()">⚠️ RESET STREAK TRACKING</button>
+      </div>
     </div>
   </div>
 </div>
@@ -327,40 +333,49 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   <div class="admin-body">
     
     <div class="admin-sub-sect">
-      <label>Dominion Profile</label>
-      <input type="text" id="admDomName" placeholder="Change Name" style="margin-bottom:8px;">
-      <input type="number" id="admStreak" placeholder="Set Streak (Days)" style="margin-bottom:8px;">
-      <input type="number" id="admHighStreak" placeholder="Set Highest Streak Record">
+      <label>Dominion Profile & Rank</label>
+      <input type="text" id="admDomName" placeholder="Override Profile Name" style="margin-bottom:8px;">
+      <input type="number" id="admStreak" placeholder="Override Current Streak" style="margin-bottom:8px;">
+      <input type="number" id="admHighStreak" placeholder="Override Highest Peak">
     </div>
 
     <div class="admin-sub-sect">
-      <label>Pet Engine Matrix</label>
-      <input type="text" id="admPetName" placeholder="Change Pet Name" style="margin-bottom:8px;">
-      <input type="number" id="admPetLevel" placeholder="Set Pet Level" style="margin-bottom:8px;">
-      <select id="admPetStage">
-        <option value="">-- SELECT PET STAGE --</option>
+      <label>Pet Engine Core</label>
+      <input type="text" id="admPetName" placeholder="Override Pet Name" style="margin-bottom:8px;">
+      <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
+      <select id="admPetStage" style="margin-bottom:8px;">
+        <option value="">-- SELECT FORM --</option>
         <option value="EGG">EGG SYSTEM</option>
         <option value="LARVA">LARVA FORM</option>
         <option value="BEAST">BEAST MODE</option>
         <option value="MYTHICAL">MYTHICAL ASCENSION</option>
       </select>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button class="admin-btn" style="font-size:9px; padding:6px;" onclick="ownerTriggerBeastAction('STABILIZE_LOOP')">STABILIZE LOOP</button>
+        <button class="admin-btn" style="font-size:9px; padding:6px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerTriggerBeastAction('IGNITE_BURST')">BEAST BURST</button>
+      </div>
     </div>
 
     <div class="admin-sub-sect">
-      <label>Leaderboard Injection</label>
-      <button class="admin-btn" style="width:100%; font-size:10px; padding:8px;" onclick="injectFakeLeaderboardData()">GENERATE MOCK COMPETITORS</button>
+      <label>Leaderboard Controller</label>
+      <input type="text" id="admLbName" placeholder="Competitor Name" style="margin-bottom:8px;">
+      <input type="number" id="admLbStreak" placeholder="Streak Value" style="margin-bottom:8px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button class="admin-btn" style="font-size:9px; padding:8px;" onclick="ownerAddLeaderboard()">➕ ADD USER</button>
+        <button class="admin-btn" style="font-size:9px; padding:8px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerClearLeaderboard()">🗑️ WIPE FAKES</button>
+      </div>
     </div>
 
     <div class="admin-sub-sect">
       <label>System Code Registry</label>
-      <div style="background:#111; font-size:11px; padding:10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); max-height:60px; overflow-y:auto; font-family:monospace; color:#aaa;">
-        • OWNERONLYBLDS (Owner Access)<br>
+      <div style="background:#111; font-size:10px; padding:10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); max-height:60px; overflow-y:auto; font-family:monospace; color:#aaa;">
+        • OWNERONLYBLDS (Master Code)<br>
         • RECOVERY_MATRIX_2026<br>
         • DEV_BEAST_TEST
       </div>
     </div>
 
-    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">APPLY CHANGES</button>
+    <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">APPLY CONFIGURATION</button>
   </div>
 </div>
 
@@ -428,8 +443,6 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-
-// Database tambahan untuk integrasi Pet System
 let petData = { name: "Void Hatchling", level: 1, stage: "EGG" };
 let fakeCompetitors = [];
 
@@ -505,7 +518,6 @@ function injectDatabase() {
   `;
 }
 
-// FX System Starfield
 const sky = document.getElementById("sky");
 for(let i=0; i<30; i++) {
   let star = document.createElement("div"); star.className = "star";
@@ -513,7 +525,6 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-// Generate Badges List Matrix
 document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
   <div class="achievement-card" id="ach${i+1}">
     <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
@@ -534,6 +545,7 @@ function applySelectedTheme() {
 function saveState() { 
   localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
   localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(petData));
+  localStorage.setItem("BLDS_CORE_FAKE_LEADER", JSON.stringify(fakeCompetitors));
   broadcastToBeast();
 }
 
@@ -542,6 +554,8 @@ function loadState() {
   if(saved) streakData = JSON.parse(saved);
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
   if(savedPet) petData = JSON.parse(savedPet);
+  const savedLb = localStorage.getItem("BLDS_CORE_FAKE_LEADER");
+  if(savedLb) fakeCompetitors = JSON.parse(savedLb);
   updateUI();
 }
 
@@ -549,7 +563,6 @@ function updateUI() {
   document.getElementById("streakCount").innerText = streakData.count;
   document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
   
-  // Dynamic Rank Engine
   let rank = "VOID WALKER";
   if(streakData.count >= 100) rank = "THE ETERNAL CORE";
   else if(streakData.count >= 50) rank = "DOMINION VANGUARD";
@@ -612,23 +625,40 @@ function openResetModal() { document.getElementById("resetConfirmModal").style.d
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
 function confirmResetStreak() { streakData.count = 0; saveState(); updateUI(); closeResetModal(); }
 
-// 🔑 SECURITY CHECK & FORCE ACTIVATE HUB
 function unlockCode() { 
   if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
     document.getElementById("adminLauncherBtn").style.display = "block";
     document.getElementById("adminPanel").style.display = "flex";
   } else {
-    alert("ACCESS REJECTED: INVALID MATRIX CODE Key");
+    alert("ACCESS REJECTED: INVALID MATRIX CODE");
   }
 }
 
-function injectFakeLeaderboardData() {
-  fakeCompetitors = [
-    { name: "Alpha_Dominion", streak: Math.floor(Math.random() * 80) + 10 },
-    { name: "Shadow_Core", streak: Math.floor(Math.random() * 140) + 20 }
-  ];
-  renderLeaderboard();
-  alert("MOCK COMPETITORS SUNTIKED TO LEADERBOARD");
+/* 🏆 CONTROLLER HUB LEADERBOARD UTK OWNER */
+function ownerAddLeaderboard() {
+  const nameInput = document.getElementById("admLbName").value.trim();
+  const streakInput = parseInt(document.getElementById("admLbStreak").value);
+  if(!nameInput || isNaN(streakInput)) { alert("Isi nama & streak kompetitor!"); return; }
+  fakeCompetitors.push({ name: nameInput, streak: streakInput });
+  document.getElementById("admLbName").value = "";
+  document.getElementById("admLbStreak").value = "";
+  saveState(); updateUI();
+}
+function ownerClearLeaderboard() {
+  fakeCompetitors = [];
+  saveState(); updateUI();
+  alert("Fake Leaderboard cleared.");
+}
+
+/* ⚡ OPERASIONAL EVENT BEAST ACTION (STABILIZE & IGNITE) */
+function ownerTriggerBeastAction(actionType) {
+  const f = document.getElementById("beastIframe");
+  if(f && f.contentWindow) {
+    f.contentWindow.postMessage({ type: 'BEAST_COMMAND_EXECUTE', action: actionType }, '*');
+    alert(`COMMAND SENT TO BEAST ENGINE: ${actionType}`);
+  } else {
+    alert("Beast Engine Iframe not loaded yet.");
+  }
 }
 
 function executeAdminUpdate() {
@@ -636,13 +666,12 @@ function executeAdminUpdate() {
   if(document.getElementById("admStreak").value) streakData.count = parseInt(document.getElementById("admStreak").value);
   if(document.getElementById("admHighStreak").value) streakData.highestCount = parseInt(document.getElementById("admHighStreak").value);
   
-  // Injecting custom data updates for Pet telemetry
   petData.name = document.getElementById("admPetName").value.trim() || petData.name;
   if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
   petData.stage = document.getElementById("admPetStage").value || petData.stage;
 
   saveState(); updateUI();
-  alert("CORE SYSTEM STATE MODIFIED SUCCESSFULLY.");
+  alert("Changes Applied Successfully.");
 }
 
 function broadcastToBeast() {
@@ -674,7 +703,7 @@ function showPage(id) {
   if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
 }
 
-// 🎚️ SCRIPT DRAGGABLE INTERFACE FOR OWNER PANEL
+// 🎚️ DRAGGABLE CONTROLLER INTERFACE 
 const launcher = document.getElementById("adminLauncherBtn");
 const panel = document.getElementById("adminPanel");
 const header = document.getElementById("adminPanelHeader");
