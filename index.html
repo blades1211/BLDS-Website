@@ -74,7 +74,7 @@ body {
 .theme-crimson .logo-container { filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.7)); }
 .theme-crimson .text-logo-fallback { border-color: #ff3333 !important; }
 
-/* Main Container - Auto Extended Height to prevent content clipping */
+/* Main Container - Auto Extended Height */
 .container { 
   max-width: 800px; 
   width: 100%;
@@ -122,11 +122,11 @@ body {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
   cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
-  border-radius: 50px; /* Merubah bentuk tombol menjadi bulat lonjong/kapsul */
+  border-radius: 50px;
 }
 #enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-/* 🟥 VERTICAL STACK CAPSULE MENU (TOMBOL BULAT NUMPUK) */
+/* 🟥 VERTICAL STACK CAPSULE MENU */
 .menu { 
   display: none; 
   flex-direction: column;
@@ -142,7 +142,7 @@ body {
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-  border-radius: 50px; /* Bentuk tombol menu kapsul melengkung penuh */
+  border-radius: 50px;
 }
 .menu button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
@@ -151,14 +151,14 @@ body {
   display: none; 
   width: 100%; 
   margin-bottom: 40px;
-  height: auto; /* Mengatur tinggi otomatis agar muat semua konten */
+  height: auto; 
 }
 .box { 
   background: rgba(255,255,255,0.01); 
   border: 1px solid rgba(255,255,255,0.08); 
   padding: 30px; 
   border-radius: 8px;
-  height: auto; /* Mencegah pemotongan text di dalam box area */
+  height: auto; 
   overflow: visible; 
 }
 
@@ -334,17 +334,25 @@ footer {
 </footer>
 
 <script>
+// DATABASE DATA UTUH & LENGKAP SECARA HISTORIS (ANTI-POTONG)
 const BLDS_LORE = {
   title: "LORE & CORE PURPOSE",
-  desc: "Before BLDS had a name, before the symbol existed... This dominion was built by those who refused to disappear. Moving forward continuously even when everything turns dark.",
+  desc: "Before BLDS had a name, before the symbol existed... This dominion was built by those who refused to disappear. Moving forward continuously even when everything turns dark. We do not stop when we are tired; we stop when the legacy is completely forged into eternity.",
   flames_title: "10 FLAMES OF BLDS (GREATER)",
   flames: [
-    "<b>I. Vision</b> - The ability to see direction even when others are lost.",
-    "<b>II. Discipline</b> - To continue growing even when nobody is watching.",
-    "<b>III. Loyalty</b> - To stand together through victory and defeat.",
-    "<b>IV. Ambition</b> - The desire to surpass limits and continue evolving.",
-    "<b>V. Resilience</b> - The strength to rise again after every fall."
-  ]
+    "<b>I. Vision</b> - The ability to see direction even when others are completely lost in the void.",
+    "<b>II. Discipline</b> - To continue growing, executing, and refining even when nobody is watching.",
+    "<b>III. Loyalty</b> - To stand together side-by-side through every absolute victory and crushing defeat.",
+    "<b>IV. Ambition</b> - The relentless desire to surpass human limits and continue evolving the core network.",
+    "<b>V. Resilience</b> - The absolute strength to rise again with greater force after every single fall.",
+    "<b>VI. Focus</b> - Eliminating peripheral noise to keep the core parameters clear and unobstructed.",
+    "<b>VII. Honor</b> - Integrity in action, ensuring the name BLACKLIGHTDOMS commands respect.",
+    "<b>VIII. Adaptability</b> - Mastering the shift in shadows, turning unexpected chaos into structured control.",
+    "<b>IX. Unity</b> - Individual strength aggregated into an unbreakable, single dominion network.",
+    "<b>X. Eternity</b> - Building systems and mindsets that outlast temporal cycles and short-term trends."
+  ],
+  core_title: "BLACKLIGHT CORE PARADIGM",
+  core_desc: "The Blacklight Core functions as the internal anchor. It represents hidden energy—light that shines within the deepest pitch-black environment. To integrate with the Core is to accept total accountability over your growth matrix."
 };
 
 const BLDS_ARCHIVES = {
@@ -370,18 +378,23 @@ function handleLogoMissing() {
 function injectDatabase() {
   document.getElementById("loreInjectBox").innerHTML = `
     <h2>${BLDS_LORE.title}</h2>
-    <p style="font-size:13px; line-height:1.7; opacity:0.8; text-align:justify;">${BLDS_LORE.desc}</p>
+    <p style="font-size:13px; line-height:1.7; opacity:0.8; text-align:justify; margin-bottom:25px;">${BLDS_LORE.desc}</p>
+    
     <h2>${BLDS_LORE.flames_title}</h2>
-    <ul style="font-size:13px; line-height:1.8; opacity:0.8; padding-left:20px;">
-      ${BLDS_LORE.flames.map(f => `<li>${f}</li>`).join('')}
+    <ul style="font-size:13px; line-height:1.8; opacity:0.8; padding-left:20px; margin-bottom:35px;">
+      ${BLDS_LORE.flames.map(f => `<li style="margin-bottom:8px;">${f}</li>`).join('')}
     </ul>
+
+    <h2>${BLDS_LORE.core_title}</h2>
+    <p style="font-size:13px; line-height:1.7; opacity:0.8; text-align:justify;">${BLDS_LORE.core_desc}</p>
   `;
+  
   document.getElementById("archivesInjectBox").innerHTML = `
     <h2>${BLDS_ARCHIVES.title}</h2>
     <div style="margin-bottom:20px; padding-bottom:15px;">
-      <div style="font-size:11px; opacity:0.4; margin-bottom:10px;">${BLDS_ARCHIVES.sub}</div>
-      <div style="display:flex; gap:20px; flex-wrap:wrap;">
-        ${BLDS_ARCHIVES.staff.map(s => `<div><h4 style="margin:0; font-size:11px; opacity:0.5;">${s.r}</h4><p style="margin:5px 0 0 0; font-size:14px;">${s.n}</p></div>`).join('')}
+      <div style="font-size:11px; opacity:0.4; margin-bottom:15px;">${BLDS_ARCHIVES.sub}</div>
+      <div style="display:flex; gap:30px; flex-wrap:wrap;">
+        ${BLDS_ARCHIVES.staff.map(s => `<div><h4 style="margin:0; font-size:11px; opacity:0.5; letter-spacing:1px;">${s.r.toUpperCase()}</h4><p style="margin:5px 0 0 0; font-size:15px; font-weight:bold; letter-spacing:1px;">${s.n}</p></div>`).join('')}
       </div>
     </div>
   `;
@@ -468,7 +481,7 @@ function enter() {
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   
-  if(ambient) { ambient.play().catch(()=>{ console.log("Audio play deferred."); }); }
+  if(ambient) { ambient.play().catch(()=>{ console.log("Audio deferred."); }); }
   
   overlay.classList.add("active");
   
