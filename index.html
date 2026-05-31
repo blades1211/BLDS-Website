@@ -53,26 +53,28 @@ body {
 .theme-options-container { margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
 .theme-option-card {
   padding: 12px; border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer; font-size: 11px; letter-spacing: 1px; transition: all 0.3s;
+  border-radius: 20px; cursor: pointer; font-size: 11px; letter-spacing: 1px; transition: all 0.3s;
 }
 .theme-option-card:hover, .theme-option-card.active-choice { border-color: #fff; background: rgba(255,255,255,0.05); }
 
 /* Theme Presets */
 .theme-matrix { color: #00ff00 !important; }
 .theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
-.theme-matrix button { border-color: #00ff00 !important; color: #00ff00 !important; }
+.theme-matrix button, .theme-matrix .menu button { border-color: #00ff00 !important; color: #00ff00 !important; }
+.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
 .theme-matrix .title { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4) !important; }
 .theme-matrix .logo-container { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)); }
 .theme-matrix .text-logo-fallback { border-color: #00ff00 !important; }
 
 .theme-crimson { color: #ff3333 !important; }
 .theme-crimson .box, .theme-crimson .theme-modal-box { border-color: #ff3333 !important; background: #050000 !important; }
-.theme-crimson button { border-color: #ff3333 !important; color: #ff3333 !important; }
+.theme-crimson button, .theme-crimson .menu button { border-color: #ff3333 !important; color: #ff3333 !important; }
+.theme-crimson button:hover, .theme-crimson .menu button:hover { background: #ff3333 !important; color: #000 !important; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
 .theme-crimson .title { text-shadow: 0 0 15px rgba(255, 51, 51, 0.8), 0 0 25px rgba(255, 51, 51, 0.4) !important; }
 .theme-crimson .logo-container { filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.7)); }
 .theme-crimson .text-logo-fallback { border-color: #ff3333 !important; }
 
-/* Main Container Flexibility to push footer down */
+/* Main Container - Auto Extended Height to prevent content clipping */
 .container { 
   max-width: 800px; 
   width: 100%;
@@ -98,12 +100,12 @@ body {
   50% { filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.8)); }
   100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
 }
-.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; }
+.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; border-radius: 4px; }
 
 .streak-widget {
   display: none; flex-direction: column; align-items: center;
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
-  padding: 15px 25px; margin-bottom: 30px; letter-spacing: 1px;
+  padding: 15px 25px; margin-bottom: 30px; letter-spacing: 1px; border-radius: 8px;
 }
 
 /* ✨ GLOWING TEXT TITLE */
@@ -115,14 +117,16 @@ body {
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
+/* Standard Interface Buttons with Rounded Edges */
 #enterBtn, .calibration-box button, .admin-btn, .modal-box button {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
   cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
+  border-radius: 50px; /* Merubah bentuk tombol menjadi bulat lonjong/kapsul */
 }
-#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; }
+#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-/* 🟥 VERTICAL STACK MENU (TOMBOL NUMPUK) */
+/* 🟥 VERTICAL STACK CAPSULE MENU (TOMBOL BULAT NUMPUK) */
 .menu { 
   display: none; 
   flex-direction: column;
@@ -138,30 +142,46 @@ body {
   width: 100%;
   box-sizing: border-box;
   text-align: center;
+  border-radius: 50px; /* Bentuk tombol menu kapsul melengkung penuh */
 }
-.menu button:hover { background: #fff; color: #000; }
+.menu button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-.page { display: none; width: 100%; margin-bottom: 40px; }
-.box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 4px; }
+/* Pages System Layouts - Fully Dynamic Height (Anti-Potong) */
+.page { 
+  display: none; 
+  width: 100%; 
+  margin-bottom: 40px;
+  height: auto; /* Mengatur tinggi otomatis agar muat semua konten */
+}
+.box { 
+  background: rgba(255,255,255,0.01); 
+  border: 1px solid rgba(255,255,255,0.08); 
+  padding: 30px; 
+  border-radius: 8px;
+  height: auto; /* Mencegah pemotongan text di dalam box area */
+  overflow: visible; 
+}
 
 .achievement-progress-container { margin-bottom: 25px; background: rgba(255,255,255,0.05); height: 20px; position: relative; border-radius: 10px; overflow: hidden; }
 .achievement-progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; }
 .achievement-progress-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; mix-blend-mode: difference; }
 .achievement-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-.achievement-card { border: 1px solid rgba(255,255,255,0.08); padding: 15px; background: rgba(0,0,0,0.2); }
+.achievement-card { border: 1px solid rgba(255,255,255,0.08); padding: 15px; background: rgba(0,0,0,0.2); border-radius: 6px; }
 .achievement-card.unlocked { border-color: #fff; }
-.ach-badge { font-size: 9px; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 8px; }
+.ach-badge { font-size: 9px; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 8px; border-radius: 10px; }
 .locked-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
 .unlocked-badge { background: #fff; color: #000; }
 
 .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
 .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
-.calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); }
+.calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 20px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 .reset-streak-btn { font-size: 9px !important; margin-top: 15px; opacity: 0.5; color: #ff4a4a !important; border-color: rgba(255,0,0,0.3) !important;}
-input[type="text"], input[type="number"] { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px; font-family: inherit; width: 100%; box-sizing: border-box; }
-.admin-trigger-launcher { position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; z-index: 999999; }
-.admin-floating-panel { position: fixed; top: 10%; left: 10%; width: 320px; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; }
+
+input[type="text"], input[type="number"] { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
+.admin-trigger-launcher { position: fixed; top: 25px; left: 25px; background: #fff; color: #000; padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; z-index: 999999; border-radius: 20px; }
+.admin-floating-panel { position: fixed; top: 10%; left: 10%; width: 320px; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; border-radius: 8px; overflow: hidden; }
 .admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; display: flex; justify-content: space-between; }
 .admin-body { padding: 15px; }
 
@@ -442,14 +462,13 @@ function calibrateCore() {
   saveState(); updateUI();
 }
 
-// Smooth enter function
 function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
   
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   
-  if(ambient) { ambient.play().catch(()=>{ console.log("Audio trigger waiting."); }); }
+  if(ambient) { ambient.play().catch(()=>{ console.log("Audio play deferred."); }); }
   
   overlay.classList.add("active");
   
