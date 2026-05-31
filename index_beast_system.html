@@ -2,151 +2,70 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS BEAST INTERFACE ENGINE</title>
+<title>BLDS BEAST ENGINE</title>
 <style>
 body {
-  margin: 0;
-  padding: 15px;
-  background: #020205;
-  color: #fff;
-  font-family: 'Courier New', Courier, monospace;
-  overflow: hidden; /* Menghilangkan scrollbar ganda */
-  box-sizing: border-box;
+  margin:0; padding:15px; background:#020205; color:#fff;
+  font-family:'Courier New', Courier, monospace; overflow:hidden; box-sizing:border-box;
 }
-.beast-wrapper {
-  border: 1px dashed rgba(255,255,255,0.2);
-  border-radius: 8px;
-  padding: 20px;
-  height: 700px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
-  background: linear-gradient(180deg, rgba(5,5,15,0.6) 0%, rgba(0,0,0,0.9) 100%);
+.wrapper {
+  border:1px dashed rgba(255,255,255,0.2); border-radius:8px; padding:20px;
+  height:680px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;
 }
-.hud-header {
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-}
-.node-status {
-  font-size: 11px;
-  background: rgba(255,68,68,0.1);
-  color: #ff4444;
-  padding: 8px;
-  border: 1px solid rgba(255,68,68,0.3);
-  letter-spacing: 1px;
-  text-align: center;
-}
-.node-status.online {
-  background: rgba(0,255,100,0.1);
-  color: #00ff64;
-  border-color: rgba(0,255,100,0.3);
-}
-.telemetry-display-box {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 15px;
-  text-align: center;
-}
-.live-counter {
-  font-size: 32px;
-  font-weight: bold;
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255,255,255,0.4);
-  margin-top: 5px;
-}
-.terminal-stream {
-  background: #000;
-  border: 1px solid rgba(255,255,255,0.1);
-  height: 250px;
-  overflow-y: auto;
-  padding: 12px;
-  font-size: 11px;
-  color: #00ff00;
-  font-family: monospace;
-  text-align: left;
-}
-.action-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.btn-core-action {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
-  padding: 12px;
-  font-family: inherit;
-  font-size: 11px;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.3s;
-}
-.btn-core-action:hover {
-  background: #fff;
-  color: #000;
-}
+.header { border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; }
+.status { font-size:11px; background:rgba(255,68,68,0.1); color:#ff4444; padding:8px; border:1px solid rgba(255,68,68,0.3); text-align:center; }
+.status.online { background:rgba(0,255,100,0.1); color:#00ff64; border-color:rgba(0,255,100,0.3); }
+.counter-box { background:rgba(255,255,255,0.02); padding:15px; text-align:center; border:1px solid rgba(255,255,255,0.05); }
+.count { font-size:36px; font-weight:bold; text-shadow:0 0 10px rgba(255,255,255,0.3); }
+.terminal { background:#000; border:1px solid rgba(255,255,255,0.1); height:280px; overflow-y:auto; padding:10px; font-size:11px; color:#00ff00; text-align:left; }
+.actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.btn { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:12px; font-family:inherit; cursor:pointer; text-transform:uppercase; }
+.btn:hover { background:#fff; color:#000; }
 </style>
 </head>
 <body>
 
-<div class="beast-wrapper">
-  <div class="hud-header">
-    <h3 style="margin: 0 0 10px 0; letter-spacing: 3px;">👾 BEAST ENGINE MAINBOARD</h3>
-    <div class="node-status" id="beastNodeStatus">NODE STATUS: DISCONNECTED FROM CORE FRAMEWORK</div>
+<div class="wrapper">
+  <div class="header">
+    <h3 style="margin:0 0 10px 0; letter-spacing:2px;">👾 BEAST ENGINE MAINBOARD</h3>
+    <div class="status" id="nodeStatus">STATUS: AWAITING LINK SIGNAL...</div>
   </div>
 
-  <div class="telemetry-display-box">
-    <div style="font-size: 10px; opacity: 0.5; letter-spacing: 2px;">RESONANCE MATRIX COUNTER</div>
-    <div class="live-counter" id="beastStreakCounter">-- DAYS</div>
+  <div class="counter-box">
+    <div style="font-size:10px; opacity:0.5; letter-spacing:1px;">RESONANCE MATRIX COUNTER</div>
+    <div class="count" id="beastCount">-- DAYS</div>
   </div>
 
-  <div class="terminal-stream" id="terminalLog">
-    [SYSTEM] Beast Engine v1.0 Standby...<br>
-    [SYSTEM] Initializing telemetry link wire loop...
+  <div class="terminal" id="term">
+    [SYSTEM] Beast Engine initialization stand-by...<br>
+    [SYSTEM] Wiring bridge to core channel active.
   </div>
 
-  <div class="action-grid">
-    <button class="btn-core-action" onclick="executeEngineNode('BEAST_BURST')">Ignite Beast Burst</button>
-    <button class="btn-core-action" onclick="executeEngineNode('QUANTUM_HEAL')">Quantum Stabilization</button>
+  <div class="actions">
+    <button class="btn" onclick="runNode('BURST')">Ignite Beast Burst</button>
+    <button class="btn" onclick="runNode('STABILIZE')">Stabilize Loop</button>
   </div>
 </div>
 
 <script>
-function printLog(text) {
-  const logBox = document.getElementById("terminalLog");
-  logBox.innerHTML += `[BEAST_ENG] ${text}<br>`;
-  logBox.scrollTop = logBox.scrollHeight;
+function addLog(txt) {
+  const t = document.getElementById("term");
+  t.innerHTML += `[ENGINE] ${txt}<br>`; t.scrollTop = t.scrollHeight;
 }
+function runNode(type) { addLog(`Command ${type} executed successfully.`); }
 
-function executeEngineNode(nodeType) {
-  printLog(`Running internal procedure: ${nodeType}... Success.`);
-}
-
-// 📡 Menangkap data realtime dari halaman utama Core
-window.addEventListener("message", function(event) {
-  if (event.data && event.data.type === 'BLDS_TELEMETRY_DATA') {
-    const core = event.data.data;
-    
-    // Update Interface UI Game Beast
-    document.getElementById("beastStreakCounter").innerText = `${core.count} DAYS`;
-    
-    const nodeUI = document.getElementById("beastNodeStatus");
-    nodeUI.innerText = `NODE ONLINE // LINKED TO: ${core.dominionName ? core.dominionName.toUpperCase() : "UNKNOWN"}`;
-    nodeUI.classList.add("online");
-    
-    printLog(`Data core tersinkronisasi. Streak Saat Ini: ${core.count} Hari.`);
+window.addEventListener("message", (e) => {
+  if(e.data && e.data.type === 'TELEMETRY') {
+    const core = e.data.data;
+    document.getElementById("beastCount").innerText = `${core.count} DAYS`;
+    const st = document.getElementById("nodeStatus");
+    st.innerText = `NODE ONLINE // DESIGNATION: ${core.dominionName.toUpperCase()}`;
+    st.className = "status online";
+    addLog(`Data synchronized. Main core resonance at ${core.count} cycles.`);
   }
 });
 
-// Otomatis meminta data terbaru ke core saat halaman game ini terbuka di iframe
-window.onload = function() {
-  if (window.parent) {
-    window.parent.postMessage({ type: 'BEAST_REQUEST_SYNC' }, '*');
-  }
-};
+window.onload = () => { if(window.parent) window.parent.postMessage({ type:'REQ_SYNC' }, '*'); };
 </script>
 </body>
 </html>
