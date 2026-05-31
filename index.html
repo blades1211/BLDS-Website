@@ -5,9 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLACKLIGHTDOMS | CORE SYSTEM</title>
 <style>
+/* Sticky Footer Setup & Main Body */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 body {
-  margin: 0; padding: 0; background: #000; color: #fff;
+  background: #000; color: #fff;
   font-family: 'Courier New', Courier, monospace; overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .sky {
   position: fixed; width: 100%; height: 100%; z-index: -2;
@@ -53,28 +61,86 @@ body {
 .theme-matrix { color: #00ff00 !important; }
 .theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
 .theme-matrix button { border-color: #00ff00 !important; color: #00ff00 !important; }
+.theme-matrix .title { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4) !important; }
+.theme-matrix .logo-container { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)); }
+.theme-matrix .text-logo-fallback { border-color: #00ff00 !important; }
+
 .theme-crimson { color: #ff3333 !important; }
 .theme-crimson .box, .theme-crimson .theme-modal-box { border-color: #ff3333 !important; background: #050000 !important; }
 .theme-crimson button { border-color: #ff3333 !important; color: #ff3333 !important; }
+.theme-crimson .title { text-shadow: 0 0 15px rgba(255, 51, 51, 0.8), 0 0 25px rgba(255, 51, 51, 0.4) !important; }
+.theme-crimson .logo-container { filter: drop-shadow(0 0 15px rgba(255, 51, 51, 0.7)); }
+.theme-crimson .text-logo-fallback { border-color: #ff3333 !important; }
 
-.container { max-width: 800px; margin: 0 auto; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-.logo-container { margin-bottom: 20px; text-align: center; min-height: 50px; }
-.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+/* Main Container Flexibility to push footer down */
+.container { 
+  max-width: 800px; 
+  width: 100%;
+  margin: 0 auto; 
+  padding: 40px 20px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  flex: 1 0 auto;
+  box-sizing: border-box;
+}
+
+/* ✨ GLOWING LOGO LAYER */
+.logo-container { 
+  margin-bottom: 20px; 
+  text-align: center; 
+  min-height: 50px;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+  animation: glowPulse 3s infinite ease-in-out;
+}
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
+  50% { filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.8)); }
+  100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
+}
+.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; }
 
 .streak-widget {
   display: none; flex-direction: column; align-items: center;
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
   padding: 15px 25px; margin-bottom: 30px; letter-spacing: 1px;
 }
-.title { font-size: 28px; letter-spacing: 8px; margin-bottom: 40px; text-align: center; }
-#enterBtn, .menu button, .calibration-box button, .admin-btn, .modal-box button {
+
+/* ✨ GLOWING TEXT TITLE */
+.title { 
+  font-size: 28px; 
+  letter-spacing: 8px; 
+  margin-bottom: 40px; 
+  text-align: center; 
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+#enterBtn, .calibration-box button, .admin-btn, .modal-box button {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
   cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
 }
-#enterBtn:hover, .menu button:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; }
-.menu { display: none; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; }
+
+/* 🟥 VERTICAL STACK MENU (TOMBOL NUMPUK) */
+.menu { 
+  display: none; 
+  flex-direction: column;
+  gap: 12px; 
+  width: 100%;
+  max-width: 280px; 
+  margin: 0 auto 40px auto; 
+}
+.menu button {
+  background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  padding: 14px 20px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
+  cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.menu button:hover { background: #fff; color: #000; }
+
 .page { display: none; width: 100%; margin-bottom: 40px; }
 .box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 4px; }
 
@@ -98,7 +164,15 @@ input[type="text"], input[type="number"] { background: #000; color: #fff; border
 .admin-floating-panel { position: fixed; top: 10%; left: 10%; width: 320px; background: #050505; border: 1px solid #fff; display: none; flex-direction: column; z-index: 9999999; }
 .admin-header { background: #fff; color: #000; padding: 10px; font-size: 11px; display: flex; justify-content: space-between; }
 .admin-body { padding: 15px; }
-footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; margin-top: 20px;}
+
+/* 🧲 STICKY FOOTER BOTTOM LAYER */
+footer { 
+  width: 100%; 
+  border-top: 1px solid rgba(255,255,255,0.05); 
+  padding: 20px 0; 
+  background: #000; 
+  flex-shrink: 0;
+}
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
 .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; }
 
@@ -181,7 +255,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <h2>RESONANCE ACHIEVEMENTS</h2>
       <div class="achievement-progress-container">
         <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADOCKED</div>
+        <div class="achievement-progress-text" id="achProgressText">0 / 15 BADGES UNLOCKED</div>
       </div>
       <div class="achievement-grid" id="achGrid"></div>
     </div>
@@ -240,7 +314,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </footer>
 
 <script>
-// DATABASE DATA INTI JAVASCRIPT (ANTI-KEHAPUS)
 const BLDS_LORE = {
   title: "LORE & CORE PURPOSE",
   desc: "Before BLDS had a name, before the symbol existed... This dominion was built by those who refused to disappear. Moving forward continuously even when everything turns dark.",
@@ -302,7 +375,7 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-// Create badges HTML
+// Generate badges HTML
 document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
   <div class="achievement-card" id="ach${i+1}">
     <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
@@ -369,32 +442,26 @@ function calibrateCore() {
   saveState(); updateUI();
 }
 
-// 🎬 REAL SMOOTH CUTSCENE TRANSITION SYSTEM
+// Smooth enter function
 function enter() {
   if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
   
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   
-  // Audio Playback Safety Trigger
-  if(ambient) { ambient.play().catch(()=>{ console.log("Audio triggered via user interaction."); }); }
+  if(ambient) { ambient.play().catch(()=>{ console.log("Audio trigger waiting."); }); }
   
-  // Tahap 1: Munculkan kilatan transisi (Fade In)
   overlay.classList.add("active");
   
   setTimeout(() => {
-    // Tahap 2: Sembunyikan tombol dan aktifkan layout dashboard di balik layar transisi
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("streakWidget").style.display = "flex";
     document.getElementById("calibrationHud").style.display = "block";
     document.getElementById("menu").style.display = "flex";
     
-    // Default tampilkan halaman origin langsung
     showPage('origin');
-    
-    // Tahap 3: Turunkan kembali efek transisi (Fade Out) secara mulus
     overlay.classList.remove("active");
-  }, 800); // Sinkronisasi waktu 800ms pas dengan efek CSS transition
+  }, 800);
 }
 
 function saveDominionName() {
@@ -414,7 +481,6 @@ function executeAdminUpdate() {
   saveState(); updateUI();
 }
 
-// Telemetri Iframe Linker
 function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
