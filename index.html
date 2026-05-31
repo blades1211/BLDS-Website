@@ -186,9 +186,6 @@ body {
 .page { display: none; width: 100%; margin-bottom: 40px; height: auto; }
 .box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 8px; height: auto; overflow: visible; }
 
-.leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
-.leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 25px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 
@@ -348,7 +345,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">Origin</button>
     <button onclick="showPage('achievement')">Achievements</button>
-    <button onclick="showPage('leaderboardPage')">Leaderboard</button>
     <button onclick="showPage('archives')">Archives</button>
     <button onclick="showPage('code')">Code</button>
     <button onclick="showPage('beastPage')">👾 Beast Engine</button>
@@ -375,19 +371,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
         <div class="achievement-progress-text" id="achProgressText" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#000; mix-blend-mode:difference;">0 / 15 Badges Unlocked</div>
       </div>
       <div class="achievement-grid" id="achGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:15px;"></div>
-    </div>
-  </div>
-
-  <div class="page" id="leaderboardPage">
-    <div class="box">
-      <div class="fullscreen-header-nav">
-        <h2 class="fullscreen-header-title">Global Dominion Rankings (Live)</h2>
-        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
-      </div>
-      <table class="leaderboard-table">
-        <thead><tr><th>Rank</th><th>Dominion Name</th><th>Max Streak</th></tr></thead>
-        <tbody id="leaderboardDataBody"></tbody>
-      </table>
     </div>
   </div>
 
@@ -511,10 +494,8 @@ function injectDatabase() {
   let greaterHTML = BLDS_LORE.greater_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
   let lesserHTML = BLDS_LORE.lesser_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
   
-  // FIX: Judul dirubah dari 'Before BLDS' menjadi 'Lore' sesuai instruksi
   document.getElementById("loreInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;"><h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1><div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div></div><div class="lore-section"><h3>Lore</h3><p>${BLDS_LORE.before_blds}</p></div><div class="lore-section"><h3>The Blacklight Core</h3><p>${BLDS_LORE.blacklight_core}</p></div><div class="lore-section"><h3>Meaning Of The Symbols</h3><ul class="flame-list"><li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li><li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li></ul></div><div class="lore-section"><h3>The Ten Flames Of BLDS</h3><div class="lore-quote">"${BLDS_LORE.flame_quote}"</div><h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4><ul class="flame-list">${greaterHTML}</ul><h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4><ul class="flame-list">${lesserHTML}</ul></div>`;
   
-  // FIX: Mengganti isi Archives dengan susunan tim manajemen BLDS resmi
   document.getElementById("archivesInjectBox").innerHTML = `
     <table class="archives-data-table">
       <thead><tr><th style="width:40%;">Classification Role</th><th>Registered Identity</th></tr></thead>
@@ -598,7 +579,6 @@ function updateUI() {
   });
   document.getElementById("achProgressBar").style.width = (unlocked/15)*100 + "%";
   document.getElementById("achProgressText").innerText = `${unlocked} / 15 Badges Unlocked`;
-  fetchCloudLeaderboard();
 }
 
 function pushStreakToFirebase() {
@@ -611,32 +591,6 @@ function pushStreakToFirebase() {
     headers: { 'Content-Type': 'application/json' }, 
     body: JSON.stringify(payload) 
   }).catch(err => console.error("Koneksi Firebase terhambat:", err));
-}
-
-function fetchCloudLeaderboard() {
-  fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
-    .then(res => res.json())
-    .then(cloudData => {
-      let dataset = [];
-      if (cloudData) { 
-        Object.keys(cloudData).forEach(key => { 
-          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) { dataset.push(cloudData[key]); } 
-        }); 
-      }
-      dataset.sort((a, b) => (b.streak || 0) - (a.streak || 0));
-      let top20List = dataset.slice(0, 20);
-      const tableBody = document.getElementById("leaderboardDataBody");
-      if (top20List.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; opacity:0.5;">No registered core found.</td></tr>`;
-        return;
-      }
-      tableBody.innerHTML = top20List.map((u, i) => {
-        const isCurrentMe = (u.displayName === streakData.dominionName);
-        return `<tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}><td>#${i + 1}</td><td>${u.displayName}</td><td>${u.streak || 0} Days</td></tr>`;
-      }).join('');
-    }).catch(() => {
-      document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Matrix connection error.</td></tr>`;
-    });
 }
 
 function checkCooldownLoop() {
@@ -684,7 +638,7 @@ function enter() {
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("menu").style.display = "flex";
-    exitFullscreenPage(); // Membuka beranda bersih pertama kali
+    exitFullscreenPage(); 
     overlay.classList.remove("active");
   }, 800);
 }
@@ -692,7 +646,7 @@ function enter() {
 function saveDominionName() {
   const nameVal = document.getElementById("dominionNameInput").value.trim();
   const petVal = document.getElementById("petSelectInput").value;
-  if(!nameVal) { alert("Dominion Name cannot be empty, bre!"); return; }
+  if(!nameVal) { alert("Dominion Name tidak boleh kosong, bre!"); return; }
   
   streakData.dominionName = nameVal;
   petData.name = petVal;
@@ -722,7 +676,7 @@ function unlockCode() {
   if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
     document.getElementById("adminLauncherBtn").style.display = "block";
     document.getElementById("adminPanel").style.display = "flex";
-  } else { alert("Access Rejected: Invalid matrix code"); }
+  } else { alert("Access Rejected: Kode enkripsi salah."); }
 }
 
 function executeAdminUpdate() {
@@ -732,7 +686,7 @@ function executeAdminUpdate() {
   petData.name = document.getElementById("admPetName").value || petData.name;
   if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
   saveState(); updateUI();
-  alert("Changes applied successfully.");
+  alert("Perubahan berhasil diterapkan.");
 }
 
 function broadcastToBeast() {
@@ -743,9 +697,8 @@ function broadcastToBeast() {
   }
 }
 
-// FIX UI CONTROLLER: Fungsi merubah halaman menjadi full 1 layar pekat bersih
+// FIX ROUTING CONTROLLER: Sinkronisasi pemanggilan ID halaman agar tidak tertukar lagi
 function showPage(id) {
-  // Sembunyikan tumpukan komponen induk di halaman utama agar konten menu mendapat ruang 1 layar penuh
   document.getElementById("coreHubHeaderArea").style.display = "none";
   document.getElementById("menu").style.display = "none";
   document.getElementById("calibrationHud").style.display = "none";
@@ -754,14 +707,11 @@ function showPage(id) {
   document.getElementById(id).style.display="block";
   
   if(id === 'beastPage') { setTimeout(broadcastToBeast, 120); }
-  if(id === 'leaderboardPage') { fetchCloudLeaderboard(); }
 }
 
-// FIX UI CONTROLLER: Fungsi menutup halaman full-screen untuk kembali ke tampilan beranda awal
 function exitFullscreenPage() {
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
   
-  // Kembalikan seluruh ornamen utama Core ke layar
   document.getElementById("coreHubHeaderArea").style.display = "flex";
   document.getElementById("menu").style.display = "flex";
   document.getElementById("calibrationHud").style.display = "block";
