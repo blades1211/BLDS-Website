@@ -92,7 +92,7 @@ body {
   animation: glowPulse 3s infinite ease-in-out;
 }
 @keyframes glowPulse {
-  0% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
+  0 { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
   50% { filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.8)); }
   100% { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
 }
@@ -125,15 +125,15 @@ body {
   50% { transform: translateY(-6px); }
 }
 .pet-image-frame {
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
   border-radius: 8px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.15);
   overflow: hidden;
 }
 .pet-image-frame img {
@@ -142,9 +142,10 @@ body {
   object-fit: contain;
 }
 .pet-image-fallback {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 1px;
   color: rgba(255,255,255,0.4);
+  padding: 5px;
 }
 .title-pet-details {
   font-size: 11px;
@@ -261,13 +262,26 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
   font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; text-transform: uppercase;
 }
 
+/* 🔄 LOADING SCREEN ROTATE REPAIR INJECTION */
+.loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease; }
+.loader.hidden { opacity: 0; pointer-events: none; }
+.loaderCircle { 
+  width: 40px; height: 40px; 
+  border: 3px solid rgba(255,255,255,0.1); 
+  border-top-color: #fff; 
+  border-radius: 50%; 
+  animation: spinLoader 1s infinite linear !important; 
+}
+.loaderText { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.7); font-weight: bold; }
+
+@keyframes spinLoader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; flex-shrink: 0; }
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
 .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; }
-
-.loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
-.loader.hidden { opacity: 0; pointer-events: none; }
-.loaderCircle { width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; }
 </style>
 </head>
 <body>
@@ -453,51 +467,7 @@ const BLDS_LORE = {
   main_title: "BLACK LIGHT DOMINION SQUAD // BLDS",
   subtitle: "Even during the eclipse, the Core still shine.",
   lore_text: `BEFORE BLDS HAD A NAME,<br>BEFORE THE SYMBOL EXISTED,<br>BEFORE THE SQUAD WAS FORMED...<br>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.<br>SOME WERE IGNORED.<br>SOME WERE UNDERESTIMATED.<br>SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.<br>THEY WATCHED OTHERS RISE FASTER.<br>WATCHED OTHERS GAIN RECOGNITION.<br>WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.<br>AND SLOWLY, THEY REALIZED SOMETHING:<br>MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT.<br>BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.<br>THAT REALIZATION BECAME THE BEGINNING OF BLDS.<br>NOT A SQUAD CREATED FOR FAME.<br>NOT A KINGDOM BUILT ON ARROGANCE.<br>NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY.<br>BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.`,
-  core_text: `AT THE CENTER OF THE ECLIPSE LIES THE CORE.<br>A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.<br>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS.<br>NOT A PURPOSE GIVEN BY THE WORLD.<br>NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY.<br>BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.<br>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES...<br>EVEN WHEN PEOPLE LEAVE...<br>EVEN WHEN FAILURE SURROUNDS YOU...<br>YOUR INNER LIGHT CAN STILL REMAIN ALIVE.<br>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL.<br>THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL.<br>THAT IS WHY THE CORE NEVER DISAPPEARS.<br>BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.`,
-  meaning_core: `<b>THE CORE</b><br>OUR PURPOSE. OUR INNER LIGHT. THE SOURCE OF OUR STRENGTH.`,
-  meaning_eclipse: `<b>THE ECLIPSE</b><br>THE WORLD. THE DARKNESS. THE CHALLENGES WE FACE EVERY DAY.`,
-  flames_title: "The Ten Flames Of BLDS",
-  flames_sub: "5 Greater Flames & 5 Lesser Flames",
-  greater_flames: [
-    "<b>I. Vision</b><br>The ability to see direction even when others are lost.",
-    "<b>II. Discipline</b><br>To continue growing even when nobody is watching.",
-    "<b>III. Loyalty</b><br>To stand together through victory and defeat.",
-    "<b>IV. Ambition</b><br>The desire to surpass limits and continue evolving.",
-    "<b>V. Resilience</b><br>The strength to rise again after every fall."
-  ],
-  lesser_flames: [
-    "<b>I. Hope</b><br>The light that remains during difficult times.",
-    "<b>II. Awareness</b><br>The ability to stay conscious and understand reality.",
-    "<b>III. Patience</b><br>Growth takes time and endurance.",
-    "<b>IV. Courage</b><br>The will to move forward despite fear.",
-    "<b>V. Unity</b><br>The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it."
-  ],
-  flames_footer: "Five flames grant strength.<br>Five flames preserve it.<br>Together, they protect the Core."
-};
-
-const BLDS_ARCHIVES = {
-  title: "BLDS KRONOLOGIS ARCHIVES",
-  sub: "> CORE DOMINION LEADERSHIP NETWORK",
-  leaders: [
-    { r: "Founder", n: "Michael Lorenzo" },
-    { r: "Right Hand", n: "William Nayottama" },
-    { r: "Left Hand", n: "Prince Felix" }
-  ],
-  admins: [
-    { r: "Admin", n: "Steven Cleo" },
-    { r: "Admin", n: "Denzel Arnold" },
-    { r: "Admin", n: "George Alfred" }
-  ],
-  timeline: [
-    { date: "05-03-2024", desc: "BLDS Born" },
-    { date: "15-05-2024", desc: "WhatsApp Community created" },
-    { date: "12-09-2024", desc: "Discord Community created" },
-    { date: "20-08-2025", desc: "Massive Remake" },
-    { date: "Version 2.7.0", desc: "27-05-2026<br>Web Created" },
-    { date: "Version 2.7.1", desc: "29-05-2026<br>Streaks created" },
-    { date: "Version 2.7.2", desc: "30-05-2026<br>Pet created" },
-    { date: "Version 2.7.3", desc: "31-05-2026<br>Bestiary system And added some features and some fixes" }
-  ]
+  core_text: `AT THE CENTER OF THE ECLIPSE LIES THE CORE.<br>A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.<br>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS.<br>NOT A PURPOSE GIVEN BY THE WORLD.<br>NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY.<br>BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.<br>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES...<br>EVEN WHEN PEOPLE LEAVE...<br>EVEN WHEN FAILURE SURROUNDS YOU...<br>YOUR INNER LIGHT CAN STILL REMAIN ALIVE.<br>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL.<br>THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL.<br>THAT IS WHY THE CORE NEVER DISAPPEARS.<br>BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.`
 };
 
 const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
@@ -505,7 +475,7 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-let petData = { name: "Naga1", level: 1 };
+let petData = { name: "Naga1", level: 1 }; // Default aman jika localStorage kosong
 let fakeCompetitors = [];
 let cooldownInterval = null;
 
@@ -514,43 +484,16 @@ function handleLogoMissing() {
 }
 
 function injectDatabase() {
-  // Lore Injection Module
   document.getElementById("loreInjectBox").innerHTML = `
     <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
       <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
-      <h2 style="font-size:16px; letter-spacing:2px; font-style:italic; opacity:0.8; margin:0 0 15px 0;">Blacklight Core</h2>
       <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle.toUpperCase()}</div>
     </div>
-    <div class="lore-grid">
-      <div>
-        <h3 style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px; font-size:14px; letter-spacing:2px;">LORE</h3>
-        <p style="font-size:11px; line-height:1.7; opacity:0.8; text-align:left;">${BLDS_LORE.lore_text}</p>
-      </div>
-      <div>
-        <h3 style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px; font-size:14px; letter-spacing:2px;">THE BLACKLIGHT CORE</h3>
-        <p style="font-size:11px; line-height:1.7; opacity:0.8; text-align:left;">${BLDS_LORE.core_text}</p>
-      </div>
-      <div>
-        <h3 style="border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px; font-size:14px; letter-spacing:2px;">MEANING</h3>
-        <p style="font-size:11px; line-height:1.6; opacity:0.8; margin-bottom:20px;">✦ ${BLDS_LORE.meaning_core}</p>
-        <p style="font-size:11px; line-height:1.6; opacity:0.8;">☀️ ${BLDS_LORE.meaning_eclipse}</p>
-      </div>
-    </div>
-  `;
-  
-  // Archives Injection Module
-  document.getElementById("archivesInjectBox").innerHTML = `
-    <h2>${BLDS_ARCHIVES.title}</h2>
-    <div style="font-size:11px; opacity:0.4; margin-bottom:20px;">${BLDS_ARCHIVES.sub}</div>
-    <div class="staff-group">
-      <div class="staff-row">
-        ${BLDS_ARCHIVES.leaders.map(s => `<div><h4 style="margin:0; font-size:11px; opacity:0.5; letter-spacing:1px;">${s.r.toUpperCase()}</h4><p style="margin:5px 0 0 0; font-size:14px; font-weight:bold; letter-spacing:1px;">${s.n}</p></div>`).join('')}
-      </div>
-    </div>
+    <div style="font-size:11px; line-height:1.7; opacity:0.85; text-align:left;">${BLDS_LORE.lore_text}</div>
   `;
 }
 
-// Background Star Initialization
+// Background Stars Engine
 const sky = document.getElementById("sky");
 for(let i=0; i<30; i++) {
   let star = document.createElement("div"); star.className = "star";
@@ -586,7 +529,13 @@ function loadState() {
   const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
   if(saved) streakData = JSON.parse(saved);
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
-  if(savedPet) petData = JSON.parse(savedPet);
+  if(savedPet) {
+    petData = JSON.parse(savedPet);
+    // 🛡️ SECURITY FALLBACK REPAIR: Cegah bug string kosmetik lama tertinggal
+    if(petData.name.includes(" ") || petData.name === "Void Hatchling") {
+      petData.name = "Naga1";
+    }
+  }
   const savedLb = localStorage.getItem("BLDS_CORE_FAKE_LEADER");
   if(savedLb) fakeCompetitors = JSON.parse(savedLb);
   updateUI();
@@ -603,11 +552,11 @@ function updateUI() {
   else if(streakData.count >= 7) rank = "ECLIPSE SYNCHRONIZER";
   document.getElementById("rankTitle").innerText = rank;
   
-  // 🐉 LOAD DYNAMIC REAL IMAGE FOR PET LOGO WITH FALLBACK SYSTEM
+  // 🐉 LOAD DYNAMIC REAL IMAGE FOR PET LOGO WITH FALLBACK SYSTEM (.png Fixes)
   const filename = `${petData.name}.png`;
   document.getElementById("petImageFrame").innerHTML = `
     <img src="${filename}" alt="${petData.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-    <div class="pet-image-fallback" style="display:none;">[${petData.name.substring(0,4).toUpperCase()}]</div>
+    <div class="pet-image-fallback">[NOT FOUND: ${filename.toUpperCase()}]</div>
   `;
   document.getElementById("titlePetDetails").innerText = `${filename} [LVL ${petData.level}]`;
 
@@ -634,7 +583,7 @@ function renderLeaderboard() {
   `).join('');
 }
 
-// ⏳ TIMELOCK ENFORCEMENT ENGINE (APPLIES TO ALL ROLES)
+// ⏳ TIMELOCK COOLDOWN (GLOBAL ENFORCEMENT)
 function checkCooldownLoop() {
   if (cooldownInterval) clearInterval(cooldownInterval);
   
