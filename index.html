@@ -15,7 +15,26 @@ body {
   font-family: 'Courier New', Courier, monospace; overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  transition: filter 0.5s ease;
 }
+
+/* Modifikasi Inversi Warna Global untuk Kode BLACK & WHITE */
+body.inverted-state {
+  filter: invert(1) !important;
+  background: #fff !important;
+}
+
+/* Efek Split Screen Vertikal untuk Akhir Sekuens Kode BLDS */
+body.split-state::after {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; width: 50%; height: 100%;
+  background: transparent;
+  backdrop-filter: invert(1);
+  pointer-events: none;
+  z-index: 99999;
+}
+
 .sky {
   position: fixed; width: 100%; height: 100%; z-index: -2;
   overflow: hidden; background: radial-gradient(circle at center, #060611 0%, #000000 100%);
@@ -272,16 +291,196 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 15px; margin-bottom: 25px;
 }
 .fullscreen-header-title { font-size: 18px; letter-spacing: 3px; font-weight: bold; text-transform: uppercase; margin: 0; }
+
+/* CINEMATIC CUTSCENE THEATER AREA */
+.cutscene-theater {
+  position: fixed; inset: 0; background: #000; z-index: 99999999;
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px; box-sizing: border-box; text-align: center;
+}
+.cutscene-logo { width: 150px; opacity: 0; transition: opacity 2s ease; margin-bottom: 30px; }
+.cutscene-text {
+  font-size: 20px; letter-spacing: 4px; min-height: 40px; opacity: 0;
+  transition: opacity 1s ease; color: #fff; max-width: 600px; line-height: 1.6;
+}
+
+/* LORE FULLSCREEN WRAPPER UNTUK LAYAR FULL RAHASIA */
+.fullscreen-lore-viewer {
+  position: fixed; inset: 0; background: #000; z-index: 9999998;
+  display: none; flex-direction: column; padding: 40px; box-sizing: border-box;
+  overflow-y: auto; color: #fff;
+}
+.btn-back-left-top {
+  position: absolute; top: 30px; left: 30px; background: transparent;
+  color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 16px; font-family: inherit; font-size: 11px; cursor: pointer;
+  border-radius: 4px; z-index: 10; transition: all 0.3s;
+}
+.btn-back-left-top:hover { color: #fff; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+.lore-scroll-body { max-width: 750px; margin: 60px auto 0 auto; width: 100%; }
 </style>
 </head>
 <body>
 
 <audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
+<audio id="audio12Flames"><source src="12flames_ambient.mp3" type="audio/mpeg"></audio>
+<audio id="audioForgotten"><source src="forgotten_ambient.mp3" type="audio/mpeg"></audio>
 
 <div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
 <div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">Loading Blacklight Core...</div></div>
 <div class="sky" id="sky"></div>
 <div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
+
+<div class="cutscene-theater" id="cutsceneTheater">
+  <img src="logo.png" alt="BLDS Logo" class="cutscene-logo" id="cutsceneLogo">
+  <div class="cutscene-text" id="cutsceneText"></div>
+</div>
+
+<div class="fullscreen-lore-viewer" id="forgottenViewer">
+  <button class="btn-back-left-top" onclick="closeFullscreenViewer('forgottenViewer')">⬅ BACK</button>
+  <div class="lore-scroll-body">
+    <h1 style="font-size:24px; letter-spacing:6px; text-align:center; margin-bottom:40px; color:#ff4a4a;">THE FORGOTTEN ECLIPSE<br><span style="font-size:12px; color:rgba(255,255,255,0.5);">FORBIDDEN ARCHIVES</span></h1>
+    <div style="font-size:13px; line-height:2; text-align:justify; white-space:pre-line; opacity:0.9;">
+      Before BLDS.
+      Before the Core.
+      Before the Eclipse was known.
+      There was another generation.
+      A generation no longer remembered by history.
+
+      They were not heroes.
+      They were not kings.
+      They were not champions.
+      They were people who had lost something.
+
+      Hope. Purpose. Direction. Faith.
+      Some had been abandoned.
+      Some had failed many times.
+      Some carried burdens no one else could see.
+      The world called them weak.
+      Many of them began to believe it.
+
+      But among them a thought arose.
+      A simple belief.
+      If one light struggles alone in the darkness...
+      Perhaps many lights together can survive.
+
+      And so the first Eclipse was born.
+      Not as a kingdom.
+      Not as an organization.
+      But as a gathering place.
+      A sanctuary.
+      A promise.
+      The Eclipse accepted people when no one else would.
+      It gave purpose to those who had forgotten their own worth.
+      It taught them to move forward together.
+
+      For a time.
+      The Eclipse shone brighter than ever.
+      Its core grew stronger with each soul who chose hope over surrender.
+
+      Then a rift occurred.
+      Not because of hatred.
+      Not because of enemies.
+      But because of doubt.
+
+      One member began to question everything.
+      They looked to the outside world and saw others receiving recognition.
+      Others receiving attention.
+      Others being celebrated.
+      Meanwhile, the Eclipse continued its slow march.
+      The member grew impatient.
+      Then disappointed.
+      Then bitter.
+
+      Finally, they left.
+      Not because they hated the Eclipse.
+      But because they no longer believed it could be anything meaningful.
+      Before leaving, they uttered words that spread like poison:
+
+      "What's the point of continuing? No one sees us. No one cares. Nothing will change."
+
+      The others listened. 
+      Some agreed. Some followed. Then more followed. Then more.
+      One by one. The lights faded.
+      One by one. The eclipse grew smaller.
+
+      The Core was never driven by numbers.
+      It was driven by belief.
+      And that belief faded.
+      Fewer remained.
+      The Core grew weaker.
+      The Core grew weaker.
+      The harder it was for those left to continue.
+
+      Finally.
+      Only a handful remained. Then only a few. Then almost no one.
+      And finally.
+      The Eclipse collapsed.
+
+      Not by violence. Not by destruction.
+      But by neglect.
+      Its light faded into silence.
+      Its name disappeared.
+      Its members scattered.
+      Its history vanished.
+
+      Only one remained.
+      A fragment. A small piece of the Core.
+      Still shining. Still waiting.
+
+      Legend tells of a survivor who refused to leave.
+      While others left, they stayed.
+      While others gave up, they persevered.
+      The survivor carried the fragment through years of darkness.
+      Protecting the last remaining light of the Eclipse.
+      Waiting for the day when someone would believe again.
+
+      Before disappearing, the survivor left a final message:
+      "The Eclipse didn't die because the darkness was stronger. The Eclipse died because too many people stopped believing in the light. If another Eclipse is ever born... Do not seek recognition. Do not seek validation. Seek purpose. Because purpose survives where attention cannot."
+
+      Years later.
+      The fragment was awakened by someone who took it. Someone unknown with great ambition.
+      The core began to glow again.
+      A new generation gathered around it.
+      Not to repeat the past.
+      But to learn from it.
+
+      The new Eclipse eventually became known as:
+      <strong>BLDS</strong>
+    </div>
+  </div>
+</div>
+
+<div class="fullscreen-lore-viewer" id="twelveFlamesViewer">
+  <button class="btn-back-left-top" onclick="closeFullscreenViewer('twelveFlamesViewer')">⬅ BACK</button>
+  <div class="lore-scroll-body">
+    
+    <div class="lore-section">
+      <h2 style="font-size:18px; color:#00ffff; letter-spacing:3px;">FLAME 11 — SACRED FLAME</h2>
+      <p>The Sacred Flame is the culmination of the Ten Flames. It is born when Vision, Discipline, Loyalty, Ambition, Resilience, Hope, Awareness, Patience, Courage, and Unity become one. Unlike the other Flames, it cannot be obtained through strength alone. It emerges only when every Flame exists in perfect balance.</p>
+      <p>Ancient records describe the Sacred Flame as the purest form of the Core itself. It is not a source of power, but a reflection of purpose. Those who carry the Sacred Flame no longer fight for recognition, fear, or personal gain. They become guardians of the Eclipse and protectors of the Core.</p>
+      <p style="font-style:italic; color:rgba(255,255,255,0.7);">For this reason, the Sacred Flame is often referred to as: "The Flame That Contains All Flames."</p>
+    </div>
+
+    <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.15); margin:40px 0;">
+
+    <div class="lore-section">
+      <h2 style="font-size:18px; color:#ffea00; letter-spacing:3px;">FLAME 12 — HIDDEN FLAME</h2>
+      <p>Beyond the Sacred Flame lies a final anomaly. A Flame that should not exist. A Flame that appears in no complete archive. A Flame remembered by no one and recorded by nothing.</p>
+      <p>The Hidden Flame does not represent strength, wisdom, or purpose. It exists beyond the structure of the Flame System itself. Ancient fragments describe it only as an observer. Silent. Eternal. Watching. It does not participate in existence. It observes whether existence should continue. Even the Sacred Flame cannot fully comprehend it. For where the Sacred Flame unites all known Flames, the Hidden Flame stands beyond what is known.</p>
+    </div>
+
+    <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.15); margin:40px 0;">
+
+    <div class="lore-section" style="background:rgba(255,74,74,0.05); border:1px solid rgba(255,74,74,0.2); padding:20px; border-radius:6px;">
+      <h3 style="color:#ff4a4a; margin-top:0; font-size:13px; letter-spacing:2px;">[ RESTRICTED ARCHIVE NOTE ]</h3>
+      <p style="font-size:11px; line-height:1.8; margin-bottom:0;">Humanity remembers Ten Flames. Not because only Ten Flames exist. But because human cognition begins rejecting everything beyond the Tenth Threshold. Every attempt to document the Eleventh and Twelfth Flames results in corruption, omission, or memory degradation.</p>
+      <p style="font-size:11px; line-height:1.8;">The Flames are not hidden. Humanity is simply incapable of retaining them. For reasons that remain unknown, the mind instinctively rejects what lies beyond the Tenth Flame.</p>
+      <p style="font-size:11px; font-weight:bold; color:#ff4a4a; margin-bottom:0;">This phenomenon has been designated: MEMORY COLLAPSE PHENOMENON.</p>
+    </div>
+
+  </div>
+</div>
 
 <div class="modal-overlay" id="themeSelectorModal">
   <div class="theme-modal-box">
@@ -672,11 +871,147 @@ function confirmResetStreak() {
   document.getElementById("nameModal").style.display = "flex";
 }
 
+// ==========================================
+// CORE DECRYPTION ENGINE (MODIFIKASI KODE)
+// ==========================================
 function unlockCode() { 
-  if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
+  const codeVal = document.getElementById("codeInput").value.trim().toUpperCase();
+  
+  if(codeVal === "OWNERONLYBLDS") {
     document.getElementById("adminLauncherBtn").style.display = "block";
     document.getElementById("adminPanel").style.display = "flex";
-  } else { alert("Access Rejected: Kode enkripsi salah."); }
+    alert("Owner Matrix Controller Activated.");
+  } 
+  else if (codeVal === "BLACK") {
+    document.body.classList.add("inverted-state");
+  } 
+  else if (codeVal === "WHITE") {
+    document.body.classList.remove("inverted-state");
+  } 
+  else if (codeVal === "BLDS") {
+    runBldsCutscene();
+  } 
+  else if (codeVal === "FORGOTTEN") {
+    runCinematicSequence("forgotten");
+  } 
+  else if (codeVal === "12 FLAMES") {
+    runCinematicSequence("12flames");
+  } 
+  else { 
+    alert("Access Rejected: Kode enkripsi salah."); 
+  }
+}
+
+// 🎬 Sekuens Cinematic: Kode BLDS
+function runBldsCutscene() {
+  const theater = document.getElementById("cutsceneTheater");
+  const logo = document.getElementById("cutsceneLogo");
+  const txt = document.getElementById("cutsceneText");
+  
+  theater.style.display = "flex";
+  theater.style.backgroundColor = "#000";
+  
+  setTimeout(() => { logo.style.opacity = "1"; }, 1000);
+  
+  const dialogs = [
+    { text: "Sun", delay: 3000 },
+    { text: "Moon", delay: 5000 },
+    { text: "With the core inside", delay: 7000 },
+    { text: "This is BLDS", delay: 10000, big: true }
+  ];
+  
+  dialogs.forEach(d => {
+    setTimeout(() => {
+      txt.style.opacity = "0";
+      setTimeout(() => {
+        txt.innerText = d.text;
+        txt.style.fontSize = d.big ? "32px" : "20px";
+        txt.style.fontWeight = d.big ? "bold" : "normal";
+        txt.style.opacity = "1";
+      }, 400);
+    }, d.delay);
+  });
+  
+  // Transisi Layar Putih Perlahan Sekali
+  setTimeout(() => {
+    theater.style.transition = "background-color 4s ease";
+    theater.style.backgroundColor = "#fff";
+    txt.style.color = "#000";
+  }, 13000);
+  
+  // Selesai Cutscene, Kembali ke awal dengan split screen vertikal inversi kanan
+  setTimeout(() => {
+    theater.style.display = "none";
+    logo.style.opacity = "0";
+    txt.style.opacity = "0";
+    txt.style.color = "#fff";
+    theater.style.transition = "none";
+    
+    document.body.classList.add("split-state");
+  }, 18000);
+}
+
+// 🎬 Sekuens Cinematic: FORGOTTEN & 12 FLAMES
+function runCinematicSequence(type) {
+  const theater = document.getElementById("cutsceneTheater");
+  const logo = document.getElementById("cutsceneLogo");
+  const txt = document.getElementById("cutsceneText");
+  
+  theater.style.display = "flex";
+  theater.style.backgroundColor = "#000";
+  
+  setTimeout(() => { logo.style.opacity = "1"; }, 800);
+  
+  let steps = [];
+  let targetViewer = "";
+  
+  if (type === "12flames") {
+    document.getElementById("audio12Flames").play().catch(()=>{});
+    targetViewer = "twelveFlamesViewer";
+    steps = [
+      "Everyone Only Know Ten Flames of BLDS",
+      "But not 12 flames",
+      "Hidden Flames And Sacred Flames"
+    ];
+  } else if (type === "forgotten") {
+    document.getElementById("audioForgotten").play().catch(()=>{});
+    targetViewer = "forgottenViewer";
+    steps = [
+      "The Forgotten Lore",
+      "Forbidden Archives",
+      "How do you know this code?"
+    ];
+  }
+  
+  setTimeout(() => { showTextStep(txt, steps[0]); }, 2500);
+  setTimeout(() => { showTextStep(txt, steps[1]); }, 5500);
+  setTimeout(() => { showTextStep(txt, steps[2]); }, 8500);
+  
+  setTimeout(() => {
+    theater.style.display = "none";
+    logo.style.opacity = "0";
+    txt.style.opacity = "0";
+    document.getElementById(targetViewer).style.display = "block";
+  }, 12000);
+}
+
+function showTextStep(element, text) {
+  element.style.opacity = "0";
+  setTimeout(() => {
+    element.innerText = text;
+    element.style.opacity = "1";
+  }, 400);
+  setTimeout(() => {
+    element.style.opacity = "0";
+  }, 2400);
+}
+
+function closeFullscreenViewer(id) {
+  document.getElementById(id).style.display = "none";
+  document.getElementById("audio12Flames").pause();
+  document.getElementById("audio12Flames").currentTime = 0;
+  document.getElementById("audioForgotten").pause();
+  document.getElementById("audioForgotten").currentTime = 0;
 }
 
 function executeAdminUpdate() {
@@ -697,7 +1032,6 @@ function broadcastToBeast() {
   }
 }
 
-// FIX ROUTING CONTROLLER: Sinkronisasi pemanggilan ID halaman agar tidak tertukar lagi
 function showPage(id) {
   document.getElementById("coreHubHeaderArea").style.display = "none";
   document.getElementById("menu").style.display = "none";
