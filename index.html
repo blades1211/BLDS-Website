@@ -10,7 +10,6 @@ body {
   font-family: 'Courier New', Courier, monospace; overflow-x: hidden;
   transition: filter 0.5s ease;
 }
-.full-invert { filter: invert(1) hue-rotate(180deg); }
 .sky {
   position: fixed; width: 100%; height: 100%; z-index: -2;
   overflow: hidden; background: radial-gradient(circle at center, #060611 0%, #000000 100%);
@@ -20,11 +19,6 @@ body {
   opacity: 0.3; animation: starFloat 10s infinite linear;
 }
 @keyframes starFloat { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10px); } }
-.enter-transition-overlay {
-  position: fixed; inset: 0; background: #fff; z-index: 999999;
-  opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
-}
-.enter-transition-overlay.active { opacity: 1; }
 .floating-view-toggle {
   position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px;
   background: #fff; color: #000; border-radius: 50%; display: flex;
@@ -41,7 +35,6 @@ body {
   padding: 30px; max-width: 400px; width: 100%; text-align: center;
   position: relative; border-radius: 8px;
 }
-.theme-close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; opacity: 0.6; }
 .theme-options-container { margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
 .theme-option-card {
   padding: 12px; border: 1px solid rgba(255,255,255,0.1);
@@ -61,6 +54,8 @@ body {
   border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear;
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Theme Presets */
 .theme-matrix { color: #00ff00 !important; }
 .theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
 .theme-matrix button { border-color: #00ff00 !important; color: #00ff00 !important; }
@@ -69,6 +64,10 @@ body {
 .theme-crimson button { border-color: #ff3333 !important; color: #ff3333 !important; }
 
 .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+.logo-container { margin-bottom: 20px; text-align: center; }
+.text-logo-fallback { font-size: 22px; font-weight: bold; letter-spacing: 6px; border: 2px solid #fff; padding: 10px 20px; display: inline-block; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+
 .streak-widget {
   display: none; flex-direction: column; align-items: center;
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
@@ -84,6 +83,7 @@ body {
 .menu { display: none; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
 .page { display: none; width: 100%; margin-bottom: 40px; }
 .box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: 4px; }
+
 .achievement-progress-container { margin-bottom: 25px; background: rgba(255,255,255,0.05); height: 20px; position: relative; border-radius: 10px; overflow: hidden; }
 .achievement-progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; }
 .achievement-progress-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; mix-blend-mode: difference; }
@@ -93,6 +93,7 @@ body {
 .ach-badge { font-size: 9px; text-transform: uppercase; padding: 2px 6px; display: inline-block; margin-bottom: 8px; }
 .locked-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
 .unlocked-badge { background: #fff; color: #000; }
+
 .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
 .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
@@ -110,14 +111,11 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </head>
 <body>
 
-<audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
-<div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
 <div class="floating-view-toggle" id="floatingViewToggleBtn">👁️</div>
 
 <div class="modal-overlay" id="themeSelectorModal">
   <div class="theme-modal-box">
-    <div class="theme-close-btn" onclick="closeThemeModal()">✕</div>
-    <h3>INTERFACE SYSTEM</h3>
+    <h3 style="margin-top:0;">INTERFACE SYSTEM</h3>
     <div class="theme-options-container">
       <div class="theme-option-card active-choice" id="opt-default" onclick="selectThemeOption('default')">⚪ DEFAULT ECLIPSE</div>
       <div class="theme-option-card" id="opt-matrix" onclick="selectThemeOption('matrix')">🟢 CODE MATRIX</div>
@@ -137,16 +135,19 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box">
-    <h3 style="color:#ff4a4a;">RESET CORE STREAK?</h3>
-    <br>
+    <h3 style="color:#ff4a4a;">RESET CORE STREAK?</h3><br>
     <button onclick="confirmResetStreak()">YES</button> <button onclick="closeResetModal()">NO</button>
   </div>
 </div>
 
-<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">SYNCHRONIZING CORE SYSTEM</div></div>
+<div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">SYNCHRONIZING CORE ENGINE</div></div>
 <div class="sky" id="sky"></div>
 
 <div class="container">
+  <div class="logo-container" id="logoArea">
+    <img src="logo.png" alt="BLDS Logo" style="width:110px;" id="mainLogoFile" onerror="handleLogoMissing()">
+  </div>
+
   <div class="streak-widget" id="streakWidget">
     <div>RESONANCE STREAK: <b id="streakCount">0</b> DAYS | RANK: <span id="rankTitle">VOID WALKER</span></div>
     <div style="font-size:11px; opacity:0.5; margin-top:5px;">HIGHEST PEAK RECORD: <b id="highestStreakDisplayCount">0</b> DAYS</div>
@@ -164,12 +165,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     <button onclick="showPage('beastPage')">👾 BEAST ENGINE</button>
   </div>
 
-  <div class="page" id="origin">
-    <div class="box">
-      <h2>LORE Core Purpose</h2>
-      <p style="font-size:13px; line-height:1.7; opacity:0.8;">A dominion built by those who refused to disappear. Moving forward when everything turns dark.</p>
-    </div>
-  </div>
+  <div class="page" id="origin"><div class="box" id="loreInjectBox"></div></div>
 
   <div class="page" id="achievement">
     <div class="box">
@@ -192,12 +188,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     </div>
   </div>
 
-  <div class="page" id="archives">
-    <div class="box">
-      <h2>BLDS KRONOLOGIS ARCHIVES</h2>
-      <div style="font-size:13px; opacity:0.7;">Founder: Michael Lorenzo | Right Hand: William Nayottama | Left Hand: Prince Felix</div>
-    </div>
-  </div>
+  <div class="page" id="archives"><div class="box" id="archivesInjectBox"></div></div>
 
   <div class="page" id="code">
     <div class="box">
@@ -240,22 +231,78 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </footer>
 
 <script>
+// ==========================================================================
+// 🛡️ REPOSITORI RE-INFORCED CORE DATA (DATABASE INTERNAL AGAR ANTI-TERHAPUS)
+// ==========================================================================
+const BLDS_LORE_DATABASE = {
+  title: "LORE & CORE PURPOSE",
+  description: "Before BLDS had a name, before the symbol existed... This dominion was built by those who refused to disappear. Moving forward continuously even when everything turns dark.",
+  flames_title: "10 FLAMES OF BLDS (GREATER)",
+  flames: [
+    "<b>I. Vision</b> - The ability to see direction even when others are lost.",
+    "<b>II. Discipline</b> - To continue growing even when nobody is watching.",
+    "<b>III. Loyalty</b> - To stand together through victory and defeat.",
+    "<b>IV. Ambition</b> - The desire to surpass limits and continue evolving.",
+    "<b>V. Resilience</b> - The strength to rise again after every fall."
+  ]
+};
+
+const BLDS_ARCHIVES_DATABASE = {
+  title: "BLDS KRONOLOGIS ARCHIVES",
+  network_title: "> CORE DOMINION LEADERSHIP NETWORK",
+  staff: [
+    { role: "Founder", name: "Michael Lorenzo" },
+    { role: "Right Hand", name: "William Nayottama" },
+    { role: "Left Hand", name: "Prince Felix" }
+  ]
+};
+
+const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
+const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
+
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
-const names = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
+
+// 💥 LOGO MISSING HANDLING FUNCTION
+function handleLogoMissing() {
+  const area = document.getElementById("logoArea");
+  area.innerHTML = `<div class="text-logo-fallback">BLDS // CORE</div>`;
+}
+
+// INJECT CORE TEXT SECURELY TO INTERFACE
+function injectCoreDatabase() {
+  // Inject Lore Page
+  document.getElementById("loreInjectBox").innerHTML = `
+    <h2>${BLDS_LORE_DATABASE.title}</h2>
+    <p style="font-size:13px; line-height:1.7; opacity:0.8; text-align:justify;">${BLDS_LORE_DATABASE.description}</p>
+    <h2>${BLDS_LORE_DATABASE.flames_title}</h2>
+    <ul style="font-size:13px; line-height:1.8; opacity:0.8; padding-left:20px;">
+      ${BLDS_LORE_DATABASE.flames.map(f => `<li>${f}</li>`).join('')}
+    </ul>
+  `;
+  
+  // Inject Archives Page
+  document.getElementById("archivesInjectBox").innerHTML = `
+    <h2>${BLDS_ARCHIVES_DATABASE.title}</h2>
+    <div style="margin-bottom:20px; padding-bottom:15px;">
+      <div style="font-size:11px; opacity:0.4; margin-bottom:10px;">${BLDS_ARCHIVES_DATABASE.network_title}</div>
+      <div style="display:flex; gap:20px; flex-wrap:wrap;">
+        ${BLDS_ARCHIVES_DATABASE.staff.map(s => `<div><h4 style="margin:0; font-size:11px; opacity:0.5;">${s.role}</h4><p style="margin:5px 0 0 0; font-size:14px;">${s.name}</p></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
 
 // STARFIELD GENERATOR
 const sky = document.getElementById("sky");
-for(let i=0; i<40; i++) {
+for(let i=0; i<35; i++) {
   let star = document.createElement("div"); star.className = "star";
   star.style.left = Math.random()*100 + "vw"; star.style.animationDelay = Math.random()*8 + "s";
   sky.appendChild(star);
 }
 
-// ACHIEVEMENTS GRID GENERATOR ECONOMIZER
-const achGrid = document.getElementById("achGrid");
-achGrid.innerHTML = names.map((name, i) => `
+// ACHIEVEMENTS ENGINE RENDERING
+document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
   <div class="achievement-card" id="ach${i+1}">
     <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
     <h4 style="margin:5px 0;">${name}</h4>
@@ -263,14 +310,13 @@ achGrid.innerHTML = names.map((name, i) => `
   </div>
 `).join('');
 
-// THEME CONTROL
+// THEME CONTROL LAYER
 document.getElementById("floatingViewToggleBtn").addEventListener("click", () => document.getElementById("themeSelectorModal").style.display="flex");
-function closeThemeModal() { document.getElementById("themeSelectorModal").style.display="none"; }
 function selectThemeOption(t) { tempSelectedTheme = t; }
 function applySelectedTheme() {
   document.body.classList.remove("theme-matrix", "theme-crimson");
   if(tempSelectedTheme !== "default") document.body.classList.add("theme-" + tempSelectedTheme);
-  closeThemeModal();
+  document.getElementById("themeSelectorModal").style.display="none";
 }
 
 function saveState() { 
@@ -296,7 +342,7 @@ function updateUI() {
   targets.forEach((t, i) => {
     const card = document.getElementById(`ach${i+1}`);
     const badge = document.getElementById(`ach${i+1}Badge`);
-    if(streakData.highestCount >= t) {
+    if(card && streakData.highestCount >= t) {
       card.classList.add("unlocked"); badge.className="ach-badge unlocked-badge"; badge.innerText="Unlocked"; unlocked++;
     }
   });
@@ -334,27 +380,24 @@ function saveDominionName() {
 }
 function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
-function confirmResetStreak() {
-  streakData.count = 0; saveState(); updateUI(); closeResetModal();
-}
-function unlockCode() {
-  if(document.getElementById("codeInput").value === "OWNERONLYBLDS") document.getElementById("adminLauncherBtn").style.display="block";
-}
+function confirmResetStreak() { streakData.count = 0; saveState(); updateUI(); closeResetModal(); }
+function unlockCode() { if(document.getElementById("codeInput").value === "OWNERONLYBLDS") document.getElementById("adminLauncherBtn").style.display="block"; }
 function executeAdminUpdate() {
   streakData.dominionName = document.getElementById("admDomName").value || streakData.dominionName;
   streakData.count = parseInt(document.getElementById("admStreak").value) || streakData.count;
   saveState(); updateUI();
 }
 
-// INTER-IFRAME BROADCASTER CORE
 function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) f.contentWindow.postMessage({ type:'TELEMETRY', data: streakData }, '*');
 }
-window.addEventListener("message", (e) => {
-  if(e.data && e.data.type === 'REQ_SYNC') broadcastToBeast();
+window.addEventListener("message", (e) => { if(e.data && e.data.type === 'REQ_SYNC') broadcastToBeast(); });
+window.addEventListener("load", () => { 
+  injectCoreDatabase();
+  setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 1000); 
+  loadState(); 
 });
-window.addEventListener("load", () => { setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 1000); loadState(); });
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
   document.getElementById(id).style.display="block";
