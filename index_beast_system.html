@@ -316,7 +316,7 @@ body {
     <div class="leaderboard-scroll-area" id="leaderboardRowsContainer"></div>
   </div>
 
-  <div class="screen-overlay" id="gatekeeperScreen" style="background: rgba(2,2,6,0.9);">
+  <div class="screen-overlay" id="gatekeeperScreen" style="background: rgba(2,2,6,0.95);">
     <div class="gatekeeper-box">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:12px;">SECURITY MATRIX VERIFICATION</div>
       <input type="text" id="gatekeeperKeyField" class="dev-input" placeholder="ENTER SECRET CODE...">
@@ -404,7 +404,6 @@ const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
 const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-// 📡 BRIDGE TELEMETRY: Menangkap sinkronisasi nama dan profile utama dari index.html
 window.addEventListener("message", (e) => {
   if (e.data && e.data.type === 'TELEMETRY_UPDATE') {
     if (e.data.data && e.data.data.dominionName) {
@@ -433,10 +432,7 @@ function loadLocalData() {
   const fullBodyText = document.body.innerHTML;
   if(fullBodyText.includes("Ikan5.png") && !s) stateData.activePetFile = "Ikan5";
   
-  // Handshake pemicu awal meminta data profile dari core utama parent
-  if(window.parent) {
-    window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
-  }
+  if(window.parent) { window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*'); }
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -444,7 +440,7 @@ function loadLocalData() {
   setInterval(checkDeathCooldown, 1000);
 }
 
-// 🛡️ SECURITY OWNER SYSTEM
+// FIX SECURITY: Mewajibkan kode rahasia sebelum membuka matrix owner panel
 function verifyGatekeeperKey() {
   const field = document.getElementById("gatekeeperKeyField");
   if(field.value === "OWNERONLYBLDS") {
@@ -458,13 +454,12 @@ function verifyGatekeeperKey() {
   }
 }
 
-// 📊 TRIPLE TAB LEADERBOARD SYSTEM (LIVE KONEKSI FIREBASE)
 function openLeaderboardScreen() {
   openScreen('leaderboardScreen');
   switchLeaderboardTab(currentActiveTab);
 }
 
-// FIX NAVIGATION: Fungsi tombol back melempar perintah keluar ke parent window utama
+// FIX NAVIGATION: Mengirim sinyal inter-window agar parent induk menutup full-screen iframe
 function closeLeaderboardAndGoHome() {
   closeScreen('leaderboardScreen');
   if(window.parent) {
@@ -506,7 +501,6 @@ function renderLeaderboardRows() {
         });
       }
 
-      // Pastikan data milik player lokal terdaftar di dalam perhitungan tabel array
       if (!dataset.some(u => u.name === stateData.dominionName)) {
         dataset.push({
           name: stateData.dominionName,
@@ -515,7 +509,6 @@ function renderLeaderboardRows() {
           level: stateData.level
         });
       } else {
-        // Update baris player lokal dengan nilai paling mutakhir saat ini
         dataset.forEach(u => {
           if(u.name === stateData.dominionName) {
             u.streak = Math.max(u.streak, stateData.highestStreak);
@@ -525,7 +518,6 @@ function renderLeaderboardRows() {
         });
       }
 
-      // Sortir Algoritma
       if(currentActiveTab === 'streak') dataset.sort((a,b) => b.streak - a.streak);
       if(currentActiveTab === 'hunt') dataset.sort((a,b) => b.hunt - a.hunt);
       if(currentActiveTab === 'level') dataset.sort((a,b) => b.level - a.level);
