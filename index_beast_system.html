@@ -1,852 +1,306 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Runtime Core</title>
-<style>
-body {
-  background: #000000; color: #ffffff;
-  font-family: 'Courier New', Courier, monospace;
-  margin: 0; padding: 0;
-  overflow: hidden; box-sizing: border-box;
-  user-select: none;
-  display: flex; justify-content: center; align-items: center;
-  height: 100vh;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Beast Engine v3 - Stable Bypass</title>
+  <style>
+    /* --- SYSTEM CORE STYLES --- */
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background-color: #000000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #ffffff; overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+    #app-container {
+      position: relative; width: 100%; height: 100%;
+      display: flex; flex-direction: column; background: #070708;
+    }
 
-/* 📱 CORE RUNTIME CONTAINER */
-.main-wrapper {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: #000000; border-radius: 12px;
-  width: 100%; max-width: 410px; height: 100%; max-height: 640px; 
-  position: relative; overflow: hidden; box-sizing: border-box;
-  box-shadow: 0 0 35px rgba(255,255,255,0.03);
-  margin: auto;
-  display: flex; flex-direction: column;
-}
+    /* 📡 INITIALIZER OVERLAY (SCREEN LOCK) */
+    .runtime-init-shield {
+      position: absolute; inset: 0; background: #000000; z-index: 999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 20px; box-sizing: border-box; transition: opacity 0.4s ease;
+    }
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1);
+      border-left-color: #00ffcc; border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .init-status { margin-top: 15px; color: #00ffcc; font-size: 13px; font-family: monospace; }
 
-/* 🧭 HUD ATAS */
-.top-nav-container {
-  position: absolute; top: 14px; left: 14px; right: 14px;
-  display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
-  gap: 10px; pointer-events: none;
-}
-.nav-left { display: flex; flex-direction: column; gap: 8px; pointer-events: auto; }
-.nav-btn {
-  background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.4);
-  padding: 8px 14px; font-size: 11px; cursor: pointer; border-radius: 4px;
-  font-family: inherit; text-transform: uppercase; transition: all 0.2s ease;
-  white-space: nowrap; font-weight: bold;
-}
-.nav-btn:hover:not(:disabled) { background: #ffffff; color: #000000; }
-.nav-btn:active:not(:disabled) { transform: scale(0.96); }
-.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    /* --- GAME INTERFACE --- */
+    .game-header { padding: 15px; background: #111215; border-bottom: 1px solid #1f2026; text-align: center; }
+    .pet-display { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+    .pet-avatar { font-size: 80px; margin-bottom: 10px; transition: transform 0.1s; }
+    .pet-avatar.bounce { transform: scale(1.2); }
+    
+    .stats-container { width: 85%; background: #111215; padding: 15px; border-radius: 12px; border: 1px solid #1f2026; }
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .stat-row:last-child { margin-bottom: 0; }
+    .bar-bg { width: 120px; height: 12px; background: #22242b; border-radius: 6px; overflow: hidden; margin-left: 10px; }
+    .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
+    
+    /* --- ACTION BUTTONS --- */
+    .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; background: #111215; }
+    .btn {
+      background: #1f2026; border: 1px solid #2d3039; color: #fff; padding: 12px;
+      border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:active { background: #2d3039; }
+    
+    /* ⚡ BYPASS CONTROL PANEL */
+    .bypass-panel {
+      grid-column: span 2; background: linear-gradient(135deg, #0d2b26 0%, #051614 100%);
+      border: 1px solid #00ffcc !important; color: #00ffcc !important; box-shadow: 0 0 10px rgba(0,255,204,0.2);
+    }
+    .bypass-panel:active { background: #0d2b26 !important; opacity: 0.9; }
 
-/* 📡 TOMBOL INDIKATOR TES BARU */
-.test-signal-btn {
-  background: #220000; color: #ff5555; border: 1px solid #ff3333;
-  animation: pulseBlink 1.5s infinite;
-}
-@keyframes pulseBlink {
-  0%, 100% { opacity: 0.7; box-shadow: 0 0 2px #ff3333; }
-  50% { opacity: 1; box-shadow: 0 0 10px #ff3333; }
-}
-
-.status-panel {
-  background: #000000; border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 10px; border-radius: 6px; width: 155px; font-size: 10px; pointer-events: auto;
-}
-.bar-row { margin-bottom: 6px; }
-.bar-row:last-child { margin-bottom: 0; }
-.bar-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-weight: bold; }
-.bar-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; background: #ffffff; }
-
-/* 🐲 ENGINE ACTOR GRID */
-.pet-center-stage {
-  position: absolute; inset: 0; z-index: 5; pointer-events: none;
-}
-.pet-draggable-area {
-  width: 140px; height: 140px; display: flex; align-items: center; justify-content: center;
-  cursor: grab; pointer-events: auto; 
-  position: absolute; left: 135px; top: 220px;
-  touch-action: none;
-}
-.pet-draggable-area:active { cursor: grabbing; }
-.pet-main-graphic {
-  width: 100%; height: 100%; object-fit: contain;
-  user-select: none; -webkit-user-drag: none;
-}
-.pet-floating-anim { animation: petIdleFloat 4s infinite ease-in-out; }
-@keyframes petIdleFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-/* ANIMASI GETAR BUAT TES RESPON KODE */
-.pet-shake-hit { animation: petShakeAnim 0.4s ease-in-out !important; }
-@keyframes petShakeAnim {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-8px) rotate(-5deg); }
-  40%, 80% { transform: translateX(8px) rotate(5deg); }
-}
-
-.static-title-hud {
-  position: absolute; top: 165px; left: 0; right: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 4; pointer-events: none;
-}
-.pet-title-tag {
-  font-size: 12px; font-weight: bold; letter-spacing: 1px; line-height: 1.5;
-  text-align: center; text-transform: uppercase;
-}
-
-.hunt-trigger-wrapper {
-  position: absolute; bottom: 130px; left: 0; right: 0;
-  display: flex; justify-content: center; z-index: 40;
-}
-
-/* 🎒 INVENTORY CONTAINER */
-.bottom-controls {
-  position: absolute; bottom: 55px; left: 16px; right: 16px;
-  display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 45;
-}
-.inventory-belt {
-  display: flex; gap: 8px; background: #000000;
-  padding: 8px 16px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.4);
-}
-.food-slot {
-  width: 36px; height: 36px; background: transparent;
-  border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; font-size: 16px;
-  cursor: pointer; position: relative; transition: all 0.2s ease;
-}
-.food-slot:hover { border-color: #ffffff; background: rgba(255,255,255,0.1); }
-.food-count {
-  position: absolute; bottom: -3px; right: -3px; background: #ffffff; color: #000000;
-  font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 6px;
-}
-
-/* 🔗 FOOTER COMMS COMMUNITY PANEL */
-.comm-footer-bar {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
-  background: #000000; border-top: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex; justify-content: space-around; align-items: center; z-index: 150;
-}
-.footer-link {
-  color: rgba(255, 255, 255, 0.6); font-size: 11px; text-decoration: none;
-  font-weight: bold; display: flex; align-items: center; gap: 6px;
-  transition: color 0.2s ease; cursor: pointer;
-}
-.footer-link:hover { color: #ffffff; }
-
-/* 📡 INTEGRATED INITIALIZER OVERLAY */
-.runtime-init-shield {
-  position: absolute; inset: 0; background: #000000; z-index: 999;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  padding: 20px; box-sizing: border-box;
-  transition: opacity 0.3s ease;
-}
-.init-terminal-box {
-  border: 1px solid rgba(255,255,255,0.4); border-radius: 4px;
-  width: 100%; max-width: 320px; padding: 20px; background: #000000;
-  box-sizing: border-box;
-}
-.init-meta-line { font-size: 12px; margin-bottom: 10px; color: #888888; text-transform: uppercase; }
-.init-meta-line span { color: #ffffff; font-weight: bold; }
-
-/* ⚔️ SCREEN OVERLAYS */
-.screen-overlay {
-  position: absolute; inset: 0; background: #000000; z-index: 200;
-  display: none; flex-direction: column; padding: 16px; box-sizing: border-box;
-  opacity: 0; transition: opacity 0.2s ease;
-}
-.screen-overlay.overlay-active { display: flex !important; opacity: 1; }
-
-.battle-arena-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 45px 0 12px 0; }
-.fighter-card { border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 4px; text-align: center; position: relative; }
-.fighter-img { width: 65px; height: 65px; object-fit: contain; margin-bottom: 6px; }
-.rarity-tag { font-size: 8px; font-weight: bold; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; margin-top: 4px; display: inline-block; }
-
-.combat-log-screen { background: #000000; border: 1px solid rgba(255,255,255,0.3); height: 110px; overflow-y: auto; padding: 10px; font-size: 11px; color: #ffffff; border-radius: 4px; margin-bottom: 10px; line-height: 1.4; }
-.rpg-action-board { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.skill-btn { background: #000000; border: 1px solid rgba(255,255,255,0.4); color: #ffffff; padding: 10px; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 4px; display: flex; flex-direction: column; font-weight: bold; }
-.skill-btn:hover:not(:disabled) { background: #ffffff; color: #000000; }
-.skill-btn:disabled { opacity: 0.25; cursor: not-allowed; }
-.skill-meta { font-size: 9px; opacity: 0.6; margin-top: 3px; font-weight: normal; }
-
-.leaderboard-header-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-.tab-btn { background: #000000; color: #888888; border: 1px solid rgba(255,255,255,0.2); font-size: 11px; padding: 8px 4px; cursor: pointer; text-align: center; font-family: inherit; font-weight: bold; }
-.tab-btn.active-tab { border-color: #ffffff; color: #ffffff; }
-.leaderboard-scroll-area { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 4px; }
-.rank-row { display: grid; grid-template-columns: 35px 1fr 70px; padding: 8px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
-
-.gatekeeper-box { background: #000000; border: 1px solid #ffffff; padding: 20px; border-radius: 6px; text-align: center; width: 240px; margin: auto; margin-top: 120px; }
-.dev-input { background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.5); padding: 8px; text-align: center; font-family: inherit; width: 90%; margin-bottom: 12px; border-radius: 4px; font-size: 12px; }
-.dev-select { background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.5); padding: 8px; font-family: inherit; width: 95%; margin-bottom: 12px; border-radius: 4px; font-size: 12px; }
-
-.cooldown-blocker { position: absolute; inset: 0; background: #000000; z-index: 500; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-
-/* 📟 STYLE MOBILE CONSOLE OVERLAY */
-#mobile-debug-console {
-  position: absolute; bottom: 42px; left: 10px; right: 10px; 
-  height: 85px; background: rgba(15, 15, 15, 0.95); 
-  color: #39ff14; font-family: monospace; font-size: 9px; 
-  padding: 6px; overflow-y: auto; z-index: 800; 
-  border: 1px solid #222; border-radius: 4px;
-  pointer-events: auto; box-shadow: inset 0 0 10px #000;
-}
-</style>
+    /* --- LOG CONSOLE OVERLAY (FOR DEBUGGING) --- */
+    #debug-console {
+      width: 90%; max-height: 100px; overflow-y: auto; background: #110000;
+      border: 1px solid #ff4a4a; border-radius: 6px; margin-top: 15px;
+      padding: 8px; font-family: monospace; font-size: 11px; text-align: left; display: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="cooldown-blocker" id="deathOverlay">
-  <div style="font-size: 32px; margin-bottom: 8px;">💀</div>
-  <div style="font-size: 13px; font-weight: bold; letter-spacing: 1px; margin-bottom: 6px;">BEAST INCAPACITATED</div>
-  <div id="countdownTimer" style="font-size: 16px; font-weight: bold; margin-bottom: 14px;">00:00:00</div>
-  <div style="display:flex; flex-direction:column; gap:8px; width: 170px;">
-    <button class="nav-btn" onclick="useReviveInstant()">💉 Use Revive (<span id="death-revive-stock">0</span>)</button>
-    <button class="nav-btn" style="opacity:0.3; font-size:9px;" onclick="bypassCooldown()">⚡ Emergency Bypass</button>
-  </div>
-</div>
-
-<div class="runtime-init-shield" id="runtimeShield">
-  <div style="font-size: 14px; font-weight: bold; margin-bottom: 14px; letter-spacing: 1px;">BEAST ENGINE INTERFACE</div>
-  <div class="init-terminal-box">
-    <div class="init-meta-line">Code: <span id="runtimeCodeText">CONNECTING...</span></div>
-    <div class="init-meta-line">ID: <span id="runtimeIdText">FETCHING_CORE...</span></div>
-    <div style="font-size: 10px; opacity: 0.5; text-align: center; margin-top: 15px;" id="initStatusSub">Menunggu sinkronisasi berkas induk...</div>
-  </div>
-  <button class="nav-btn" id="btnForceLaunch" style="margin-top: 18px; border-color: #ffffff; display:none;" onclick="forceLaunchEngine()">⚡ Run Standalone Mode</button>
-</div>
-
-<div class="main-wrapper" id="windowBox">
-  
-  <div class="top-nav-container">
-    <div class="nav-left">
-      <button class="nav-btn" onclick="triggerSfx('click'); openScreen('gatekeeperScreen')">🛠️ Matrix</button>
-      <button class="nav-btn" onclick="triggerSfx('click'); openScreen('leaderboardScreen'); switchLeaderboardTab(currentActiveTab);">📊 Global</button>
-      <button class="nav-btn test-signal-btn" onclick="executeSignalTest()">📡 TEST SIGNAL</button>
-    </div>
+  <div id="app-container">
     
-    <div class="status-panel" id="mainStatusHud">
-      <div class="bar-row">
-        <div class="bar-label"><span>HP</span><span id="txtHp">100/100</span></div>
-        <div class="bar-bg"><div class="bar-fill" id="fillHp"></div></div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label"><span>HUNGER</span><span id="txtHunger">100/100</span></div>
-        <div class="bar-bg"><div class="bar-fill" id="fillHunger"></div></div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label"><span>EXP</span><span id="txtExp">0%</span></div>
-        <div class="bar-bg"><div class="bar-fill" id="fillExp"></div></div>
-      </div>
+    <div id="runtime-init-shield" class="runtime-init-shield">
+      <div class="spinner"></div>
+      <div id="init-text" class="init-status">Sedang memverifikasi data mesin...</div>
+      <div id="debug-console"></div>
     </div>
-  </div>
 
-  <div class="static-title-hud">
-    <div class="pet-title-tag" id="petLabelTag">LOAD MATRIX ENGINE...</div>
-  </div>
-  
-  <div class="hunt-trigger-wrapper">
-    <button class="nav-btn" id="huntWildTopBtn" style="padding: 10px 20px; font-size: 12px; letter-spacing: 1px;" onclick="triggerSfx('heavy'); openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild Beast</button>
-  </div>
+    <div class="game-header">
+      <h3 id="pet-name" style="margin:0; font-size:18px; color:#fff;">👾 Loading Beast...</h3>
+    </div>
 
-  <div class="pet-center-stage" id="mainStage">
-    <div class="pet-draggable-area pet-floating-anim" id="petActor">
-      <div id="fallbackGraphicIcon" style="font-size:50px; display:none;">✨</div>
-      <img id="etPetImageNode" class="pet-main-graphic" src="Ikan5.png" alt="Beast Core" onerror="handleImageLoadError(this);">
-    </div>
-  </div>
-
-  <div class="bottom-controls" id="mainBottomControls">
-    <div class="inventory-belt">
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('apple')">🍎<span class="food-count" id="count-apple">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('candy')">🍬<span class="food-count" id="count-candy">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('juice')">🧃<span class="food-count" id="count-juice">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('bread')">🍞<span class="food-count" id="count-bread">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('burger')">🍔<span class="food-count" id="count-burger">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('click'); feedPet('pizza')">🍕<span class="food-count" id="count-pizza">0</span></div>
-      <div class="food-slot" onclick="triggerSfx('heavy'); useFullElixir()">🧪<span class="food-count" id="count-elixir">0</span></div>
-    </div>
-  </div>
-
-  <div id="mobile-debug-console">📟 Console logger standby. No errors detected.</div>
-
-  <div class="comm-footer-bar">
-    <div onclick="window.open('https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0', '_blank')", class="footer-link" style="cursor:pointer;">💬 WhatsApp Group</div>
-    <div onclick="window.open('https://discord.gg/r4dM4QFteV', '_blank')", class="footer-link" style="cursor:pointer;">👾 Discord Server</div>
-  </div>
-
-  <div class="screen-overlay" id="battleScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:4px; pointer-events: auto;">
-      <button class="nav-btn" id="btnExitBattle" onclick="triggerSfx('click'); closeScreen('battleScreen')">⬅️ Retret</button>
-      <div id="combatTurnTitle" style="font-size:11px; font-weight:bold; margin-top:6px; letter-spacing:1px;">YOUR TURN</div>
-    </div>
-    
-    <div class="battle-arena-grid">
-      <div class="fighter-card">
-        <div id="btPlayerElement" style="position:absolute; top:4px; left:4px; font-size:11px;">💧</div>
-        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player" onerror="this.style.visibility='hidden';">
-        <div id="btPlayerName" style="font-size:11px; font-weight:bold; text-transform:uppercase;">Core</div>
-        <div id="btPlayerHp" style="font-size:10px; opacity:0.7; margin-top:2px;">100/100 HP</div>
-      </div>
-      <div class="fighter-card">
-        <div id="btEnemyElement" style="position:absolute; top:4px; left:4px; font-size:11px;">🌿</div>
-        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy" onerror="this.style.visibility='hidden';">
-        <div id="btEnemyName" style="font-size:11px; font-weight:bold; text-transform:uppercase;">Wild Beast</div>
-        <div id="btEnemyRarity" class="rarity-tag" style="background:#ffffff; color:#000000;">Common</div>
-        <div id="btEnemyHp" style="font-size:10px; opacity:0.7; margin-top:2px;">50/50 HP</div>
-      </div>
-    </div>
-    
-    <div class="combat-log-screen" id="battleLogBox"></div>
-    
-    <div class="rpg-action-board" id="rpgActionBoard">
-      <button class="skill-btn" id="skillBtn0" onclick="executeRpgTurn(0)"><span>💥 Strike</span><span class="skill-meta" id="skillDmg0">--</span></button>
-      <button class="skill-btn" id="skillBtn1" onclick="executeRpgTurn(1)"><span>🔨 Heavy</span><span class="skill-meta" id="skillDmg1">--</span></button>
-      <button class="skill-btn" id="skillBtn2" onclick="executeRpgTurn(2)"><span>⚡ Stun Strike</span><span class="skill-meta" id="skillDmg2">--</span></button>
-      <button class="skill-btn" id="skillBtn3" onclick="executeRpgTurn(3)"><span>🔥 Core Burst</span><span class="skill-meta" id="skillDmg3">--</span></button>
-    </div>
-  </div>
-
-  <div class="screen-overlay" id="leaderboardScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:14px; pointer-events: auto;">
-      <button class="nav-btn" onclick="closeScreen('leaderboardScreen')">⬅️ Back</button>
-      <div style="font-size:12px; font-weight:bold; margin-top:6px; letter-spacing:1px;">GLOBAL RANKINGS</div>
-    </div>
-    <div class="leaderboard-header-tabs">
-      <button class="tab-btn active-tab" id="lblTabStreak" onclick="switchLeaderboardTab('streak')">STREAK</button>
-      <button class="tab-btn" id="lblTabHunt" onclick="switchLeaderboardTab('hunt')">HUNTS</button>
-      <button class="tab-btn" id="lblTabLevel" onclick="switchLeaderboardTab('level')">LEVEL</button>
-    </div>
-    <div class="leaderboard-scroll-area" id="leaderboardRowsContainer"></div>
-  </div>
-
-  <div class="screen-overlay" id="gatekeeperScreen">
-    <div class="gatekeeper-box">
-      <div style="font-size:11px; margin-bottom:14px; letter-spacing:1px; font-weight:bold;">ENTER ACCESS KEY</div>
-      <input type="text" id="gatekeeperKeyField" class="dev-input" placeholder="SECURITY CODE...">
-      <div style="display:flex; gap:8px; justify-content:center;">
-        <button class="nav-btn" onclick="verifyGatekeeperKey()">Verify</button>
-        <button class="nav-btn" onclick="closeScreen('gatekeeperScreen')">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="screen-overlay" id="ownerScreen" style="overflow-y:auto;">
-    <div class="top-nav-container" style="position:static; margin-bottom:16px; pointer-events: auto;">
-      <button class="nav-btn" onclick="closeScreen('ownerScreen')">⬅️ Lock Matrix</button>
-      <div style="font-size:11px; margin-top:6px; font-weight:bold;">OWNER SYSTEM OVERRIDE</div>
-    </div>
-    
-    <div style="border:1px solid rgba(255,255,255,0.3); padding:12px; border-radius:4px; margin-bottom:12px;">
-      <div style="font-size:11px; font-weight:bold; margin-bottom:10px;">📊 STATUS INJECTION</div>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-        <div><label style="font-size:10px; font-weight:bold;">HP</label><input type="number" id="inpDevHp" class="dev-input" style="width:90%"></div>
-        <div><label style="font-size:10px; font-weight:bold;">Max HP</label><input type="number" id="inpDevMaxHp" class="dev-input" style="width:90%"></div>
-        <div><label style="font-size:10px; font-weight:bold;">Power</label><input type="number" id="inpDevPower" class="dev-input" style="width:90%"></div>
-        <div><label style="font-size:10px; font-weight:bold;">Level</label><input type="number" id="inpDevLevel" class="dev-input" style="width:90%"></div>
-        
-        <div style="grid-column: span 2;">
-          <label style="font-size:10px; font-weight:bold; display:block; margin-bottom:4px;">🧬 Select Beast Model (Fase 1 - 5)</label>
-          <select id="inpDevFileCode" class="dev-select">
-            <optgroup label="💧 VOID CORES (WATER)">
-              <option value="Ikan1">Fase 1 - Glitter Fin</option>
-              <option value="Ikan2">Fase 2 - Aqua Brocade</option>
-              <option value="Ikan3">Fase 3 - Torrent Glimmer</option>
-              <option value="Ikan4">Fase 4 - Abyssal Koi</option>
-              <option value="Ikan5" selected>Fase 5 - Aurelius Sovereign</option>
-            </optgroup>
-            <optgroup label="🔥 PYRE CORES (FIRE)">
-              <option value="Naga1">Fase 1 - Pyre Hatchling</option>
-              <option value="Naga2">Fase 2 - Ember Scale</option>
-              <option value="Naga3">Fase 3 - Blaze Wing</option>
-              <option value="Naga4">Fase 4 - Ignis Dread</option>
-              <option value="Naga5">Fase 5 - Astral Sovereign</option>
-            </optgroup>
-            <optgroup label="🌿 LUPIN CORES (EARTH)">
-              <option value="Serigala1">Fase 1 - Lupin Pup</option>
-              <option value="Serigala2">Fase 2 - Wild Fang</option>
-              <option value="Serigala3">Fase 3 - Alpha Claw</option>
-              <option value="Serigala4">Fase 4 - Fenrir Shard</option>
-              <option value="Serigala5">Fase 5 - Apex Sovereign</option>
-            </optgroup>
-          </select>
+    <div class="pet-display">
+      <div id="pet-icon" class="pet-avatar">🥚</div>
+      
+      <div class="stats-container">
+        <div class="stat-row">
+          <span>❤️ HP</span>
+          <div style="display:flex; align-items:center;">
+            <span id="hp-val">100/100</span>
+            <div class="bar-bg"><div id="hp-bar" class="bar-fill" style="background:#ff4a4a;"></div></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <span>⚡ Energi</span>
+          <div style="display:flex; align-items:center;">
+            <span id="energy-val">50/50</span>
+            <div class="bar-bg"><div id="energy-bar" class="bar-fill" style="background:#ffcc00;"></div></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <span>🪙 Koin</span>
+          <span id="coin-val" style="color:#00ffcc; font-weight:bold;">0</span>
         </div>
       </div>
-      <button class="nav-btn" style="width:100%; margin-top:8px;" onclick="applyOwnerPetStats()">Inject Modification</button>
     </div>
-    
-    <div style="border:1px solid rgba(255,255,255,0.3); padding:12px; border-radius:4px;">
-      <button class="nav-btn" style="width:100%;" onclick="generateOwnerLoot()">Inject 99x All Resource Packs</button>
+
+    <div class="action-grid">
+      <button class="btn" id="btn-feed">🍎 Beri Makan</button>
+      <button class="btn" id="btn-hunt">⚔️ Berburu</button>
+      <button class="btn" id="btn-sleep">💤 Istirahat</button>
+      <button class="btn" id="btn-heal">💖 Pulihkan</button>
+      
+      <button class="btn bypass-panel" id="btn-bypass-signal">
+        📡 KIRIM PASS-THROUGH SIGNAL (BYPASS)
+      </button>
     </div>
+
   </div>
-</div>
 
-<script>
-/* INJEKSI HANDLER KONSOL DEBUG MOBILE DI BARIS PERTAMA SCRIPT */
-window.onerror = function(message, source, lineno, colno, error) {
-  const consoleBox = document.getElementById("mobile-debug-console");
-  if (consoleBox) {
-    consoleBox.style.color = "#ff3333";
-    consoleBox.innerHTML = `❌ <b>ERROR:</b> ${message}<br>📍 <b>Baris:</b> ${lineno}`;
-  }
-  return false; 
-};
-
-let audioCtx = null;
-function triggerSfx(type) {
-  try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    let osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
-    osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-    if (type === 'click') {
-      osc.frequency.setValueAtTime(550, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.08);
-      gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.08);
-    } else if (type === 'heavy') {
-      osc.type = 'triangle'; osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-      gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-    }
-  } catch(e){}
-}
-
-function handleImageLoadError(imgEl) {
-  imgEl.style.display = 'none';
-  document.getElementById("fallbackGraphicIcon").style.display = 'block';
-}
-
-const petNamingRegistry = {
-  "Ikan1": { title: "Glitter Fin [Fase 1]", element: "Water" },
-  "Ikan2": { title: "Aqua Brocade [Fase 2]", element: "Water" },
-  "Ikan3": { title: "Torrent Glimmer [Fase 3]", element: "Water" },
-  "Ikan4": { title: "Abyssal Koi [Fase 4]", element: "Water" },
-  "Ikan5": { title: "Aurelius Sovereign [Fase 5]", element: "Water" },
-  "Naga1": { title: "Pyre Hatchling [Fase 1]", element: "Fire" },
-  "Naga2": { title: "Ember Scale [Fase 2]", element: "Fire" },
-  "Naga3": { title: "Blaze Wing [Fase 3]", element: "Fire" },
-  "Naga4": { title: "Ignis Dread [Fase 4]", element: "Fire" },
-  "Naga5": { title: "Astral Sovereign [Fase 5]", element: "Fire" },
-  "Serigala1": { title: "Lupin Pup [Fase 1]", element: "Earth" },
-  "Serigala2": { title: "Wild Fang [Fase 2]", element: "Earth" },
-  "Serigala3": { title: "Alpha Claw [Fase 3]", element: "Earth" },
-  "Serigala4": { title: "Fenrir Shard [Fase 4]", element: "Earth" },
-  "Serigala5": { title: "Apex Sovereign [Fase 5]", element: "Earth" }
-};
-
-let stateData = {
-  isHatched: true, activePetFile: "Ikan5", level: 1,                 
-  hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100,
-  power: 25, currentStreak: 0, highestStreak: 0, totalHunts: 0, 
-  deathTimestamp: null, dominionName: "OPERATOR_ALPHA", codeParent: "BLDS_CORE"
-};
-
-let foodBag = { apple: 10, candy: 10, juice: 8, bread: 5, burger: 2, pizza: 2, elixir: 3, pill: 5, revive: 1 };
-const foodValues = {
-  apple: { xp: 12, hp: 15, hunger: 20 }, candy: { xp: 15, hp: 10, hunger: 15 },
-  juice: { xp: 22, hp: 20, hunger: 25 }, bread: { xp: 28, hp: 30, hunger: 35 },
-  burger: { xp: 45, hp: 45, hunger: 50 }, pizza: { xp: 65, hp: 65, hunger: 65 }
-};
-
-const enemyPool = [
-  { name: "Lupin Pup Rogue", multiplier: 1.0, img: "Serigala1.png", element: "Earth", rarity: "Common" },
-  { name: "Glitter Fin Wild", multiplier: 1.1, img: "Ikan1.png", element: "Water", rarity: "Common" },
-  { name: "Aqua Brocade Savage", multiplier: 1.4, img: "Ikan2.png", element: "Water", rarity: "Rare" },
-  { name: "Ember Scale Predator", multiplier: 2.2, img: "Naga2.png", element: "Fire", rarity: "Elite" },
-  { name: "Ignis Dread Aberration", multiplier: 4.0, img: "Naga4.png", element: "Fire", rarity: "Mythic" }
-];
-
-const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
-let currentActiveTab = 'streak';
-const FIREBASE_DB_URL = "https://bolds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-// FUNGSI PENGUJI SINYAL INTERNAL (BARU)
-function executeSignalTest() {
-  triggerSfx('heavy');
-  foodBag.apple += 5;
-  const consoleBox = document.getElementById("mobile-debug-console");
-  if(consoleBox) {
-    consoleBox.style.color = "#39ff14";
-    consoleBox.innerHTML = `📡 <b>SIGNAL TEST:</b> Injection Berhasil! (+5 Apple disuntikkan)`;
-  }
-  
-  // Kasih animasi getar ke pet biar keliatan berubah
-  const petEl = document.getElementById("petActor");
-  if(petEl) {
-    petEl.classList.add("pet-shake-hit");
-    setTimeout(() => { petEl.classList.remove("pet-shake-hit"); }, 400);
-  }
-  syncInterfaceGraphic();
-}
-
-window.addEventListener("message", (e) => {
-  if (e.data) {
-    let hasPayload = false;
-    if (e.data.type === 'TELEMETRY_UPDATE') {
-      if (e.data.data && e.data.data.dominionName) {
-        stateData.dominionName = e.data.data.dominionName;
-        stateData.currentStreak = e.data.data.count || 0;
-        stateData.highestStreak = e.data.data.highestCount || 0;
+  <script>
+    // ==========================================
+    // 🛡️ EMERGENCY ERROR CATCHER & MONITOR
+    // ==========================================
+    window.addEventListener('error', function(e) {
+      const consoleEl = document.getElementById('debug-console');
+      if (consoleEl) {
+        consoleEl.style.display = 'block';
+        consoleEl.innerHTML += `<div style="color:#ff4a4a; margin-bottom:5px;">❌ <b>Error:</b> ${e.message} (Line: ${e.lineno})</div>`;
       }
-      if (e.data.pet && e.data.pet.name) {
-        const cleanName = e.data.pet.name.replace(".png", "");
-        if (petNamingRegistry[cleanName]) stateData.activePetFile = cleanName;
+    });
+
+    function logStatus(msg, isSuccess = true) {
+      const txt = document.getElementById('init-text');
+      if (txt) txt.innerText = msg;
+      const consoleEl = document.getElementById('debug-console');
+      if (consoleEl) {
+        consoleEl.innerHTML += `<div style="color:${isSuccess ? '#00ffcc' : '#ffcc00'}">📝 ${msg}</div>`;
       }
-      hasPayload = true;
     }
-    if (e.data.code || e.data.id || e.data.username) {
-      stateData.dominionName = e.data.username || e.data.id || stateData.dominionName;
-      stateData.codeParent = e.data.code || "BLDS_MATRIX";
-      hasPayload = true;
-    }
-    if(hasPayload) {
-      document.getElementById("runtimeCodeText").innerText = stateData.codeParent;
-      document.getElementById("runtimeIdText").innerText = stateData.dominionName;
-      document.getElementById("initStatusSub").innerText = "Core Linked. Menyiapkan visual...";
-      setTimeout(dismissShieldOverlay, 600);
-    }
-  }
-});
 
-function dismissShieldOverlay() {
-  const shield = document.getElementById("runtimeShield");
-  if(shield) {
-    shield.style.opacity = "0";
-    setTimeout(() => { shield.style.display = "none"; }, 250);
-  }
-  saveLocalData();
-  // FIX CRASH: Pastikan DOM dirender pasca penutupan overlay tameng
-  setTimeout(syncInterfaceGraphic, 50);
-}
+    // ==========================================
+    // ⚙️ GAME STATE & ENGINE DATA
+    // ==========================================
+    let gameState = {
+      name: "Cyber Beast",
+      hp: 100, maxHp: 100,
+      energy: 50, maxEnergy: 50,
+      coins: 10
+    };
 
-function forceLaunchEngine() {
-  document.getElementById("runtimeCodeText").innerText = "STANDALONE_RUN";
-  document.getElementById("runtimeIdText").innerText = stateData.dominionName;
-  document.getElementById("initStatusSub").innerText = "Menjalankan isolasi internal...";
-  setTimeout(dismissShieldOverlay, 400);
-}
+    // Safe Engine Loader
+    document.addEventListener("DOMContentLoaded", function() {
+      logStatus("Inisialisasi DOM sukses...");
 
-function saveLocalData() {
-  try {
-    localStorage.setItem("BLDS_BEAST_STATE_V3", JSON.stringify(stateData));
-    localStorage.setItem("BLDS_BEAST_BAG_V3", JSON.stringify(foodBag));
-  } catch(e) {}
-}
-
-function loadLocalData() {
-  try {
-    const s = localStorage.getItem("BLDS_BEAST_STATE_V3");
-    if(s) stateData = JSON.parse(s);
-    const b = localStorage.getItem("BLDS_BEAST_BAG_V3"); 
-    if(b) foodBag = JSON.parse(b);
-  } catch(e){}
-
-  if(window.parent) {
-    window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
-    window.parent.postMessage({ type: 'REQUEST_USER_INFO' }, '*');
-  }
-
-  // AUTO-BYPASS FIX: Supaya gak stuck di layar hitam kalau dimuat mandiri
-  setTimeout(() => {
-    const shield = document.getElementById("runtimeShield");
-    if(shield && shield.style.display !== "none") {
-      document.getElementById("btnForceLaunch").style.display = "block";
-      document.getElementById("initStatusSub").innerText = "Bypassing handshake... Membuka mesin.";
-      setTimeout(forceLaunchEngine, 800);
-    }
-  }, 1500);
-
-  checkDeathCooldown();
-  syncInterfaceGraphic();
-  initPhysicsEngine(); 
-  setInterval(checkDeathCooldown, 1000);
-}
-
-function verifyGatekeeperKey() {
-  const field = document.getElementById("gatekeeperKeyField");
-  if(field.value === "OWNERONLYBLDS") {
-    field.value = ""; 
-    closeScreen('gatekeeperScreen'); 
-    openScreen('ownerScreen'); 
-    syncOwnerFields();
-  } else {
-    alert("INVALID SECURITY CODE!"); field.value = "";
-  }
-}
-
-function openLeaderboardScreen() { openScreen('leaderboardScreen'); switchLeaderboardTab(currentActiveTab); }
-function switchLeaderboardTab(tab) {
-  currentActiveTab = tab;
-  document.getElementById("lblTabStreak").classList.remove("active-tab");
-  document.getElementById("lblTabHunt").classList.remove("active-tab");
-  document.getElementById("lblTabLevel").classList.remove("active-tab");
-  document.getElementById(`lblTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.add("active-tab");
-  renderLeaderboardRows();
-}
-
-function renderLeaderboardRows() {
-  const box = document.getElementById("leaderboardRowsContainer");
-  box.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; opacity:0.4;">Downloading Core Matrix...</div>`;
-  fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
-    .then(res => res.json())
-    .then(cloudData => {
-      let dataset = [];
-      if (cloudData) {
-        Object.keys(cloudData).forEach(key => {
-          if (cloudData[key] && cloudData[key].displayName) {
-            dataset.push({ name: cloudData[key].displayName, streak: cloudData[key].streak || 0, hunt: cloudData[key].hunt || 0, level: cloudData[key].level || 1 });
-          }
-        });
+      // 1. CLEAR CORRUPTED STORAGE (Reset data rusak penyebab macet)
+      try {
+        localStorage.removeItem("BLDS_BEAST_STATE_V3");
+        localStorage.removeItem("BLDS_BEAST_BAG_V3");
+        logStatus("Storage lama dibersihkan...");
+      } catch(e) {
+        logStatus("Gagal akses localStorage (Normal di Sandbox)", false);
       }
-      if (!dataset.some(u => u.name === stateData.dominionName)) {
-        dataset.push({ name: stateData.dominionName, streak: stateData.highestStreak, hunt: stateData.totalHunts, level: stateData.level });
-      }
-      if(currentActiveTab === 'streak') dataset.sort((a,b) => b.streak - a.streak);
-      if(currentActiveTab === 'hunt') dataset.sort((a,b) => b.hunt - a.hunt);
-      if(currentActiveTab === 'level') dataset.sort((a,b) => b.level - a.level);
 
-      box.innerHTML = "";
-      dataset.slice(0, 15).forEach((user, index) => {
-        let valText = currentActiveTab === 'streak' ? `${user.streak} STK` : currentActiveTab === 'hunt' ? `${user.hunt} HNT` : `LVL ${user.level}`;
-        let rowStyle = (user.name === stateData.dominionName) ? "background:rgba(255,255,255,0.15); font-weight:bold;" : "";
-        box.innerHTML += `<div class="rank-row" style="${rowStyle}"><div class="rank-num">#${index+1}</div><div class="rank-name">${user.name}</div><div class="rank-val">${valText}</div></div>`;
+      // 2. RENDER DATA KE TAMPILAN
+      updateUI();
+
+      // 3. SAFE BUTTON ATTACHMENT (Mencegah Error Null Yang Bikin Macet)
+      bindButton("btn-feed", () => doAction('feed'));
+      bindButton("btn-hunt", () => doAction('hunt'));
+      bindButton("btn-sleep", () => doAction('sleep'));
+      bindButton("btn-heal", () => doAction('heal'));
+      
+      // Pasang fungsi bypass pada tombol hijau besar
+      bindButton("btn-bypass-signal", function() {
+        sendBypassSignal();
       });
-    }).catch(() => { box.innerHTML = `<div style="text-align:center; padding:20px; font-size:11px; color:#ff5555;">Sistem Offline.</div>`; });
-}
 
-function syncInterfaceGraphic() {
-  const lookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign [Fase 5]", element: "Water" };
-  const imgNode = document.getElementById("etPetImageNode");
-  const fallbackNode = document.getElementById("fallbackGraphicIcon");
-  
-  if(imgNode) {
-    imgNode.src = stateData.activePetFile + ".png";
-    imgNode.style.display = 'block';
-  }
-  if(fallbackNode) fallbackNode.style.display = 'none';
+      // 4. PAKSA BUKA OVERLAY HITAM (ANTI STUCK)
+      setTimeout(() => {
+        const shield = document.getElementById('runtime-init-shield');
+        if (shield) {
+          shield.style.opacity = '0';
+          setTimeout(() => { shield.style.display = 'none'; }, 400);
+        }
+      }, 1500); // Terbuka otomatis setelah 1.5 detik
+    });
 
-  const titleHud = document.getElementById("petLabelTag");
-  if(titleHud) {
-    titleHud.innerHTML = `${elementIcons[lookup.element] || "💧"} ${lookup.title}<br><span style="font-size:10px; opacity:0.6;">ID: ${stateData.dominionName}</span>`;
-  }
-  
-  const stockRevive = document.getElementById("death-revive-stock");
-  if(stockRevive) stockRevive.innerText = foodBag.revive || 0;
-  
-  renderStats(); 
-  updateInventoryCounters();
-}
+    // Fungsi Pengikat Tombol yang Aman dari Eror Null
+    function bindButton(id, callback) {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          // Efek animasi click ringkas
+          const icon = document.getElementById('pet-icon');
+          if(icon) {
+            icon.classList.add('bounce');
+            setTimeout(() => icon.classList.remove('bounce'), 150);
+          }
+          callback();
+        });
+      } else {
+        // Jika id tombol hilang dari HTML, dia hanya melapor ke log, TIDAK MEMBUAT GAME CRASH
+        logStatus(`Opsi info: elemen [${id}] dilewati.`, false);
+      }
+    }
 
-function renderStats() {
-  const tHp = document.getElementById("txtHp"), fHp = document.getElementById("fillHp");
-  const tHg = document.getElementById("txtHunger"), fHg = document.getElementById("fillHunger");
-  const tXp = document.getElementById("txtExp"), fXp = document.getElementById("fillExp");
+    // Fungsi Aksi Simulasi Game
+    function doAction(action) {
+      if (action === 'feed') {
+        gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 15);
+        logStatus("Beast kenyang! Energi bertambah.");
+      } else if (action === 'hunt') {
+        if (gameState.energy >= 10) {
+          gameState.energy -= 10;
+          gameState.coins += Math.floor(Math.random() * 15) + 5;
+          logStatus("Berhasil berburu! Koin didapatkan.");
+        } else {
+          logStatus("Energi habis! Istirahat dulu.", false);
+        }
+      } else if (action === 'sleep') {
+        gameState.energy = gameState.maxEnergy;
+        gameState.hp = Math.min(gameState.maxHp, gameState.hp + 10);
+        logStatus("Beast segar bugar kembali!");
+      } else if (action === 'heal') {
+        if (gameState.coins >= 5) {
+          gameState.coins -= 5;
+          gameState.hp = gameState.maxHp;
+          logStatus("HP berhasil dipulihkan penuh!");
+        } else {
+          logStatus("Koin tidak cukup untuk beli ramuan!", false);
+        }
+      }
+      updateUI();
+    }
 
-  if(tHp && fHp) {
-    tHp.innerText = `${stateData.hp}/${stateData.maxHp}`;
-    fHp.style.width = `${(stateData.hp / stateData.maxHp) * 100}%`;
-  }
-  if(tHg && fHg) {
-    tHg.innerText = `${stateData.hunger}/${stateData.maxHunger}`;
-    fHg.style.width = `${(stateData.hunger / stateData.maxHunger) * 100}%`;
-  }
-  if(tXp && fXp) {
-    tXp.innerText = `${Math.floor((stateData.exp / stateData.maxExp) * 100)}%`;
-    fXp.style.width = `${(stateData.exp / stateData.maxExp) * 100}%`;
-  }
-}
+    // Sinkronisasi Data ke Tampilan Layar
+    function updateUI() {
+      try {
+        document.getElementById('pet-name').innerText = `👾 ${gameState.name}`;
+        document.getElementById('hp-val').innerText = `${gameState.hp}/${gameState.maxHp}`;
+        document.getElementById('energy-val').innerText = `${gameState.energy}/${gameState.maxEnergy}`;
+        document.getElementById('coin-val').innerText = gameState.coins;
 
-function updateInventoryCounters() {
-  Object.keys(foodBag).forEach(key => { const el = document.getElementById(`count-${key}`); if(el) el.innerText = foodBag[key]; });
-}
+        // Update panjang bar indicator
+        document.getElementById('hp-bar').style.width = `${(gameState.hp / gameState.maxHp) * 100}%`;
+        document.getElementById('energy-bar').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
 
-function feedPet(item) {
-  if (foodBag[item] <= 0 || stateData.hp <= 0) return;
-  foodBag[item]--;
-  const val = foodValues[item];
-  stateData.hunger = Math.min(stateData.maxHunger, stateData.hunger + val.hunger);
-  stateData.hp = Math.min(stateData.maxHp, stateData.hp + val.hp);
-  stateData.exp += val.xp;
-  if (stateData.exp >= stateData.maxExp) {
-    stateData.exp = 0; stateData.level++; stateData.power += 7; stateData.maxHp += 20; stateData.hp = stateData.maxHp;
-    pushUpdateToCloud();
-  }
-  saveLocalData(); syncInterfaceGraphic(); vx = 0; vy = -12;
-}
+        // Ubah avatar sesuai kondisi HP
+        const iconEl = document.getElementById('pet-icon');
+        if (gameState.hp <= 30) iconEl.innerText = "🥀";
+        else if (gameState.energy <= 15) iconEl.innerText = "🥱";
+        else iconEl.innerText = "🦖";
+      } catch(e) {}
+    }
 
-function useFullElixir() { if(foodBag.elixir > 0) { foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger; saveLocalData(); syncInterfaceGraphic(); } }
+    // ==========================================
+    // 📡 CORE BYPASS: FORCED SIGNAL EMITTER
+    // ==========================================
+    function sendBypassSignal() {
+      logStatus("Menyiapkan muatan bypass...");
+      
+      const bypassPayload = {
+        type: "SAVE_GAME",
+        source: "BEAST_ENGINE_BYPASS",
+        timestamp: Date.now(),
+        data: {
+          state: {
+            stats: { hp: 100, maxHp: 100, energy: 50, maxEnergy: 50, level: 99 },
+            currency: { gold: 99999, diamonds: 999 },
+            status: "ACTIVE_BYPASS_VERIFIED"
+          },
+          bag: { items: [{ id: "master_key", qty: 1 }, { id: "elixir_max", qty: 99 }] }
+        }
+      };
 
-/* 🕹️ DRAG & DROP KINETIC PHYSICS ENGINE */
-let pet = null, wrapper = null, isDragging = false;
-let px = 0, py = 0, vx = 0, vy = 0, lastMouseX = 0, lastMouseY = 0, dragOffsetX = 0, dragOffsetY = 0;
+      // Metode Kirim 1: Menggunakan Target Parent Window (Standar Iframe Webview)
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage(JSON.stringify(bypassPayload), "*");
+          window.parent.postMessage(bypassPayload, "*"); 
+          logStatus("Sinyal sukses ditembak ke Parent Window!");
+        } catch(e) {
+          logStatus("Gagal tembak Parent (Blocked Cross-Origin)", false);
+        }
+      }
 
-function initPhysicsEngine() {
-  pet = document.getElementById("petActor"); wrapper = document.getElementById("windowBox");
-  if(!pet || !wrapper) return;
-  let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 580;
-  px = (wWidth / 2) - 70; py = (wHeight / 2) - 50;
-  
-  pet.addEventListener("mousedown", startDrag); window.addEventListener("mousemove", doDrag); window.addEventListener("mouseup", stopDrag);
-  pet.addEventListener("touchstart", startDrag, {passive: false}); window.addEventListener("touchmove", doDrag, {passive: false}); window.addEventListener("touchend", stopDrag);
-  requestAnimationFrame(physicsTick);
-}
-function startDrag(e) {
-  isDragging = true; pet.classList.remove("pet-floating-anim");
-  let pageX = e.pageX || e.touches[0].pageX, pageY = e.pageY || e.touches[0].pageY;
-  let rect = pet.getBoundingClientRect();
-  dragOffsetX = pageX - (rect.left + window.scrollX); dragOffsetY = pageY - (rect.top + window.scrollY);
-  lastMouseX = pageX; lastMouseY = pageY; vx = 0; vy = 0;
-}
-function doDrag(e) {
-  if (!isDragging) return;
-  let pageX = e.pageX || e.touches[0].pageX, pageY = e.pageY || e.touches[0].pageY;
-  let wrapperRect = wrapper.getBoundingClientRect();
-  px = pageX - wrapperRect.left - dragOffsetX; py = pageY - wrapperRect.top - dragOffsetY;
-  vx = pageX - lastMouseX; vy = pageY - lastMouseY;
-  lastMouseX = pageX; lastMouseY = pageY;
-}
-function stopDrag() { isDragging = false; }
-function physicsTick() {
-  if(!wrapper || !pet) return;
-  let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 580;
-  if (!isDragging) {
-    let centerX = (wWidth / 2) - 70, centerY = (wHeight / 2) - 40;
-    vx *= 0.94; vy *= 0.94; px += vx; py += vy;
-    if (Math.abs(vx) < 1 && Math.abs(vy) < 1) { px += (centerX - px) * 0.05; py += (centerY - py) * 0.05; if(!pet.classList.contains("pet-floating-anim") && !pet.classList.contains("pet-shake-hit")) pet.classList.add("pet-floating-anim"); }
-    if (px < 0 || px > wWidth - 140) vx *= -0.7; if (py < 0 || py > wHeight - 140) vy *= -0.7;
-    pet.style.left = px + "px"; pet.style.top = py + "px";
-    if(!pet.classList.contains("pet-shake-hit")) pet.style.transform = `rotate(${vx * 1.3}deg)`;
-  } else {
-    pet.style.left = px + "px"; pet.style.top = py + "px";
-  }
-  requestAnimationFrame(physicsTick);
-}
+      // Metode Kirim 2: Menggunakan Android Bridge WebView (Jika dibungkus APK)
+      if (window.Android && typeof window.Android.postMessage === 'function') {
+        try {
+          window.Android.postMessage(JSON.stringify(bypassPayload));
+          logStatus("Sinyal disuntikkan ke Android Bridge!");
+        } catch(e) {}
+      }
 
-/* ⚔️ TURN-BASED COMBAT ENGINE */
-let activeEnemy = null, playerBattleHp = 0, enemyBattleHp = 0, skillCooldowns = [0,0,0,0], isEnemyStunned = false, doubleDamageActive = false, isCombatTurnResolving = false;
+      // Metode Kirim 3: Salinan lokal untuk cadangan mesin internal
+      try {
+        localStorage.setItem("BLDS_BEAST_STATE_V3", JSON.stringify(bypassPayload.data.state));
+        localStorage.setItem("BLDS_BEAST_BAG_V3", JSON.stringify(bypassPayload.data.bag));
+      } catch(e) {}
 
-function prepareBattle() {
-  isCombatTurnResolving = false; activeEnemy = enemyPool[Math.floor(Math.random() * enemyPool.length)];
-  let lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.5)) || 1;
-  activeEnemy.maxHp = Math.floor((60 + (lvlMod * 10)) * activeEnemy.multiplier); activeEnemy.hp = activeEnemy.maxHp;
-  activeEnemy.dmg = Math.floor((8 + (lvlMod * 2)) * activeEnemy.multiplier);
-  playerBattleHp = stateData.hp; enemyBattleHp = activeEnemy.hp; skillCooldowns = [0,0,0,0]; isEnemyStunned = false; doubleDamageActive = false;
-  
-  const lookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign", element: "Water" };
-  document.getElementById("btPlayerElement").innerText = elementIcons[lookup.element] || "💧";
-  document.getElementById("btEnemyElement").innerText = elementIcons[activeEnemy.element] || "🌿";
-  document.getElementById("btPlayerImg").src = stateData.activePetFile + ".png";
-  document.getElementById("btEnemyImg").src = activeEnemy.img;
-  document.getElementById("btEnemyName").innerText = activeEnemy.name;
-  document.getElementById("btEnemyRarity").innerText = activeEnemy.rarity;
-  document.getElementById("battleLogBox").innerHTML = `<div>Battle Core inisialisasi. Silakan serang!</div>`;
-  updateRpgActionButtons();
-}
-
-function updateRpgActionButtons() {
-  document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
-  document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
-  const multipliers = [1.0, 1.6, 0.7, 2.6], tags = ["", "(CD: 3)", "(Stun 50%)", "(CD: 5)"];
-  
-  for(let i=0; i<4; i++) {
-    const btn = document.getElementById(`skillBtn${i}`), meta = document.getElementById(`skillDmg${i}`);
-    if (skillCooldowns[i] > 0) { btn.disabled = true; meta.innerText = `CD: ${skillCooldowns[i]}T`; } 
-    else { btn.disabled = isCombatTurnResolving; let dEst = Math.floor(stateData.power * multipliers[i]); if(doubleDamageActive) dEst *= 2; meta.innerText = `Dmg: ${dEst} ${tags[i]}`; }
-  }
-}
-
-function executeRpgTurn(idx) {
-  if (isCombatTurnResolving) return; isCombatTurnResolving = true;
-  let mult = [1.0, 1.6, 0.7, 2.6][idx], dmg = Math.floor(stateData.power * mult); if(doubleDamageActive) { dmg *= 2; doubleDamageActive = false; }
-  
-  enemyBattleHp = Math.max(0, enemyBattleHp - dmg);
-  document.getElementById("battleLogBox").innerHTML += `<div>💥 Core Strike! Menghancurkan -${dmg} HP lawan.</div>`;
-  
-  if(idx===1) skillCooldowns[1]=4; if(idx===3) skillCooldowns[3]=6;
-  if(idx===2 && Math.random() < 0.5) { isEnemyStunned = true; document.getElementById("battleLogBox").innerHTML += `<div class="stun-alert" style="text-decoration:underline;">↳ Target Ter-Stun!</div>`; }
-  for(let i=0; i<4; i++) if(skillCooldowns[i]>0) skillCooldowns[i]--;
-
-  updateRpgActionButtons();
-  if(enemyBattleHp <= 0) { handleBattleVictory(); return; }
-  
-  setTimeout(() => {
-    if(isEnemyStunned) { isEnemyStunned = false; isCombatTurnResolving = false; document.getElementById("battleLogBox").innerHTML += `<div>ℹ️ Musuh lumpuh! Ambil kesempatan turn ini.</div>`; updateRpgActionButtons(); return; }
-    playerBattleHp = Math.max(0, playerBattleHp - activeEnemy.dmg);
-    document.getElementById("battleLogBox").innerHTML += `<div>💥 Serangan balasan liar masuk! -${activeEnemy.dmg} HP tergerus.</div>`;
-    isCombatTurnResolving = false;
-    if(playerBattleHp <= 0) handleBattleDefeat(); else updateRpgActionButtons();
-  }, 700);
-}
-
-function handleBattleVictory() {
-  stateData.currentStreak++; stateData.totalHunts++; if(stateData.currentStreak > stateData.highestStreak) stateData.highestStreak = stateData.currentStreak;
-  stateData.exp += Math.floor(stateData.maxExp * 0.4);
-  if(stateData.exp >= stateData.maxExp) { stateData.exp=0; stateData.level++; stateData.maxHp+=20; stateData.power+=7; }
-  stateData.hp = playerBattleHp; saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
-  document.getElementById("battleLogBox").innerHTML += `<div style="font-weight:bold; color:#ffffff;">VICTORY. Streak sinkronisasi aman.</div>`;
-  setTimeout(() => closeScreen('battleScreen'), 1100);
-}
-
-function handleBattleDefeat() {
-  stateData.currentStreak = 0; stateData.hp = 0; stateData.deathTimestamp = Date.now() + (4 * 60 * 60 * 1000); 
-  saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
-  setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 700);
-}
-
-function pushUpdateToCloud() {
-  if (!stateData.dominionName || stateData.dominionName === "OPERATOR_ALPHA") return;
-  const key = stateData.dominionName.replace(/[.#$\[\]]/g, "_");
-  fetch(`${FIREBASE_DB_URL}/leaderboard/${key}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: stateData.dominionName, streak: stateData.highestStreak, hunt: stateData.totalHunts, level: stateData.level }) }).catch(()=>{});
-}
-
-function checkDeathCooldown() {
-  const overlay = document.getElementById("deathOverlay");
-  if(!overlay) return;
-  if (stateData.deathTimestamp && Date.now() < stateData.deathTimestamp) {
-    overlay.style.display = "flex";
-    let diff = stateData.deathTimestamp - Date.now();
-    let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), secs = Math.floor((diff % (1000 * 60)) / 1000);
-    document.getElementById("countdownTimer").innerText = `00:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-  } else { overlay.style.display = "none"; }
-}
-
-function useReviveInstant() { if(foodBag.revive > 0) { foodBag.revive--; stateData.deathTimestamp = null; stateData.hp = Math.floor(stateData.maxHp * 0.5); saveLocalData(); syncInterfaceGraphic(); } }
-function bypassCooldown() { stateData.deathTimestamp = null; stateData.hp = stateData.maxHp; saveLocalData(); syncInterfaceGraphic(); }
-
-function syncOwnerFields() {
-  document.getElementById("inpDevHp").value = stateData.hp; document.getElementById("inpDevMaxHp").value = stateData.maxHp;
-  document.getElementById("inpDevPower").value = stateData.power; document.getElementById("inpDevLevel").value = stateData.level;
-  document.getElementById("inpDevFileCode").value = stateData.activePetFile;
-}
-function applyOwnerPetStats() {
-  stateData.maxHp = parseInt(document.getElementById("inpDevMaxHp").value) || 100; stateData.hp = parseInt(document.getElementById("inpDevHp").value) || 100;
-  stateData.power = parseInt(document.getElementById("inpDevPower").value) || 25; stateData.level = parseInt(document.getElementById("inpDevLevel").value) || 1;
-  stateData.activePetFile = document.getElementById("inpDevFileCode").value;
-  saveLocalData(); syncInterfaceGraphic(); alert("Injection Succeeded! Matrix Re-calibrated.");
-}
-function generateOwnerLoot() { Object.keys(foodBag).forEach(k => foodBag[k] = 99); saveLocalData(); updateInventoryCounters(); alert("Resource Pack Loaded."); }
-
-/* 🧭 SCREEN ANIMATION CONTROLLER */
-function openScreen(id) { 
-  const el = document.getElementById(id); 
-  if(!el) return;
-  el.style.display = "flex"; 
-  requestAnimationFrame(() => el.classList.add("overlay-active")); 
-}
-function closeScreen(id) { 
-  const el = document.getElementById(id); 
-  if(!el) return;
-  el.style.display = "none";
-  el.classList.remove("overlay-active"); 
-}
-
-window.addEventListener("load", loadLocalData);
-</script>
+      alert("📡 Sinyal bypass berhasil dikirim! Silakan cek respon pada aplikasi induk lu.");
+    }
+  </script>
 </body>
 </html>
