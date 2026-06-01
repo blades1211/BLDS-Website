@@ -6,18 +6,22 @@
 <title>BLDS | Beast Engine Premium Core v2.2</title>
 <style>
 body {
-  background: transparent; color: #fff;
+  background: #020205; color: #fff;
   font-family: 'Courier New', Courier, monospace;
   margin: 0; padding: 0;
   overflow: hidden; box-sizing: border-box;
   user-select: none;
+  display: flex; justify-content: center; align-items: center;
+  height: 100vh;
 }
-/* Main wrapper dibuat pas dengan ukuran iframe agar tidak bocor menghalangi footer parent */
+
+/* Container utama dioptimasi agar pas di iframe parent tanpa bocor */
 .main-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: #020205; border-radius: 8px;
-  height: 520px; position: relative;
-  overflow: hidden; box-sizing: border-box;
+  width: 100%; max-width: 400px; height: 520px; 
+  position: relative; overflow: hidden; box-sizing: border-box;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
 }
 
 /* 🧭 NAVIGATION & HUD */
@@ -47,17 +51,15 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 PHYSICS SYSTEM STAGE (Z-Index diturunkan agar tidak menutupi tombol luar) */
+/* 🐉 PHYSICS SYSTEM STAGE */
 .pet-center-stage {
   position: absolute; inset: 0; z-index: 5; pointer-events: none;
 }
 .pet-draggable-area {
   width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
   cursor: grab; pointer-events: auto; 
-  position: absolute; 
-  left: calc(50% - 60px); top: calc(50% - 60px);
-  touch-action: none;
-  border-radius: 50%;
+  position: absolute; left: 140px; top: 200px;
+  touch-action: none; border-radius: 50%;
   background: rgba(255, 255, 255, 0.03);
 }
 .pet-draggable-area:active { cursor: grabbing; }
@@ -74,12 +76,12 @@ body {
 }
 
 .static-title-hud {
-  position: absolute; top: 160px; left: 0; right: 0;
+  position: absolute; top: 155px; left: 0; right: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 4; pointer-events: none;
 }
 .pet-title-tag {
-  font-size: 12px; font-weight: bold; letter-spacing: 1px; line-height: 1.4;
+  font-size: 11px; font-weight: bold; letter-spacing: 1px; line-height: 1.4;
   text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 5px rgba(0,255,255,0.4); text-align: center;
 }
 .hunt-trigger-wrapper {
@@ -117,9 +119,7 @@ body {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .screen-overlay.overlay-active {
-  display: flex !important;
-  opacity: 1;
-  transform: scale(1);
+  display: flex !important; opacity: 1; transform: scale(1);
 }
 
 .battle-arena-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 40px 0 10px 0; }
@@ -138,7 +138,7 @@ body {
 .battle-item-subpanel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: rgba(0,0,0,0.95); border: 1px solid rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; margin-top: 6px; display: none; }
 .cooldown-blocker { position: absolute; inset: 0; background: rgba(2,2,6,0.95); z-index: 500; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
-/* 📊 LEADERBOARD SYSTEM */
+/* 📊 LEADERBOARD */
 .leaderboard-header-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px; }
 .tab-btn { background: rgba(255,255,255,0.05); color: #888; border: 1px solid rgba(255,255,255,0.15); font-size: 9px; padding: 6px 2px; cursor: pointer; text-align: center; font-family: inherit; border-radius: 4px; }
 .tab-btn.active-tab { background: #fff; color: #000; font-weight: bold; }
@@ -196,7 +196,8 @@ body {
 
   <div class="pet-center-stage" id="mainStage">
     <div class="pet-draggable-area pet-floating-anim" id="petActor">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Ikan5.png" alt="Pet" onerror="this.style.opacity='0.2';">
+      <div id="fallbackGraphicIcon" style="font-size:45px; display:none; position:absolute;">🔮</div>
+      <img id="etPetImageNode" class="pet-main-graphic" src="Ikan5.png" alt="Pet" onerror="handleImageLoadError(this);">
     </div>
   </div>
 
@@ -221,13 +222,13 @@ body {
     <div class="battle-arena-grid">
       <div class="fighter-card">
         <span class="element-badge" id="btPlayerElement">💧</span>
-        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player" onerror="this.style.opacity='0.3';">
+        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player" onerror="this.style.display='none';">
         <div id="btPlayerName" style="font-size:10px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:9px; opacity:0.6;">100/100 HP</div>
       </div>
       <div class="fighter-card">
         <span class="element-badge" id="btEnemyElement">🌿</span>
-        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy" onerror="this.style.opacity='0.3';">
+        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy" onerror="this.style.display='none';">
         <div id="btEnemyName" style="font-size:10px; font-weight:bold;">Opponent</div>
         <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; font-size:8px;">Common</div>
         <div id="btEnemyHp" style="font-size:9px; opacity:0.6;">50/50 HP</div>
@@ -318,6 +319,11 @@ function triggerSfx(type) {
   } catch(e){}
 }
 
+function handleImageLoadError(imgEl) {
+  imgEl.style.display = 'none';
+  document.getElementById("fallbackGraphicIcon").style.display = 'block';
+}
+
 const petNamingRegistry = {
   "Telor": { title: "Void Egg", element: "Water" }, "Ikan1": { title: "Glitter Fin", element: "Water" },
   "Ikan2": { title: "Aqua Brocade", element: "Water" }, "Ikan3": { title: "Torrent Glimmer", element: "Water" },
@@ -333,7 +339,7 @@ let stateData = {
   isHatched: true, activePetFile: "Ikan5", level: 10,                 
   hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 400,
   power: 65, currentStreak: 0, highestStreak: 0, totalHunts: 0, 
-  deathTimestamp: null, dominionName: "Player", codeParent: ""
+  deathTimestamp: null, dominionName: "Dominion Player", codeParent: ""
 };
 
 let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 2, pill: 3, revive: 1 };
@@ -354,10 +360,9 @@ const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
 const FIREBASE_DB_URL = "https://bolds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-/* 📡 INTEGRASI TOTAL: Menangkap Otomatis Code & ID dari Web Parent */
+/* 📡 AUTO DETEKSI TELEMETRI PARENT WINDOW VIA MESSAGING */
 window.addEventListener("message", (e) => {
   if (e.data) {
-    // Menangkap data telemetri bawaan system lu
     if (e.data.type === 'TELEMETRY_UPDATE') {
       if (e.data.data && e.data.data.dominionName) {
         stateData.dominionName = e.data.data.dominionName;
@@ -368,7 +373,6 @@ window.addEventListener("message", (e) => {
         stateData.activePetFile = e.data.pet.name;
       }
     }
-    // Menangkap ekstraksi manual jika parent melempar objek text "Code" / "ID"
     if (e.data.code || e.data.id || e.data.username) {
       stateData.dominionName = e.data.username || e.data.id || stateData.dominionName;
       stateData.codeParent = e.data.code || "";
@@ -393,12 +397,12 @@ function loadLocalData() {
     if(b) foodBag = JSON.parse(b);
   } catch(e){}
 
-  // Request handshake ke web utama lu biar portal datanya langsung terbuka
   if(window.parent) {
     window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
     window.parent.postMessage({ type: 'REQUEST_USER_INFO' }, '*');
   }
 
+  // Force Render agar interface tidak kosong saat inisiasi
   checkDeathCooldown();
   syncInterfaceGraphic();
   initPhysicsEngine(); 
@@ -456,7 +460,14 @@ function renderLeaderboardRows() {
 
 function syncInterfaceGraphic() {
   const lookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign", element: "Water" };
-  document.getElementById("petGraphicFile").src = stateData.activePetFile + ".png";
+  
+  // Tampilkan visual image/fallback secara dinamis
+  const imgNode = document.getElementById("etPetImageNode");
+  const fallbackNode = document.getElementById("fallbackGraphicIcon");
+  imgNode.src = stateData.activePetFile + ".png";
+  imgNode.style.display = 'block';
+  fallbackNode.style.display = 'none';
+
   document.getElementById("petLabelTag").innerHTML = `${elementIcons[lookup.element]} ${lookup.title} [Lvl ${stateData.level}]<br><span style="font-size:9px;color:#00ffff;">ID: ${stateData.dominionName}</span>`;
   document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
   renderStats(); updateInventoryCounters();
@@ -491,13 +502,19 @@ function feedPet(item) {
 
 function useFullElixir() { if(foodBag.elixir > 0) { foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger; saveLocalData(); syncInterfaceGraphic(); } }
 
-/* 🕹️ LIGHTWEIGHT ENGINE PHYSICS */
+/* 🕹️ RESILIENT PHYSICS ENGINE (Fixing ClientWidth/ClientHeight 0 Bug) */
 let pet = null, wrapper = null, isDragging = false;
 let px = 0, py = 0, vx = 0, vy = 0, lastMouseX = 0, lastMouseY = 0, dragOffsetX = 0, dragOffsetY = 0;
 
 function initPhysicsEngine() {
   pet = document.getElementById("petActor"); wrapper = document.getElementById("windowBox");
-  px = (wrapper.clientWidth / 2) - 60; py = (wrapper.clientHeight / 2) - 40;
+  
+  // Deteksi kegagalan rendering dimensi (kondisi tersembunyi / iframe delay)
+  let wWidth = wrapper.clientWidth || 380;
+  let wHeight = wrapper.clientHeight || 520;
+  
+  px = (wWidth / 2) - 60; py = (wHeight / 2) - 40;
+  
   pet.addEventListener("mousedown", startDrag); window.addEventListener("mousemove", doDrag); window.addEventListener("mouseup", stopDrag);
   pet.addEventListener("touchstart", startDrag, {passive: false}); window.addEventListener("touchmove", doDrag, {passive: false}); window.addEventListener("touchend", stopDrag);
   requestAnimationFrame(physicsTick);
@@ -519,12 +536,15 @@ function doDrag(e) {
 }
 function stopDrag() { isDragging = false; }
 function physicsTick() {
+  let wWidth = wrapper.clientWidth || 380;
+  let wHeight = wrapper.clientHeight || 520;
+  
   if (!isDragging) {
-    let centerX = (wrapper.clientWidth / 2) - 60, centerY = (wrapper.clientHeight / 2) - 40;
+    let centerX = (wWidth / 2) - 60, centerY = (wHeight / 2) - 40;
     vx *= 0.95; vy *= 0.95; px += vx; py += vy;
     if (Math.abs(vx) < 1 && Math.abs(vy) < 1) { px += (centerX - px) * 0.04; py += (centerY - py) * 0.04; if(!pet.classList.contains("pet-floating-anim")) pet.classList.add("pet-floating-anim"); }
-    if (px < 0 || px > wrapper.clientWidth - 120) vx *= -0.7;
-    if (py < 0 || py > wrapper.clientHeight - 120) vy *= -0.7;
+    if (px < 0 || px > wWidth - 120) vx *= -0.7;
+    if (py < 0 || py > wHeight - 120) vy *= -0.7;
     pet.style.left = px + "px"; pet.style.top = py + "px";
     pet.style.transform = `rotate(${vx * 1.5}deg)`;
   } else {
@@ -595,7 +615,7 @@ function handleBattleDefeat() {
 }
 
 function pushUpdateToCloud() {
-  if (!stateData.dominionName || stateData.dominionName === "Player") return;
+  if (!stateData.dominionName || stateData.dominionName === "Dominion Player" || stateData.dominionName === "Player") return;
   const key = stateData.dominionName.replace(/[.#$\[\]]/g, "_");
   fetch(`${FIREBASE_DB_URL}/leaderboard/${key}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: stateData.dominionName, streak: stateData.highestStreak, hunt: stateData.totalHunts, level: stateData.level }) }).catch(()=>{});
 }
