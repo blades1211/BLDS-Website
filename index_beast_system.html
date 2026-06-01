@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Premium Core</title>
+<title>BLDS | Beast Engine Premium Core v2.0</title>
 <style>
 body {
-  background: transparent; color: #fff;
+  background: #000; color: #fff;
   font-family: 'Courier New', Courier, monospace;
   margin: 0; padding: 10px;
   overflow: hidden; box-sizing: border-box;
@@ -27,17 +27,17 @@ body {
 }
 .nav-left { display: flex; flex-direction: column; gap: 6px; pointer-events: auto; }
 .nav-btn {
-  background: rgba(0,0,0,0.85); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.9); color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px;
   font-family: inherit; text-transform: uppercase; transition: all 0.2s ease;
-  white-space: nowrap;
+  white-space: nowrap; pointer-events: auto;
 }
 .nav-btn:hover:not(:disabled) { background: #fff; color: #000; transform: scale(1.03); }
 .nav-btn:active:not(:disabled) { transform: scale(0.97); }
 .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .status-panel {
-  background: rgba(0, 0, 0, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 8px 10px; border-radius: 6px; width: 145px; font-size: 10px; pointer-events: auto;
 }
 .bar-row { margin-bottom: 5px; }
@@ -51,27 +51,29 @@ body {
   position: absolute; inset: 0; z-index: 10; pointer-events: none;
 }
 .pet-draggable-area {
-  width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;
+  width: 130px; height: 130px; display: flex; align-items: center; justify-content: center;
   cursor: grab; pointer-events: auto; 
   position: absolute; 
-  left: calc(50% - 75px); top: calc(50% - 75px);
+  left: calc(50% - 65px); top: calc(50% - 65px);
   touch-action: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03); /* Fallback visual jika gambar belum load */
 }
 .pet-draggable-area:active { cursor: grabbing; }
 .pet-main-graphic {
-  width: 100%; height: 100%; object-fit: contain;
+  width: 90%; height: 90%; object-fit: contain;
   user-select: none; -webkit-user-drag: none;
 }
 .pet-floating-anim {
-  animation: petIdleFloat 3.5s infinite ease-in-out;
+  animation: petIdleFloat 3s infinite ease-in-out;
 }
 @keyframes petIdleFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-10px); }
 }
 
 .static-title-hud {
-  position: absolute; top: 220px; left: 0; right: 0;
+  position: absolute; top: 180px; left: 0; right: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 5; pointer-events: none;
 }
@@ -90,7 +92,7 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 100;
 }
 .inventory-belt {
-  display: flex; gap: 6px; background: rgba(0,0,0,0.85);
+  display: flex; gap: 6px; background: rgba(0,0,0,0.9);
   padding: 6px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15);
 }
 .food-slot {
@@ -110,8 +112,8 @@ body {
 .screen-overlay {
   position: absolute; inset: 0; background: #020206; z-index: 500;
   display: none; flex-direction: column; padding: 15px; box-sizing: border-box;
-  opacity: 0; transform: scale(0.96);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 0; transform: scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .screen-overlay.overlay-active {
   display: flex !important;
@@ -120,13 +122,14 @@ body {
 }
 
 .battle-arena-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 40px 0 10px 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 45px 0 10px 0;
 }
 .fighter-card {
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
   padding: 10px; border-radius: 6px; text-align: center; position: relative;
+  background-size: cover;
 }
-.fighter-img { width: 65px; height: 65px; object-fit: contain; margin-bottom: 6px; }
+.fighter-img { width: 65px; height: 65px; object-fit: contain; margin-bottom: 6px; background: rgba(255,255,255,0.05); border-radius: 50%; }
 .rarity-tag { font-size: 8px; font-weight: bold; padding: 2px 5px; border-radius: 3px; text-transform: uppercase; }
 .element-badge {
   position: absolute; top: 6px; right: 6px; font-size: 10px;
@@ -152,7 +155,7 @@ body {
 
 .battle-item-subpanel {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-  background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.95); border: 1px solid rgba(255,255,255,0.2);
   padding: 8px; border-radius: 6px; margin-top: 8px; display: none;
 }
 .cooldown-blocker {
@@ -204,7 +207,7 @@ body {
 <div class="cooldown-blocker" id="deathOverlay">
   <div style="font-size: 32px; margin-bottom: 10px;">💀</div>
   <div style="font-size: 14px; font-weight: bold; color: #ff4a4a; letter-spacing: 1px;">BEAST INCAPACITATED</div>
-  <div id="countdownTimer" style="font-size: 18px; font-weight: bold; color: #ffff00; margin-bottom: 15px;">05:00:00</div>
+  <div id="countdownTimer" style="font-size: 18px; font-weight: bold; color: #ffff00; margin-bottom: 15px;">00:00:00</div>
   <div style="display:flex; flex-direction:column; gap:8px; width: 180px;">
     <button class="nav-btn" style="border-color: #00ffff; color: #00ffff;" onclick="triggerSfx('heavy'); useReviveInstant()">💉 Revive Instant (<span id="death-revive-stock">0</span>)</button>
     <button class="nav-btn" style="opacity:0.5; font-size:9px;" onclick="triggerSfx('click'); bypassCooldown()">⚡ Owner Bypass</button>
@@ -240,12 +243,12 @@ body {
   </div>
   
   <div class="hunt-trigger-wrapper">
-    <button class="nav-btn" id="huntWildTopBtn" style="border-color:#ff4a4a; color:#ff4a4a;" onclick="triggerSfx('heavy'); openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
+    <button class="nav-btn" id="huntWildTopBtn" style="border-color:#ff4a4a; color:#ff4a4a; font-weight: bold; padding: 10px 20px;" onclick="triggerSfx('heavy'); openScreen('battleScreen'); prepareBattle();">⚔️ Hunt Wild</button>
   </div>
 
   <div class="pet-center-stage" id="mainStage">
     <div class="pet-draggable-area pet-floating-anim" id="petActor">
-      <img id="petGraphicFile" class="pet-main-graphic" src="Ikan5.png" alt="Pet Graphic">
+      <img id="petGraphicFile" class="pet-main-graphic" src="Ikan5.png" alt="Pet" onerror="this.style.opacity='0.1';">
     </div>
   </div>
 
@@ -262,7 +265,7 @@ body {
   </div>
 
   <div class="screen-overlay" id="battleScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:5px;">
+    <div class="top-nav-container" style="position:static; margin-bottom:5px; pointer-events: auto;">
       <button class="nav-btn" id="btnExitBattle" onclick="triggerSfx('click'); closeScreen('battleScreen')">⬅️ Run</button>
       <div id="combatTurnTitle" style="font-size:11px; font-weight:bold; color:#ff4a4a; margin-top:5px;">Your Turn</div>
     </div>
@@ -270,13 +273,13 @@ body {
     <div class="battle-arena-grid">
       <div class="fighter-card">
         <span class="element-badge" id="btPlayerElement">💧</span>
-        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player">
+        <img id="btPlayerImg" class="fighter-img" src="Ikan5.png" alt="Player" onerror="this.style.opacity='0.2';">
         <div id="btPlayerName" style="font-size:11px; font-weight:bold;">Pet</div>
         <div id="btPlayerHp" style="font-size:10px; opacity:0.6; margin-top:4px;">100/100 HP</div>
       </div>
       <div class="fighter-card">
         <span class="element-badge" id="btEnemyElement">🌿</span>
-        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy">
+        <img id="btEnemyImg" class="fighter-img" src="Serigala1.png" alt="Enemy" onerror="this.style.opacity='0.2';">
         <div id="btEnemyName" style="font-size:11px; font-weight:bold;">Opponent</div>
         <div id="btEnemyRarity" class="rarity-tag" style="background:#fff; color:#000; display:inline-block; margin-top:3px;">Common</div>
         <div id="btEnemyHp" style="font-size:10px; opacity:0.6; margin-top:4px;">50/50 HP</div>
@@ -314,12 +317,12 @@ body {
   </div>
 
   <div class="screen-overlay" id="leaderboardScreen">
-    <div class="top-nav-container" style="position:static; margin-bottom:12px;">
+    <div class="top-nav-container" style="position:static; margin-bottom:12px; pointer-events: auto;">
       <button class="nav-btn" onclick="triggerSfx('click'); closeLeaderboardAndGoHome()">⬅️ Back</button>
       <div style="font-size:12px; font-weight:bold; color:#00ffff; margin-top:5px;">🌐 Global Live Board</div>
     </div>
 
-    <div class="leaderboard-header-tabs">
+    <div class="leaderboard-header-tabs" style="pointer-events: auto;">
       <button class="tab-btn active-tab" id="lblTabStreak" onclick="triggerSfx('click'); switchLeaderboardTab('streak')">🔥 Streak</button>
       <button class="tab-btn" id="lblTabHunt" onclick="triggerSfx('click'); switchLeaderboardTab('hunt')">⚔️ Hunted</button>
       <button class="tab-btn" id="lblTabLevel" onclick="triggerSfx('click'); switchLeaderboardTab('level')">🌟 Pet Lvl</button>
@@ -329,7 +332,7 @@ body {
   </div>
 
   <div class="screen-overlay" id="gatekeeperScreen" style="background: rgba(2,2,6,0.95);">
-    <div class="gatekeeper-box">
+    <div class="gatekeeper-box" style="pointer-events: auto;">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:12px;">SECURITY MATRIX VERIFICATION</div>
       <input type="text" id="gatekeeperKeyField" class="dev-input" placeholder="ENTER SECRET CODE...">
       <div style="display:flex; gap:6px; justify-content:center;">
@@ -340,12 +343,12 @@ body {
   </div>
 
   <div class="screen-overlay" id="ownerScreen" style="overflow-y:auto;">
-    <div class="top-nav-container" style="position:static; margin-bottom:15px;">
+    <div class="top-nav-container" style="position:static; margin-bottom:15px; pointer-events: auto;">
       <button class="nav-btn" onclick="triggerSfx('click'); closeScreen('ownerScreen')">⬅️ Lock Matrix</button>
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-top:5px;">Cybernetic Owner Matrix</div>
     </div>
 
-    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px;">
+    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; margin-bottom:15px; pointer-events: auto;">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📊 INITIAL INJECTION OVERRIDE</div>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
         <div class="dev-form-group"><label>Set HP</label><input type="number" id="inpDevHp" class="dev-input" style="width:90%"></div>
@@ -357,7 +360,7 @@ body {
       <button class="nav-btn" style="border-color:#00ff00; color:#00ff00; width:100%; margin-top:12px;" onclick="triggerSfx('heavy'); applyOwnerPetStats()">Inject Core Status</button>
     </div>
 
-    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px;">
+    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.2); padding:12px; border-radius:6px; pointer-events: auto;">
       <div style="font-size:11px; font-weight:bold; color:#00ff00; margin-bottom:10px;">📦 ITEM STOCKS OVERRIDE</div>
       <button class="nav-btn" style="width:100%; border-color:#00ff00; color:#00ff00;" onclick="triggerSfx('heavy'); generateOwnerLoot()">Inject 50x All Items Stock</button>
     </div>
@@ -398,7 +401,7 @@ function triggerSfx(type) {
       osc.stop(audioCtx.currentTime + 0.15);
     }
   } catch(e) {
-    console.log("Audio blocked");
+    console.log("Audio contexts protected by browser policy.");
   }
 }
 
@@ -649,7 +652,7 @@ function feedPet(item) {
   
   saveLocalData();
   syncInterfaceGraphic();
-  vy = -15; 
+  vy = -12; // Sedikit lompatan reaksi fisik pas dikasih makan
 }
 
 function useFullElixir() {
@@ -661,7 +664,7 @@ function useFullElixir() {
   syncInterfaceGraphic();
 }
 
-/* 🕹️ PHYSICS SYSTEM ENGINE (RequestAnimationFrame Upgrade) */
+/* 🕹️ PHYSICS SYSTEM ENGINE (Smooth requestAnimationFrame Core) */
 let pet = null; let wrapper = null;
 let isDragging = false;
 let px = 0, py = 0, vx = 0, vy = 0;       
@@ -739,24 +742,24 @@ function physicsTick() {
     let centerX = (wrapper.clientWidth / 2) - (pet.clientWidth / 2);
     let centerY = (wrapper.clientHeight / 2) - (pet.clientHeight / 2) + 20;
 
-    vx *= 0.97; vy *= 0.97;
+    vx *= 0.95; vy *= 0.95;
     px += vx; py += vy;
 
-    if (Math.abs(vx) < 1.8 && Math.abs(vy) < 1.8) {
-      px += (centerX - px) * 0.05; 
-      py += (centerY - py) * 0.05;
-      if(!pet.classList.contains("pet-floating-anim") && Math.abs(px - centerX) < 5) {
+    if (Math.abs(vx) < 1.5 && Math.abs(vy) < 1.5) {
+      px += (centerX - px) * 0.04; 
+      py += (centerY - py) * 0.04;
+      if(!pet.classList.contains("pet-floating-anim") && Math.abs(px - centerX) < 3) {
          pet.classList.add("pet-floating-anim");
       }
     }
 
-    if (px < 0) { px = 0; vx *= -0.8; }
-    if (px > maxX) { px = maxX; vx *= -0.8; }
-    if (py < 0) { py = 0; vy *= -0.8; }
-    if (py > maxY) { py = maxY; vy *= -0.8; }
+    if (px < 0) { px = 0; vx *= -0.7; }
+    if (px > maxX) { px = maxX; vx *= -0.7; }
+    if (py < 0) { py = 0; vy *= -0.7; }
+    if (py > maxY) { py = maxY; vy *= -0.7; }
 
     pet.style.left = px + "px"; pet.style.top = py + "px";
-    let rotation = vx * 2;
+    let rotation = vx * 1.8;
     pet.style.transform = `rotate(${rotation}deg)`;
   }
   requestAnimationFrame(physicsTick);
@@ -765,8 +768,10 @@ function physicsTick() {
 /* ⚔️ RPG COMBAT SYSTEM */
 let activeEnemy = null; let playerBattleHp = 0; let enemyBattleHp = 0;
 let skillCooldowns = [0, 0, 0, 0]; let isEnemyStunned = false; let doubleDamageActive = false;
+let isCombatTurnResolving = false; // Mencegah spam klik tombol skill sewaktu giliran musuh
 
 function prepareBattle() {
+  isCombatTurnResolving = false;
   activeEnemy = enemyPool[Math.floor(Math.random() * enemyPool.length)];
   const lvlMod = Math.floor(stateData.level * (0.8 + Math.random() * 0.4)) || 1;
   activeEnemy.maxHp = Math.floor((55 + (lvlMod * 9)) * activeEnemy.multiplier);
@@ -803,13 +808,18 @@ function updateRpgActionButtons() {
   document.getElementById("skillDmg2").innerText = `Dmg: ${Math.floor(stateData.power * 0.6 * pMod)} (50% Stun)`;
   document.getElementById("skillDmg3").innerText = `Dmg: ${Math.floor(stateData.power * 2.5 * pMod)} [CD: ${skillCooldowns[3]}]`;
 
-  for(let i=0; i<4; i++) document.getElementById(`skillBtn${i}`).disabled = (skillCooldowns[i] > 0);
+  for(let i=0; i<4; i++) {
+    document.getElementById(`skillBtn${i}`).disabled = (skillCooldowns[i] > 0 || isCombatTurnResolving);
+  }
   document.getElementById("b-stock-elixir").innerText = foodBag.elixir;
   document.getElementById("b-stock-pill").innerText = foodBag.pill;
 }
 
 function executeRpgTurn(skillIndex) {
+  if (isCombatTurnResolving) return;
+  isCombatTurnResolving = true;
   setRpgBoardInteractive(false);
+  
   const log = document.getElementById("battleLogBox");
   let baseMult = 1.0;
   
@@ -818,6 +828,10 @@ function executeRpgTurn(skillIndex) {
   if (skillIndex === 3) { baseMult = 2.5; skillCooldowns[3] = 5; }
   
   let rawDamage = Math.floor(stateData.power * baseMult);
+  const currentLookup = petNamingRegistry[stateData.activePetFile] || { element: "Water" };
+  if (currentLookup.element === "Water" && activeEnemy.element === "Fire") {
+    rawDamage = Math.floor(rawDamage * 1.5);
+  }
   
   if (doubleDamageActive) { 
     rawDamage = rawDamage * 2; 
@@ -828,6 +842,7 @@ function executeRpgTurn(skillIndex) {
   
   let skillNames = ["Strike", "Heavy Smash", "Electro Stun", "Ultimate Burst"];
   log.innerHTML += `<div>⚔️ Pet melepas <b>${skillNames[skillIndex]}</b>! Menghasilkan <b style='color:#ffff00;'>${rawDamage}</b> dmg.</div>`;
+  document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
 
   if (skillIndex === 2 && Math.random() <= 0.50) {
     isEnemyStunned = true; 
@@ -850,13 +865,20 @@ function executeRpgTurn(skillIndex) {
     } else {
       let enemyDmg = activeEnemy.dmg;
       playerBattleHp = Math.max(0, playerBattleHp - enemyDmg);
+      document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
       log.innerHTML += `<div style='color:#ff4a4a;'>💥 Musuh membalas hantaman! Menerima <b>${enemyDmg}</b> damage.</div>`;
-      if (playerBattleHp <= 0) { handleBattleDefeat(); } else { endTurnCycle(); }
+      
+      if (playerBattleHp <= 0) { 
+        handleBattleDefeat(); 
+      } else { 
+        endTurnCycle(); 
+      }
     }
   }, 1000);
 }
 
 function endTurnCycle() { 
+  isCombatTurnResolving = false;
   document.getElementById("combatTurnTitle").innerText = "Your Turn"; 
   setRpgBoardInteractive(true); 
   updateRpgActionButtons(); 
@@ -888,6 +910,7 @@ function handleBattleVictory() {
   document.getElementById("btnExitBattle").innerText = "⬅ Keluar Arena";
   stateData.hp = playerBattleHp;
   
+  isCombatTurnResolving = true; // Kunci panel aksi agar tidak bisa ditekan lagi pas menang
   saveLocalData(); 
   syncInterfaceGraphic();
   pushUpdateToCloud();
@@ -897,7 +920,7 @@ function handleBattleDefeat() {
   stateData.currentStreak = 0; stateData.hp = 0;
   stateData.deathTimestamp = Date.now() + (5 * 60 * 60 * 1000);
   saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
-  setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1500);
+  setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 1200);
 }
 
 function pushUpdateToCloud() {
@@ -914,7 +937,7 @@ function pushUpdateToCloud() {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
-  }).catch(err => console.error("Cloud sync offline bypass"));
+  }).catch(err => console.error("Cloud connection bypassed"));
 }
 
 function checkDeathCooldown() {
@@ -992,7 +1015,7 @@ function closeScreen(id) {
     if(!el.classList.contains("overlay-active")) {
       el.style.display = "none";
     }
-  }, 250); 
+  }, 210); 
 }
 
 window.addEventListener("load", loadLocalData);
