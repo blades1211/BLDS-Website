@@ -168,6 +168,16 @@ body {
 .dev-select { background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.5); padding: 8px; font-family: inherit; width: 95%; margin-bottom: 12px; border-radius: 4px; font-size: 12px; }
 
 .cooldown-blocker { position: absolute; inset: 0; background: #000000; z-index: 500; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+/* 📟 STYLE MOBILE CONSOLE OVERLAY */
+#mobile-debug-console {
+  position: absolute; bottom: 42px; left: 10px; right: 10px; 
+  height: 85px; background: rgba(15, 15, 15, 0.95); 
+  color: #ff5555; font-family: monospace; font-size: 9px; 
+  padding: 6px; overflow-y: auto; z-index: 800; 
+  border: 1px solid #333; border-radius: 4px;
+  pointer-events: auto; box-shadow: inset 0 0 10px #000;
+}
 </style>
 </head>
 <body>
@@ -243,9 +253,11 @@ body {
     </div>
   </div>
 
+  <div id="mobile-debug-console">📟 Console logger standby. No errors detected.</div>
+
   <div class="comm-footer-bar">
-    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0" target="_blank" class="footer-link">💬 WhatsApp Group</a>
-    <a href="https://discord.gg/r4dM4QFteV" target="_blank" class="footer-link">👾 Discord Server</a>
+    <div onclick="window.open('https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0', '_blank')" class="footer-link" style="cursor:pointer;">💬 WhatsApp Group</div>
+    <div onclick="window.open('https://discord.gg/r4dM4QFteV', '_blank')" class="footer-link" style="cursor:pointer;">👾 Discord Server</div>
   </div>
 
   <div class="screen-overlay" id="battleScreen">
@@ -355,6 +367,16 @@ body {
 </div>
 
 <script>
+/* INJEKSI HANDLER KONSOL DEBUG MOBILE DI BARIS PERTAMA SCRIPT */
+window.onerror = function(message, source, lineno, colno, error) {
+  const consoleBox = document.getElementById("mobile-debug-console");
+  if (consoleBox) {
+    consoleBox.style.color = "#ff3333";
+    consoleBox.innerHTML = `❌ <b>ERROR:</b> ${message}<br>📍 <b>Baris:</b> ${lineno}`;
+  }
+  return false; 
+};
+
 let audioCtx = null;
 function triggerSfx(type) {
   try {
@@ -591,7 +613,7 @@ function feedPet(item) {
     stateData.exp = 0; stateData.level++; stateData.power += 7; stateData.maxHp += 20; stateData.hp = stateData.maxHp;
     pushUpdateToCloud();
   }
-  saveLocalData(); syncInterfaceGraphic(); vy = -12;
+  saveLocalData(); syncInterfaceGraphic(); vx = 0; vy = -12;
 }
 
 function useFullElixir() { if(foodBag.elixir > 0) { foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger; saveLocalData(); syncInterfaceGraphic(); } }
@@ -742,9 +764,17 @@ function applyOwnerPetStats() {
 }
 function generateOwnerLoot() { Object.keys(foodBag).forEach(k => foodBag[k] = 99); saveLocalData(); updateInventoryCounters(); alert("Resource Pack Loaded."); }
 
-/* 🧭 SCREEN ANIMATION CONTROLLER */
-function openScreen(id) { const el = document.getElementById(id); el.style.display = "flex"; requestAnimationFrame(() => el.classList.add("overlay-active")); }
-function closeScreen(id) { const el = document.getElementById(id); el.classList.remove("overlay-active"); setTimeout(() => { if(!el.classList.contains("overlay-active")) el.style.display = "none"; }, 200); }
+/* 🧭 SCREEN ANIMATION CONTROLLER (SUDAH DIOPTIMALKAN) */
+function openScreen(id) { 
+  const el = document.getElementById(id); 
+  el.style.display = "flex"; 
+  requestAnimationFrame(() => el.classList.add("overlay-active")); 
+}
+function closeScreen(id) { 
+  const el = document.getElementById(id); 
+  el.style.display = "none";
+  el.classList.remove("overlay-active"); 
+}
 
 window.addEventListener("load", loadLocalData);
 </script>
