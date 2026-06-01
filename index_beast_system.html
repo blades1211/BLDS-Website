@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-color-scale=1.0, user-scalable=no" />
   <title>Beast Engine v3 - Stable Bypass</title>
   <style>
     /* --- SYSTEM CORE STYLES --- */
@@ -57,7 +57,7 @@
     }
     .bypass-panel:active { background: #0d2b26 !important; opacity: 0.9; }
 
-    /* --- LOG CONSOLE OVERLAY (FOR DEBUGGING) --- */
+    /* --- LOG CONSOLE OVERLAY --- */
     #debug-console {
       width: 90%; max-height: 100px; overflow-y: auto; background: #110000;
       border: 1px solid #ff4a4a; border-radius: 6px; margin-top: 15px;
@@ -152,7 +152,7 @@
     document.addEventListener("DOMContentLoaded", function() {
       logStatus("Inisialisasi DOM sukses...");
 
-      // 1. CLEAR CORRUPTED STORAGE (Reset data rusak penyebab macet)
+      // 1. CLEAR CORRUPTED STORAGE
       try {
         localStorage.removeItem("BLDS_BEAST_STATE_V3");
         localStorage.removeItem("BLDS_BEAST_BAG_V3");
@@ -169,8 +169,6 @@
       bindButton("btn-hunt", () => doAction('hunt'));
       bindButton("btn-sleep", () => doAction('sleep'));
       bindButton("btn-heal", () => doAction('heal'));
-      
-      // Pasang fungsi bypass pada tombol hijau besar
       bindButton("btn-bypass-signal", function() {
         sendBypassSignal();
       });
@@ -182,7 +180,7 @@
           shield.style.opacity = '0';
           setTimeout(() => { shield.style.display = 'none'; }, 400);
         }
-      }, 1500); // Terbuka otomatis setelah 1.5 detik
+      }, 1000); 
     });
 
     // Fungsi Pengikat Tombol yang Aman dari Eror Null
@@ -191,7 +189,6 @@
       if (btn) {
         btn.addEventListener("click", function(e) {
           e.preventDefault();
-          // Efek animasi click ringkas
           const icon = document.getElementById('pet-icon');
           if(icon) {
             icon.classList.add('bounce');
@@ -200,7 +197,6 @@
           callback();
         });
       } else {
-        // Jika id tombol hilang dari HTML, dia hanya melapor ke log, TIDAK MEMBUAT GAME CRASH
         logStatus(`Opsi info: elemen [${id}] dilewati.`, false);
       }
     }
@@ -242,11 +238,9 @@
         document.getElementById('energy-val').innerText = `${gameState.energy}/${gameState.maxEnergy}`;
         document.getElementById('coin-val').innerText = gameState.coins;
 
-        // Update panjang bar indicator
         document.getElementById('hp-bar').style.width = `${(gameState.hp / gameState.maxHp) * 100}%`;
         document.getElementById('energy-bar').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
 
-        // Ubah avatar sesuai kondisi HP
         const iconEl = document.getElementById('pet-icon');
         if (gameState.hp <= 30) iconEl.innerText = "🥀";
         else if (gameState.energy <= 15) iconEl.innerText = "🥱";
@@ -274,32 +268,32 @@
         }
       };
 
-      // Metode Kirim 1: Menggunakan Target Parent Window (Standar Iframe Webview)
+      // Metode Kirim 1: Menggunakan Target Parent Window (Iframe)
       if (window.parent && window.parent !== window) {
         try {
           window.parent.postMessage(JSON.stringify(bypassPayload), "*");
           window.parent.postMessage(bypassPayload, "*"); 
-          logStatus("Sinyal sukses ditembak ke Parent Window!");
+          logStatus("Sinyal dilempar ke Parent Window!");
         } catch(e) {
-          logStatus("Gagal tembak Parent (Blocked Cross-Origin)", false);
+          logStatus("Gagal kirim ke Parent (Cross-Origin Blocked)", false);
         }
       }
 
-      // Metode Kirim 2: Menggunakan Android Bridge WebView (Jika dibungkus APK)
+      // Metode Kirim 2: Menggunakan Android Bridge WebView
       if (window.Android && typeof window.Android.postMessage === 'function') {
         try {
-          window.Android.postMessage(JSON.stringify(bypassPayload));
+          window.Android.AndroidBridge(JSON.stringify(bypassPayload));
           logStatus("Sinyal disuntikkan ke Android Bridge!");
         } catch(e) {}
       }
 
-      // Metode Kirim 3: Salinan lokal untuk cadangan mesin internal
+      // Metode Kirim 3: Salinan lokal untuk cadangan
       try {
         localStorage.setItem("BLDS_BEAST_STATE_V3", JSON.stringify(bypassPayload.data.state));
         localStorage.setItem("BLDS_BEAST_BAG_V3", JSON.stringify(bypassPayload.data.bag));
       } catch(e) {}
 
-      alert("📡 Sinyal bypass berhasil dikirim! Silakan cek respon pada aplikasi induk lu.");
+      alert("📡 Sinyal bypass terkirim! Silakan cek respon pada aplikasi induk lu.");
     }
   </script>
 </body>
