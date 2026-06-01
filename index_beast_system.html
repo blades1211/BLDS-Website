@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-color-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Beast Engine v3 - Complete RPG System</title>
   <style>
     :root {
@@ -121,7 +121,7 @@
       border: 1px solid #1f2026; border-radius: 8px; padding: 10px; cursor: pointer;
     }
     .pet-list-item.active-pet { border-color: var(--accent-green); background: #0c2b26; }
-    .pet-list-item.silhouette { filter: brightness(0); opacity: 0.3; }
+    .pet-list-item.silhouette .list-avatar-box img { filter: brightness(0); opacity: 0.3; }
     .item-left-info { display: flex; align-items: center; gap: 10px; }
     .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; }
     .list-avatar-box img { width: 100%; height: 100%; object-fit: contain; }
@@ -271,51 +271,46 @@
 
   <script>
     // ========================================================
-    // DATABASE PET UTAMA (SILAHKAN GANTI PATH FILE .PNG LU DI SINI)
+    // DATABASE PET UTAMA
     // ========================================================
     const EVOLUTION_DATABASE = {
-      // 1. STARTER: NAGA (ELEMENT: COSMIC / FIRE)
       naga: {
         type: "epic-evo",
         phases: [
-          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render">', hp: 80, power: 18 },
-          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render">', hp: 160, power: 38 },
-          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render">', hp: 350, power: 80 },
-          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render">', hp: 700, power: 160 },
-          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render">', hp: 1500, power: 350 }
+          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🥚', hp: 80, power: 18 },
+          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐉', hp: 160, power: 38 },
+          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🔥', hp: 350, power: 80 },
+          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🌌', hp: 700, power: 160 },
+          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">👑', hp: 1500, power: 350 }
         ],
         skills: ["Cosmic Ember", "Starfire Tail Whip", "Singularity Collapse"]
       },
-      // 2. STARTER: IKAN (ELEMENT: WATER)
       ikan: {
         type: "epic-evo",
         phases: [
-          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-avatar-render">', hp: 50, power: 10 },
-          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render">', hp: 100, power: 20 },
-          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render">', hp: 220, power: 48 },
-          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render">', hp: 460, power: 95 },
-          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render">', hp: 1000, power: 220 }
+          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🥚', hp: 50, power: 10 },
+          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐟', hp: 100, power: 20 },
+          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🦈', hp: 220, power: 48 },
+          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐬', hp: 460, power: 95 },
+          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🔱', hp: 1000, power: 220 }
         ],
         skills: ["Water Pulse", "Aqua Fin Cutter", "Tidal Wave Crash"]
       },
-      // 3. STARTER: SERIGALA (ELEMENT: LIGHTNING / GUNTUR)
       serigala: {
         type: "epic-evo",
         phases: [
-          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render">', hp: 60, power: 12 },
-          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render">', hp: 120, power: 25 },
-          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render">', hp: 250, power: 55 },
-          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render">', hp: 500, power: 110 },
-          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render">', hp: 1100, power: 240 }
+          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🥚', hp: 60, power: 12 },
+          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐺', hp: 120, power: 25 },
+          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">⚡', hp: 250, power: 55 },
+          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐾', hp: 500, power: 110 },
+          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🤖', hp: 1100, power: 240 }
         ],
         skills: ["Volt Bite", "Thunder Howl", "Fulgur Blitz Strike"]
       },
-
-      // ================= HADIAH STREAK 100 (MYTHIC INSTAN) =================
       ammit: {
         type: "mythic-instan",
         name: "Ammit Void-Guardian",
-        avatar: '<img src="ammit.png" class="pet-avatar-render">',
+        avatar: '<img src="ammit.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🦁',
         hp: 1800,
         power: 380,
         skills: ["Void Chomp", "Dark Matter Pulse", "Soul Devourer"]
@@ -323,7 +318,7 @@
       sleipnir: {
         type: "mythic-instan",
         name: "Sleipnir Gravity-Drive",
-        avatar: '<img src="sleipnir.png" class="pet-avatar-render">',
+        avatar: '<img src="sleipnir.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🐴',
         hp: 1600,
         power: 420,
         skills: ["Quantum Stampede", "Aegis Overdrive", "Gravity Collapse"]
@@ -331,7 +326,7 @@
       yatagarasu: {
         type: "mythic-instan",
         name: "Yatagarasu Eclipse-Lord",
-        avatar: '<img src="yatagarasu.png" class="pet-avatar-render">',
+        avatar: '<img src="yatagarasu.png" class="pet-avatar-render" onerror="this.style.display=\'none\'">🦅',
         hp: 1400,
         power: 450,
         skills: ["Solar Eclipse", "Calamity Feather", "Shadow Fire Flare"]
@@ -341,8 +336,6 @@
     // SYSTEM PLAYER DATA STATE
     let userInventory = { potion: 3, pill: 2 };
     let activePetKey = "naga";
-    
-    // Sistem Discovery Tracker (Pet yang belum dapet streak 100 jadi siluet hitam dulu)
     let discoveredPets = ["naga", "serigala", "ikan"]; 
 
     let playerBeasts = {
@@ -361,7 +354,6 @@
       initDraggablePet();
       syncDashboardUI();
       
-      // Simulasi Unlocked otomatis pet streak 100 untuk bahan testing kamu (Bisa dihapus nanti)
       setTimeout(() => {
         alert("🔥 BONUS STREAK 100 HARI BERHASIL DICAPAI! 3 Pet Mythic (Ammit, Sleipnir, Yatagarasu) telah ditambahkan ke Bestiary!");
         discoveredPets.push("ammit", "sleipnir", "yatagarasu");
@@ -370,8 +362,10 @@
 
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).add('active');
-      document.getElementById(screenId).classList.add('active');
+      const activeScreen = document.getElementById(screenId);
+      if (activeScreen) {
+        activeScreen.classList.add('active');
+      }
       
       if(screenId === 'dash-screen') {
         document.getElementById('btn-back-dash').style.display = 'none';
@@ -383,7 +377,7 @@
       }
     }
 
-    // INTERAKSI DRAGGABLE PET (Elastic central bouncing return)
+    // INTERAKSI DRAGGABLE PET
     function initDraggablePet() {
       const pet = document.getElementById('pet-draggable');
       const zone = document.getElementById('drag-zone');
@@ -443,7 +437,6 @@
       let renderName = "";
       let avatarHtml = "";
 
-      // Logika pemisah render tipe Evolusi vs tipe Instan Mythic
       if(db.type === "epic-evo") {
         const currentPhase = db.phases[pData.phaseIndex];
         renderName = `${currentPhase.name} [Lvl ${pData.level}]`;
@@ -473,16 +466,19 @@
       alert(`Kamu memberi makan pet kesayanganmu dengan ${emoji}!`);
     }
 
-    // ========================================================
-    // COMBAT FLOW ENGINE & DROP RATE ALGORITHM
-    // ========================================================
+    // COMBAT FLOW ENGINE & HUNT WILD
     function triggerHuntWild() {
       const pData = playerBeasts[activePetKey];
       const db = EVOLUTION_DATABASE[activePetKey];
 
-      // Pengaman khusus telur (kecuali naga untuk pengujian)
       if (db.type === "epic-evo" && pData.phaseIndex === 0 && activePetKey !== 'naga') { 
         alert("❌ Pet jenis ini masih berwujud Telur! Kamu harus menetaskannya terlebih dahulu sebelum bisa berburu.");
+        return;
+      }
+
+      // Proteksi jika HP Pet 0 agar tidak mati konyol saat berburu
+      if (pData.currentHp <= 0) {
+        alert("❌ HP Pet kamu habis (0)! Harap pulihkan kesehatan pet menggunakan item 🧪 sebelum bertarung.");
         return;
       }
 
@@ -497,14 +493,14 @@
         if(rand <= sum) { pickedRarity = rarities[i]; break; }
       }
 
-      let enemyName = `Wild Spectrum Monster [${pickedRarity}]`;
+      let enemyName = `Wild Spectrum [${pickedRarity}]`;
       let multiplier = rarities.indexOf(pickedRarity) + 1;
       let enemyMaxHp = 50 * multiplier + Math.floor(Math.random() * 40);
       let enemyPower = 10 * multiplier;
 
       let myMaxHp = db.type === "epic-evo" ? (db.phases[pData.phaseIndex].hp + (pData.level * 15)) : (db.hp + (pData.level * 30));
       let myBasePower = db.type === "epic-evo" ? (db.phases[pData.phaseIndex].power + (pData.level * 5)) : (db.power + (pData.level * 10));
-      let skillList = db.type === "epic-evo" ? db.skills : db.skills;
+      let skillList = db.skills;
 
       combatState = {
         rarity: pickedRarity,
@@ -587,8 +583,10 @@
         return;
       }
 
-      // TURN MUSUH
+      // TURN ENEMIES RESPOND
       setTimeout(() => {
+        if (combatState.myHp <= 0 || combatState.enemyHp <= 0) return;
+        
         if (combatState.enemyStunned) {
           combatState.enemyStunned = false;
           return;
@@ -608,7 +606,7 @@
       }, 800);
     }
 
-    // FORMULA DROP RATE BERDASARKAN TINGKAT RARITY SESUAI ATURAN
+    // FORMULA DROP RATE & EXP REWARD
     function handleCombatVictory() {
       writeLog(`🏆 Kemenangan Telak Berhasil Diraih!`, "#00ffcc");
       
@@ -618,22 +616,21 @@
       let rolledPillChance = 0;
 
       if (r === "Common" || r === "Rare") {
-        rolledPillChance = 0.03;   // 3%
-        rolledPotionChance = 0.01; // 1%
+        rolledPillChance = 0.03;   
+        rolledPotionChance = 0.01; 
         expGained = r === "Common" ? 25 : 45;
       } else if (r === "Epic" || r === "Mythic") {
-        rolledPillChance = 0.06;   // 6%
-        rolledPotionChance = 0.03; // 3%
+        rolledPillChance = 0.06;   
+        rolledPotionChance = 0.03; 
         expGained = r === "Epic" ? 80 : 150;
       } else if (r === "Celestial") {
-        rolledPillChance = 0.10;   // 10%
-        rolledPotionChance = 0.06; // 6%
+        rolledPillChance = 0.10;   
+        rolledPotionChance = 0.06; 
         expGained = 300;
       }
 
       writeLog(`⭐ Mendapatkan +${expGained} EXP Points.`, "#00ffcc");
 
-      // Roll Drop Item
       if (Math.random() <= rolledPotionChance) {
         userInventory.potion += 1;
         writeLog(`🧪 Beruntung! Menemukan 1x Cairan Healer (100% HP).`, "#00ffcc");
@@ -646,7 +643,6 @@
       let pData = playerBeasts[activePetKey];
       const db = EVOLUTION_DATABASE[activePetKey];
       
-      // Update data Level up khusus untuk tipe hewan starter yang bisa evolusi
       pData.exp += expGained;
       if (pData.exp >= 100) {
         pData.level += 1;
@@ -655,7 +651,10 @@
 
         if (db.type === "epic-evo" && pData.level >= (pData.phaseIndex + 1) * 5 && pData.phaseIndex < 4) {
           pData.phaseIndex += 1;
-          alert(`✨ FANTASTIS! Pet kamu berevolusi ke Fasa ${pData.phaseIndex + 1}!`);
+          // Mengisi HP kembali penuh saat berevolusi
+          let newMaxHp = db.phases[pData.phaseIndex].hp + (pData.level * 15);
+          pData.currentHp = newMaxHp;
+          alert(`✨ FANTASTIS! Pet kamu berevolusi ke Fasa ${pData.phaseIndex + 1}: ${db.phases[pData.phaseIndex].name}!`);
         }
       }
 
@@ -667,9 +666,7 @@
       setTimeout(() => { showScreen('dash-screen'); }, 1000);
     }
 
-    // ========================================================
-    // TAS / INVENTORY MANAGEMENT
-    // ========================================================
+    // INVENTORY MANAGEMENT
     let bagContext = "dash";
     function openBagFromDash() { bagContext = "dash"; openModal(); }
     function openBattleInventory() { bagContext = "battle"; openModal(); }
@@ -712,9 +709,7 @@
       openModal();
     }
 
-    // ========================================================
-    // BESTIARY WINDOW DISPLAY GENERATOR (SYSTEM SILHOUETTE)
-    // ========================================================
+    // BESTIARY WINDOW GENERATOR
     function openBestiary() {
       const wrapper = document.getElementById('bestiary-list-wrapper');
       wrapper.innerHTML = ""; 
@@ -747,17 +742,17 @@
           <div class="item-left-info">
             <div class="list-avatar-box">${renderAvatar}</div>
             <div class="list-details">
-              <h4>${renderName}</h4>
+              <h4>${isDiscovered ? renderName : "???"}</h4>
               <p>${subText}</p>
             </div>
           </div>
-          <div>
-            ${key === activePetKey ? '<span style="font-size:11px;color:var(--accent-green)">Active</span>' : isDiscovered ? '<button style="padding:5px 10px; font-size:11px; cursor:pointer;">SWITCH</button>' : ''}
+          <div class="action-area">
+            ${key === activePetKey ? '<span style="font-size:11px;color:var(--accent-green)">Active</span>' : isDiscovered ? '<button class="switch-trigger-btn" style="padding:5px 10px; font-size:11px; cursor:pointer;">SWITCH</button>' : ''}
           </div>
         `;
 
         if (isDiscovered && key !== activePetKey) {
-          node.querySelector('button').onclick = function(e) {
+          node.querySelector('.switch-trigger-btn').onclick = function(e) {
             e.stopPropagation();
             activePetKey = key;
             openBestiary(); 
