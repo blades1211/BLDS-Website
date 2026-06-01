@@ -434,14 +434,14 @@ function loadLocalData() {
     try { foodBag = JSON.parse(b); } catch(e){}
   }
 
-  // ⚙️ FIX: Sektor pengecekan body teks yang berisiko crash dibersihkan total
+  // ⚙ *CODESURGERY FIX*: Eliminasi mekanisme pembacaan innerHTML yang rawan macet demi kestabilan runtime Vercel
   if(!s) {
     stateData.activePetFile = "Ikan5";
   }
   
   if(window.parent) { window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*'); }
 
-  // Force tutup layar gatekeeper di awal muat halaman
+  // Force close overlay keamanan di siklus render pertama
   closeScreen('gatekeeperScreen');
   closeScreen('ownerScreen');
 
@@ -828,7 +828,7 @@ function handleBattleVictory() {
   }
   
   log.innerHTML += `<div style='color:#00ff00;font-weight:bold;'>🏆 Victory! Mendapat ${expGained} EXP.</div>`;
-  document.getElementById("btnExitBattle").innerText = "⬅️ Keluar Arena";
+  document.getElementById("btnExitBattle").innerText = "⬅ nighttime; Keluar Arena";
   stateData.hp = playerBattleHp;
   
   saveLocalData(); 
@@ -924,7 +924,7 @@ function generateOwnerLoot() {
 }
 function bypassCooldown() { stateData.deathTimestamp = null; stateData.hp = stateData.maxHp; saveLocalData(); syncInterfaceGraphic(); }
 
-// ⚙️ FIX: Sektor pengaturan buka tutup screen menggunakan inline flex yang tegas
+// ⚙ *CODESURGERY FIX*: Memaksa prioritas tinggi CSS menggunakan property !important saat trigger DOM via script
 function openScreen(id) { document.getElementById(id).style.setProperty("display", "flex", "important"); }
 function closeScreen(id) { document.getElementById(id).style.setProperty("display", "none", "important"); }
 
