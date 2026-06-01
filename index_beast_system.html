@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLDS | Beast Engine Premium Core v2.2</title>
+<title>BLDS | Beast Engine Runtime Core</title>
 <style>
 body {
-  background: #020205; color: #fff;
+  background: #000000; color: #fff;
   font-family: 'Courier New', Courier, monospace;
   margin: 0; padding: 0;
   overflow: hidden; box-sizing: border-box;
@@ -15,16 +15,16 @@ body {
   height: 100vh;
 }
 
-/* Container utama dioptimasi agar pas di iframe parent tanpa bocor */
+/* Container utama pas di Vercel Runtime */
 .main-wrapper {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: #020205; border-radius: 8px;
-  width: 100%; max-width: 400px; height: 520px; 
+  width: 100%; max-width: 400px; height: 100%; max-height: 540px; 
   position: relative; overflow: hidden; box-sizing: border-box;
-  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  box-shadow: 0 0 25px rgba(0,0,0,0.9);
 }
 
-/* 🧭 NAVIGATION & HUD */
+/* 🧭 TOP NAV HUD */
 .top-nav-container {
   position: absolute; top: 12px; left: 12px; right: 12px;
   display: flex; justify-content: space-between; align-items: flex-start; z-index: 100;
@@ -35,7 +35,7 @@ body {
   background: rgba(0,0,0,0.9); color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 6px 12px; font-size: 11px; cursor: pointer; border-radius: 4px;
   font-family: inherit; text-transform: uppercase; transition: all 0.2s ease;
-  white-space: nowrap; pointer-events: auto;
+  white-space: nowrap;
 }
 .nav-btn:hover:not(:disabled) { background: #fff; color: #000; transform: scale(1.03); }
 .nav-btn:active:not(:disabled) { transform: scale(0.97); }
@@ -51,16 +51,16 @@ body {
 .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
 .bar-fill { height: 100%; width: 100%; transition: width 0.3s ease; }
 
-/* 🐉 PHYSICS SYSTEM STAGE */
+/* 🐲 PHYSICS ENGINE STAGE */
 .pet-center-stage {
   position: absolute; inset: 0; z-index: 5; pointer-events: none;
 }
 .pet-draggable-area {
   width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
   cursor: grab; pointer-events: auto; 
-  position: absolute; left: 140px; top: 200px;
+  position: absolute; left: 140px; top: 220px;
   touch-action: none; border-radius: 50%;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
 }
 .pet-draggable-area:active { cursor: grabbing; }
 .pet-main-graphic {
@@ -76,20 +76,21 @@ body {
 }
 
 .static-title-hud {
-  position: absolute; top: 155px; left: 0; right: 0;
+  position: absolute; top: 165px; left: 0; right: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 4; pointer-events: none;
 }
 .pet-title-tag {
   font-size: 11px; font-weight: bold; letter-spacing: 1px; line-height: 1.4;
-  text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 5px rgba(0,255,255,0.4); text-align: center;
+  text-shadow: 0 0 10px rgba(0,0,0,0.9); text-align: center;
 }
+
 .hunt-trigger-wrapper {
-  position: absolute; bottom: 80px; left: 0; right: 0;
+  position: absolute; bottom: 85px; left: 0; right: 0;
   display: flex; justify-content: center; z-index: 40;
 }
 
-/* 🎒 INVENTORY */
+/* 🎒 INVENTORY CONTROL */
 .bottom-controls {
   position: absolute; bottom: 12px; left: 12px; right: 12px;
   display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 45;
@@ -105,11 +106,24 @@ body {
   cursor: pointer; position: relative; transition: all 0.2s ease;
 }
 .food-slot:hover { transform: scale(1.1); border-color: #fff; }
-.food-slot:active { transform: scale(0.9); }
 .food-count {
   position: absolute; bottom: -2px; right: -2px; background: #fff; color: #000;
   font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 6px;
 }
+
+/* 📡 RUNTIME CONNECTIVITY BOARD (KOTAK INITIAL DI SCREENSHOT LU) */
+.runtime-init-shield {
+  position: absolute; inset: 0; background: #000000; z-index: 999;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 20px; box-sizing: border-box; transition: opacity 0.3s ease;
+}
+.init-terminal-box {
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+  width: 100%; max-width: 320px; padding: 20px; background: #050508;
+  box-sizing: border-box;
+}
+.init-meta-line { font-size: 11px; margin-bottom: 8px; color: #888; }
+.init-meta-line span { color: #fff; font-weight: bold; font-family: monospace; }
 
 /* ⚔️ SCREEN OVERLAYS */
 .screen-overlay {
@@ -118,9 +132,7 @@ body {
   opacity: 0; transform: scale(0.98);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.screen-overlay.overlay-active {
-  display: flex !important; opacity: 1; transform: scale(1);
-}
+.screen-overlay.overlay-active { display: flex !important; opacity: 1; transform: scale(1); }
 
 .battle-arena-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 40px 0 10px 0; }
 .fighter-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 8px; border-radius: 6px; text-align: center; position: relative; }
@@ -146,7 +158,7 @@ body {
 .rank-row { display: grid; grid-template-columns: 30px 1fr 65px; padding: 6px 8px; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
 .rank-val { text-align: right; font-weight: bold; color: #00ffff; }
 
-.gatekeeper-box { background: rgba(0,0,0,0.95); border: 1px solid #00ff00; padding: 15px; border-radius: 6px; text-align: center; width: 200px; margin: auto; margin-top: 100px; }
+.gatekeeper-box { background: rgba(0,0,0,0.95); border: 1px solid #00ff00; padding: 15px; border-radius: 6px; text-align: center; width: 210px; margin: auto; margin-top: 100px; }
 .dev-input { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 6px; text-align: center; font-family: inherit; width: 90%; margin-bottom: 10px; border-radius: 4px; }
 </style>
 </head>
@@ -160,6 +172,16 @@ body {
     <button class="nav-btn" onclick="useReviveInstant()">💉 Revive (<span id="death-revive-stock">0</span>)</button>
     <button class="nav-btn" style="opacity:0.4; font-size:8px;" onclick="bypassCooldown()">⚡ Bypass</button>
   </div>
+</div>
+
+<div class="runtime-init-shield" id="runtimeShield">
+  <div style="font-size: 13px; font-weight: bold; margin-bottom: 12px; letter-spacing: 1px; color:#ff4a4a;">BEAST ENGINE RUNTIME</div>
+  <div class="init-terminal-box">
+    <div class="init-meta-line">Code: <span id="runtimeCodeText">WAITING_CORE_SIGNAL...</span></div>
+    <div class="init-meta-line">ID: <span id="runtimeIdText">SYNCHRONIZING...</span></div>
+    <div style="font-size: 9px; opacity: 0.4; text-align: center; margin-top: 15px;" id="initStatusSub">Connecting to Blacklight core frame...</div>
+  </div>
+  <button class="nav-btn" id="btnForceLaunch" style="margin-top: 15px; border-color: #00ff00; color: #00ff00; display:none;" onclick="forceLaunchEngine()">⚡ Force Connect Matrix</button>
 </div>
 
 <div class="main-wrapper" id="windowBox">
@@ -196,8 +218,8 @@ body {
 
   <div class="pet-center-stage" id="mainStage">
     <div class="pet-draggable-area pet-floating-anim" id="petActor">
-      <div id="fallbackGraphicIcon" style="font-size:45px; display:none; position:absolute;">🔮</div>
-      <img id="etPetImageNode" class="pet-main-graphic" src="Ikan5.png" alt="Pet" onerror="handleImageLoadError(this);">
+      <div id="fallbackGraphicIcon" style="font-size:45px; position:absolute;">🔮</div>
+      <img id="etPetImageNode" class="pet-main-graphic" src="Ikan5.png" alt="Pet" onerror="handleImageLoadError(this);" style="display:none;">
     </div>
   </div>
 
@@ -336,10 +358,10 @@ const petNamingRegistry = {
 };
 
 let stateData = {
-  isHatched: true, activePetFile: "Ikan5", level: 10,                 
-  hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 400,
-  power: 65, currentStreak: 0, highestStreak: 0, totalHunts: 0, 
-  deathTimestamp: null, dominionName: "Dominion Player", codeParent: ""
+  isHatched: true, activePetFile: "Ikan5", level: 1,                 
+  hp: 100, maxHp: 100, hunger: 100, maxHunger: 100, exp: 0, maxExp: 100,
+  power: 25, currentStreak: 0, highestStreak: 0, totalHunts: 0, 
+  deathTimestamp: null, dominionName: "Player_Alpha", codeParent: "BLDS_CORE"
 };
 
 let foodBag = { apple: 5, candy: 5, juice: 4, bread: 2, burger: 1, pizza: 1, elixir: 2, pill: 3, revive: 1 };
@@ -360,9 +382,10 @@ const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
 const FIREBASE_DB_URL = "https://bolds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-/* 📡 AUTO DETEKSI TELEMETRI PARENT WINDOW VIA MESSAGING */
+/* 📡 REALTIME INTER-WINDOW MESSAGING TELEMETRY */
 window.addEventListener("message", (e) => {
   if (e.data) {
+    let received = false;
     if (e.data.type === 'TELEMETRY_UPDATE') {
       if (e.data.data && e.data.data.dominionName) {
         stateData.dominionName = e.data.data.dominionName;
@@ -372,15 +395,37 @@ window.addEventListener("message", (e) => {
       if (e.data.pet && e.data.pet.name) {
         stateData.activePetFile = e.data.pet.name;
       }
+      received = true;
     }
     if (e.data.code || e.data.id || e.data.username) {
       stateData.dominionName = e.data.username || e.data.id || stateData.dominionName;
-      stateData.codeParent = e.data.code || "";
+      stateData.codeParent = e.data.code || "BLDS_VERCEL";
+      received = true;
     }
-    saveLocalData();
-    syncInterfaceGraphic();
+    
+    if(received) {
+      document.getElementById("runtimeCodeText").innerText = stateData.codeParent;
+      document.getElementById("runtimeIdText").innerText = stateData.dominionName;
+      document.getElementById("initStatusSub").innerText = "Signal Locked! Loading interface...";
+      setTimeout(dismissShieldOverlay, 800);
+    }
   }
 });
+
+function dismissShieldOverlay() {
+  const shield = document.getElementById("runtimeShield");
+  shield.style.opacity = "0";
+  setTimeout(() => { shield.style.display = "none"; }, 300);
+  saveLocalData();
+  syncInterfaceGraphic();
+}
+
+function forceLaunchEngine() {
+  document.getElementById("runtimeCodeText").innerText = "LOCAL_FALLBACK";
+  document.getElementById("runtimeIdText").innerText = stateData.dominionName;
+  document.getElementById("initStatusSub").innerText = "Running on safe standalone layer...";
+  setTimeout(dismissShieldOverlay, 600);
+}
 
 function saveLocalData() {
   try {
@@ -397,10 +442,19 @@ function loadLocalData() {
     if(b) foodBag = JSON.parse(b);
   } catch(e){}
 
+  // Trigger request data ke parent window
   if(window.parent) {
     window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
     window.parent.postMessage({ type: 'REQUEST_USER_INFO' }, '*');
   }
+
+  // FAILSAFE TIMER: Jika dalam 1.5 detik parent diam, munculkan tombol force connect biar ga stuck blank
+  setTimeout(() => {
+    if(document.getElementById("runtimeShield").style.display !== "none") {
+      document.getElementById("btnForceLaunch").style.display = "block";
+      document.getElementById("initStatusSub").innerText = "Parent frame not responding. Ready for manual override.";
+    }
+  }, 1500);
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -500,16 +554,13 @@ function feedPet(item) {
 
 function useFullElixir() { if(foodBag.elixir > 0) { foodBag.elixir--; stateData.hp = stateData.maxHp; stateData.hunger = stateData.maxHunger; saveLocalData(); syncInterfaceGraphic(); } }
 
-/* 🕹️ RESILIENT PHYSICS ENGINE */
+/* 🕹️ PHYSICS SYSTEM ENGINE */
 let pet = null, wrapper = null, isDragging = false;
 let px = 0, py = 0, vx = 0, vy = 0, lastMouseX = 0, lastMouseY = 0, dragOffsetX = 0, dragOffsetY = 0;
 
 function initPhysicsEngine() {
   pet = document.getElementById("petActor"); wrapper = document.getElementById("windowBox");
-  
-  let wWidth = wrapper.clientWidth || 380;
-  let wHeight = wrapper.clientHeight || 520;
-  
+  let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 520;
   px = (wWidth / 2) - 60; py = (wHeight / 2) - 40;
   
   pet.addEventListener("mousedown", startDrag); window.addEventListener("mousemove", doDrag); window.addEventListener("mouseup", stopDrag);
@@ -533,15 +584,12 @@ function doDrag(e) {
 }
 function stopDrag() { isDragging = false; }
 function physicsTick() {
-  let wWidth = wrapper.clientWidth || 380;
-  let wHeight = wrapper.clientHeight || 520;
-  
+  let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 520;
   if (!isDragging) {
     let centerX = (wWidth / 2) - 60, centerY = (wHeight / 2) - 40;
     vx *= 0.95; vy *= 0.95; px += vx; py += vy;
     if (Math.abs(vx) < 1 && Math.abs(vy) < 1) { px += (centerX - px) * 0.04; py += (centerY - py) * 0.04; if(!pet.classList.contains("pet-floating-anim")) pet.classList.add("pet-floating-anim"); }
-    if (px < 0 || px > wWidth - 120) vx *= -0.7;
-    if (py < 0 || py > wHeight - 120) vy *= -0.7;
+    if (px < 0 || px > wWidth - 120) vx *= -0.7; if (py < 0 || py > wHeight - 120) vy *= -0.7;
     pet.style.left = px + "px"; pet.style.top = py + "px";
     pet.style.transform = `rotate(${vx * 1.5}deg)`;
   } else {
@@ -550,7 +598,7 @@ function physicsTick() {
   requestAnimationFrame(physicsTick);
 }
 
-/* ⚔️ RPG ENGINE TURN CONTROL */
+/* ⚔️ TURN-BASED RPG CORE ENGINE */
 let activeEnemy = null, playerBattleHp = 0, enemyBattleHp = 0, skillCooldowns = [0,0,0,0], isEnemyStunned = false, doubleDamageActive = false, isCombatTurnResolving = false;
 
 function prepareBattle() {
@@ -563,34 +611,22 @@ function prepareBattle() {
   const lookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign", element: "Water" };
   document.getElementById("btPlayerElement").innerText = elementIcons[lookup.element] || "💧";
   document.getElementById("btEnemyElement").innerText = elementIcons[activeEnemy.element] || "🌿";
-  
   document.getElementById("btPlayerImg").src = stateData.activePetFile + ".png";
   document.getElementById("btEnemyImg").src = activeEnemy.img;
   document.getElementById("btEnemyName").innerText = activeEnemy.name;
-  document.getElementById("battleLogBox").innerHTML = `<div>Battle Core terhubung. Pilih Protocol!</div>`;
+  document.getElementById("battleLogBox").innerHTML = `<div>Protocol Pertarungan aktif. Silahkan eksekusi!</div>`;
   updateRpgActionButtons();
 }
 
 function updateRpgActionButtons() {
   document.getElementById("btPlayerHp").innerText = `${playerBattleHp}/${stateData.maxHp} HP`;
   document.getElementById("btEnemyHp").innerText = `${enemyBattleHp}/${activeEnemy.maxHp} HP`;
-  
-  const multipliers = [1.0, 1.5, 0.6, 2.5];
-  const tags = ["", "(CD: 3)", "(Stun 50%)", "(CD: 5)"];
+  const multipliers = [1.0, 1.5, 0.6, 2.5], tags = ["", "(CD: 3)", "(Stun 50%)", "(CD: 5)"];
   
   for(let i=0; i<4; i++) {
-    const btn = document.getElementById(`skillBtn${i}`);
-    const meta = document.getElementById(`skillDmg${i}`);
-    
-    if (skillCooldowns[i] > 0) {
-      btn.disabled = true;
-      meta.innerText = `CD: ${skillCooldowns[i]}T`;
-    } else {
-      btn.disabled = isCombatTurnResolving;
-      let dmgEst = Math.floor(stateData.power * multipliers[i]);
-      if (doubleDamageActive) dmgEst *= 2;
-      meta.innerText = `Dmg: ${dmgEst} ${tags[i]}`;
-    }
+    const btn = document.getElementById(`skillBtn${i}`), meta = document.getElementById(`skillDmg${i}`);
+    if (skillCooldowns[i] > 0) { btn.disabled = true; meta.innerText = `CD: ${skillCooldowns[i]}T`; } 
+    else { btn.disabled = isCombatTurnResolving; let dEst = Math.floor(stateData.power * multipliers[i]); if(doubleDamageActive) dEst *= 2; meta.innerText = `Dmg: ${dEst} ${tags[i]}`; }
   }
   document.getElementById("b-stock-elixir").innerText = foodBag.elixir;
   document.getElementById("b-stock-pill").innerText = foodBag.pill;
@@ -598,36 +634,24 @@ function updateRpgActionButtons() {
 
 function executeRpgTurn(idx) {
   if (isCombatTurnResolving) return; isCombatTurnResolving = true;
-  let mult = [1.0, 1.5, 0.6, 2.5][idx]; 
-  let dmg = Math.floor(stateData.power * mult); if(doubleDamageActive) { dmg *= 2; doubleDamageActive = false; }
+  let mult = [1.0, 1.5, 0.6, 2.5][idx], dmg = Math.floor(stateData.power * mult); if(doubleDamageActive) { dmg *= 2; doubleDamageActive = false; }
   
   enemyBattleHp = Math.max(0, enemyBattleHp - dmg);
-  document.getElementById("battleLogBox").innerHTML += `<div>💥 Pet menyerang! -${dmg} HP Musuh.</div>`;
+  document.getElementById("battleLogBox").innerHTML += `<div>💥 Core attack dilepaskan! -${dmg} HP Lawan.</div>`;
   
-  if(idx===1) skillCooldowns[1]=4; 
-  if(idx===3) skillCooldowns[3]=6;
-  
-  if(idx===2 && Math.random() < 0.5) { isEnemyStunned = true; document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ffff;">↳ Stun Berhasil!</div>`; }
-  
+  if(idx===1) skillCooldowns[1]=4; if(idx===3) skillCooldowns[3]=6;
+  if(idx===2 && Math.random() < 0.5) { isEnemyStunned = true; document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ffff;">↳ Core Matrix Ter-Stun!</div>`; }
   for(let i=0; i<4; i++) if(skillCooldowns[i]>0) skillCooldowns[i]--;
 
   updateRpgActionButtons();
-
   if(enemyBattleHp <= 0) { handleBattleVictory(); return; }
   
   setTimeout(() => {
-    if(isEnemyStunned) { 
-      isEnemyStunned = false; 
-      isCombatTurnResolving = false; 
-      document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ffff;">ℹ️ Musuh ter-stun, giliranmu kembali!</div>`;
-      updateRpgActionButtons(); 
-      return; 
-    }
+    if(isEnemyStunned) { isEnemyStunned = false; isCombatTurnResolving = false; document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ffff;">ℹ️ Musuh lumpuh, lanjut serang!</div>`; updateRpgActionButtons(); return; }
     playerBattleHp = Math.max(0, playerBattleHp - activeEnemy.dmg);
-    document.getElementById("battleLogBox").innerHTML += `<div style="color:#ff4a4a;">💥 Musuh membalas! -${activeEnemy.dmg} HP.</div>`;
-    
+    document.getElementById("battleLogBox").innerHTML += `<div>💥 Musuh meng-counter! -${activeEnemy.dmg} HP.</div>`;
     isCombatTurnResolving = false;
-    if(playerBattleHp <= 0) handleBattleDefeat(); else { updateRpgActionButtons(); }
+    if(playerBattleHp <= 0) handleBattleDefeat(); else updateRpgActionButtons();
   }, 800);
 }
 
@@ -636,7 +660,7 @@ function handleBattleVictory() {
   stateData.exp += Math.floor(stateData.maxExp * 0.35);
   if(stateData.exp >= stateData.maxExp) { stateData.exp=0; stateData.level++; stateData.maxHp+=15; stateData.power+=6; }
   stateData.hp = playerBattleHp; saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
-  document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ff00;">Victory! Menang Streak.</div>`;
+  document.getElementById("battleLogBox").innerHTML += `<div style="color:#00ff00;">Sovereign Victory! Streak Terjaga.</div>`;
   setTimeout(() => closeScreen('battleScreen'), 1000);
 }
 
@@ -647,7 +671,7 @@ function handleBattleDefeat() {
 }
 
 function pushUpdateToCloud() {
-  if (!stateData.dominionName || stateData.dominionName === "Dominion Player" || stateData.dominionName === "Player") return;
+  if (!stateData.dominionName || stateData.dominionName === "Player_Alpha") return;
   const key = stateData.dominionName.replace(/[.#$\[\]]/g, "_");
   fetch(`${FIREBASE_DB_URL}/leaderboard/${key}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: stateData.dominionName, streak: stateData.highestStreak, hunt: stateData.totalHunts, level: stateData.level }) }).catch(()=>{});
 }
@@ -676,13 +700,13 @@ function syncOwnerFields() {
 }
 function applyOwnerPetStats() {
   stateData.maxHp = parseInt(document.getElementById("inpDevMaxHp").value) || 100; stateData.hp = parseInt(document.getElementById("inpDevHp").value) || 100;
-  stateData.power = parseInt(document.getElementById("inpDevPower").value) || 65; stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
+  stateData.power = parseInt(document.getElementById("inpDevPower").value) || 25; stateData.exp = parseInt(document.getElementById("inpDevExp").value) || 0;
   stateData.activePetFile = document.getElementById("inpDevFileCode").value || "Ikan5";
   saveLocalData(); syncInterfaceGraphic(); alert("Core Modified!");
 }
 function generateOwnerLoot() { Object.keys(foodBag).forEach(k => foodBag[k] = 50); saveLocalData(); updateInventoryCounters(); alert("Items Injected!"); }
 
-/* 🧭 SCREEN TRANSITIONS */
+/* 🧭 ANIMASI TRANSISI MONITOR SCREEN */
 function openScreen(id) { const el = document.getElementById(id); el.style.display = "flex"; requestAnimationFrame(() => el.classList.add("overlay-active")); }
 function closeScreen(id) { const el = document.getElementById(id); el.classList.remove("overlay-active"); setTimeout(() => { if(!el.classList.contains("overlay-active")) el.style.display = "none"; }, 210); }
 
