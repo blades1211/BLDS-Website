@@ -15,14 +15,15 @@ body {
   height: 100vh;
 }
 
-/* 📱 CORE RUNTIME CONTAINER (Anti-Bug Vercel Display) */
+/* 📱 CORE RUNTIME CONTAINER */
 .main-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: #000000; border-radius: 12px;
-  width: 100%; max-width: 410px; height: 100%; max-height: 620px; 
+  width: 100%; max-width: 410px; height: 100%; max-height: 640px; 
   position: relative; overflow: hidden; box-sizing: border-box;
   box-shadow: 0 0 35px rgba(255,255,255,0.03);
   margin: auto;
+  display: flex; flex-direction: column;
 }
 
 /* 🧭 HUD ATAS */
@@ -84,13 +85,13 @@ body {
 }
 
 .hunt-trigger-wrapper {
-  position: absolute; bottom: 90px; left: 0; right: 0;
+  position: absolute; bottom: 130px; left: 0; right: 0;
   display: flex; justify-content: center; z-index: 40;
 }
 
 /* 🎒 INVENTORY CONTAINER */
 .bottom-controls {
-  position: absolute; bottom: 16px; left: 16px; right: 16px;
+  position: absolute; bottom: 55px; left: 16px; right: 16px;
   display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 45;
 }
 .inventory-belt {
@@ -109,6 +110,19 @@ body {
   font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 6px;
 }
 
+/* 🔗 FOOTER COMMS COMMUNITY PANEL */
+.comm-footer-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+  background: #000000; border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex; justify-content: space-around; align-items: center; z-index: 150;
+}
+.footer-link {
+  color: rgba(255, 255, 255, 0.6); font-size: 11px; text-decoration: none;
+  font-weight: bold; display: flex; align-items: center; gap: 6px;
+  transition: color 0.2s ease; cursor: pointer;
+}
+.footer-link:hover { color: #ffffff; }
+
 /* 📡 INTEGRATED INITIALIZER OVERLAY */
 .runtime-init-shield {
   position: absolute; inset: 0; background: #000000; z-index: 999;
@@ -123,11 +137,11 @@ body {
 .init-meta-line { font-size: 12px; margin-bottom: 10px; color: #888888; text-transform: uppercase; }
 .init-meta-line span { color: #ffffff; font-weight: bold; }
 
-/* ⚔️ SCREEN OVERLAYS (BATTLE, LEADERBOARD, DEV) */
+/* ⚔️ SCREEN OVERLAYS */
 .screen-overlay {
   position: absolute; inset: 0; background: #000000; z-index: 200;
   display: none; flex-direction: column; padding: 16px; box-sizing: border-box;
-  opacity: 0; transition: opacity 0.25s ease;
+  opacity: 0; transition: opacity 0.2s ease;
 }
 .screen-overlay.overlay-active { display: flex !important; opacity: 1; }
 
@@ -183,7 +197,7 @@ body {
   <div class="top-nav-container">
     <div class="nav-left">
       <button class="nav-btn" onclick="triggerSfx('click'); openScreen('gatekeeperScreen')">🛠️ Matrix</button>
-      <button class="nav-btn" onclick="triggerSfx('click'); openLeaderboardScreen()">📊 Global</button>
+      <button class="nav-btn" onclick="triggerSfx('click'); openScreen('leaderboardScreen'); switchLeaderboardTab(currentActiveTab);">📊 Global</button>
     </div>
     
     <div class="status-panel" id="mainStatusHud">
@@ -227,6 +241,11 @@ body {
       <div class="food-slot" onclick="triggerSfx('click'); feedPet('pizza')">🍕<span class="food-count" id="count-pizza">0</span></div>
       <div class="food-slot" onclick="triggerSfx('heavy'); useFullElixir()">🧪<span class="food-count" id="count-elixir">0</span></div>
     </div>
+  </div>
+
+  <div class="comm-footer-bar">
+    <a href="https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0" target="_blank" class="footer-link">💬 WhatsApp Group</a>
+    <a href="https://discord.gg/r4dM4QFteV" target="_blank" class="footer-link">👾 Discord Server</a>
   </div>
 
   <div class="screen-overlay" id="battleScreen">
@@ -361,21 +380,17 @@ function handleImageLoadError(imgEl) {
   document.getElementById("fallbackGraphicIcon").style.display = 'block';
 }
 
-/* 📋 DATABASE DATABASE EVOLUSI BEAST BERDASARKAN LORE POSTER */
 const petNamingRegistry = {
-  // Rumpun Air (Void Cores)
   "Ikan1": { title: "Glitter Fin [Fase 1]", element: "Water" },
   "Ikan2": { title: "Aqua Brocade [Fase 2]", element: "Water" },
   "Ikan3": { title: "Torrent Glimmer [Fase 3]", element: "Water" },
   "Ikan4": { title: "Abyssal Koi [Fase 4]", element: "Water" },
   "Ikan5": { title: "Aurelius Sovereign [Fase 5]", element: "Water" },
-  // Rumpun Api (Pyre Cores)
   "Naga1": { title: "Pyre Hatchling [Fase 1]", element: "Fire" },
   "Naga2": { title: "Ember Scale [Fase 2]", element: "Fire" },
   "Naga3": { title: "Blaze Wing [Fase 3]", element: "Fire" },
   "Naga4": { title: "Ignis Dread [Fase 4]", element: "Fire" },
   "Naga5": { title: "Astral Sovereign [Fase 5]", element: "Fire" },
-  // Rumpun Tanah/Hutan (Lupin Cores)
   "Serigala1": { title: "Lupin Pup [Fase 1]", element: "Earth" },
   "Serigala2": { title: "Wild Fang [Fase 2]", element: "Earth" },
   "Serigala3": { title: "Alpha Claw [Fase 3]", element: "Earth" },
@@ -409,7 +424,6 @@ const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
 const FIREBASE_DB_URL = "https://bolds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-/* 📡 IFRAME - PARENT COMMUNICATION HANDSHAKE */
 window.addEventListener("message", (e) => {
   if (e.data) {
     let hasPayload = false;
@@ -420,7 +434,6 @@ window.addEventListener("message", (e) => {
         stateData.highestStreak = e.data.data.highestCount || 0;
       }
       if (e.data.pet && e.data.pet.name) {
-        // Jika parent punya data model pet tersendiri, kita sinkronisasi
         const cleanName = e.data.pet.name.replace(".png", "");
         if (petNamingRegistry[cleanName]) stateData.activePetFile = cleanName;
       }
@@ -431,7 +444,6 @@ window.addEventListener("message", (e) => {
       stateData.codeParent = e.data.code || "BLDS_MATRIX";
       hasPayload = true;
     }
-    
     if(hasPayload) {
       document.getElementById("runtimeCodeText").innerText = stateData.codeParent;
       document.getElementById("runtimeIdText").innerText = stateData.dominionName;
@@ -476,7 +488,6 @@ function loadLocalData() {
     window.parent.postMessage({ type: 'REQUEST_USER_INFO' }, '*');
   }
 
-  // Failsafe Bypass: Jika di Vercel tidak ada respon iframe dalam 1.2 detik, aktifkan opsi force manual
   setTimeout(() => {
     if(document.getElementById("runtimeShield").style.display !== "none") {
       document.getElementById("btnForceLaunch").style.display = "block";
@@ -493,7 +504,10 @@ function loadLocalData() {
 function verifyGatekeeperKey() {
   const field = document.getElementById("gatekeeperKeyField");
   if(field.value === "OWNERONLYBLDS") {
-    field.value = ""; closeScreen('gatekeeperScreen'); openScreen('ownerScreen'); syncOwnerFields();
+    field.value = ""; 
+    closeScreen('gatekeeperScreen'); 
+    openScreen('ownerScreen'); 
+    syncOwnerFields();
   } else {
     alert("INVALID SECURITY CODE!"); field.value = "";
   }
@@ -541,7 +555,6 @@ function renderLeaderboardRows() {
 
 function syncInterfaceGraphic() {
   const lookup = petNamingRegistry[stateData.activePetFile] || { title: "Aurelius Sovereign [Fase 5]", element: "Water" };
-  
   const imgNode = document.getElementById("etPetImageNode");
   const fallbackNode = document.getElementById("fallbackGraphicIcon");
   
@@ -693,7 +706,7 @@ function handleBattleVictory() {
 }
 
 function handleBattleDefeat() {
-  stateData.currentStreak = 0; stateData.hp = 0; stateData.deathTimestamp = Date.now() + (4 * 60 * 60 * 1000); // 4 Jam cooldown jika tumbang
+  stateData.currentStreak = 0; stateData.hp = 0; stateData.deathTimestamp = Date.now() + (4 * 60 * 60 * 1000); 
   saveLocalData(); syncInterfaceGraphic(); pushUpdateToCloud();
   setTimeout(() => { closeScreen('battleScreen'); checkDeathCooldown(); }, 700);
 }
@@ -731,7 +744,7 @@ function generateOwnerLoot() { Object.keys(foodBag).forEach(k => foodBag[k] = 99
 
 /* 🧭 SCREEN ANIMATION CONTROLLER */
 function openScreen(id) { const el = document.getElementById(id); el.style.display = "flex"; requestAnimationFrame(() => el.classList.add("overlay-active")); }
-function closeScreen(id) { const el = document.getElementById(id); el.classList.remove("overlay-active"); setTimeout(() => { if(!el.classList.contains("overlay-active")) el.style.display = "none"; }, 250); }
+function closeScreen(id) { const el = document.getElementById(id); el.classList.remove("overlay-active"); setTimeout(() => { if(!el.classList.contains("overlay-active")) el.style.display = "none"; }, 200); }
 
 window.addEventListener("load", loadLocalData);
 </script>
