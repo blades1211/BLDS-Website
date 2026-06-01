@@ -45,7 +45,7 @@ body.split-state::after {
 }
 @keyframes starFloat { 0% { transform: translateY(100vh); } 100% { transform: translateY(-10px); } }
 
-/* REQ: Modifikasi overlay transisi klik tombol menjadi GELAP perlahan */
+/* Overlay transisi klik tombol menjadi GELAP perlahan */
 .enter-transition-overlay {
   position: fixed; inset: 0; background: #000; z-index: 999999;
   opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
@@ -79,7 +79,7 @@ body.split-state::after {
 .theme-matrix { color: #00ff00 !important; }
 .theme-matrix .box, .theme-matrix .theme-modal-box { border-color: #00ff00 !important; background: #000300 !important; }
 .theme-matrix button, .theme-matrix .menu button { border-color: #00ff00 !important; color: #00ff00 !important; }
-.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #00px !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
+.theme-matrix button:hover, .theme-matrix .menu button:hover { background: #00ff00 !important; color: #000 !important; box-shadow: 0 0 15px rgba(0,255,0,0.4); }
 .theme-matrix .title { text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.4) !important; }
 .theme-matrix .logo-container { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.7)); }
 .theme-matrix .text-logo-fallback { border-color: #00ff00 !important; }
@@ -203,7 +203,19 @@ body.split-state::after {
 }
 .menu button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
-.page { display: none; width: 100%; margin-bottom: 40px; height: auto; }
+/* Animasi Halaman saat Muncul (Transisi Smooth) */
+.page { 
+  display: none; 
+  width: 100%; 
+  margin-bottom: 40px; 
+  height: auto; 
+  animation: pageFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .box { background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.08); padding: 35px; border-radius: 8px; height: auto; overflow: visible; }
 
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
@@ -300,7 +312,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
   padding: 40px; box-sizing: border-box; text-align: center;
 }
 
-/* REQ: Animasi Bersinar (Glow) untuk Logo BLDS & Teks */
+/* Animasi Bersinar (Glow) untuk Logo BLDS & Teks */
 .cutscene-logo { 
   width: 150px; opacity: 0; transition: opacity 2s ease; margin-bottom: 30px; 
 }
@@ -345,6 +357,8 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 <audio id="bgAmbient" loop><source src="freesound_community-space-ambience-56265.mp3" type="audio/mpeg"></audio>
 <audio id="audio12Flames"><source src="12flames_ambient.mp3" type="audio/mpeg"></audio>
 <audio id="audioForgotten"><source src="forgotten_ambient.mp3" type="audio/mpeg"></audio>
+
+<audio id="menuClickSound"><source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" type="audio/wav"></audio>
 
 <div class="enter-transition-overlay" id="smoothEnterOverlay"></div>
 <div class="loader" id="loader"><div class="loaderCircle"></div><div class="loaderText">Loading Blacklight Core...</div></div>
@@ -837,31 +851,30 @@ function resetCalibrationBtnUI() {
   document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
 }
 
-// REQ: Modifikasi saat klik tombol ada transisi GELAP perlahan
+// Modifikasi saat klik tombol ada transisi GELAP perlahan
 function enter() {
   if(!streakData.dominionName) { 
     document.getElementById("modalTitle").innerText = "Main Matrix Registration";
     document.getElementById("nameModal").style.display="flex"; 
     return; 
   }
+  playClickSound();
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   if(ambient) { ambient.play().catch(()=>{}); }
   
-  // Mengaktifkan overlay hitam memudar masuk perlahan selama 1.5 detik
   overlay.classList.add("active");
   
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
     document.getElementById("menu").style.display = "flex";
     exitFullscreenPage(); 
-    
-    // Memudarkan kembali overlay hitam secara halus setelah menu terbuka
     overlay.classList.remove("active");
   }, 1500); 
 }
 
 function calibrateCore() {
+  playClickSound();
   streakData.count++;
   if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
   streakData.lastCalibratedTimestamp = Date.now();
@@ -869,6 +882,7 @@ function calibrateCore() {
 }
 
 function saveDominionName() {
+  playClickSound();
   const nameVal = document.getElementById("dominionNameInput").value.trim();
   const petVal = document.getElementById("petSelectInput").value;
   if(!nameVal) { alert("Dominion Name tidak boleh kosong, bre!"); return; }
@@ -883,10 +897,11 @@ function saveDominionName() {
   enter();
 }
 
-function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
-function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
+function openResetModal() { playClickSound(); document.getElementById("resetConfirmModal").style.display="flex"; }
+function closeResetModal() { playClickSound(); document.getElementById("resetConfirmModal").style.display="none"; }
 
 function confirmResetStreak() {
+  playClickSound();
   streakData.count = 0;
   streakData.highestCount = 1;
   streakData.lastCalibratedTimestamp = null;
@@ -897,10 +912,20 @@ function confirmResetStreak() {
   document.getElementById("nameModal").style.display = "flex";
 }
 
+// Fungsi Trigger Efek Suara Tombol
+function playClickSound() {
+  const snd = document.getElementById("menuClickSound");
+  if(snd) {
+    snd.currentTime = 0;
+    snd.play().catch(()=>{});
+  }
+}
+
 // ==========================================
 // CORE DECRYPTION ENGINE (MODIFIKASI KODE)
 // ==========================================
 function unlockCode() { 
+  playClickSound();
   const codeVal = document.getElementById("codeInput").value.trim().toUpperCase();
   
   if(codeVal === "OWNERONLYBLDS") {
@@ -911,7 +936,6 @@ function unlockCode() {
   else if (codeVal === "BLACK") {
     document.body.classList.add("inverted-state");
   } 
-  // REQ: Perbaikan kode WHITE buat bikin layar kembali normal sembuh bug
   else if (codeVal === "WHITE") {
     document.body.classList.remove("inverted-state");
     document.body.classList.remove("split-state");
@@ -930,7 +954,7 @@ function unlockCode() {
   }
 }
 
-// 🎬 REQ: Perbaikan Urutan Cutscene & Efek Bersinar Logo + Teks BLDS
+// 🎬 Perbaikan Urutan Cutscene & Efek Bersinar Logo + Teks BLDS
 function runBldsCutscene() {
   const theater = document.getElementById("cutsceneTheater");
   const logo = document.getElementById("cutsceneLogo");
@@ -941,41 +965,35 @@ function runBldsCutscene() {
   txt.style.color = "#fff";
   txt.innerText = "";
   
-  // Memunculkan logo dengan class GLOW efek bersinar blds bawaan beast
   setTimeout(() => { 
     logo.classList.add("cutscene-logo-glow");
     logo.style.opacity = "1"; 
   }, 1000);
   
-  // Sekuens dialog bertahap awal
   setTimeout(() => { showTextStep(txt, "Sun"); }, 3000);
   setTimeout(() => { showTextStep(txt, "Moon"); }, 6000);
   setTimeout(() => { showTextStep(txt, "With the core inside"); }, 9000);
   
-  // Bagian Utama: Dialog "This is BLDS"
   setTimeout(() => {
     txt.style.opacity = "0";
     setTimeout(() => {
       txt.innerText = "This is BLDS";
       txt.style.fontSize = "32px";
       txt.style.fontWeight = "bold";
-      txt.classList.add("cutscene-text-glow"); // Teks ikutan bersinar bersinar
+      txt.classList.add("cutscene-text-glow"); 
       txt.style.opacity = "1";
     }, 400);
   }, 12000);
   
-  // REQ FIX: Teks dihilangin dulu total, baru transisi warna putih perlahan
   setTimeout(() => {
-    txt.style.opacity = "0"; // Teks hilang duluan bersih pas dialog selesai
+    txt.style.opacity = "0"; 
   }, 15500);
 
   setTimeout(() => {
-    // Baru transisi warna putih perlahan (benerin dlu di switch ease theater)
     theater.style.transition = "background-color 4.5s ease-in-out";
     theater.style.backgroundColor = "#fff";
   }, 16200);
   
-  // Selesai Cutscene total, transisi ke split-view
   setTimeout(() => {
     theater.style.display = "none";
     logo.style.opacity = "0";
@@ -1045,6 +1063,7 @@ function showTextStep(element, text) {
 }
 
 function closeFullscreenViewer(id) {
+  playClickSound();
   document.getElementById(id).style.display = "none";
   document.getElementById("audio12Flames").pause();
   document.getElementById("audio12Flames").currentTime = 0;
@@ -1053,6 +1072,7 @@ function closeFullscreenViewer(id) {
 }
 
 function executeAdminUpdate() {
+  playClickSound();
   streakData.dominionName = document.getElementById("admDomName").value.trim() || streakData.dominionName;
   if(document.getElementById("admStreak").value) streakData.count = parseInt(document.getElementById("admStreak").value);
   if(document.getElementById("admHighStreak").value) streakData.highestCount = parseInt(document.getElementById("admHighStreak").value);
@@ -1062,26 +1082,39 @@ function executeAdminUpdate() {
   alert("Perubahan berhasil diterapkan.");
 }
 
+// Memperbaiki komunikasi runtime data telemetry dengan Beast Engine Frame
 function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
     const activeTheme = document.body.className;
-    f.contentWindow.postMessage({ type: 'TELEMETRY_UPDATE', data: streakData, pet: petData, theme: activeTheme }, '*');
+    // Mengirim payload lengkap terstruktur agar dibaca engine beast.html
+    f.contentWindow.postMessage({ 
+      type: 'TELEMETRY_UPDATE', 
+      data: streakData, 
+      pet: petData, 
+      theme: activeTheme 
+    }, '*');
   }
 }
 
 function showPage(id) {
+  playClickSound();
   document.getElementById("coreHubHeaderArea").style.display = "none";
   document.getElementById("menu").style.display = "none";
   document.getElementById("calibrationHud").style.display = "none";
   
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
-  document.getElementById(id).style.display="block";
   
-  if(id === 'beastPage') { setTimeout(broadcastToBeast, 120); }
+  const targetPage = document.getElementById(id);
+  targetPage.style.display = "block";
+  
+  if(id === 'beastPage') { 
+    setTimeout(broadcastToBeast, 200); 
+  }
 }
 
 function exitFullscreenPage() {
+  playClickSound();
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
   
   document.getElementById("coreHubHeaderArea").style.display = "flex";
@@ -1102,7 +1135,7 @@ window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeou
 const launcher = document.getElementById("adminLauncherBtn");
 const panel = document.getElementById("adminPanel");
 const header = document.getElementById("adminPanelHeader");
-launcher.addEventListener("click", () => { panel.style.display = panel.style.display === "flex" ? "none" : "flex"; });
+launcher.addEventListener("click", () => { playClickSound(); panel.style.display = panel.style.display === "flex" ? "none" : "flex"; });
 let isDragging = false; let currentX; let currentY; let initialX; let initialY; let xOffset = 0; let yOffset = 0;
 header.addEventListener("mousedown", dragStart); window.addEventListener("mousemove", drag); window.addEventListener("mouseup", dragEnd);
 function dragStart(e) { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; if (e.target === header || header.contains(e.target)) { isDragging = true; } }
