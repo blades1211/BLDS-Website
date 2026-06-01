@@ -43,6 +43,16 @@ body {
 .nav-btn:active:not(:disabled) { transform: scale(0.96); }
 .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
+/* 📡 TOMBOL INDIKATOR TES BARU */
+.test-signal-btn {
+  background: #220000; color: #ff5555; border: 1px solid #ff3333;
+  animation: pulseBlink 1.5s infinite;
+}
+@keyframes pulseBlink {
+  0%, 100% { opacity: 0.7; box-shadow: 0 0 2px #ff3333; }
+  50% { opacity: 1; box-shadow: 0 0 10px #ff3333; }
+}
+
 .status-panel {
   background: #000000; border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 10px; border-radius: 6px; width: 155px; font-size: 10px; pointer-events: auto;
@@ -72,6 +82,14 @@ body {
 @keyframes petIdleFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
+}
+
+/* ANIMASI GETAR BUAT TES RESPON KODE */
+.pet-shake-hit { animation: petShakeAnim 0.4s ease-in-out !important; }
+@keyframes petShakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px) rotate(-5deg); }
+  40%, 80% { transform: translateX(8px) rotate(5deg); }
 }
 
 .static-title-hud {
@@ -128,6 +146,7 @@ body {
   position: absolute; inset: 0; background: #000000; z-index: 999;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   padding: 20px; box-sizing: border-box;
+  transition: opacity 0.3s ease;
 }
 .init-terminal-box {
   border: 1px solid rgba(255,255,255,0.4); border-radius: 4px;
@@ -173,9 +192,9 @@ body {
 #mobile-debug-console {
   position: absolute; bottom: 42px; left: 10px; right: 10px; 
   height: 85px; background: rgba(15, 15, 15, 0.95); 
-  color: #ff5555; font-family: monospace; font-size: 9px; 
+  color: #39ff14; font-family: monospace; font-size: 9px; 
   padding: 6px; overflow-y: auto; z-index: 800; 
-  border: 1px solid #333; border-radius: 4px;
+  border: 1px solid #222; border-radius: 4px;
   pointer-events: auto; box-shadow: inset 0 0 10px #000;
 }
 </style>
@@ -208,6 +227,7 @@ body {
     <div class="nav-left">
       <button class="nav-btn" onclick="triggerSfx('click'); openScreen('gatekeeperScreen')">🛠️ Matrix</button>
       <button class="nav-btn" onclick="triggerSfx('click'); openScreen('leaderboardScreen'); switchLeaderboardTab(currentActiveTab);">📊 Global</button>
+      <button class="nav-btn test-signal-btn" onclick="executeSignalTest()">📡 TEST SIGNAL</button>
     </div>
     
     <div class="status-panel" id="mainStatusHud">
@@ -256,8 +276,8 @@ body {
   <div id="mobile-debug-console">📟 Console logger standby. No errors detected.</div>
 
   <div class="comm-footer-bar">
-    <div onclick="window.open('https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0', '_blank')" class="footer-link" style="cursor:pointer;">💬 WhatsApp Group</div>
-    <div onclick="window.open('https://discord.gg/r4dM4QFteV', '_blank')" class="footer-link" style="cursor:pointer;">👾 Discord Server</div>
+    <div onclick="window.open('https://chat.whatsapp.com/LYhSQn3vXhO6qpVWyoJEoR?s=cl&p=a&mlu=0', '_blank')", class="footer-link" style="cursor:pointer;">💬 WhatsApp Group</div>
+    <div onclick="window.open('https://discord.gg/r4dM4QFteV', '_blank')", class="footer-link" style="cursor:pointer;">👾 Discord Server</div>
   </div>
 
   <div class="screen-overlay" id="battleScreen">
@@ -446,6 +466,25 @@ const elementIcons = { Fire: "🔥", Water: "💧", Earth: "🌿" };
 let currentActiveTab = 'streak';
 const FIREBASE_DB_URL = "https://bolds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
+// FUNGSI PENGUJI SINYAL INTERNAL (BARU)
+function executeSignalTest() {
+  triggerSfx('heavy');
+  foodBag.apple += 5;
+  const consoleBox = document.getElementById("mobile-debug-console");
+  if(consoleBox) {
+    consoleBox.style.color = "#39ff14";
+    consoleBox.innerHTML = `📡 <b>SIGNAL TEST:</b> Injection Berhasil! (+5 Apple disuntikkan)`;
+  }
+  
+  // Kasih animasi getar ke pet biar keliatan berubah
+  const petEl = document.getElementById("petActor");
+  if(petEl) {
+    petEl.classList.add("pet-shake-hit");
+    setTimeout(() => { petEl.classList.remove("pet-shake-hit"); }, 400);
+  }
+  syncInterfaceGraphic();
+}
+
 window.addEventListener("message", (e) => {
   if (e.data) {
     let hasPayload = false;
@@ -477,10 +516,13 @@ window.addEventListener("message", (e) => {
 
 function dismissShieldOverlay() {
   const shield = document.getElementById("runtimeShield");
-  shield.style.opacity = "0";
-  setTimeout(() => { shield.style.display = "none"; }, 250);
+  if(shield) {
+    shield.style.opacity = "0";
+    setTimeout(() => { shield.style.display = "none"; }, 250);
+  }
   saveLocalData();
-  syncInterfaceGraphic();
+  // FIX CRASH: Pastikan DOM dirender pasca penutupan overlay tameng
+  setTimeout(syncInterfaceGraphic, 50);
 }
 
 function forceLaunchEngine() {
@@ -510,12 +552,15 @@ function loadLocalData() {
     window.parent.postMessage({ type: 'REQUEST_USER_INFO' }, '*');
   }
 
+  // AUTO-BYPASS FIX: Supaya gak stuck di layar hitam kalau dimuat mandiri
   setTimeout(() => {
-    if(document.getElementById("runtimeShield").style.display !== "none") {
+    const shield = document.getElementById("runtimeShield");
+    if(shield && shield.style.display !== "none") {
       document.getElementById("btnForceLaunch").style.display = "block";
-      document.getElementById("initStatusSub").innerText = "Hubungan mainframe terhambat. Sembuhkan manual di bawah.";
+      document.getElementById("initStatusSub").innerText = "Bypassing handshake... Membuka mesin.";
+      setTimeout(forceLaunchEngine, 800);
     }
-  }, 1200);
+  }, 1500);
 
   checkDeathCooldown();
   syncInterfaceGraphic();
@@ -580,22 +625,41 @@ function syncInterfaceGraphic() {
   const imgNode = document.getElementById("etPetImageNode");
   const fallbackNode = document.getElementById("fallbackGraphicIcon");
   
-  imgNode.src = stateData.activePetFile + ".png";
-  imgNode.style.display = 'block';
-  fallbackNode.style.display = 'none';
+  if(imgNode) {
+    imgNode.src = stateData.activePetFile + ".png";
+    imgNode.style.display = 'block';
+  }
+  if(fallbackNode) fallbackNode.style.display = 'none';
 
-  document.getElementById("petLabelTag").innerHTML = `${elementIcons[lookup.element] || "💧"} ${lookup.title}<br><span style="font-size:10px; opacity:0.6;">ID: ${stateData.dominionName}</span>`;
-  document.getElementById("death-revive-stock").innerText = foodBag.revive || 0;
-  renderStats(); updateInventoryCounters();
+  const titleHud = document.getElementById("petLabelTag");
+  if(titleHud) {
+    titleHud.innerHTML = `${elementIcons[lookup.element] || "💧"} ${lookup.title}<br><span style="font-size:10px; opacity:0.6;">ID: ${stateData.dominionName}</span>`;
+  }
+  
+  const stockRevive = document.getElementById("death-revive-stock");
+  if(stockRevive) stockRevive.innerText = foodBag.revive || 0;
+  
+  renderStats(); 
+  updateInventoryCounters();
 }
 
 function renderStats() {
-  document.getElementById("txtHp").innerText = `${stateData.hp}/${stateData.maxHp}`;
-  document.getElementById("fillHp").style.width = `${(stateData.hp / stateData.maxHp) * 100}%`;
-  document.getElementById("txtHunger").innerText = `${stateData.hunger}/${stateData.maxHunger}`;
-  document.getElementById("fillHunger").style.width = `${(stateData.hunger / stateData.maxHunger) * 100}%`;
-  document.getElementById("txtExp").innerText = `${Math.floor((stateData.exp / stateData.maxExp) * 100)}%`;
-  document.getElementById("fillExp").style.width = `${(stateData.exp / stateData.maxExp) * 100}%`;
+  const tHp = document.getElementById("txtHp"), fHp = document.getElementById("fillHp");
+  const tHg = document.getElementById("txtHunger"), fHg = document.getElementById("fillHunger");
+  const tXp = document.getElementById("txtExp"), fXp = document.getElementById("fillExp");
+
+  if(tHp && fHp) {
+    tHp.innerText = `${stateData.hp}/${stateData.maxHp}`;
+    fHp.style.width = `${(stateData.hp / stateData.maxHp) * 100}%`;
+  }
+  if(tHg && fHg) {
+    tHg.innerText = `${stateData.hunger}/${stateData.maxHunger}`;
+    fHg.style.width = `${(stateData.hunger / stateData.maxHunger) * 100}%`;
+  }
+  if(tXp && fXp) {
+    tXp.innerText = `${Math.floor((stateData.exp / stateData.maxExp) * 100)}%`;
+    fXp.style.width = `${(stateData.exp / stateData.maxExp) * 100}%`;
+  }
 }
 
 function updateInventoryCounters() {
@@ -624,6 +688,7 @@ let px = 0, py = 0, vx = 0, vy = 0, lastMouseX = 0, lastMouseY = 0, dragOffsetX 
 
 function initPhysicsEngine() {
   pet = document.getElementById("petActor"); wrapper = document.getElementById("windowBox");
+  if(!pet || !wrapper) return;
   let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 580;
   px = (wWidth / 2) - 70; py = (wHeight / 2) - 50;
   
@@ -648,14 +713,15 @@ function doDrag(e) {
 }
 function stopDrag() { isDragging = false; }
 function physicsTick() {
+  if(!wrapper || !pet) return;
   let wWidth = wrapper.clientWidth || 380; let wHeight = wrapper.clientHeight || 580;
   if (!isDragging) {
     let centerX = (wWidth / 2) - 70, centerY = (wHeight / 2) - 40;
     vx *= 0.94; vy *= 0.94; px += vx; py += vy;
-    if (Math.abs(vx) < 1 && Math.abs(vy) < 1) { px += (centerX - px) * 0.05; py += (centerY - py) * 0.05; if(!pet.classList.contains("pet-floating-anim")) pet.classList.add("pet-floating-anim"); }
+    if (Math.abs(vx) < 1 && Math.abs(vy) < 1) { px += (centerX - px) * 0.05; py += (centerY - py) * 0.05; if(!pet.classList.contains("pet-floating-anim") && !pet.classList.contains("pet-shake-hit")) pet.classList.add("pet-floating-anim"); }
     if (px < 0 || px > wWidth - 140) vx *= -0.7; if (py < 0 || py > wHeight - 140) vy *= -0.7;
     pet.style.left = px + "px"; pet.style.top = py + "px";
-    pet.style.transform = `rotate(${vx * 1.3}deg)`;
+    if(!pet.classList.contains("pet-shake-hit")) pet.style.transform = `rotate(${vx * 1.3}deg)`;
   } else {
     pet.style.left = px + "px"; pet.style.top = py + "px";
   }
@@ -703,7 +769,7 @@ function executeRpgTurn(idx) {
   document.getElementById("battleLogBox").innerHTML += `<div>💥 Core Strike! Menghancurkan -${dmg} HP lawan.</div>`;
   
   if(idx===1) skillCooldowns[1]=4; if(idx===3) skillCooldowns[3]=6;
-  if(idx===2 && Math.random() < 0.5) { isEnemyStunned = true; document.getElementById("battleLogBox").innerHTML += `<div style="text-decoration:underline;">↳ Target Ter-Stun!</div>`; }
+  if(idx===2 && Math.random() < 0.5) { isEnemyStunned = true; document.getElementById("battleLogBox").innerHTML += `<div class="stun-alert" style="text-decoration:underline;">↳ Target Ter-Stun!</div>`; }
   for(let i=0; i<4; i++) if(skillCooldowns[i]>0) skillCooldowns[i]--;
 
   updateRpgActionButtons();
@@ -740,12 +806,14 @@ function pushUpdateToCloud() {
 }
 
 function checkDeathCooldown() {
+  const overlay = document.getElementById("deathOverlay");
+  if(!overlay) return;
   if (stateData.deathTimestamp && Date.now() < stateData.deathTimestamp) {
-    document.getElementById("deathOverlay").style.display = "flex";
+    overlay.style.display = "flex";
     let diff = stateData.deathTimestamp - Date.now();
     let mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)), secs = Math.floor((diff % (1000 * 60)) / 1000);
     document.getElementById("countdownTimer").innerText = `00:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
-  } else { document.getElementById("deathOverlay").style.display = "none"; }
+  } else { overlay.style.display = "none"; }
 }
 
 function useReviveInstant() { if(foodBag.revive > 0) { foodBag.revive--; stateData.deathTimestamp = null; stateData.hp = Math.floor(stateData.maxHp * 0.5); saveLocalData(); syncInterfaceGraphic(); } }
@@ -764,14 +832,16 @@ function applyOwnerPetStats() {
 }
 function generateOwnerLoot() { Object.keys(foodBag).forEach(k => foodBag[k] = 99); saveLocalData(); updateInventoryCounters(); alert("Resource Pack Loaded."); }
 
-/* 🧭 SCREEN ANIMATION CONTROLLER (SUDAH DIOPTIMALKAN) */
+/* 🧭 SCREEN ANIMATION CONTROLLER */
 function openScreen(id) { 
   const el = document.getElementById(id); 
+  if(!el) return;
   el.style.display = "flex"; 
   requestAnimationFrame(() => el.classList.add("overlay-active")); 
 }
 function closeScreen(id) { 
   const el = document.getElementById(id); 
+  if(!el) return;
   el.style.display = "none";
   el.classList.remove("overlay-active"); 
 }
