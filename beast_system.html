@@ -3,490 +3,228 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Beast Engine v3 - Safe Mode</title>
+  <title>Beast Engine Core Game</title>
   <style>
     :root {
-      --bg-main: #000000;
-      --panel-bg: #070708;
-      --border-color: #1f2026;
-      --accent-green: #00ffcc;
-      --accent-red: #ff4a4a;
-      --accent-orange: #ffcc00;
-      --accent-purple: #bf5af2;
+      --bg-black: #000000;
+      --box-bg: #070708;
+      --border-line: #1f2026;
+      --cyan-neon: #00ffcc;
+      --purple-neon: #bf5af2;
+      --orange-fire: #ffcc00;
+      --red-alert: #ff4a4a;
     }
 
     body, html {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      background-color: var(--bg-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff; overflow-x: hidden; user-select: none; -webkit-user-select: none;
+      margin:0; padding:0; width:100%; height:100%;
+      background: var(--bg-black); color:#fff;
+      font-family: sans-serif; overflow: hidden;
     }
 
-    #app-container {
-      display: flex; flex-direction: column; min-height: 100vh; padding: 15px; box-sizing: border-box;
+    #wrapper {
+      display: flex; flex-direction: column; height: 100vh; padding: 12px; box-sizing: border-box;
     }
 
-    /* --- TOP MENU BAR --- */
-    .top-menu {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;
+    .nav-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+    .tab-trigger {
+      background: transparent; border: 1px solid #2d3039; color: #fff; padding: 8px;
+      border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center;
     }
-    .menu-btn {
-      background: transparent; border: 1px solid #2d3039; color: #fff;
-      padding: 10px; border-radius: 20px; font-size: 12px; cursor: pointer; text-align: center;
-      font-weight: bold; letter-spacing: 0.5px;
-    }
-    .menu-btn:active { background: #111215; }
-    .menu-btn.active-tab { border-color: var(--accent-green); color: var(--accent-green); background: rgba(0, 255, 204, 0.05); }
+    .tab-trigger.active { border-color: var(--cyan-neon); color: var(--cyan-neon); background: rgba(0, 255, 204, 0.03); }
 
-    /* --- VIEW SCREENS --- */
-    .screen { display: none; width: 100%; }
-    .screen.active { display: block; }
+    .view-panel { display: none; width: 100%; height: 100%; }
+    .view-panel.active { display: block; }
 
-    /* --- MAIN DASHBOARD VIEW --- */
-    .main-panel {
-      border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg);
-      position: relative; display: flex; flex-direction: column; align-items: center; min-height: 480px;
-    }
-    .panel-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px; }
-    
-    .stats-box { width: 62%; background: #111215; padding: 10px; border-radius: 8px; border: 1px solid #1f2026; }
-    .stat-bar-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
-    .bar-bg { width: 75px; height: 8px; background: #22242b; border-radius: 4px; overflow: hidden; }
-    .bar-fill { height: 100%; width: 100%; transition: width 0.3s; }
-
-    /* Draggable Area */
-    .pet-environment {
-      flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; 
-      align-items: center; position: relative; min-height: 220px; overflow: hidden;
-    }
-    .pet-box {
-      position: absolute; display: flex; flex-direction: column; align-items: center; cursor: grab;
-      transition: transform 0.1s ease; touch-action: none;
-    }
-    .pet-box:active { cursor: grabbing; }
-    
-    .pet-avatar-render { 
-      width: 95px; height: 95px; object-fit: contain; pointer-events: none; user-select: none;
-    }
-    .pet-label { font-size: 13px; margin-top: 5px; font-family: monospace; color: #8b949e; text-align: center; }
-
-    .btn-hunt-wild {
-      width: 85%; border: 1px solid var(--accent-red); background: rgba(255, 74, 74, 0.1);
-      color: var(--accent-red); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center;
-      letter-spacing: 1px; transition: all 0.2s; margin: 15px 0;
-    }
-    .btn-hunt-wild:active { background: rgba(255, 74, 74, 0.25); transform: scale(0.98); }
-
-    .items-footer { width: 100%; text-align: center; margin-top: auto; }
-    .footer-title { font-size: 11px; color: #8b949e; margin-bottom: 8px; font-family: monospace; }
-    .items-row { display: flex; justify-content: center; gap: 10px; }
-    .item-circle {
-      width: 45px; height: 45px; background: #111215; border: 1px solid #1f2026; border-radius: 50%;
-      display: flex; justify-content: center; align-items: center; font-size: 20px; position: relative; cursor: pointer;
-    }
-    .item-count {
-      position: absolute; bottom: -2px; right: -2px; background: #00ffcc; color: #000;
-      font-size: 9px; font-weight: bold; padding: 1px 5px; border-radius: 10px;
+    .card-board {
+      border: 1px solid var(--border-line); border-radius: 8px; padding: 12px; background: var(--box-bg);
+      display: flex; flex-direction: column; align-items: center; height: 82vh; box-sizing: border-box;
     }
 
-    /* --- COMBAT FIELD VIEW --- */
-    .combat-arena { border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg); }
-    .combat-header { display: flex; justify-content: space-between; color: #ff4a4a; font-weight: bold; font-size: 14px; margin-bottom: 15px; }
-    .combat-vs-display { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; }
-    .fighter-card { background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px; width: 45%; text-align: center; }
-    .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; }
-    .fighter-avatar-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-    .fighter-name { font-size: 12px; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    
-    .combat-logs {
-      background: #090000; border: 1px solid #ff4a4a; border-radius: 6px; height: 130px;
-      overflow-y: auto; padding: 8px; font-family: monospace; font-size: 11px; margin-bottom: 15px; text-align: left;
-    }
-    .combat-actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .skill-btn {
-      background: #1f2026; border: 1px solid #2d3039; color: #fff; padding: 10px 5px;
-      border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px;
-    }
-    .skill-btn:active { background: #2d3039; }
+    .header-info-row { display: flex; justify-content: space-between; width: 100%; margin-bottom: 10px; }
+    .display-box-item { background: #111215; padding: 6px; border-radius: 4px; border: 1px solid var(--border-line); font-size: 11px; }
 
-    /* --- BESTIARY SYSTEM --- */
-    .bestiary-container { border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg); }
-    .pet-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; }
-    .pet-list-item {
-      display: flex; align-items: center; justify-content: space-between; background: #111215;
-      border: 1px solid #1f2026; border-radius: 8px; padding: 10px;
+    .arena-render-center {
+      flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; position: relative;
     }
-    .pet-list-item.active-pet { border-color: var(--accent-green); background: #0c2b26; }
-    .item-left-info { display: flex; align-items: center; gap: 10px; }
-    .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; }
-    .list-avatar-box img { width: 100%; height: 100%; object-fit: contain; }
-    .list-details h4 { margin: 0; font-size: 13px; }
-    .list-details p { margin: 3px 0 0 0; font-size: 10px; color: #8b949e; }
-    
-    .switch-trigger-btn {
-      background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green);
-      padding: 6px 12px; border-radius: 12px; font-size: 10px; cursor: pointer; font-weight: bold;
+    .img-avatar-core { width: 110px; height: 110px; object-fit: contain; }
+    .label-title-pet { font-size: 13px; margin-top: 10px; font-family: monospace; font-weight: bold; }
+
+    .action-hunt-btn {
+      width: 100%; border: 1px solid var(--red-alert); background: rgba(255, 74, 74, 0.08);
+      color: var(--red-alert); padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 10px 0;
     }
 
-    /* --- CUTSCENE ENGINE CORE OVERLAY --- */
-    #cutscene-overlay {
-      position: fixed; inset: 0; background: #000; z-index: 9999;
+    /* --- CUTSCENE ENGINE INTERFACE (STRICT HIDDEN BY DEFAULT) --- */
+    #cutscene-curtain {
+      position: fixed; inset: 0; background: #000000; z-index: 99999;
       display: none; flex-direction: column; align-items: center; justify-content: center;
     }
-    
-    .glow-logo {
-      width: 130px; height: 130px; object-fit: contain;
-      filter: drop-shadow(0 0 15px var(--accent-green));
-      transform: scale(0); opacity: 0;
-    }
+    .text-scroller { font-family: monospace; font-size: 14px; margin: 10px; opacity: 0; transition: opacity 0.4s ease; text-align: center; }
+    .banner-impact-title { font-size: 28px; font-weight: 900; color: var(--orange-fire); opacity: 0; transform: scale(0.7); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
+    .banner-impact-title.pop-up { opacity: 1; transform: scale(1); }
 
-    .impact-slam {
-      animation: slamEffect 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    /* --- SLIDE UP SELECTION OVERLAY --- */
+    #selector-drawer {
+      position: fixed; bottom: -100%; left: 0; width: 100%; background: #050506;
+      border-top: 2px solid var(--purple-neon); border-radius: 16px 16px 0 0; padding: 20px 12px;
+      box-sizing: border-box; display: flex; flex-direction: column; gap: 15px; align-items: center;
+      transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100000;
     }
-    @keyframes slamEffect {
-      0% { transform: scale(5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
+    #selector-drawer.open { bottom: 0; }
 
-    .fade-text {
-      font-family: monospace; font-size: 14px; text-align: center; color: #fff;
-      margin: 15px 20px; opacity: 0; transition: opacity 0.8s ease;
+    .grid-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+    .card-option {
+      background: #111215; border: 1px solid var(--border-line); border-radius: 8px; padding: 10px 4px;
+      display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center;
     }
-
-    .big-streak-title {
-      font-size: 32px; font-weight: 900; color: var(--accent-orange); text-shadow: 0 0 20px rgba(255,204,0,0.8);
-      opacity: 0; transform: scale(0.8); transition: all 1s ease;
-    }
-    .big-streak-title.reveal { opacity: 1; transform: scale(1); }
-
-    .screen-shake-active { animation: globalVibrate 0.1s linear infinite; }
-    @keyframes globalVibrate {
-      0% { transform: translate(2px, 1px); }
-      50% { transform: translate(-1px, -2px); }
-      100% { transform: translate(1px, 2px); }
-    }
-
-    .color-invert-active { animation: colorInversion 0.5s linear infinite alternate; }
-    @keyframes colorInversion {
-      0% { filter: invert(0); }
-      100% { filter: invert(1); }
-    }
-
-    /* Menu Selector slide dari bawah */
-    #mythic-pet-selector {
-      position: fixed; bottom: -100%; left: 0; width: 100%; background: #070708;
-      border-top: 2px solid var(--accent-purple); border-radius: 20px 20px 0 0; padding: 25px 15px;
-      box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; align-items: center;
-      transition: bottom 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000;
-    }
-    #mythic-pet-selector.slide-up { bottom: 0; }
-
-    .selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-    .mythic-card {
-      background: #111215; border: 1px solid #1f2026; border-radius: 12px; padding: 12px 5px;
-      display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer;
-    }
-    .mythic-card img { width: 55px; height: 55px; object-fit: contain; }
-    .mythic-title { font-size: 10px; font-weight: bold; color: #fff; margin-top: 5px; }
-
-    .take-btn {
-      width: 80%; background: var(--accent-purple); color: #000; border: none; font-weight: bold;
-      padding: 12px; border-radius: 8px; font-size: 13px; cursor: pointer; display: none;
-    }
+    .card-option img { width: 50px; height: 50px; object-fit: contain; }
+    .confirm-btn { width: 100%; background: var(--purple-neon); color: #000; font-weight: bold; padding: 12px; border: none; border-radius: 6px; display: none; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <div id="cutscene-overlay">
-    <img src="logo.png" id="cutscene-logo" class="glow-logo" onerror="this.src='https://api.iconify.design/pixelarticons:zap.svg?color=%2300ffcc'" alt="Logo" />
-    <div id="text-line-1" class="fade-text">Kamu memulai 100 hari sebelumnya</div>
-    <div id="text-line-2" class="fade-text">Dan sekarang kamu telah mencapainya</div>
-    <div id="text-streak-banner" class="big-streak-title">Streak 100 Day</div>
+  <div id="cutscene-curtain">
+    <div id="cutscene-txt-1" class="text-scroller">AUTHENTICATING BACKLIGHT CORE LINK...</div>
+    <div id="cutscene-txt-2" class="text-scroller">ACCESS GRANTED: BREAKING DIMENSIONAL BOUNDARY</div>
+    <div id="cutscene-banner" class="banner-impact-title">CORE AWAKENING</div>
   </div>
 
-  <div id="mythic-pet-selector">
-    <h3 style="margin:0; color: var(--accent-purple); font-family: monospace;">🌌 SELECT YOUR LEGENDARY PET</h3>
-    <p style="margin:0; font-size:11px; color:#8b949e; text-align:center;">Pilih salah satu makhluk mythic untuk menggantikan pet lama lu.</p>
+  <div id="selector-drawer">
+    <h4 id="drawer-title" style="margin:0; color: var(--purple-neon); font-family: monospace; letter-spacing:1px;">MYTHIC AWAKENING</h4>
+    <p style="margin:0; font-size:11px; color:#666;">Select a mythic entity to bind with your core matrix data.</p>
     
-    <div class="selector-grid">
-      <div class="mythic-card" onclick="highlightMythicChoice('ammit')">
+    <div class="grid-options">
+      <div class="card-option" onclick="selectMythic('ammit')">
         <img src="ammit.png" onerror="this.src='https://api.iconify.design/pixelarticons:avatar.svg?color=%23bf5af2'">
-        <span class="mythic-title">Ammit Void</span>
+        <div style="font-size:10px; margin-top:5px; font-weight:bold;">Ammit Void</div>
       </div>
-      <div class="mythic-card" onclick="highlightMythicChoice('sleipnir')">
+      <div class="card-option" onclick="selectMythic('sleipnir')">
         <img src="sleipnir.png" onerror="this.src='https://api.iconify.design/pixelarticons:shield.svg?color=%23bf5af2'">
-        <span class="mythic-title">Sleipnir Drive</span>
+        <div style="font-size:10px; margin-top:5px; font-weight:bold;">Sleipnir</div>
       </div>
-      <div class="mythic-card" onclick="highlightMythicChoice('yatagarasu')">
+      <div class="card-option" onclick="selectMythic('yatagarasu')">
         <img src="yatagarasu.png" onerror="this.src='https://api.iconify.design/pixelarticons:zap.svg?color=%23bf5af2'">
-        <span class="mythic-title">Yatagarasu</span>
+        <div style="font-size:10px; margin-top:5px; font-weight:bold;">Yatagarasu</div>
       </div>
     </div>
-    <button id="btn-take-pet" class="take-btn" onclick="executeTakePetAction()">TAKE PET</button>
+    <button id="submit-evolution-btn" class="confirm-btn" onclick="bindMythicEvolution()">MERGE CORE CHANNELS</button>
   </div>
 
-  <div id="app-container">
-    <div class="top-menu" id="navigation-bar">
-      <button class="menu-btn active-tab" id="tab-dash" onclick="switchToTab('dash-screen')">🛸 MATRIX HUB</button>
-      <button class="menu-btn" id="tab-bestiary" onclick="switchToTab('bestiary-screen')">📖 BESTIARY</button>
-      
-      <button onclick="runStreak100Cutscene()" style="grid-column: span 2; background: rgba(255,204,0,0.1); border: 1px dashed var(--accent-orange); color: var(--accent-orange); font-size: 10px; padding: 4px; border-radius: 4px; cursor: pointer;">
-        🛠️ FORCE TEST RUN STREAK 100 CUTSCENE (BYPASS SYSTEM)
-      </button>
+  <div id="wrapper">
+    <div class="nav-tabs">
+      <div class="tab-trigger active">MATRIX HUB</div>
+      <div class="tab-trigger">BESTIARY</div>
     </div>
 
-    <div id="dash-screen" class="screen active">
-      <div class="main-panel">
-        <div class="panel-header">
-          <div class="menu-btn" style="padding: 5px 12px; font-size: 11px; color: var(--accent-green); border-color: var(--accent-green);" id="dominion-identity-tag">Dominion Core</div>
-          <div class="stats-box">
-            <div class="stat-bar-container">
-              <span>HP</span><span id="dash-hp-text">100/100</span>
-              <div class="bar-bg"><div id="dash-hp-bar" class="bar-fill" style="background:var(--accent-red); width: 100%;"></div></div>
+    <div class="view-panel active">
+      <div class="card-board">
+        <div class="header-info-row">
+          <div id="identity-tag-label" style="font-size:11px; color:var(--cyan-neon); font-weight:bold;">SYSTEM NOMADIC</div>
+          <div class="display-box-item">HP: 150/150</div>
+        </div>
+
+        <div class="arena-render-center">
+          <div style="text-align: center;">
+            <div id="avatar-viewport">
+              <img src="naga1.png" class="img-avatar-core" onerror="this.src='https://api.iconify.design/pixelarticons:android.svg?color=%2300ffcc'">
             </div>
+            <div class="label-title-pet" id="name-viewport">Aethelgard Dragon</div>
           </div>
         </div>
 
-        <div class="pet-environment" id="drag-zone">
-          <div class="pet-box" id="pet-draggable">
-            <div id="dash-avatar-container">🐉</div>
-            <div class="pet-label" id="dash-name-label">Loading Core...</div>
-          </div>
-        </div>
-
-        <button class="btn-hunt-wild" onclick="triggerHuntWild()">⚔️ START WILD HUNTING</button>
-
-        <div class="items-footer">
-          <div class="footer-title">Matrix Item Counter</div>
-          <div class="items-row">
-            <div class="item-circle" onclick="feedPet('🍎')">🍎<span class="item-count" id="dash-qty-apple">5</span></div>
-            <div class="item-circle" onclick="feedPet('🍬')">🍬<span class="item-count" id="dash-qty-candy">3</span></div>
-            <div class="item-circle" onclick="feedPet('🧃')">🧃<span class="item-count" id="dash-qty-juice">2</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="combat-screen" class="screen">
-      <div class="combat-arena">
-        <div class="combat-header"><span>⚔️ COMBAT FIELD</span><span id="enemy-rarity">COMMON</span></div>
-        <div class="combat-vs-display">
-          <div class="fighter-card">
-            <div class="fighter-avatar-wrapper" id="battle-my-avatar-container"></div>
-            <div class="fighter-name" id="battle-my-name">Player Pet</div>
-            <div id="battle-my-hptext" style="font-size:11px;">100/100 HP</div>
-          </div>
-          <div>VS</div>
-          <div class="fighter-card" style="border-color: var(--accent-red);">
-            <div class="fighter-avatar-wrapper" id="battle-enemy-avatar-container">👾</div>
-            <div class="fighter-name" id="battle-enemy-name">Wild Threat</div>
-            <div id="battle-enemy-hptext" style="font-size:11px;">50/50 HP</div>
-          </div>
-        </div>
-        <div class="combat-logs" id="combat-log-box"></div>
-        <div class="combat-actions-grid">
-          <button class="skill-btn" onclick="executeSkill(1)">⚔️ Serang</button>
-          <button class="skill-btn" style="background: var(--accent-red);" onclick="exitCombat()">🏃 Kabur</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="bestiary-screen" class="screen">
-      <div class="bestiary-container">
-        <h3 style="margin:0 0 10px 0; color: var(--accent-green);">📖 Core Bestiary</h3>
-        <div class="pet-list" id="bestiary-list-wrapper"></div>
+        <button class="action-hunt-btn">SYSTEM ENGINE ONLINE</button>
       </div>
     </div>
   </div>
 
   <script>
-    // LOCAL ENGINE DATABASE
-    const EVOLUTION_DATABASE = {
-      naga: { name: "Aethelgard Dragon", avatar: "🐉", hp: 150, power: 25 },
-      ikan: { name: "Moridun Leviathan", avatar: "🦈", hp: 120, power: 18 },
-      serigala: { name: "Volkrieg Cyber-Wolf", avatar: "🐺", hp: 135, power: 22 },
-      ammit: { name: "Ammit Void-Guardian", avatar: "🦁", hp: 1800, power: 380 },
-      sleipnir: { name: "Sleipnir Gravity-Drive", avatar: "🐴", hp: 1600, power: 420 },
-      yatagarasu: { name: "Yatagarasu Eclipse", avatar: "🦅", hp: 1400, power: 450 }
+    let currentSelectedMythic = null;
+    let sequenceLock = false;
+
+    const PET_DATABASE = {
+      naga: { name: "Aethelgard Dragon", file: "naga1.png" },
+      ammit: { name: "Ammit Void-Guardian", file: "ammit.png" },
+      sleipnir: { name: "Sleipnir Gravity-Drive", file: "sleipnir.png" },
+      yatagarasu: { name: "Yatagarasu Eclipse", file: "yatagarasu.png" }
     };
 
-    let activePetKey = "naga";
-    let dominionUsername = "Player Core";
-    let discoveredPets = ["naga", "ikan", "serigala"];
-    let combatState = null;
+    // PENERIMA SINYAL INPUT DARI INDEX DATA UTAMA
+    window.addEventListener("message", function(msg) {
+      if (!msg.data) return;
 
-    document.addEventListener("DOMContentLoaded", function() {
-      loadEngineState();
-      syncDashboardUI();
-      
-      // AUTO-FALLBACK: Jika index.html tidak merespon dalam 2 detik, sistem tetap jalan mandiri!
-      setTimeout(() => {
-        if (dominionUsername === "Player Core") {
-          console.log("Safe-mode active: Parent core standalone fallback initialization.");
-        }
-      }, 2000);
-    });
+      // Skenario Sinyal 1: Klik kirim kode manual dari form input index
+      if (msg.data.type === 'TRIGGER_SECRET_CUTSCENE') {
+        executeSequenceProcess(msg.data.codeName);
+      }
 
-    // DAFTAR DENGERAN MESSAGE DARI PARENT
-    window.addEventListener("message", function(e) {
-      if (!e.data) return;
-      if (e.data.type === 'TELEMETRY_UPDATE') {
-        if(e.data.data && e.data.data.dominionName) {
-          dominionUsername = e.data.data.dominionName;
-          document.getElementById('dominion-identity-tag').innerText = "📍 " + dominionUsername;
-          let streak = parseInt(e.data.data.highestCount) || 0;
+      // Skenario Sinyal 2: Otomatis ke-trigger kalau data telemetry streak pas di angka 100
+      if (msg.data.type === 'TELEMETRY_UPDATE') {
+        if (msg.data.data) {
+          let dayCount = parseInt(msg.data.data.highestCount) || 0;
+          document.getElementById('identity-tag-label').innerText = msg.data.data.dominionName || "Blacklight Core";
           
-          // Triger otomatis jika streak menyentuh 100
-          if (streak >= 100 && !discoveredPets.includes("ammit")) {
-            runStreak100Cutscene();
+          if (dayCount === 100 && !sequenceLock) {
+            executeSequenceProcess("STREAK 100 DAY");
           }
         }
       }
     });
 
-    function runStreak100Cutscene() {
-      const overlay = document.getElementById('cutscene-overlay');
-      const logo = document.getElementById('cutscene-logo');
-      const line1 = document.getElementById('text-line-1');
-      const line2 = document.getElementById('text-line-2');
-      const banner = document.getElementById('text-streak-banner');
+    // URUTAN JALANNYA CUTSCENE SEKUENSAL BERDASARKAN EVENT TIMING
+    function executeSequenceProcess(headerText) {
+      sequenceLock = true;
+      const overlay = document.getElementById('cutscene-curtain');
+      const t1 = document.getElementById('cutscene-txt-1');
+      const t2 = document.getElementById('cutscene-txt-2');
+      const banner = document.getElementById('cutscene-banner');
+      const drawerTitle = document.getElementById('drawer-title');
 
+      banner.innerText = headerText.toUpperCase();
+      drawerTitle.innerText = `AWAKENING: ${headerText.toUpperCase()}`;
+
+      // Tampilkan layer hitam gelap gulita
       overlay.style.display = 'flex';
 
-      setTimeout(() => { logo.classList.add('impact-slam'); }, 300);
-      setTimeout(() => { line1.style.opacity = '1'; }, 1300);
-      setTimeout(() => { line1.style.opacity = '0'; }, 3000);
-      setTimeout(() => { line2.style.opacity = '1'; }, 3800);
-      setTimeout(() => { line2.style.opacity = '0'; }, 5500);
+      // Jalankan pergantian teks bertahap (Anti Mampet/Stuck)
+      setTimeout(() => { t1.style.opacity = '1'; }, 400);
+      setTimeout(() => { t1.style.opacity = '0'; }, 1800);
+      
+      setTimeout(() => { t2.style.opacity = '1'; }, 2200);
+      setTimeout(() => { t2.style.opacity = '0'; }, 3600);
 
+      setTimeout(() => { banner.classList.add('pop-up'); }, 4100);
+
+      // Selesai cutscene teks, langsung buka drawer pemilih pet mythic class
       setTimeout(() => {
-        banner.classList.add('reveal');
-        document.body.classList.add('screen-shake-active', 'color-invert-active');
-      }, 6300);
-
-      setTimeout(() => {
-        document.body.classList.remove('screen-shake-active', 'color-invert-active');
-        document.getElementById('mythic-pet-selector').classList.add('slide-up');
-      }, 10300); // Durasi guncang dipangkas jadi 4 detik biar gak kelamaan nunggu
+        overlay.style.display = 'none';
+        banner.classList.remove('pop-up');
+        document.getElementById('selector-drawer').classList.add('open');
+      }, 6200);
     }
 
-    function highlightMythicChoice(petKey) {
-      selectedMythicChoice = petKey;
-      document.querySelectorAll('.mythic-card').forEach(c => c.style.borderColor = '#1f2026');
-      event.currentTarget.style.borderColor = 'var(--accent-purple)';
-      document.getElementById('btn-take-pet').style.display = 'block';
+    function selectMythic(key) {
+      currentSelectedMythic = key;
+      document.querySelectorAll('.card-option').forEach(c => c.style.borderColor = '#1f2026');
+      event.currentTarget.style.borderColor = 'var(--purple-neon)';
+      document.getElementById('submit-evolution-btn').style.display = 'block';
     }
 
-    function executeTakePetAction() {
-      if (!selectedMythicChoice) return;
+    function bindMythicEvolution() {
+      if (!currentSelectedMythic) return;
       
-      if(!discoveredPets.includes("ammit")) {
-        discoveredPets.push("ammit", "sleipnir", "yatagarasu");
-      }
+      const pet = PET_DATABASE[currentSelectedMythic];
       
-      activePetKey = selectedMythicChoice;
-      alert(`Take... ${EVOLUTION_DATABASE[selectedMythicChoice].name} Synchronized!`);
-
-      document.getElementById('mythic-pet-selector').classList.remove('slide-up');
-      document.getElementById('cutscene-overlay').style.display = 'none';
+      // Ganti visual di main viewport hub
+      document.getElementById('name-viewport').innerText = pet.name;
+      document.getElementById('avatar-viewport').innerHTML = `<img src="${pet.file}" class="img-avatar-core" onerror="this.src='https://api.iconify.design/pixelarticons:zap.svg?color=%23bf5af2'">`;
       
-      saveEngineState();
-      syncDashboardUI();
-      switchToTab('dash-screen');
-    }
-
-    function syncDashboardUI() {
-      const pet = EVOLUTION_DATABASE[activePetKey];
-      document.getElementById('dash-name-label').innerText = pet.name;
-      document.getElementById('dash-avatar-container').innerText = pet.avatar;
-      document.getElementById('dominion-identity-tag').innerText = "📍 " + dominionUsername;
-    }
-
-    function switchToTab(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      if(id === 'bestiary-screen') renderBestiary();
-    }
-
-    function renderBestiary() {
-      const wrapper = document.getElementById('bestiary-list-wrapper');
-      wrapper.innerHTML = "";
-      Object.keys(EVOLUTION_DATABASE).forEach(k => {
-        const p = EVOLUTION_DATABASE[k];
-        const hasIt = discoveredPets.includes(k);
-        const div = document.createElement('div');
-        div.className = `pet-list-item ${k === activePetKey ? 'active-pet' : ''}`;
-        div.innerHTML = `
-          <div class="item-left-info">
-            <div style="font-size:24px;">${hasIt ? p.avatar : "🔒"}</div>
-            <div>
-              <h4 style="margin:0;">${hasIt ? p.name : "Unknown Class"}</h4>
-              <p style="margin:0; font-size:10px; color:#8b949e;">HP: ${p.hp} | Power: ${p.power}</p>
-            </div>
-          </div>
-          ${hasIt && k !== activePetKey ? `<button class="switch-trigger-btn" onclick="changePet('${k}')">SWITCH</button>` : ''}
-        `;
-        wrapper.appendChild(div);
-      });
-    }
-
-    function changePet(key) {
-      activePetKey = key;
-      saveEngineState();
-      renderBestiary();
-    }
-
-    function triggerHuntWild() {
-      const pet = EVOLUTION_DATABASE[activePetKey];
-      combatState = { myHp: pet.hp, myMaxHp: pet.hp, enemyHp: 60, enemyMaxHp: 60, power: pet.power };
+      // Sembunyikan drawer interface
+      document.getElementById('selector-drawer').classList.remove('open');
+      document.getElementById('submit-evolution-btn').style.display = 'none';
       
-      document.getElementById('battle-my-name').innerText = pet.name;
-      document.getElementById('battle-my-avatar-container').innerText = pet.avatar;
-      document.getElementById('battle-my-hptext').innerText = `${combatState.myHp}/${combatState.myMaxHp} HP`;
-      document.getElementById('battle-enemy-hptext').innerText = `${combatState.enemyHp}/${combatState.enemyMaxHp} HP`;
-      document.getElementById('combat-log-box').innerHTML = "<div>Battle arena initialized. Fight!</div>";
-      
-      switchToTab('combat-screen');
-    }
-
-    function executeSkill(slot) {
-      let dmg = Math.floor(combatState.power * 0.9);
-      combatState.enemyHp = Math.max(0, combatState.enemyHp - dmg);
-      document.getElementById('battle-enemy-hptext').innerText = `${combatState.enemyHp}/${combatState.enemyMaxHp} HP`;
-      document.getElementById('combat-log-box').innerHTML += `<div style="color:var(--accent-green);">💥 Pet lu memberikan ${dmg} damage!</div>`;
-
-      if(combatState.enemyHp <= 0) {
-        document.getElementById('combat-log-box').innerHTML += "<div>🏆 Kamu menang! Kembali ke hub...</div>";
-        setTimeout(() => { switchToTab('dash-screen'); syncDashboardUI(); }, 1500);
-        return;
-      }
-
-      setTimeout(() => {
-        let eDmg = 12;
-        combatState.myHp = Math.max(0, combatState.myHp - eDmg);
-        document.getElementById('battle-my-hptext').innerText = `${combatState.myHp}/${combatState.myMaxHp} HP`;
-        document.getElementById('combat-log-box').innerHTML += `<div style="color:var(--accent-red);">🚨 Musuh menyerang balik (-${eDmg} HP)</div>`;
-        
-        if(combatState.myHp <= 0) {
-          alert("Pet pingsan!");
-          switchToTab('dash-screen');
-        }
-      }, 500);
-    }
-
-    function exitCombat() { switchToTab('dash-screen'); }
-    function feedPet(item) { alert(`Gunakan ${item}. Stat terisi!`); }
-
-    function saveEngineState() {
-      localStorage.setItem("BLDS_SAFE_STATE_V3", JSON.stringify({ activePetKey, discoveredPets }));
-    }
-    function loadEngineState() {
-      const cache = localStorage.getItem("BLDS_SAFE_STATE_V3");
-      if(cache) {
-        const p = JSON.parse(cache);
-        if(p.activePetKey) activePetKey = p.activePetKey;
-        if(p.discoveredPets) discoveredPets = p.discoveredPets;
-      }
+      // Lepaskan lock sequence
+      sequenceLock = false;
+      alert(`SUCCESS: Data Core ${pet.name} synchronized into internal memory.`);
     }
   </script>
 </body>
