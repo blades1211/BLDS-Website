@@ -148,13 +148,13 @@ body {
   color: rgba(255,255,255,0.7);
 }
 
-#enterBtn, .calibration-box button, .admin-btn, .modal-box button {
+#enterBtn, .calibration-box button, .admin-btn, .modal-box button, .back-panel-btn {
   background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3);
   padding: 12px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px;
   cursor: pointer; transition: all 0.3s ease;
   border-radius: 50px;
 }
-#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+#enterBtn:hover, .calibration-box button:hover, .admin-btn:hover, .modal-box button:hover, .back-panel-btn:hover { background: #fff; color: #000; box-shadow: 0 0 12px rgba(255,255,255,0.5); }
 
 .calibration-box button:disabled {
   background: rgba(255,255,255,0.03) !important;
@@ -229,6 +229,12 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
 .flame-list li::before { content: "»"; position: absolute; left: 0; color: rgba(255,255,255,0.5); }
 .flame-list strong { letter-spacing: 1px; color: #fff; }
 
+/* ARCHIVES TABLE GRID SYSTEM */
+.archives-data-table { width: 100%; margin-bottom: 25px; font-size: 12px; border-collapse: collapse; }
+.archives-data-table th { text-align: left; color: rgba(255,255,255,0.4); font-size: 10px; letter-spacing: 2px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.15); text-transform: uppercase; }
+.archives-data-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.5; }
+.archives-role-badge { font-weight: bold; color: #fff; letter-spacing: 1px; }
+
 /* OWNER FLOATING PANEL CONTROLLER */
 .admin-trigger-launcher { 
   position: fixed; top: 25px; left: 25px; background: #fff; color: #000; 
@@ -262,6 +268,13 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
 footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; flex-shrink: 0; }
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
 .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 11px; margin-right: 15px; }
+
+/* DYNAMIC FULL SCREEN CONTROLLER FOR SECTIONS */
+.fullscreen-header-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 15px; margin-bottom: 25px;
+}
+.fullscreen-header-title { font-size: 18px; letter-spacing: 3px; font-weight: bold; text-transform: uppercase; margin: 0; }
 </style>
 </head>
 <body>
@@ -311,23 +324,26 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 </div>
 
 <div class="container">
-  <div class="logo-container" id="logoArea">
-    <img src="logo.png" alt="BLDS Logo" style="width:110px;" id="mainLogoFile" onerror="handleLogoMissing()">
-  </div>
-
-  <div class="streak-widget" id="streakWidget">
-    <div>Resonance Streak: <b id="streakCount">0</b> Days | Rank: <span id="rankTitle">Void Walker</span></div>
-    <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days | Owner: <span id="ownerNameDisplay">-</span></div>
-  </div>
-
-  <h1 class="title">Blacklightdoms</h1>
   
-  <div class="title-pet-display" id="titlePetDisplay">
-    <div class="pet-image-frame" id="petImageFrame"></div>
-    <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
-  </div>
+  <div id="coreHubHeaderArea" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+    <div class="logo-container" id="logoArea">
+      <img src="logo.png" alt="BLDS Logo" style="width:110px;" id="mainLogoFile" onerror="handleLogoMissing()">
+    </div>
 
-  <button id="enterBtn" onclick="enter()">Enter The Eclipse</button>
+    <div class="streak-widget" id="streakWidget">
+      <div>Resonance Streak: <b id="streakCount">0</b> Days | Rank: <span id="rankTitle">Void Walker</span></div>
+      <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days | Owner: <span id="ownerNameDisplay">-</span></div>
+    </div>
+
+    <h1 class="title" id="mainCoreTitleId">Blacklightdoms</h1>
+    
+    <div class="title-pet-display" id="titlePetDisplay">
+      <div class="pet-image-frame" id="petImageFrame"></div>
+      <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
+    </div>
+
+    <button id="enterBtn" onclick="enter()">Enter The Eclipse</button>
+  </div>
 
   <div class="menu" id="menu">
     <button onclick="showPage('origin')">Origin</button>
@@ -338,22 +354,36 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     <button onclick="showPage('beastPage')">👾 Beast Engine</button>
   </div>
 
-  <div class="page" id="origin"><div class="box" id="loreInjectBox"></div></div>
+  <div class="page" id="origin">
+    <div class="box">
+      <div class="fullscreen-header-nav">
+        <h2 class="fullscreen-header-title">Origin Network</h2>
+        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
+      </div>
+      <div id="loreInjectBox"></div>
+    </div>
+  </div>
 
   <div class="page" id="achievement">
     <div class="box">
-      <h2>Resonance Achievements</h2>
-      <div class="achievement-progress-container">
-        <div class="achievement-progress-bar" id="achProgressBar"></div>
-        <div class="achievement-progress-text" id="achProgressText">0 / 15 Badges Unlocked</div>
+      <div class="fullscreen-header-nav">
+        <h2 class="fullscreen-header-title">Resonance Achievements</h2>
+        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
       </div>
-      <div class="achievement-grid" id="achGrid"></div>
+      <div class="achievement-progress-container" style="background:rgba(255,255,255,0.05); height:20px; border-radius:10px; overflow:hidden; position:relative; margin-bottom:20px;">
+        <div class="achievement-progress-bar" id="achProgressBar" style="background:#fff; height:100%; width:0%; transition:width 0.4s;"></div>
+        <div class="achievement-progress-text" id="achProgressText" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#000; mix-blend-mode:difference;">0 / 15 Badges Unlocked</div>
+      </div>
+      <div class="achievement-grid" id="achGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:15px;"></div>
     </div>
   </div>
 
   <div class="page" id="leaderboardPage">
     <div class="box">
-      <h2>Dominion Leaderboard (Top 20 Live)</h2>
+      <div class="fullscreen-header-nav">
+        <h2 class="fullscreen-header-title">Global Dominion Rankings (Live)</h2>
+        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
+      </div>
       <table class="leaderboard-table">
         <thead><tr><th>Rank</th><th>Dominion Name</th><th>Max Streak</th></tr></thead>
         <tbody id="leaderboardDataBody"></tbody>
@@ -361,11 +391,22 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     </div>
   </div>
 
-  <div class="page" id="archives"><div class="box" id="archivesInjectBox"></div></div>
+  <div class="page" id="archives">
+    <div class="box">
+      <div class="fullscreen-header-nav">
+        <h2 class="fullscreen-header-title">Mainframe System Archives</h2>
+        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
+      </div>
+      <div id="archivesInjectBox"></div>
+    </div>
+  </div>
 
   <div class="page" id="code">
     <div class="box">
-      <h2>Code System</h2>
+      <div class="fullscreen-header-nav">
+        <h2 class="fullscreen-header-title">Encryption Decoupler</h2>
+        <button class="back-panel-btn" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
+      </div>
       <div class="cyber-code-container">
         <div class="cyber-input-wrapper">
           <input type="text" id="codeInput" class="cyber-code-input" placeholder="Enter encryption code">
@@ -377,7 +418,11 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="page" id="beastPage">
     <div class="box" style="padding: 5px; background: #000; border-color: rgba(255,255,255,0.2);">
-      <iframe src="index_beast_system.html" id="beastIframe" style="width:100%; height:700px; border:none; display:block; background:transparent; overflow:hidden;" scrolling="no"></iframe>
+      <div class="fullscreen-header-nav" style="padding: 10px; margin-bottom: 10px;">
+        <h2 class="fullscreen-header-title" style="font-size:14px;">Beast Engine Runtime</h2>
+        <button class="back-panel-btn" style="padding: 6px 16px; font-size: 10px;" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
+      </div>
+      <iframe src="beast.html" id="beastIframe" style="width:100%; height:700px; border:none; display:block; background:transparent; overflow:hidden;" scrolling="no"></iframe>
     </div>
   </div>
 
@@ -398,14 +443,12 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 <div class="admin-floating-panel" id="adminPanel">
   <div class="admin-header" id="adminPanelHeader"><span>🛡️ Owner Matrix Controller</span><span style="cursor:pointer; font-size:16px;" onclick="document.getElementById('adminPanel').style.display='none'">✕</span></div>
   <div class="admin-body">
-    
     <div class="admin-sub-sect">
       <label>Dominion Profile & Rank</label>
       <input type="text" id="admDomName" placeholder="Override Profile Name" style="margin-bottom:8px;">
       <input type="number" id="admStreak" placeholder="Override Current Streak" style="margin-bottom:8px;">
       <input type="number" id="admHighStreak" placeholder="Override Highest Peak">
     </div>
-
     <div class="admin-sub-sect">
       <label>Pet Engine Core Configuration</label>
       <select id="admPetName" style="margin-bottom:8px;">
@@ -416,7 +459,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       </select>
       <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
     </div>
-
     <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">Apply Configuration</button>
   </div>
 </div>
@@ -453,7 +495,6 @@ const BLDS_LORE = {
   ]
 };
 
-const BLDS_ARCHIVES = { title: "Core Archives System", history: "The logs inside this data block are historical backups retrieved from the old mainframe network.<br><br>- Data Log #001: The grid structure synchronization established.<br>- Data Log #002: Beast core system integrated with index engines." };
 const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
 const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
 
@@ -469,8 +510,29 @@ function handleLogoMissing() { document.getElementById("logoArea").innerHTML = `
 function injectDatabase() {
   let greaterHTML = BLDS_LORE.greater_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
   let lesserHTML = BLDS_LORE.lesser_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
-  document.getElementById("loreInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;"><h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1><div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div></div><div class="lore-section"><h3>Before BLDS</h3><p>${BLDS_LORE.before_blds}</p></div><div class="lore-section"><h3>The Blacklight Core</h3><p>${BLDS_LORE.blacklight_core}</p></div><div class="lore-section"><h3>Meaning Of The Symbols</h3><ul class="flame-list"><li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li><li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li></ul></div><div class="lore-section"><h3>The Ten Flames Of BLDS</h3><div class="lore-quote">"${BLDS_LORE.flame_quote}"</div><h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4><ul class="flame-list">${greaterHTML}</ul><h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4><ul class="flame-list">${lesserHTML}</ul></div>`;
-  document.getElementById("archivesInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;"><h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2></div><div style="font-size:11px; line-height:1.8; opacity:0.8; text-align:left;">${BLDS_ARCHIVES.history}</div>`;
+  
+  // FIX: Judul dirubah dari 'Before BLDS' menjadi 'Lore' sesuai instruksi
+  document.getElementById("loreInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;"><h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1><div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div></div><div class="lore-section"><h3>Lore</h3><p>${BLDS_LORE.before_blds}</p></div><div class="lore-section"><h3>The Blacklight Core</h3><p>${BLDS_LORE.blacklight_core}</p></div><div class="lore-section"><h3>Meaning Of The Symbols</h3><ul class="flame-list"><li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li><li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li></ul></div><div class="lore-section"><h3>The Ten Flames Of BLDS</h3><div class="lore-quote">"${BLDS_LORE.flame_quote}"</div><h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4><ul class="flame-list">${greaterHTML}</ul><h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4><ul class="flame-list">${lesserHTML}</ul></div>`;
+  
+  // FIX: Mengganti isi Archives dengan susunan tim manajemen BLDS resmi
+  document.getElementById("archivesInjectBox").innerHTML = `
+    <table class="archives-data-table">
+      <thead><tr><th style="width:40%;">Classification Role</th><th>Registered Identity</th></tr></thead>
+      <tbody>
+        <tr><td><span class="archives-role-badge" style="color:#ffea00;">Founder</span></td><td>Michael Lorenzo</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#00ffff;">Right Hand of BLDS</span></td><td>William Nayottama</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#00ffff;">Left Hand of BLDS</span></td><td>Prince Felix</td></tr>
+        <tr><td colspan="2" style="height:10px; border:none;"></td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#00ff00;">Admin</span></td><td>Steven Cleo</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#00ff00;">Admin</span></td><td>George Alfred</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#00ff00;">Admin</span></td><td>Denzel Arnold</td></tr>
+        <tr><td colspan="2" style="height:10px; border:none;"></td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#ff4a4a;">Web Creator</span></td><td>Michael Lorenzo</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#ffa500;">Discord Handler</span></td><td>William Nayottama & Prince Felix</td></tr>
+        <tr><td><span class="archives-role-badge" style="color:#ffa500;">WhatsApp Handler</span></td><td>Michael Lorenzo</td></tr>
+      </tbody>
+    </table>
+  `;
 }
 
 const sky = document.getElementById("sky");
@@ -480,7 +542,7 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `<div class="achievement-card" id="ach${i+1}"><span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span><h4 style="margin:5px 0;">${name}</h4><p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p></div>`).join('');
+document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `<div class="achievement-card" id="ach${i+1}" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); padding:15px; border-radius:6px; text-align:center;"><span class="ach-badge locked-badge" id="ach${i+1}Badge" style="font-size:9px; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; opacity:0.5;">🔒 Locked</span><h4 style="margin:8px 0 4px 0; font-size:12px; letter-spacing:1px;">${name}</h4><p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p></div>`).join('');
 document.getElementById("floatingViewToggleBtn").addEventListener("click", () => document.getElementById("themeSelectorModal").style.display="flex");
 function selectThemeOption(t) { tempSelectedTheme = t; }
 function applySelectedTheme() {
@@ -501,10 +563,7 @@ function loadState() {
   const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
   if(saved) {
     streakData = JSON.parse(saved);
-    // Proteksi data korup rekor tertinggi agar minimal bernilai 1 jika sudah punya nama
-    if(streakData.dominionName && streakData.highestCount < 1) {
-      streakData.highestCount = 1;
-    }
+    if(streakData.dominionName && streakData.highestCount < 1) { streakData.highestCount = 1; }
   }
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
   if(savedPet) petData = JSON.parse(savedPet);
@@ -532,7 +591,9 @@ function updateUI() {
     const card = document.getElementById(`ach${i+1}`);
     const badge = document.getElementById(`ach` + (i+1) + `Badge`);
     if(card && streakData.highestCount >= t) {
-      card.classList.add("unlocked"); badge.className="ach-badge unlocked-badge"; badge.innerText="Unlocked"; unlocked++;
+      card.style.borderColor = "rgba(255,255,255,0.4)";
+      if(badge) { badge.className="ach-badge unlocked-badge"; badge.innerText="🔓 Unlocked"; badge.style.background="#fff"; badge.style.color="#000"; badge.style.opacity="1"; }
+      unlocked++;
     }
   });
   document.getElementById("achProgressBar").style.width = (unlocked/15)*100 + "%";
@@ -549,8 +610,6 @@ function pushStreakToFirebase() {
     method: 'PUT', 
     headers: { 'Content-Type': 'application/json' }, 
     body: JSON.stringify(payload) 
-  }).then(res => {
-    if(!res.ok) console.warn("Firebase Database melarang akses penuangan data. Cek Rules Firebase Anda.");
   }).catch(err => console.error("Koneksi Firebase terhambat:", err));
 }
 
@@ -561,10 +620,7 @@ function fetchCloudLeaderboard() {
       let dataset = [];
       if (cloudData) { 
         Object.keys(cloudData).forEach(key => { 
-          // Validasi ekstra agar baris kosong (null) tidak membuat script crash
-          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) { 
-            dataset.push(cloudData[key]); 
-          } 
+          if (cloudData[key] && typeof cloudData[key] === 'object' && cloudData[key].displayName) { dataset.push(cloudData[key]); } 
         }); 
       }
       dataset.sort((a, b) => (b.streak || 0) - (a.streak || 0));
@@ -627,11 +683,8 @@ function enter() {
   overlay.classList.add("active");
   setTimeout(() => {
     document.getElementById("enterBtn").style.display = "none";
-    document.getElementById("streakWidget").style.display = "flex";
-    document.getElementById("titlePetDisplay").style.display = "flex";
-    document.getElementById("calibrationHud").style.display = "block";
     document.getElementById("menu").style.display = "flex";
-    showPage('origin');
+    exitFullscreenPage(); // Membuka beranda bersih pertama kali
     overlay.classList.remove("active");
   }, 800);
 }
@@ -639,7 +692,6 @@ function enter() {
 function saveDominionName() {
   const nameVal = document.getElementById("dominionNameInput").value.trim();
   const petVal = document.getElementById("petSelectInput").value;
-  
   if(!nameVal) { alert("Dominion Name cannot be empty, bre!"); return; }
   
   streakData.dominionName = nameVal;
@@ -657,7 +709,7 @@ function closeResetModal() { document.getElementById("resetConfirmModal").style.
 
 function confirmResetStreak() {
   streakData.count = 0;
-  streakData.highestCount = 1; // Memaksa reset data rekor lokal ke 1 hari
+  streakData.highestCount = 1;
   streakData.lastCalibratedTimestamp = null;
   closeResetModal();
   
@@ -691,26 +743,39 @@ function broadcastToBeast() {
   }
 }
 
-// 🌐 BRIDGE LISTENER UNTUK MENANGKAP TOMBOL BACK DARI BEAST ENGINE IFRAME
+// FIX UI CONTROLLER: Fungsi merubah halaman menjadi full 1 layar pekat bersih
+function showPage(id) {
+  // Sembunyikan tumpukan komponen induk di halaman utama agar konten menu mendapat ruang 1 layar penuh
+  document.getElementById("coreHubHeaderArea").style.display = "none";
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("calibrationHud").style.display = "none";
+  
+  document.querySelectorAll(".page").forEach(p => p.style.display="none");
+  document.getElementById(id).style.display="block";
+  
+  if(id === 'beastPage') { setTimeout(broadcastToBeast, 120); }
+  if(id === 'leaderboardPage') { fetchCloudLeaderboard(); }
+}
+
+// FIX UI CONTROLLER: Fungsi menutup halaman full-screen untuk kembali ke tampilan beranda awal
+function exitFullscreenPage() {
+  document.querySelectorAll(".page").forEach(p => p.style.display="none");
+  
+  // Kembalikan seluruh ornamen utama Core ke layar
+  document.getElementById("coreHubHeaderArea").style.display = "flex";
+  document.getElementById("menu").style.display = "flex";
+  document.getElementById("calibrationHud").style.display = "block";
+  document.getElementById("streakWidget").style.display = "flex";
+  document.getElementById("titlePetDisplay").style.display = "flex";
+}
+
 window.addEventListener("message", (e) => { 
   if(!e.data) return;
-  if(e.data.type === 'BEAST_HANDSHAKE_REQ') { 
-    broadcastToBeast(); 
-  }
-  // Menangkap perintah kembali dari iframe sistem sebelah
-  if(e.data.type === 'BEAST_NAVIGATE_BACK' || e.data === 'BACK_TO_MAIN') {
-    showPage('origin');
-  }
+  if(e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); }
+  if(e.data.type === 'BEAST_NAVIGATE_BACK' || e.data === 'BACK_TO_MAIN') { exitFullscreenPage(); }
 });
 
 window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); });
-
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.style.display="none");
-  document.getElementById(id).style.display="block";
-  if(id === 'beastPage') { setTimeout(broadcastToBeast, 100); }
-  if(id === 'leaderboardPage') { fetchCloudLeaderboard(); }
-}
 
 const launcher = document.getElementById("adminLauncherBtn");
 const panel = document.getElementById("adminPanel");
