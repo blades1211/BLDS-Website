@@ -624,8 +624,7 @@ function saveDominionName() {
   
   streakData.dominionName = nameVal;
   petData.name = petVal;
-  
-  // Jika ini pendaftaran baru setelah reset, level diatur ke level 1
+  // Jika ini pendaftaran baru setelah reset, level balik ke 1
   if (streakData.count === 0) { petData.level = 1; }
 
   saveState();
@@ -637,14 +636,13 @@ function saveDominionName() {
 function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
 
-// 🔄 FUNGSI CONFIRM RESET (FIXED): Menghapus rekor tertinggi lama agar data 1 hari mau terkirim ke Firebase
+// 🔄 TOMBOL CONFIRM RESET: Bersihkan streak & buka formulir spesifikasi baru
 function confirmResetStreak() {
   streakData.count = 0;
-  streakData.highestCount = 1; // Memaksa reset puncak rekor lokal menjadi 1 hari agar server menerima overwrite
   streakData.lastCalibratedTimestamp = null;
   closeResetModal();
   
-  // Ubah judul modal agar sesuai dengan proses re-spec identity baru
+  // Ubah judul modal agar sesuai dengan proses re-spec id baru
   document.getElementById("modalTitle").innerText = "Core Re-spec Matrix";
   document.getElementById("dominionNameInput").value = streakData.dominionName; 
   document.getElementById("nameModal").style.display = "flex";
