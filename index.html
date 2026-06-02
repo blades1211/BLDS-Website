@@ -3,106 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLDS Core Dominion</title>
+    <title>Blacklight Dominion</title>
     <style>
+        /* ===================================================
+           UI ASLI KAMU (MEMPERTAHANKAN STYLE MINIMALIS ELEGAN)
+           =================================================== */
         body {
-            background: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-        /* Kontainer Utama Website Kamu */
-        #mainMenuContainer {
-            display: block; /* Tampil di awal */
+
+        .container {
             text-align: center;
-            margin-top: 50px;
-        }
-        /* Kontainer khusus Pembungkus Game Beast Engine */
-        #beastEngineContainer {
-            display: none; /* Tersembunyi di awal, muncul saat game dibuka */
             width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        iframe {
-            width: 100%;
-            height: 680px;
-            border: none;
-            background: transparent;
-        }
-        .btn-menu {
-            background: #00ffff;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
+
+        .title {
+            font-size: 1.5rem;
             font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #666666;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .menu-item {
+            background-color: transparent;
+            color: #ffffff;
+            border: 1px solid #333333;
+            padding: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
             cursor: pointer;
-            border-radius: 5px;
+            text-align: left;
+            border-radius: 0px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ===================================================
+           STYLE KHUSUS OVERLAY GAME (IFRAME FULL SCREEN)
+           =================================================== */
+        #beastIframe {
+            display: none; /* Sembunyi di awal */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 99999; /* Memastikan berada di paling atas layar */
+            background-color: #020205;
         }
     </style>
 </head>
 <body>
 
-    <div id="mainMenuContainer">
-        <h2>BLDS MAIN HUB DIRECTORY</h2>
-        <p>Selamat Datang di Core System.</p>
-        <button class="btn-menu" onclick="masukBeastEngine()">🎮 OPEN BEAST ENGINE</button>
+    <div class="container" id="mainMenuArea">
+        <div class="title">BLDS CORE SYSTEM</div>
+        <div class="subtitle">V.109 - BLACKLIGHT DIRECTORY</div>
+        
+        <div class="menu-list">
+            <button class="menu-item" onclick="alert('Opening Archives...')">ARCHIVES</button>
+            <button class="menu-item" onclick="alert('Opening Code Matrix...')">ENTER CODE</button>
+            
+            <button class="menu-item" style="color: #00ffff; border-color: rgba(0,255,255,0.3);" onclick="bukaGameBeastEngine()">
+                BEAST ENGINE SYSTEM
+            </button>
+            
+            <button class="menu-item" onclick="alert('Opening Lore...')">LORE FLAMES</button>
+        </div>
     </div>
 
-    <div id="beastEngineContainer">
-        <iframe id="beastIframe" src="index_beast_system.html"></iframe>
-    </div>
+    <iframe id="beastIframe" src="index_beast_system.html"></iframe>
 
     <script>
-        // Data Mockup Telemetri Player Utama (Sesuaikan dengan sistem login/save website kamu)
+        // Data Telemetri Profil Player bawaan yang dikirim saat masuk game
         let playerProfileData = {
-            dominionName: "X_Doms_Player", // Nama player kamu yang akan dikirim ke Firebase
-            count: 12,                    // Streak saat ini
-            highestCount: 45              // Rekor Streak tertinggi
+            dominionName: "X_Doms_Player", 
+            count: 5,                    
+            highestCount: 88              
         };
 
         let currentActivePet = {
-            name: "Ikan5" // File asset pet yang aktif
+            name: "Ikan5" 
         };
 
-        // Fungsi ketika user menekan tombol masuk ke game Beast Engine
-        function masukBeastEngine() {
-            document.getElementById("mainMenuContainer").style.display = "none";
-            document.getElementById("beastEngineContainer").style.display = "block";
-            
-            // Berikan jeda sedikit agar iframe loading sempurna, lalu kirim data profil ke dalam game
-            setTimeout(() => {
-                let iframeWin = document.getElementById("beastIframe").contentWindow;
-                if(iframeWin) {
-                    iframeWin.postMessage({
-                        type: 'TELEMETRY_UPDATE',
-                        data: playerProfileData,
-                        pet: currentActivePet
-                    }, '*');
-                }
-            }, 500);
+        // Fungsi Membuka Game Menjadi Satu Layar Penuh (Besar)
+        function bukaGameBeastEngine() {
+            const iframe = document.getElementById("beastIframe");
+            if (iframe) {
+                iframe.style.display = "block"; // Munculkan penuh menutupi menu utama
+                
+                // Kirim data sinkronisasi profil ke dalam game
+                setTimeout(() => {
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({
+                            type: 'TELEMETRY_UPDATE',
+                            data: playerProfileData,
+                            pet: currentActivePet
+                        }, '*');
+                    }
+                }, 300);
+            }
         }
 
         // ====================================================================
-        // 📡 NYAWA UTAMANYA DI SINI: Mendengarkan Sinyal Balik Dari Dalam Iframe
+        // 📡 JEMBATAN NAVIGASI UTAMA (Mendengar Perintah Keluar Dari Dalam Game)
         // ====================================================================
         window.addEventListener("message", (event) => {
             
-            // 1. Tangkap Sinyal Navigasi Keluar / Tombol Back Dari Leaderboard Game
+            // Jika sinyal yang masuk adalah 'BEAST_NAVIGATE_BACK'
             if (event.data && event.data.type === 'BEAST_NAVIGATE_BACK') {
-                console.log("Sinyal kembali diterima! Memulihkan navigasi menu utama...");
+                console.log("Sinyal BACK terdeteksi! Menutup overlay game...");
                 
-                // Sembunyikan container game, tampilkan kembali menu utama website kamu
-                document.getElementById("beastEngineContainer").style.display = "none";
-                document.getElementById("mainMenuContainer").style.display = "block";
+                const iframe = document.getElementById("beastIframe");
+                if (iframe) {
+                    iframe.style.display = "none"; // Sembunyikan iframe game secara total
+                }
             }
 
-            // 2. Tangkap Sinyal Handshake (Saat game baru dibuka dan meminta data ulang)
+            // Respon otomatis handshake data dari dalam game
             if (event.data && event.data.type === 'BEAST_HANDSHAKE_REQ') {
-                let iframeWin = document.getElementById("beastIframe").contentWindow;
-                if(iframeWin) {
-                    iframeWin.postMessage({
+                const iframe = document.getElementById("beastIframe");
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
                         type: 'TELEMETRY_UPDATE',
                         data: playerProfileData,
                         pet: currentActivePet
