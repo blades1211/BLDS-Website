@@ -192,42 +192,92 @@ body {
 .calibration-container { display: none; width: 100%; text-align: center; margin-top: 20px; }
 .calibration-box { border: 1px solid rgba(255,255,255,0.1); padding: 25px; background: rgba(255,255,255,0.01); border-radius: 8px; }
 
-.cyber-code-container { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 10px 0; }
-.cyber-input-wrapper { position: relative; width: 100%; max-width: 320px; }
+/* 🔐 MODERN CYBERPUNK CODE INTERFACE */
+.cyber-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+.cyber-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
 .cyber-code-input {
-  background: rgba(255, 255, 255, 0.02) !important; color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important; padding: 14px 20px !important;
-  font-family: inherit; font-size: 13px; letter-spacing: 3px; text-align: center;
-  text-transform: uppercase; width: 100%; box-sizing: border-box; border-radius: 8px !important; transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 14px 20px !important;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
 }
-.cyber-code-input:focus { outline: none; border-color: rgba(255, 255, 255, 0.6) !important; background: rgba(255, 255, 255, 0.05) !important; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+.cyber-code-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
 .cyber-code-btn {
-  background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 12px 30px; font-family: inherit; font-size: 11px; letter-spacing: 2px;
-  text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.3s ease;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 30px;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
-.cyber-code-btn:hover { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+.cyber-code-btn:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
 
-.matrix-reset-card { margin-top: 30px; padding: 15px; border-top: 1px dashed rgba(255, 74, 74, 0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.matrix-reset-title { font-size: 10px; letter-spacing: 1px; color: rgba(255, 74, 74, 0.5); }
-.reset-streak-btn {
-  font-size: 10px !important; color: rgba(255, 74, 74, 0.8) !important;
-  border: 1px solid rgba(255, 74, 74, 0.3) !important; background: transparent;
-  padding: 6px 18px; border-radius: 20px; cursor: pointer; letter-spacing: 1px; transition: all 0.3s ease-in-out;
+.matrix-reset-card {
+  margin-top: 30px;
+  padding: 15px;
+  border-top: 1px dashed rgba(255, 74, 74, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
-.reset-streak-btn:hover { background: #ff4a4a !important; color: #000 !important; border-color: #ff4a4a !important; box-shadow: 0 0 10px rgba(255, 74, 74, 0.4); }
+.matrix-reset-title {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255, 74, 74, 0.5);
+}
+.reset-streak-btn {
+  font-size: 10px !important;
+  color: rgba(255, 74, 74, 0.8) !important;
+  border: 1px solid rgba(255, 74, 74, 0.3) !important;
+  background: transparent;
+  padding: 6px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-in-out;
+}
+.reset-streak-btn:hover {
+  background: #ff4a4a !important;
+  color: #000 !important;
+  border-color: #ff4a4a !important;
+  box-shadow: 0 0 10px rgba(255, 74, 74, 0.4);
+}
 
 input[type="text"], input[type="number"], select { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 15px; font-family: inherit; width: 100%; box-sizing: border-box; border-radius: 20px; }
-
-/* LORE CYBERPUNK STYLING */
-.lore-section { margin-bottom: 35px; text-align: left; }
-.lore-section h3 { font-size: 16px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; margin-bottom: 15px; text-transform: uppercase; color: #fff; }
-.lore-section p { font-size: 12px; line-height: 1.8; opacity: 0.85; margin: 0 0 12px 0; text-align: justify; }
-.lore-quote { font-style: italic; border-left: 3px solid rgba(255,255,255,0.4); padding-left: 15px; margin: 15px 0; opacity: 0.7; font-size: 12px; }
-.flame-list { list-style: none; padding: 0; margin: 0; }
-.flame-list li { font-size: 12px; line-height: 1.8; margin-bottom: 8px; padding-left: 15px; position: relative; }
-.flame-list li::before { content: "»"; position: absolute; left: 0; color: rgba(255,255,255,0.5); }
-.flame-list strong { letter-spacing: 1px; color: #fff; }
 
 /* OWNER FLOATING PANEL CONTROLLER */
 .admin-trigger-launcher { 
@@ -247,17 +297,32 @@ input[type="text"], input[type="number"], select { background: #000; color: #fff
   background: #fff; color: #000; padding: 12px; font-size: 11px; 
   font-weight: bold; display: flex; justify-content: space-between; align-items: center; cursor: move;
 }
-.admin-body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-.admin-sub-sect { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px; }
-.admin-sub-sect label { font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; }
+.admin-body { 
+  padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;
+}
+.admin-sub-sect {
+  border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px;
+}
+.admin-sub-sect label {
+  font-size: 10px; letter-spacing: 1px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px;
+}
 
 /* LOADING SCREEN */
 .loader { position: fixed; inset: 0; background: #000; z-index: 9999999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease; }
 .loader.hidden { opacity: 0; pointer-events: none; }
-.loaderCircle { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; animation: spinLoader 0.8s infinite linear !important; }
+.loaderCircle { 
+  width: 40px; height: 40px; 
+  border: 3px solid rgba(255,255,255,0.1); 
+  border-top-color: #fff; 
+  border-radius: 50%; 
+  animation: spinLoader 0.8s infinite linear !important; 
+}
 .loaderText { font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.7); font-weight: bold; }
 
-@keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spinLoader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 0; background: #000; flex-shrink: 0; }
 .footer-content { max-width: 800px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -287,17 +352,8 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
 <div class="modal-overlay" id="nameModal">
   <div class="modal-box">
-    <h3 id="modalTitle">Main Matrix Registration</h3>
-    <p id="modalSubtext" style="font-size:11px; opacity:0.6; margin-bottom:15px;">Setup your core identity in the matrix.</p>
-    
-    <input type="text" id="dominionNameInput" placeholder="Enter Dominion Name" maxlength="15" style="text-align:center; margin-bottom:15px;">
-    
-    <select id="petSelectInput" style="text-align:center; margin-bottom:20px;">
-      <option value="Naga1">🐉 Dragon Core (Naga)</option>
-      <option value="Serigala1">🐺 Wolf Vanguard (Serigala)</option>
-      <option value="Ikan1">🐟 Abyssal Leviathan (Ikan)</option>
-    </select>
-    
+    <h3>Main Matrix Registration</h3>
+    <input type="text" id="dominionNameInput" placeholder="Enter Dominion Name" maxlength="15" style="text-align:center;"><br><br>
     <button onclick="saveDominionName()">Register To Core</button>
   </div>
 </div>
@@ -305,7 +361,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 <div class="modal-overlay" id="resetConfirmModal">
   <div class="modal-box">
     <h3 style="color:#ff4a4a; margin-top:0;">Reset Core Streak?</h3>
-    <p style="font-size:11px; opacity:0.6; margin-bottom:20px;">This action resets your current streak. You will be prompted to choose a new Name and Pet entity.</p>
+    <p style="font-size:11px; opacity:0.6; margin-bottom:20px;">This action is permanent and cannot be reversed inside the core matrix.</p>
     <button onclick="confirmResetStreak()">Confirm Reset</button> <button onclick="closeResetModal()">Cancel</button>
   </div>
 </div>
@@ -317,7 +373,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 
   <div class="streak-widget" id="streakWidget">
     <div>Resonance Streak: <b id="streakCount">0</b> Days | Rank: <span id="rankTitle">Void Walker</span></div>
-    <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days | Owner: <span id="ownerNameDisplay">-</span></div>
+    <div style="font-size:11px; opacity:0.5; margin-top:5px;">Highest Peak Record: <b id="highestStreakDisplayCount">0</b> Days</div>
   </div>
 
   <h1 class="title">Blacklightdoms</h1>
@@ -388,7 +444,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       
       <div class="matrix-reset-card">
         <span class="matrix-reset-title">System Core Parameter</span>
-        <button class="reset-streak-btn" onclick="openResetModal()">Reset & Re-spec Identity</button>
+        <button class="reset-streak-btn" onclick="openResetModal()">Reset Streak Tracking</button>
       </div>
     </div>
   </div>
@@ -411,10 +467,26 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <select id="admPetName" style="margin-bottom:8px;">
         <option value="">-- Select Pet Model --</option>
         <option value="Naga1">Naga1.png</option>
-        <option value="Serigala1">Serigala1.png</option>
+        <option value="Naga2">Naga2.png</option>
+        <option value="Naga3">Naga3.png</option>
+        <option value="Naga4">Naga4.png</option>
+        <option value="Naga5">Naga5.png</option>
         <option value="Ikan1">Ikan1.png</option>
+        <option value="Ikan2">Ikan2.png</option>
+        <option value="Ikan3">Ikan3.png</option>
+        <option value="Ikan4">Ikan4.png</option>
+        <option value="Ikan5">Ikan5.png</option>
+        <option value="Serigala1">Serigala1.png</option>
+        <option value="Serigala2">Serigala2.png</option>
+        <option value="Serigala3">Serigala3.png</option>
+        <option value="Serigala4">Serigala4.png</option>
+        <option value="Serigala5">Serigala5.png</option>
       </select>
       <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+        <button class="admin-btn" style="font-size:9px; padding:6px;" onclick="ownerTriggerBeastAction('STABILIZE_LOOP')">Stabilize Loop</button>
+        <button class="admin-btn" style="font-size:9px; padding:6px; border-color:#ff4a4a; color:#ff4a4a;" onclick="ownerTriggerBeastAction('IGNITE_BURST')">Beast Burst</button>
+      </div>
     </div>
 
     <button class="admin-btn" style="margin-top:10px; border-color:#fff; background:#fff; color:#000;" onclick="executeAdminUpdate()">Apply Configuration</button>
@@ -432,28 +504,17 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
 const BLDS_LORE = {
   main_title: "Black Light Dominion Squad // BLDS",
   subtitle: "Even during the eclipse, the Core still shine.",
-  before_blds: "Before BLDS had a name, before the symbol existed, before the squad was formed... There were only individuals trying to survive their own darkness. Some were ignored. Some were underestimated. Some failed over and over again until they stopped expecting anyone to believe in them. They watched others rise faster. Watched others gain recognition. Watched people quit the moment things became difficult.<br><br>And slowly, they realized something: Most people only shine when the world is bright. But very few can continue moving forward when everything turns dark. That realization became the beginning of BLDS.<br><br>Not a squad created for fame. Not a kingdom built on arrogance. Not a place for people searching only for victory. But a dominion built by those who refused to disappear.",
-  blacklight_core: "At the center of the Eclipse lies the Core. A single star that continues to shine no matter how dark the sky becomes.<br><br>The Core represents the inner purpose carried by every member of BLDS. Not a purpose given by the world. Not a purpose created by attention or popularity. But a purpose discovered through hardship. It is the reminder that: even when everything around you changes... even when people leave... even when failure surrounds you... your inner light can still remain alive.<br><br>BLDS believes the strongest people are not those who never fall. The strongest are the ones who continue standing after every fall. That is why the Core never disappears. Because purpose cannot be erased by fear.",
-  symbol_core: "Our purpose. Our inner light. The source of our strength.",
-  symbol_eclipse: "The world. The darkness. The challenges we face every day.",
-  flame_quote: "Five flames grant strength. Five flames preserve it. Together, they protect the Core.",
-  greater_flames: [
-    { name: "I. Vision", desc: "The ability to see direction even when others are lost." },
-    { name: "II. Discipline", desc: "To continue growing even when nobody is watching." },
-    { name: "III. Loyalty", desc: "To stand together through victory and defeat." },
-    { name: "IV. Ambition", desc: "The desire to surpass limits and continue evolving." },
-    { name: "V. Resilience", desc: "The strength to rise again after every fall." }
-  ],
-  lesser_flames: [
-    { name: "I. Hope", desc: "The light that remains during difficult times." },
-    { name: "II. Awareness", desc: "The ability to stay conscious and understand reality." },
-    { name: "III. Patience", desc: "Growth takes time and endurance." },
-    { name: "IV. Courage", desc: "The will to move forward despite fear." },
-    { name: "V. Unity", desc: "The bond that turns individuals into something greater." }
-  ]
+  lore_text: `Before BLDS had a name,<br>before the symbol existed,<br>before the squad was formed...<br>There were only individuals trying to survive their own darkness.<br>Some were ignored.<br>Some were underestimated.<br>Some failed over and over again until they stopped expecting anyone to believe in them.<br>They watched others rise faster.<br>Watched others gain recognition.<br>Watched people quit the moment things became difficult.<br>And slowly, they realized something:<br>Most people only shine when the world is bright.<br>But very few can continue moving forward when everything turns dark.<br>That realization became the beginning of BLDS.<br>Not a squad created for fame.<br>Not a kingdom built on arrogance.<br>Not a place for people searching only for victory.<br>But a dominion built by those who refused to disappear.`
 };
 
-const BLDS_ARCHIVES = { title: "Core Archives System", history: "The logs inside this data block are historical backups retrieved from the old mainframe network.<br><br>- Data Log #001: The grid structure synchronization established.<br>- Data Log #002: Beast core system integrated with index engines." };
+const BLDS_ARCHIVES = {
+  title: "Core Archives System",
+  history: `The logs inside this data block are historical backups retrieved from the old mainframe network.<br><br>
+  - Data Log #001: The grid structure synchronization established.<br>
+  - Data Log #002: Beast core system integrated with index engines.<br>
+  - Data Log #003: Core encryption update applied. Security code protocol integrated into hidden sub-layers.`
+};
+
 const targets = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 20, 30, 50, 75, 100];
 const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quarto Core", "Penta Resonance", "Resonance Synchronizer", "Octa Dominion", "Nona Overdrive", "Deca Flame Master", "Undeca Sector Locked", "Vanguard Knight", "Resonance Keeper", "Dominion Master", "The Cosmic Ancient", "The Eternal Overlord"];
 
@@ -462,15 +523,28 @@ let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dom
 let petData = { name: "Naga1", level: 1 };
 let cooldownInterval = null;
 
+// --- LINK DATABASE TERINTEGRASI MILIK KAMU ---
 const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-function handleLogoMissing() { document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // Core</div>`; }
+function handleLogoMissing() {
+  document.getElementById("logoArea").innerHTML = `<div class="text-logo-fallback">BLDS // Core</div>`;
+}
 
 function injectDatabase() {
-  let greaterHTML = BLDS_LORE.greater_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
-  let lesserHTML = BLDS_LORE.lesser_flames.map(f => `<li><strong>${f.name} :</strong> ${f.desc}</li>`).join('');
-  document.getElementById("loreInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;"><h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1><div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div></div><div class="lore-section"><h3>Before BLDS</h3><p>${BLDS_LORE.before_blds}</p></div><div class="lore-section"><h3>The Blacklight Core</h3><p>${BLDS_LORE.blacklight_core}</p></div><div class="lore-section"><h3>Meaning Of The Symbols</h3><ul class="flame-list"><li><strong>The Core :</strong> ${BLDS_LORE.symbol_core}</li><li><strong>The Eclipse :</strong> ${BLDS_LORE.symbol_eclipse}</li></ul></div><div class="lore-section"><h3>The Ten Flames Of BLDS</h3><div class="lore-quote">"${BLDS_LORE.flame_quote}"</div><h4 style="font-size:12px; margin:20px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Greater Flames - Grant Strength ]</h4><ul class="flame-list">${greaterHTML}</ul><h4 style="font-size:12px; margin:25px 0 10px 0; color:rgba(255,255,255,0.7); letter-spacing:1px;">[ Lesser Flames - Preserve It ]</h4><ul class="flame-list">${lesserHTML}</ul></div>`;
-  document.getElementById("archivesInjectBox").innerHTML = `<div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;"><h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2></div><div style="font-size:11px; line-height:1.8; opacity:0.8; text-align:left;">${BLDS_ARCHIVES.history}</div>`;
+  document.getElementById("loreInjectBox").innerHTML = `
+    <div style="text-align:center; margin-bottom:30px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:20px;">
+      <h1 style="font-size:22px; letter-spacing:4px; margin:0 0 10px 0;">${BLDS_LORE.main_title}</h1>
+      <div style="font-size:11px; opacity:0.5; letter-spacing:1px;">${BLDS_LORE.subtitle}</div>
+    </div>
+    <div style="font-size:11px; line-height:1.7; opacity:0.85; text-align:left;">${BLDS_LORE.lore_text}</div>
+  `;
+
+  document.getElementById("archivesInjectBox").innerHTML = `
+    <div style="text-align:center; margin-bottom:25px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:15px;">
+      <h2 style="font-size:18px; letter-spacing:3px; margin:0;">${BLDS_ARCHIVES.title}</h2>
+    </div>
+    <div style="font-size:11px; line-height:1.8; opacity:0.8; text-align:left;">${BLDS_ARCHIVES.history}</div>
+  `;
 }
 
 const sky = document.getElementById("sky");
@@ -480,7 +554,14 @@ for(let i=0; i<30; i++) {
   sky.appendChild(star);
 }
 
-document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `<div class="achievement-card" id="ach${i+1}"><span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span><h4 style="margin:5px 0;">${name}</h4><p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p></div>`).join('');
+document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `
+  <div class="achievement-card" id="ach${i+1}">
+    <span class="ach-badge locked-badge" id="ach${i+1}Badge">🔒 Locked</span>
+    <h4 style="margin:5px 0;">${name}</h4>
+    <p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p>
+  </div>
+`).join('');
+
 document.getElementById("floatingViewToggleBtn").addEventListener("click", () => document.getElementById("themeSelectorModal").style.display="flex");
 function selectThemeOption(t) { tempSelectedTheme = t; }
 function applySelectedTheme() {
@@ -501,7 +582,12 @@ function loadState() {
   const saved = localStorage.getItem("BLDS_CORE_STR_DATA");
   if(saved) streakData = JSON.parse(saved);
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
-  if(savedPet) petData = JSON.parse(savedPet);
+  if(savedPet) {
+    petData = JSON.parse(savedPet);
+    if(petData.name.includes(" ") || petData.name === "Void Hatchling" || !petData.name) {
+      petData.name = "Naga1";
+    }
+  }
   updateUI();
   checkCooldownLoop();
 }
@@ -509,7 +595,6 @@ function loadState() {
 function updateUI() {
   document.getElementById("streakCount").innerText = streakData.count;
   document.getElementById("highestStreakDisplayCount").innerText = streakData.highestCount;
-  document.getElementById("ownerNameDisplay").innerText = streakData.dominionName || "-";
   
   let rank = "Void Walker";
   if(streakData.count >= 100) rank = "The Eternal Core";
@@ -534,49 +619,90 @@ function updateUI() {
   fetchCloudLeaderboard();
 }
 
+// 🌐 SYNC CLOUD: KIRIM DATA STREAK UTAMA KE DATABASE FIREBASE
 function pushStreakToFirebase() {
   if (!FIREBASE_DB_URL || !streakData.dominionName) return;
+
   const secureKey = streakData.dominionName.replace(/[.#$\[\]]/g, "_");
-  const payload = { username: secureKey, displayName: streakData.dominionName, streak: streakData.highestCount, hunt: 0, level: petData.level };
-  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  const payload = {
+    username: secureKey,
+    displayName: streakData.dominionName,
+    streak: streakData.highestCount,
+    hunt: 0, 
+    level: petData.level
+  };
+
+  fetch(`${FIREBASE_DB_URL}/leaderboard/${secureKey}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 }
 
+// 🏆 NEW LEADERBOARD ENGINE - MENGAMBIL DATA DAN POTONG MAKSIMAL TOP 20 ASLI
 function fetchCloudLeaderboard() {
   fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
     .then(res => res.json())
     .then(cloudData => {
       let dataset = [];
-      if (cloudData) { Object.keys(cloudData).forEach(key => { if (cloudData[key]) dataset.push(cloudData[key]); }); }
+      if (cloudData) {
+        Object.keys(cloudData).forEach(key => {
+          if (cloudData[key]) dataset.push(cloudData[key]);
+        });
+      }
+      
+      // Mengurutkan dari jumlah streak tertinggi
       dataset.sort((a, b) => b.streak - a.streak);
+      
+      // Ambil Potongan TOP 20 Teratas Saja
       let top20List = dataset.slice(0, 20);
+      
       const tableBody = document.getElementById("leaderboardDataBody");
       if (top20List.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; opacity:0.5;">No registered core found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; opacity:0.5;">Belum ada Dominion terdaftar. Jadi yang pertama!</td></tr>`;
         return;
       }
+
       tableBody.innerHTML = top20List.map((u, i) => {
         const isCurrentMe = (u.displayName === streakData.dominionName);
-        return `<tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}><td>#${i + 1}</td><td>${u.displayName}</td><td>${u.streak} Days</td></tr>`;
+        return `
+          <tr ${isCurrentMe ? 'style="background:rgba(0,255,255,0.12); color:#00ffff;"' : ''}>
+            <td>#${i + 1}</td>
+            <td>${u.displayName}</td>
+            <td>${u.streak} Days</td>
+          </tr>
+        `;
       }).join('');
-    }).catch(() => {
-      document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Matrix connection error.</td></tr>`;
+    })
+    .catch(() => {
+      document.getElementById("leaderboardDataBody").innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff4a4a;">Gagal memuat matrix jaringan cloud.</td></tr>`;
     });
 }
 
 function checkCooldownLoop() {
   if (cooldownInterval) clearInterval(cooldownInterval);
+  
   cooldownInterval = setInterval(() => {
-    if (!streakData.lastCalibratedTimestamp) { resetCalibrationBtnUI(); return; }
+    if (!streakData.lastCalibratedTimestamp) {
+      resetCalibrationBtnUI();
+      return;
+    }
+
     const now = Date.now();
     const targetTime = streakData.lastCalibratedTimestamp + (24 * 60 * 60 * 1000);
     const diff = targetTime - now;
-    if (diff <= 0) { resetCalibrationBtnUI(); clearInterval(cooldownInterval); } 
-    else {
+
+    if (diff <= 0) {
+      resetCalibrationBtnUI();
+      clearInterval(cooldownInterval);
+    } else {
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
       const btn = document.getElementById("calibrationBtn");
-      btn.disabled = true; btn.innerText = `Locked (${hours}h ${minutes}m ${seconds}s)`;
+      btn.disabled = true;
+      btn.innerText = `Locked (${hours}h ${minutes}m ${seconds}s)`;
       document.getElementById("calibrationStatus").innerText = "Resonance system lock active. Cooldown applied globally.";
     }
   }, 1000);
@@ -584,7 +710,8 @@ function checkCooldownLoop() {
 
 function resetCalibrationBtnUI() {
   const btn = document.getElementById("calibrationBtn");
-  btn.disabled = false; btn.innerText = "Sync With Core";
+  btn.disabled = false;
+  btn.innerText = "Sync With Core";
   document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
 }
 
@@ -592,15 +719,13 @@ function calibrateCore() {
   streakData.count++;
   if(streakData.count > streakData.highestCount) streakData.highestCount = streakData.count;
   streakData.lastCalibratedTimestamp = Date.now();
-  saveState(); updateUI(); checkCooldownLoop();
+  saveState(); 
+  updateUI();
+  checkCooldownLoop();
 }
 
 function enter() {
-  if(!streakData.dominionName) { 
-    document.getElementById("modalTitle").innerText = "Main Matrix Registration";
-    document.getElementById("nameModal").style.display="flex"; 
-    return; 
-  }
+  if(!streakData.dominionName) { document.getElementById("nameModal").style.display="flex"; return; }
   const overlay = document.getElementById("smoothEnterOverlay");
   const ambient = document.getElementById("bgAmbient");
   if(ambient) { ambient.play().catch(()=>{}); }
@@ -617,50 +742,39 @@ function enter() {
 }
 
 function saveDominionName() {
-  const nameVal = document.getElementById("dominionNameInput").value.trim();
-  const petVal = document.getElementById("petSelectInput").value;
-  
-  if(!nameVal) { alert("Dominion Name cannot be empty, bre!"); return; }
-  
-  streakData.dominionName = nameVal;
-  petData.name = petVal;
-  // Jika ini pendaftaran baru setelah reset, level balik ke 1
-  if (streakData.count === 0) { petData.level = 1; }
-
-  saveState();
-  document.getElementById("nameModal").style.display="none"; 
-  updateUI(); 
-  enter();
+  const v = document.getElementById("dominionNameInput").value.trim();
+  if(!v) return; streakData.dominionName = v; saveState();
+  document.getElementById("nameModal").style.none; updateUI(); enter();
 }
 
 function openResetModal() { document.getElementById("resetConfirmModal").style.display="flex"; }
 function closeResetModal() { document.getElementById("resetConfirmModal").style.display="none"; }
-
-// 🔄 TOMBOL CONFIRM RESET: Bersihkan streak & buka formulir spesifikasi baru
-function confirmResetStreak() {
-  streakData.count = 0;
-  streakData.lastCalibratedTimestamp = null;
-  closeResetModal();
-  
-  // Ubah judul modal agar sesuai dengan proses re-spec id baru
-  document.getElementById("modalTitle").innerText = "Core Re-spec Matrix";
-  document.getElementById("dominionNameInput").value = streakData.dominionName; 
-  document.getElementById("nameModal").style.display = "flex";
-}
+function confirmResetStreak() { streakData.count = 0; saveState(); updateUI(); closeResetModal(); }
 
 function unlockCode() { 
   if(document.getElementById("codeInput").value.trim() === "OWNERONLYBLDS") {
     document.getElementById("adminLauncherBtn").style.display = "block";
     document.getElementById("adminPanel").style.display = "flex";
-  } else { alert("Access Rejected: Invalid matrix code"); }
+  } else {
+    alert("Access Rejected: Invalid matrix code");
+  }
+}
+
+function ownerTriggerBeastAction(actionType) {
+  const f = document.getElementById("beastIframe");
+  if(f && f.contentWindow) {
+    f.contentWindow.postMessage({ type: 'BEAST_COMMAND_EXECUTE', action: actionType }, '*');
+  }
 }
 
 function executeAdminUpdate() {
   streakData.dominionName = document.getElementById("admDomName").value.trim() || streakData.dominionName;
   if(document.getElementById("admStreak").value) streakData.count = parseInt(document.getElementById("admStreak").value);
   if(document.getElementById("admHighStreak").value) streakData.highestCount = parseInt(document.getElementById("admHighStreak").value);
+  
   petData.name = document.getElementById("admPetName").value || petData.name;
   if(document.getElementById("admPetLevel").value) petData.level = parseInt(document.getElementById("admPetLevel").value);
+
   saveState(); updateUI();
   alert("Changes applied successfully.");
 }
@@ -669,12 +783,24 @@ function broadcastToBeast() {
   const f = document.getElementById("beastIframe");
   if(f && f.contentWindow) {
     const activeTheme = document.body.className;
-    f.contentWindow.postMessage({ type: 'TELEMETRY_UPDATE', data: streakData, pet: petData, theme: activeTheme }, '*');
+    f.contentWindow.postMessage({ 
+      type: 'TELEMETRY_UPDATE', 
+      data: streakData, 
+      pet: petData, 
+      theme: activeTheme 
+    }, '*');
   }
 }
 
-window.addEventListener("message", (e) => { if(e.data && e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); } });
-window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); });
+window.addEventListener("message", (e) => {
+  if(e.data && e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); }
+});
+
+window.addEventListener("load", () => { 
+  injectDatabase();
+  loadState(); 
+  setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); 
+});
 
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.style.display="none");
@@ -686,11 +812,26 @@ function showPage(id) {
 const launcher = document.getElementById("adminLauncherBtn");
 const panel = document.getElementById("adminPanel");
 const header = document.getElementById("adminPanelHeader");
+
 launcher.addEventListener("click", () => { panel.style.display = panel.style.display === "flex" ? "none" : "flex"; });
+
 let isDragging = false; let currentX; let currentY; let initialX; let initialY; let xOffset = 0; let yOffset = 0;
-header.addEventListener("mousedown", dragStart); window.addEventListener("mousemove", drag); window.addEventListener("mouseup", dragEnd);
-function dragStart(e) { initialX = e.clientX - xOffset; initialY = e.clientY - yOffset; if (e.target === header || header.contains(e.target)) { isDragging = true; } }
-function drag(e) { if (isDragging) { e.preventDefault(); currentX = e.clientX - initialX; currentY = e.clientY - initialY; xOffset = currentX; yOffset = currentY; panel.style.transform = "translate(" + currentX + "px, " + currentY + "px)"; } }
+header.addEventListener("mousedown", dragStart);
+window.addEventListener("mousemove", drag);
+window.addEventListener("mouseup", dragEnd);
+
+function dragStart(e) {
+  initialX = e.clientX - xOffset; initialY = e.clientY - yOffset;
+  if (e.target === header || header.contains(e.target)) { isDragging = true; }
+}
+function drag(e) {
+  if (isDragging) {
+    e.preventDefault();
+    currentX = e.clientX - initialX; currentY = e.clientY - initialY;
+    xOffset = currentX; yOffset = currentY;
+    panel.style.transform = "translate(" + currentX + "px, " + currentY + "px)";
+  }
+}
 function dragEnd() { initialX = currentX; initialY = currentY; isDragging = false; }
 </script>
 </body>
