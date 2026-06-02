@@ -158,7 +158,7 @@
   <div class="runtime-container">
     <div class="runtime-header">
       <div class="runtime-title">BEAST ENGINE<br>RUNTIME</div>
-      <button class="btn-return" onclick="location.reload()">⬅ Return To Core</button>
+      <button class="btn-return" onclick="resetSistemTotal()">🔄 Reset Engine Ke Awal</button>
     </div>
 
     <div class="data-display-box">
@@ -225,7 +225,6 @@
             Five flames grant strength. Five flames preserve it.<br>Together, they protect the Core.
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -262,6 +261,17 @@
       codeField.value = "";
     }
 
+    function resetSistemTotal() {
+      globalStreak = 0;
+      document.getElementById('runtime-streak-view').innerText = globalStreak;
+      
+      const frame = document.getElementById('beast-core-frame');
+      if(frame && frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'FORCE_RESET_TO_START' }, '*');
+      }
+      alert("Sistem berhasil dibalikkan ke kondisi awal!");
+    }
+
     function syncDataToIframe() {
       const frame = document.getElementById('beast-core-frame');
       if(frame && frame.contentWindow) {
@@ -275,7 +285,6 @@
       }
     }
 
-    // Anti-mampet handler: Otomatis sync ulang tiap kali iframe kelar dimuat
     document.getElementById('beast-core-frame').addEventListener('load', syncDataToIframe);
   </script>
 </body>
