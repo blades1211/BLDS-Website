@@ -54,7 +54,7 @@
       color: var(--red-alert); padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 10px 0;
     }
 
-    /* --- CUTSCENE ENGINE INTERFACE (STRICT HIDDEN BY DEFAULT) --- */
+    /* --- CUTSCENE LAYER --- */
     #cutscene-curtain {
       position: fixed; inset: 0; background: #000000; z-index: 99999;
       display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -63,7 +63,7 @@
     .banner-impact-title { font-size: 28px; font-weight: 900; color: var(--orange-fire); opacity: 0; transform: scale(0.7); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
     .banner-impact-title.pop-up { opacity: 1; transform: scale(1); }
 
-    /* --- SLIDE UP SELECTION OVERLAY --- */
+    /* --- DRAWER OVERLAY --- */
     #selector-drawer {
       position: fixed; bottom: -100%; left: 0; width: 100%; background: #050506;
       border-top: 2px solid var(--purple-neon); border-radius: 16px 16px 0 0; padding: 20px 12px;
@@ -148,16 +148,13 @@
       yatagarasu: { name: "Yatagarasu Eclipse", file: "yatagarasu.png" }
     };
 
-    // PENERIMA SINYAL INPUT DARI INDEX DATA UTAMA
     window.addEventListener("message", function(msg) {
       if (!msg.data) return;
 
-      // Skenario Sinyal 1: Klik kirim kode manual dari form input index
       if (msg.data.type === 'TRIGGER_SECRET_CUTSCENE') {
         executeSequenceProcess(msg.data.codeName);
       }
 
-      // Skenario Sinyal 2: Otomatis ke-trigger kalau data telemetry streak pas di angka 100
       if (msg.data.type === 'TELEMETRY_UPDATE') {
         if (msg.data.data) {
           let dayCount = parseInt(msg.data.data.highestCount) || 0;
@@ -168,9 +165,26 @@
           }
         }
       }
+
+      // KODE RESET PAKSA DARI LUAR (INDEX)
+      if (msg.data.type === 'FORCE_RESET_TO_START') {
+        sequenceLock = false;
+        currentSelectedMythic = null;
+        
+        // Sembunyikan semua elemen UI cutscene & drawer
+        document.getElementById('cutscene-curtain').style.display = 'none';
+        document.getElementById('selector-drawer').classList.remove('open');
+        document.getElementById('submit-evolution-btn').style.display = 'none';
+        
+        // Bersihkan border pilihan card
+        document.querySelectorAll('.card-option').forEach(c => c.style.borderColor = '#1f2026');
+        
+        // Balikin pet ke Naga awal
+        document.getElementById('name-viewport').innerText = PET_DATABASE.naga.name;
+        document.getElementById('avatar-viewport').innerHTML = `<img src="${PET_DATABASE.naga.file}" class="img-avatar-core" onerror="this.src='https://api.iconify.design/pixelarticons:android.svg?color=%2300ffcc'">`;
+      }
     });
 
-    // URUTAN JALANNYA CUTSCENE SEKUENSAL BERDASARKAN EVENT TIMING
     function executeSequenceProcess(headerText) {
       sequenceLock = true;
       const overlay = document.getElementById('cutscene-curtain');
@@ -182,10 +196,8 @@
       banner.innerText = headerText.toUpperCase();
       drawerTitle.innerText = `AWAKENING: ${headerText.toUpperCase()}`;
 
-      // Tampilkan layer hitam gelap gulita
       overlay.style.display = 'flex';
 
-      // Jalankan pergantian teks bertahap (Anti Mampet/Stuck)
       setTimeout(() => { t1.style.opacity = '1'; }, 400);
       setTimeout(() => { t1.style.opacity = '0'; }, 1800);
       
@@ -194,7 +206,6 @@
 
       setTimeout(() => { banner.classList.add('pop-up'); }, 4100);
 
-      // Selesai cutscene teks, langsung buka drawer pemilih pet mythic class
       setTimeout(() => {
         overlay.style.display = 'none';
         banner.classList.remove('pop-up');
@@ -211,20 +222,16 @@
 
     function bindMythicEvolution() {
       if (!currentSelectedMythic) return;
-      
       const pet = PET_DATABASE[currentSelectedMythic];
       
-      // Ganti visual di main viewport hub
       document.getElementById('name-viewport').innerText = pet.name;
       document.getElementById('avatar-viewport').innerHTML = `<img src="${pet.file}" class="img-avatar-core" onerror="this.src='https://api.iconify.design/pixelarticons:zap.svg?color=%23bf5af2'">`;
       
-      // Sembunyikan drawer interface
       document.getElementById('selector-drawer').classList.remove('open');
       document.getElementById('submit-evolution-btn').style.display = 'none';
       
-      // Lepaskan lock sequence
       sequenceLock = false;
-      alert(`SUCCESS: Data Core ${pet.name} synchronized into internal memory.`);
+      alert(`SUCCESS: Data Core ${pet.name} synchronized.`);
     }
   </script>
 </body>
