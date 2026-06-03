@@ -61,7 +61,7 @@
     }
     .pet-box {
       position: absolute; display: flex; flex-direction: column; align-items: center; cursor: grab;
-      transition: transform 0.1s ease; touch-action: none;
+      transition: transform 0.1s ease; touch-action: none; z-index: 10;
     }
     .pet-box:active { cursor: grabbing; }
     
@@ -97,7 +97,7 @@
     .combat-header { display: flex; justify-content: space-between; color: #ff4a4a; font-weight: bold; font-size: 14px; margin-bottom: 15px; }
     .combat-vs-display { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; }
     .fighter-card { background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px; width: 45%; text-align: center; }
-    .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; }
+    .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; font-size: 32px; }
     .fighter-avatar-wrapper img { width: 100%; height: 100%; object-fit: contain; }
     .fighter-name { font-size: 12px; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
@@ -124,7 +124,7 @@
     }
     .pet-list-item.active-pet { border-color: var(--accent-green); background: #0c2b26; }
     .item-left-info { display: flex; align-items: center; gap: 10px; }
-    .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; }
+    .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
     .list-avatar-box img { width: 100%; height: 100%; object-fit: contain; }
     .list-details h4 { margin: 0; font-size: 13px; }
     .list-details p { margin: 3px 0 0 0; font-size: 10px; color: #8b949e; }
@@ -171,15 +171,9 @@
     }
     
     .glow-logo {
-      width: 130px; height: 130px; object-fit: contain;
+      width: 130px; height: 130px; display: flex; justify-content: center; align-items: center; font-size: 64px;
       filter: drop-shadow(0 0 15px var(--accent-green)) drop-shadow(0 0 30px rgba(0,255,204,0.6));
-      animation: logoBounce Smooth 2.5s ease-in-out infinite alternate;
       transform: scale(0); opacity: 0;
-    }
-
-    @keyframes logoBounce {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-15px) scale(1.03); }
     }
 
     /* Animasi Kebanting (Impact Slam) */
@@ -227,7 +221,7 @@
 
     /* Menu Pemilihan Pet (Slide Up Transisi Smooth) */
     #mythic-pet-selector {
-      position: absolute; bottom: -100%; left: 0; width: 100%; background: rgba(7,7,8,0.98);
+      position: fixed; bottom: -100%; left: 0; width: 100%; background: rgba(7,7,8,0.98);
       border-top: 2px solid var(--accent-purple); border-radius: 20px 20px 0 0; padding: 25px 15px;
       box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; align-items: center;
       transition: bottom 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000;
@@ -241,7 +235,8 @@
       transition: all 0.3s;
     }
     .mythic-card:hover { border-color: var(--accent-purple); background: rgba(191,90,242,0.08); transform: translateY(-5px); }
-    .mythic-card img { width: 65px; height: 65px; object-fit: contain; margin-bottom: 8px; }
+    .mythic-card .mythic-img-box { width: 65px; height: 65px; display: flex; justify-content: center; align-items: center; font-size: 32px; margin-bottom: 8px; }
+    .mythic-card img { width: 100%; height: 100%; object-fit: contain; }
     .mythic-title { font-size: 11px; font-weight: bold; color: #fff; line-height: 1.2; }
 
     .take-btn {
@@ -254,7 +249,7 @@
 <body>
 
   <div id="cutscene-overlay">
-    <img src="logo.png" id="cutscene-logo" class="glow-logo" alt="Engine Core Logo" />
+    <div id="cutscene-logo" class="glow-logo">🤖</div>
     <div id="text-line-1" class="fade-text">Kamu memulai 100 hari sebelumnya</div>
     <div id="text-line-2" class="fade-text">Dan sekarang kamu telah mencapainya</div>
     <div id="text-streak-banner" class="big-streak-title">Streak 100 Day</div>
@@ -266,15 +261,24 @@
     
     <div class="selector-grid">
       <div class="mythic-card" onclick="highlightMythicChoice('ammit')">
-        <img src="ammit.png" onerror="this.src='https://api.iconify.design/pixelarticons:avatar.svg?color=%23bf5af2'">
+        <div class="mythic-img-box">
+          <img src="ammit.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span style="display:none;">🦁</span>
+        </div>
         <span class="mythic-title">Ammit Void-Guardian</span>
       </div>
       <div class="mythic-card" onclick="highlightMythicChoice('sleipnir')">
-        <img src="sleipnir.png" onerror="this.src='https://api.iconify.design/pixelarticons:shield.svg?color=%23bf5af2'">
+        <div class="mythic-img-box">
+          <img src="sleipnir.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span style="display:none;">🐴</span>
+        </div>
         <span class="mythic-title">Sleipnir Gravity-Drive</span>
       </div>
       <div class="mythic-card" onclick="highlightMythicChoice('yatagarasu')">
-        <img src="yatagarasu.png" onerror="this.src='https://api.iconify.design/pixelarticons:zap.svg?color=%23bf5af2'">
+        <div class="mythic-img-box">
+          <img src="yatagarasu.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span style="display:none;">🦅</span>
+        </div>
         <span class="mythic-title">Yatagarasu Eclipse</span>
       </div>
     </div>
@@ -314,7 +318,7 @@
 
         <div class="pet-environment" id="drag-zone">
           <div class="pet-box" id="pet-draggable">
-            <div id="dash-avatar-container"></div>
+            <div id="dash-avatar-container" style="font-size: 64px;"></div>
             <div class="pet-label" id="dash-name-label">Loading Core Engine...</div>
           </div>
         </div>
@@ -436,68 +440,68 @@
   </div>
 
   <script>
-    // URL DATABASE FIREBASE REALTIME
+    // SERVER ENDPOINT
     const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-    // EVOLUTION DATABASE ENGINE
+    // CORE MASTER DATA MATRIX
     const EVOLUTION_DATABASE = {
       naga: {
         type: "epic-evo",
         phases: [
-          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🥚', hp: 80, power: 18 },
-          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐉', hp: 160, power: 38 },
-          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🔥', hp: 350, power: 80 },
-          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🌌', hp: 700, power: 160 },
-          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">👑', hp: 1500, power: 350 }
+          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 80, power: 18 },
+          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐉', hp: 160, power: 38 },
+          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔥', hp: 350, power: 80 },
+          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌌', hp: 700, power: 160 },
+          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">👑', hp: 1500, power: 350 }
         ],
         skills: ["Cosmic Ember", "Starfire Tail Whip", "Singularity Collapse"]
       },
       ikan: {
         type: "epic-evo",
         phases: [
-          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🥚', hp: 50, power: 10 },
-          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐟', hp: 100, power: 20 },
-          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🦈', hp: 220, power: 48 },
-          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐬', hp: 460, power: 95 },
-          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🔱', hp: 1000, power: 220 }
+          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 50, power: 10 },
+          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐟', hp: 100, power: 20 },
+          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🦈', hp: 220, power: 48 },
+          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐬', hp: 460, power: 95 },
+          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔱', hp: 1000, power: 220 }
         ],
         skills: ["Water Pulse", "Aqua Fin Cutter", "Tidal Wave Crash"]
       },
       serigala: {
         type: "epic-evo",
         phases: [
-          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🥚', hp: 60, power: 12 },
-          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐺', hp: 120, power: 25 },
-          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">⚡', hp: 250, power: 55 },
-          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐾', hp: 500, power: 110 },
-          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🤖', hp: 1100, power: 240 }
+          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 60, power: 12 },
+          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐺', hp: 120, power: 25 },
+          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">⚡', hp: 250, power: 55 },
+          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐾', hp: 500, power: 110 },
+          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🤖', hp: 1100, power: 240 }
         ],
         skills: ["Volt Bite", "Thunder Howl", "Fulgur Blitz Strike"]
       },
       ammit: {
         type: "mythic-instan",
         name: "Ammit Void-Guardian",
-        avatar: '<img src="ammit.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🦁',
+        avatar: '<img src="ammit.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🦁',
         hp: 1800, power: 380,
         skills: ["Void Chomp", "Dark Matter Pulse", "Soul Devourer"]
       },
       sleipnir: {
         type: "mythic-instan",
         name: "Sleipnir Gravity-Drive",
-        avatar: '<img src="sleipnir.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🐴',
+        avatar: '<img src="sleipnir.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐴',
         hp: 1600, power: 420,
         skills: ["Quantum Stampede", "Aegis Overdrive", "Gravity Collapse"]
       },
       yatagarasu: {
         type: "mythic-instan",
         name: "Yatagarasu Eclipse-Lord",
-        avatar: '<img src="yatagarasu.png" class="pet-avatar-render" onerror="this.style.opacity=\'0.3\'">🦅',
+        avatar: '<img src="yatagarasu.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🦅',
         hp: 1400, power: 450,
         skills: ["Solar Eclipse", "Calamity Feather", "Shadow Fire Flare"]
       }
     };
 
-    // RUNTIME ENGINE STATE
+    // SYSTEM ENGINE LOCAL RUNTIME STATE
     let activePetKey = "naga";
     let dominionUsername = "Unknown Node";
     let highestStreakRecord = 0;
@@ -520,13 +524,14 @@
     let combatState = null;
 
     document.addEventListener("DOMContentLoaded", function() {
-      initDraggablePet();
       loadEngineData();
+      initDraggablePet();
       window.parent.postMessage({ type: 'BEAST_HANDSHAKE_REQ' }, '*');
       fetchLiveLeaderboard();
+      syncDashboardUI();
     });
 
-    // 🔗 MONITORING MESSAGES DARI PARENT (INDEX.HTML)
+    // 🔗 TELEMETRY MONITORING POSTMESSAGE FROM PARENT INDEX
     window.addEventListener("message", function(e) {
       if (!e.data) return;
       
@@ -539,7 +544,6 @@
           document.getElementById('dominion-identity-tag').innerText = "📍 " + dominionUsername;
           highestStreakRecord = parseInt(coreData.highestCount) || 0;
           
-          // 🔥 DETEKSI OTOMATIS: JIKA STREAK >= 100 & BELUM PERNAH TRIGGER CUTSCENE
           if (highestStreakRecord >= 100 && !cutsceneTriggeredOnce && !discoveredPets.includes("ammit")) {
             cutsceneTriggeredOnce = true;
             runStreak100Cutscene();
@@ -566,7 +570,7 @@
     });
 
     // ========================================================
-    // 🎬 LOGIKA SCENE-BY-SCENE STREAK 100 DAY ANIMATION
+    // 🎬 LOGIKA SCENE CUTSCENE ENGINE ANIMASI STREAK 100 DAY
     // ========================================================
     function runStreak100Cutscene() {
       const overlay = document.getElementById('cutscene-overlay');
@@ -575,42 +579,31 @@
       const line2 = document.getElementById('text-line-2');
       const banner = document.getElementById('text-streak-banner');
 
-      // 1. Layar Transisi Hitam total dibuka
       overlay.style.display = 'flex';
 
-      // 2. Transisi Logo Kebanting (Impact Slam) setelah 0.5 detik
       setTimeout(() => {
         logo.classList.add('impact-slam');
       }, 500);
 
-      // 3. Teks baris 1 muncul Fade-In
       setTimeout(() => { line1.style.opacity = '1'; }, 1800);
-      // Fade-Out Baris 1
       setTimeout(() => { line1.style.opacity = '0'; }, 3800);
 
-      // 4. Teks baris 2 muncul Fade-In
       setTimeout(() => { line2.style.opacity = '1'; }, 4800);
-      // Fade-Out Baris 2
       setTimeout(() => { line2.style.opacity = '0'; }, 6800);
 
-      // 5. Teks besar "Streak 100 Day" Menggelegar Muncul
       setTimeout(() => {
         banner.classList.add('reveal');
-        // Layar Berguncang + Inversi warna smooth aktif selama 5 detik
         document.body.classList.add('screen-shake-active', 'color-invert-active');
       }, 7800);
 
-      // 6. Matikan Guncangan Layar & Inversi, Lalu Munculkan Menu Pemilihan 3 Pet dari bawah
       setTimeout(() => {
         document.body.classList.remove('screen-shake-active', 'color-invert-active');
-        // Slide Up Transisi Smooth Menu Pet
         document.getElementById('mythic-pet-selector').classList.add('slide-up');
       }, 12800);
     }
 
     function highlightMythicChoice(petKey) {
       selectedMythicChoice = petKey;
-      // Beri tanda visual pada kartu yang dipilih
       document.querySelectorAll('.mythic-card').forEach(card => {
         card.style.borderColor = '#1f2026';
         card.style.background = '#111215';
@@ -618,7 +611,6 @@
       event.currentTarget.style.borderColor = 'var(--accent-purple)';
       event.currentTarget.style.background = 'rgba(191,90,242,0.15)';
       
-      // Munculkan tombol TAKE PET dengan smooth
       const btn = document.getElementById('btn-take-pet');
       btn.style.display = 'block';
     }
@@ -626,21 +618,14 @@
     function executeTakePetAction() {
       if (!selectedMythicChoice) return;
 
-      // 1. Tambahkan seluruh pet mythic ke list discovered agar terbuka di bestiary
       if (!discoveredPets.includes("ammit")) discoveredPets.push("ammit", "sleipnir", "yatagarasu");
-
-      // 2. GANTI PET LAMA DENGAN PET MYTHIC TERPILIH SECARA MUTLAK
       activePetKey = selectedMythicChoice;
       
-      // Beri pesan Take... sesuai instruksi lu
       alert(`⚡ Take... ${EVOLUTION_DATABASE[selectedMythicChoice].name} Berhasil Disinkronisasikan!`);
-
-      // 3. Transisi Smooth: Sembunyikan Selector Menu & Cutscene Overlay, kembali normal (Menu Awal)
       document.getElementById('mythic-pet-selector').classList.remove('slide-up');
       
       setTimeout(() => {
         document.getElementById('cutscene-overlay').style.display = 'none';
-        // Simpan data & Re-sinkronisasi UI Menu Utama
         saveEngineData();
         pushStateToServer();
         syncDashboardUI();
@@ -649,7 +634,7 @@
     }
 
     // ========================================================
-    // DATA BASE & CORE HUB NAVIGATION
+    // DATABASE CACHE STORAGE HANDLER
     // ========================================================
     function saveEngineData() {
       localStorage.setItem("BLDS_BEAST_SYSTEM_V3_STATE", JSON.stringify({
@@ -694,6 +679,7 @@
       }
     }
 
+    // DRAGGABLE CORE ENGINE INTERACTIVE
     function initDraggablePet() {
       const pet = document.getElementById('pet-draggable');
       const zone = document.getElementById('drag-zone');
@@ -858,7 +844,7 @@
       document.getElementById('battle-my-avatar-container').innerHTML = db.type === "epic-evo" ? db.phases[pData.phaseIndex].avatar : db.avatar;
       
       document.getElementById('battle-enemy-name').innerText = enemyName;
-      document.getElementById('battle-enemy-avatar-container').innerHTML = '<img src="wild_enemy.png" onerror="this.src=\'https://api.iconify.design/pixelarticons:bug.svg?color=%23ff4a4a\'" class="pet-avatar-render">';
+      document.getElementById('battle-enemy-avatar-container').innerHTML = '👾';
 
       document.getElementById('skill1-name').innerText = combatState.skills[0];
       document.getElementById('skill1-dmg').innerText = `Dmg: ${Math.floor(combatState.myBasePower * 0.8)}`;
@@ -985,7 +971,7 @@
     }
 
     // ========================================================
-    // 🌐 DATABASE SINKRONISASI SERVER & MODAL INVENTORI
+    // 🌐 SERVER STANDINGS & REALTIME SYSTEM
     // ========================================================
     function pushStateToServer() {
       if (!FIREBASE_DB_URL || !dominionUsername || dominionUsername === "Unknown Node") return;
@@ -1066,15 +1052,18 @@
           combatState.myHp = combatState.myMaxHp;
           playerBeasts[activePetKey].currentHp = combatState.myMaxHp;
           updateCombatUI();
+          writeLog("🧪 Menggunakan Potion! HP Pet pulih 100%!", "var(--accent-green)");
         } else {
           let pData = playerBeasts[activePetKey];
           const db = EVOLUTION_DATABASE[activePetKey];
           pData.currentHp = db.type === "epic-evo" ? (db.phases[pData.phaseIndex].hp + (pData.level * 15)) : (db.hp + (pData.level * 30));
         }
       } else if (type === '💊') {
-        if (bagContext !== "battle" || userInventory.pill <= 0) { alert("Gagal!"); return; }
+        if (bagContext !== "battle") { alert("Item ini hanya bisa digunakan saat pertarungan!"); return; }
+        if (userInventory.pill <= 0) { alert("Habis!"); return; }
         userInventory.pill--;
         combatState.damageBuffActive = true;
+        writeLog("💊 Menggunakan Pill! Kerusakan berikutnya akan dikalikan 2x!", "var(--accent-orange)");
       }
       openModal();
       saveEngineData();
