@@ -31,7 +31,7 @@
     }
 
     .top-menu {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px;
     }
     .menu-btn {
       background: transparent; border: 1px solid #2d3039; color: #fff;
@@ -63,8 +63,8 @@
       position: absolute; display: flex; flex-direction: column; align-items: center; cursor: grab;
       transition: transform 0.1s ease; touch-action: none; z-index: 10;
     }
-    .pet-avatar-render { width: 95px; height: 95px; object-fit: contain; pointer-events: none; }
-    .pet-locked-silhouette { filter: brightness(0) saturate(100%); opacity: 0.4; }
+    .dash-avatar-wrapper { font-size: 64px; animation: gentleFloat 3s infinite ease-in-out; }
+    @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     .pet-label { font-size: 13px; margin-top: 5px; font-family: monospace; color: #8b949e; text-align: center; }
 
     .hunt-trigger-zone { width: 100%; display: flex; justify-content: center; margin: 15px 0; }
@@ -112,6 +112,7 @@
     .item-main-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
     .switch-trigger-btn { background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); padding: 6px 12px; border-radius: 12px; font-size: 10px; cursor: pointer; font-weight: bold; }
+    .pet-locked-silhouette { filter: brightness(0) saturate(100%); opacity: 0.4; }
     .pet-lore-box { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #2d3039; font-size: 11px; color: #8b949e; font-style: italic; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
@@ -126,6 +127,7 @@
       <button class="menu-btn active-tab" id="tab-dash" onclick="switchToTab('dash-screen')">🛸 MATRIX</button>
       <button class="menu-btn" id="tab-bestiary" onclick="switchToTab('bestiary-screen')">📖 BESTIARY</button>
       <button class="menu-btn" id="tab-fusion" onclick="switchToTab('fusion-screen')" style="border-color: var(--accent-purple); color: var(--accent-purple);">🧬 FUSE ENGINE</button>
+      <button class="menu-btn" onclick="returnToMainLauncher()" style="border-color: #fff; color: #fff;">⬅️ EXIT</button>
     </div>
 
     <div id="dash-screen" class="screen active">
@@ -140,7 +142,7 @@
         </div>
         <div class="pet-environment" id="drag-zone">
           <div class="pet-box" id="pet-draggable">
-            <div id="dash-avatar-container" style="font-size: 64px;"></div>
+            <div id="dash-avatar-container" class="dash-avatar-wrapper"></div>
             <div class="pet-label" id="dash-name-label">Booting core...</div>
           </div>
         </div>
@@ -225,20 +227,20 @@
     const ELEMENT_COLORS = { FIRE:"#ff4a4a", WATER:"#00bfff", LIGHTNING:"#ffcc00", VOID:"#bf5af2", SPACE:"#7a22ff", EARTH:"#a0522d", NATURE:"#2ed573" };
 
     const EVOLUTION_DATABASE = {
-      naga: { name: "Nova Wyrm", element: "FIRE", avatar: "🐉", hp: 120, power: 25, skills: [{name:"Ember Spit",ratio:0.8},{name:"Fire Tail",ratio:1.2},{name:// Tembakan ledakan besar
-      "Supernova",ratio:1.7}], lore: "Anomali api dari runtuhnya node server utama." },
+      naga: { name: "Nova Wyrm", element: "FIRE", avatar: "🐉", hp: 120, power: 25, skills: [{name:"Ember Spit",ratio:0.8},{name:"Fire Tail",ratio:1.2},{name:"Supernova",ratio:1.7}], lore: "Anomali api dari runtuhnya node server utama." },
       ikan: { name: "Abyssal Levi", element: "WATER", avatar: "🦈", hp: 100, power: 20, skills: [{name:"Aqua Shot",ratio:0.8},{name:"Tidal Wave",ratio:1.3},{name:"Deep Freeze",ratio:1.6}], lore: "Penguasa subroutine dingin enkripsi bawah laut siber." },
       serigala: { name: "Volt Lupo", element: "LIGHTNING", avatar: "🐺", hp: 110, power: 24, skills: [{name:"Spark Bite",ratio:0.8},{name:"Thunder Bolt",ratio:1.2},{name:"Plasma Strike",ratio:1.7}], lore: "Memburu fragmen korup secepat kilat listrik statis." },
-      orion: { name: "Astral Gazer", element: "SPACE", avatar: "👽", hp: 130, power: 22, skills: [{name:"Meteor Dust",ratio:0.85},{name:// Laser kosmik berdaya tinggi
-      "Cosmic Beam",ratio:1.25},{name:"Blackhole Squeeze",ratio:1.8}], lore: "Entitas dimensi luar angkasa pengendali gravitasi kosmik." },
+      orion: { name: "Astral Gazer", element: "SPACE", avatar: "👽", hp: 130, power: 22, skills: [{name:"Meteor Dust",ratio:0.85},{name:"Cosmic Beam",ratio:1.25},{name:"Blackhole Squeeze",ratio:1.8}], lore: "Entitas dimensi luar angkasa pengendali gravitasi kosmik." },
       golem: { name: "Titan Crag", element: "EARTH", avatar: "🪨", hp: 160, power: 18, skills: [{name:"Rock Hurl",ratio:0.75},{name:"Earthquake",ratio:1.2},{name:"Terra Slam",ratio:1.6}], lore: "Monolit pelindung batuan isolator penangkal arus listrik." },
       flora: { name: "Thorn Weaver", element: "NATURE", avatar: "🌱", hp: 115, power: 23, skills: [{name:"Razor Leaf",ratio:0.8},{name:"Vine Whip",ratio:1.3},{name:"Solar Burst",ratio:1.75}], lore: "Menyerap data bandwidth air untuk siklus pemulihan sistem alami." },
       ammit: { name: "Ammit Void-Guardian", element: "VOID", avatar: "🦁", hp: 500, power: 90, skills: [{name:"Void Bite",ratio:1.0},{name:"Calamity",ratio:1.5},{name:"Soul Devourer",ratio:2.1}], lore: "Ras Mythic legendaris pemusnah segala bentuk kode ilegal." }
     };
 
+    // Sinkronisasi Terpusat via localStorage
     let activePetKey = "naga";
     let userInventory = { apple: 4, candy: 5, juice: 2, potion: 2 };
     let discoveredPets = ["naga", "ikan", "serigala", "orion", "golem", "flora"];
+    let dominionName = "Explorer Core";
     
     let playerBeasts = {
       naga: { level: 1, exp: 0, currentHp: 120, currentHng: 100 },
@@ -254,9 +256,44 @@
     let combatState = null;
 
     document.addEventListener("DOMContentLoaded", () => {
+      loadStateFromStorage();
       syncDashboardUI();
-      initDraggable();
     });
+
+    function loadStateFromStorage() {
+      const savedCore = localStorage.getItem("BLDS_CORE_STR_DATA");
+      if(savedCore) {
+        const parsed = JSON.parse(savedCore);
+        dominionName = parsed.dominionName || dominionName;
+      }
+      document.getElementById('dominion-identity-tag').innerText = dominionName;
+
+      const savedBeastEngine = localStorage.getItem("BE_V3_SAVED_STATE");
+      if(savedBeastEngine) {
+        const engineData = JSON.parse(savedBeastEngine);
+        activePetKey = engineData.activePetKey;
+        userInventory = engineData.userInventory;
+        discoveredPets = engineData.discoveredPets;
+        playerBeasts = engineData.playerBeasts;
+      } else {
+        const savedGlobalPet = localStorage.getItem("BLDS_CORE_PET_DATA");
+        if(savedGlobalPet) {
+          const parsedPet = JSON.parse(savedGlobalPet);
+          activePetKey = parsedPet.name || activePetKey;
+          if(playerBeasts[activePetKey]) playerBeasts[activePetKey].level = parsedPet.level || 1;
+        }
+      }
+
+      const savedTheme = localStorage.getItem("BLDS_GLOBAL_THEME");
+      if(savedTheme) document.body.className = savedTheme;
+    }
+
+    function saveStateToStorage() {
+      localStorage.setItem("BE_V3_SAVED_STATE", JSON.stringify({activePetKey, discoveredPets, playerBeasts, userInventory}));
+      // Sinkronisasikan level ke launcher index
+      const basePetData = { name: activePetKey, level: playerBeasts[activePetKey].level };
+      localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(basePetData));
+    }
 
     function switchToTab(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -295,6 +332,7 @@
       if(userInventory[k] <= 0) return alert("Suplai item habis!");
       userInventory[k]--;
       playerBeasts[activePetKey].currentHng = Math.min(100, playerBeasts[activePetKey].currentHng + 25);
+      saveStateToStorage();
       syncDashboardUI();
     }
 
@@ -350,32 +388,25 @@
 
       alert("🧬 WARNING: Menginisialisasi Protokol Penghancuran & Rekombinasi Struktur DNA Core...");
       
-      // Hapus 3 pet yang dikorbankan dari database kepemilikan player
       fusionSlots.forEach(targetKey => {
         discoveredPets = discoveredPets.filter(p => p !== targetKey);
       });
 
-      // Kumpulan seluruh database pet yang ada di game
       const allPetPool = Object.keys(EVOLUTION_DATABASE);
-      // Dapatkan hasil acak pet baru
       let randomNewPet = allPetPool[Math.floor(Math.random() * allPetPool.length)];
 
-      // Cegah kehilangan seluruh pet jika beruntung/sial, pastikan player dapat pet
       if(!discoveredPets.includes(randomNewPet)) {
         discoveredPets.push(randomNewPet);
       }
       
-      // Upgrade instan level pet hasil rekayasa genetik fusi
       playerBeasts[randomNewPet].level = Math.min(50, playerBeasts[randomNewPet].level + Math.floor(Math.random() * 3) + 2);
       const newDb = EVOLUTION_DATABASE[randomNewPet];
 
       alert(`✨ SUCCESS MUTATION DETECTED!\n\nMaterial lama hancur. Lahir struktur core baru berdaya tinggi: ${newDb.avatar} ${newDb.name} [Element: ${newDb.element}]!`);
 
-      // Reset material slot fusi
       fusionSlots = [null, null, null];
-      // Jadikan pet baru sebagai andalan utama
       activePetKey = randomNewPet;
-      saveLocal();
+      saveStateToStorage();
       switchToTab('dash-screen');
     }
 
@@ -411,7 +442,7 @@
       document.getElementById('battle-enemy-element-badge').style.background = ELEMENT_COLORS[randElem];
 
       document.getElementById('skill1-name').innerText = db.skills[0].name;
-      document.getElementById('skill2-name').innerText = db.skills[1].name;
+      document.getElementById('skill2-name').innerText = db.skills[0].name;
       document.getElementById('skill3-name').innerText = db.skills[2].name;
 
       document.getElementById('combat-log-box').innerHTML = "<div style='color:var(--accent-green);'>🔒 Jaringan sinkronisasi stabil. Mulai pertarungan ekstrim...</div>";
@@ -434,7 +465,6 @@
       const ratio = db.skills[slot-1].ratio;
       let dmg = Math.floor(combatState.myPower * ratio * (0.9 + Math.random()*0.2));
 
-      // Aturan counter-picking elemen berkesinambungan
       if(combatState.myElement === "SPACE" && combatState.enemyElement === "VOID") dmg = Math.floor(dmg * 1.5);
       if(combatState.myElement === "EARTH" && combatState.enemyElement === "LIGHTNING") dmg = Math.floor(dmg * 1.5);
       if(combatState.myElement === "NATURE" && combatState.enemyElement === "WATER") dmg = Math.floor(dmg * 1.5);
@@ -453,7 +483,6 @@
         return;
       }
 
-      // Giliran Musuh Menyerang Balik
       setTimeout(() => {
         let eDmg = Math.floor(combatState.enemyPower * (0.8 + Math.random()*0.4));
         combatState.myHp = Math.max(0, combatState.myHp - eDmg);
@@ -476,7 +505,7 @@
     }
 
     function endBattle() {
-      saveLocal();
+      saveStateToStorage();
       setTimeout(() => {
         document.getElementById('navigation-bar').style.display = 'grid';
         switchToTab('dash-screen');
@@ -510,24 +539,28 @@
       });
     }
 
-    function setActivePet(k) { activePetKey = k; renderBestiaryUI(); }
+    function setActivePet(k) { 
+      activePetKey = k; 
+      saveStateToStorage();
+      renderBestiaryUI(); 
+    }
+    
     function openBag() { document.getElementById('modal-qty-potion').innerText = userInventory.potion; document.getElementById('inventory-modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('inventory-modal').style.display = 'none'; syncDashboardUI(); }
+    
     function usePotion() {
       if(userInventory.potion <= 0) return;
       userInventory.potion--;
       const db = EVOLUTION_DATABASE[activePetKey];
       playerBeasts[activePetKey].currentHp = db.hp + (playerBeasts[activePetKey].level * 10);
       document.getElementById('modal-qty-potion').innerText = userInventory.potion;
+      saveStateToStorage();
       alert("🧪 Sistem pulih! Core HP kembali menyentuh batas 100%!");
     }
 
-    function saveLocal() { localStorage.setItem("BE_V3_DATA", JSON.stringify({activePetKey, discoveredPets, playerBeasts, userInventory})); }
-
-    function initDraggable() {
-      const pet = document.getElementById('pet-draggable');
-      pet.addEventListener('touchstart', (e) => { pet.style.transform = "scale(1.2) rotate(5deg)"; });
-      pet.addEventListener('touchend', () => { pet.style.transform = "scale(1) rotate(0deg)"; });
+    function returnToMainLauncher() {
+      saveStateToStorage();
+      window.location.href = "index.html";
     }
   </script>
 </body>
