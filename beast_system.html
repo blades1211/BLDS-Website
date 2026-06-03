@@ -1,567 +1,343 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Beast Engine v3 - Fusion Core Matrix</title>
-  <style>
-    :root {
-      --bg-main: #000000;
-      --panel-bg: #070708;
-      --border-color: #1f2026;
-      --accent-green: #00ffcc;
-      --accent-red: #ff4a4a;
-      --accent-orange: #ffcc00;
-      --accent-purple: #bf5af2;
-      --accent-blue: #00bfff;
-      --accent-space: #7a22ff;
-      --accent-earth: #a0522d;
-      --accent-nature: #2ed573;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beast Engine Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
 
-    body, html {
-      margin: 0; padding: 0; width: 100%; height: 100%;
-      background-color: var(--bg-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #ffffff; overflow-x: hidden; user-select: none; -webkit-user-select: none;
-    }
+        body {
+            background-color: #030306;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+        }
 
-    #app-container {
-      display: flex; flex-direction: column; min-height: 100vh; padding: 15px; box-sizing: border-box;
-    }
+        /* Ambient Purple Cyber Glow Scanlines */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(168, 85, 247, 0.04), rgba(0, 255, 242, 0.02));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
 
-    .top-menu {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px;
-    }
-    .menu-btn {
-      background: transparent; border: 1px solid #2d3039; color: #fff;
-      padding: 10px 5px; border-radius: 20px; font-size: 11px; cursor: pointer; text-align: center;
-      font-weight: bold; letter-spacing: 0.5px;
-    }
-    .menu-btn:active { background: #111215; }
-    .menu-btn.active-tab { border-color: var(--accent-green); color: var(--accent-green); background: rgba(0, 255, 204, 0.05); }
+        #beast-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
 
-    .screen { display: none; width: 100%; }
-    .screen.active { display: block; }
+        /* Navigation Menu Panel Header bar */
+        .engine-nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
 
-    .main-panel {
-      border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg);
-      position: relative; display: flex; flex-direction: column; align-items: center; min-height: 480px;
-    }
-    .panel-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px; }
-    
-    .stats-box { width: 62%; background: #111215; padding: 10px; border-radius: 8px; border: 1px solid #1f2026; }
-    .stat-bar-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
-    .bar-bg { width: 75px; height: 8px; background: #22242b; border-radius: 4px; overflow: hidden; }
-    .bar-fill { height: 100%; width: 100%; transition: width 0.3s; }
+        .back-core-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
 
-    .pet-environment {
-      flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; 
-      align-items: center; position: relative; min-height: 220px; overflow: hidden;
-    }
-    .pet-box {
-      position: absolute; display: flex; flex-direction: column; align-items: center; cursor: grab;
-      transition: transform 0.1s ease; touch-action: none; z-index: 10;
-    }
-    .dash-avatar-wrapper { font-size: 64px; animation: gentleFloat 3s infinite ease-in-out; }
-    @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .pet-label { font-size: 13px; margin-top: 5px; font-family: monospace; color: #8b949e; text-align: center; }
+        .back-core-btn:hover {
+            border-color: #ffffff;
+            color: #ffffff;
+            background: rgba(255,255,255,0.05);
+        }
 
-    .hunt-trigger-zone { width: 100%; display: flex; justify-content: center; margin: 15px 0; }
-    .btn-hunt-wild {
-      width: 85%; border: 1px solid var(--accent-red); background: rgba(255, 74, 74, 0.1);
-      color: var(--accent-red); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center;
-    }
+        .engine-status-badge {
+            font-size: 11px;
+            color: #a78bfa;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-    .items-footer { width: 100%; text-align: center; margin-top: auto; }
-    .items-row { display: flex; justify-content: center; gap: 10px; }
-    .item-circle {
-      width: 45px; height: 45px; background: #111215; border: 1px solid #1f2026; border-radius: 50%;
-      display: flex; justify-content: center; align-items: center; font-size: 20px; position: relative; cursor: pointer;
-    }
-    .item-count { position: absolute; bottom: -2px; right: -2px; background: #00ffcc; color: #000; font-size: 9px; font-weight: bold; padding: 1px 5px; border-radius: 10px; }
+        /* Header Console Panel */
+        .engine-header-panel {
+            text-align: center;
+            border: 1px dashed rgba(168, 85, 247, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: rgba(13, 10, 25, 0.5);
+        }
 
-    /* FUSION CHAMBER STYLES */
-    .fusion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; width: 100%; }
-    .fusion-slot {
-      background: #111215; border: 2px dashed #2d3039; border-radius: 12px; height: 90px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; font-size: 24px; position: relative;
-    }
-    .fusion-slot.filled { border-style: solid; border-color: var(--accent-purple); background: rgba(191, 90, 242, 0.05); }
-    .slot-remove { position: absolute; top: 2px; right: 5px; font-size: 10px; color: var(--accent-red); font-weight: bold; }
-    .btn-execute-fusion {
-      width: 100%; background: linear-gradient(45deg, #7a22ff, #bf5af2); color: #fff; border: none;
-      padding: 14px; border-radius: 8px; font-weight: bold; font-size: 14px; letter-spacing: 1px; cursor: pointer; box-shadow: 0 0 15px rgba(191,90,242,0.4);
-    }
-    .btn-execute-fusion:disabled { background: #1f2026; color: #444; box-shadow: none; cursor: not-allowed; }
+        .engine-title {
+            font-size: 20px;
+            color: #ffffff;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
 
-    /* COMBAT & BESTIARY */
-    .combat-arena, .bestiary-container { border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg); }
-    .combat-vs-display { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; }
-    .fighter-card { background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px; width: 45%; text-align: center; position: relative; }
-    .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; font-size: 32px; }
-    .element-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; display: inline-block; margin-bottom: 5px; color: #fff; }
-    .combat-logs { background: #090000; border: 1px solid #ff4a4a; border-radius: 6px; height: 120px; overflow-y: auto; padding: 8px; font-family: monospace; font-size: 11px; margin-bottom: 15px; }
-    .combat-actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .skill-btn { background: #1f2026; border: 1px solid #2d3039; color: #fff; padding: 10px 5px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
-    .skill-btn .dmg-hint { font-size: 9px; color: #8b949e; }
-    
-    .pet-list { display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; }
-    .pet-list-item { display: flex; flex-direction: column; background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px; }
-    .pet-list-item.active-pet { border-color: var(--accent-green); background: #0c2b26; }
-    .item-main-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .list-avatar-box { width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 24px; }
-    .switch-trigger-btn { background: transparent; border: 1px solid var(--accent-green); color: var(--accent-green); padding: 6px 12px; border-radius: 12px; font-size: 10px; cursor: pointer; font-weight: bold; }
-    .pet-locked-silhouette { filter: brightness(0) saturate(100%); opacity: 0.4; }
-    .pet-lore-box { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #2d3039; font-size: 11px; color: #8b949e; font-style: italic; }
+        /* Core Signature Selector Grid Menu Row */
+        .beast-selector-section {
+            margin-bottom: 35px;
+        }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
-    .modal-box { background: #0c0d12; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; width: 100%; max-width: 320px; text-align: center; }
-    .close-modal { background: #1f2026; border: none; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-  </style>
+        .section-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .beast-grid-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .beast-tab-card {
+            flex: 1;
+            background: rgba(15,15,25,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .beast-tab-card:hover {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .beast-tab-card.active {
+            border-color: #a78bfa;
+            background: rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
+        }
+
+        .beast-tab-card .name-lbl {
+            font-size: 12px;
+            font-weight: bold;
+            color: #cbd5e1;
+            letter-spacing: 1px;
+        }
+
+        .beast-tab-card.active .name-lbl {
+            color: #ffffff;
+        }
+
+        /* Data Parameters Table Card */
+        .stat-manifest-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            background: rgba(5, 5, 8, 0.9);
+            margin-bottom: 30px;
+        }
+
+        .manifest-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .manifest-row:last-child {
+            border-bottom: none;
+        }
+
+        .manifest-label {
+            color: #64748b;
+        }
+
+        .manifest-value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Shell Console Output Logs screen window */
+        .console-log-box {
+            background: #000000;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            height: 120px;
+            overflow-y: auto;
+            font-size: 11px;
+            color: #4ade80;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .interact-btn {
+            display: block;
+            width: 100%;
+            background: #a78bfa;
+            color: #000000;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .interact-btn:hover {
+            background: #c084fc;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+        }
+    </style>
 </head>
 <body>
 
-  <div id="app-container">
-    <div class="top-menu" id="navigation-bar">
-      <button class="menu-btn active-tab" id="tab-dash" onclick="switchToTab('dash-screen')">🛸 MATRIX</button>
-      <button class="menu-btn" id="tab-bestiary" onclick="switchToTab('bestiary-screen')">📖 BESTIARY</button>
-      <button class="menu-btn" id="tab-fusion" onclick="switchToTab('fusion-screen')" style="border-color: var(--accent-purple); color: var(--accent-purple);">🧬 FUSE ENGINE</button>
-      <button class="menu-btn" onclick="returnToMainLauncher()" style="border-color: #fff; color: #fff;">⬅️ EXIT</button>
-    </div>
-
-    <div id="dash-screen" class="screen active">
-      <div class="main-panel">
-        <div class="panel-header">
-          <div class="menu-btn" style="padding: 5px 12px; font-size: 11px; color: var(--accent-green); border-color: var(--accent-green);" id="dominion-identity-tag">Dominion Core</div>
-          <div class="stats-box">
-            <div class="stat-bar-container"><span>HP</span><span id="dash-hp-text">100/100</span><div class="bar-bg"><div id="dash-hp-bar" class="bar-fill" style="background:var(--accent-red);"></div></div></div>
-            <div class="stat-bar-container"><span>HNG</span><span id="dash-hng-text">100/100</span><div class="bar-bg"><div id="dash-hng-bar" class="bar-fill" style="background:var(--accent-orange);"></div></div></div>
-            <div class="stat-bar-container"><span>EXP</span><span id="dash-exp-text">0%</span><div class="bar-bg"><div id="dash-exp-bar" class="bar-fill" style="background:var(--accent-green);"></div></div></div>
-          </div>
-        </div>
-        <div class="pet-environment" id="drag-zone">
-          <div class="pet-box" id="pet-draggable">
-            <div id="dash-avatar-container" class="dash-avatar-wrapper"></div>
-            <div class="pet-label" id="dash-name-label">Booting core...</div>
-          </div>
-        </div>
-        <div class="hunt-trigger-zone">
-          <button class="btn-hunt-wild" onclick="triggerHuntWild()">⚔️ START WILD HUNTING</button>
-        </div>
-        <div class="items-footer">
-          <div class="items-row">
-            <div class="item-circle" onclick="feedPet('🍎')">🍎<span class="item-count" id="dash-qty-apple">0</span></div>
-            <div class="item-circle" onclick="feedPet('🍬')">🍬<span class="item-count" id="dash-qty-candy">0</span></div>
-            <div class="item-circle" onclick="feedPet('🧃')">🧃<span class="item-count" id="dash-qty-juice">0</span></div>
-            <div class="item-circle" onclick="openBag()">🧪<span class="item-count" id="dash-potion-count">0</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="fusion-screen" class="screen">
-      <div class="bestiary-container" style="border-color: var(--accent-purple);">
-        <h3 style="margin-top:0; color: var(--accent-purple); font-family: monospace;">🧬 Core Fusion DNA Chamber</h3>
-        <p style="font-size:11px; color:#8b949e; margin-bottom:15px;">Gabungkan 3 Core DNA Pet berbeda untuk menciptakan mutasi acak tingkat tinggi.</p>
+    <div id="beast-container">
         
-        <div class="fusion-grid">
-          <div class="fusion-slot" id="f-slot-0" onclick="selectPetForFusion(0)">➕<span style="font-size:10px; color:#666;">Slot 1</span></div>
-          <div class="fusion-slot" id="f-slot-1" onclick="selectPetForFusion(1)">➕<span style="font-size:10px; color:#666;">Slot 2</span></div>
-          <div class="fusion-slot" id="f-slot-2" onclick="selectPetForFusion(2)">➕<span style="font-size:10px; color:#666;">Slot 3</span></div>
+        <div class="engine-nav-row">
+            <a href="index.html" class="back-core-btn">◀ BLDS Core</a>
+            <div class="engine-status-badge">● Engine Online</div>
         </div>
 
-        <button id="btn-fuse-action" class="btn-execute-fusion" onclick="processCoreFusion()" disabled>INITIALIZE PROTOCOL FUSION</button>
-        
-        <div id="fusion-pool-list" style="margin-top:20px; display:flex; flex-direction:column; gap:8px;"></div>
-      </div>
-    </div>
-
-    <div id="combat-screen" class="screen">
-      <div class="combat-arena">
-        <div class="combat-vs-display">
-          <div class="fighter-card">
-            <div class="fighter-avatar-wrapper" id="battle-my-avatar-container"></div>
-            <div class="fighter-name" id="battle-my-name">Player Core</div>
-            <span class="element-badge" id="battle-my-element-badge">FIRE</span>
-            <div class="bar-bg" style="width:100%"><div id="battle-my-hpbar" class="bar-fill" style="background:var(--accent-red);"></div></div>
-            <div id="battle-my-hptext" style="font-size:10px; font-family:monospace; margin-top:4px;">100/100 HP</div>
-          </div>
-          <div style="font-weight:bold; color:#444;">VS</div>
-          <div class="fighter-card" style="border-color: #ff4a4a;">
-            <div class="fighter-avatar-wrapper" id="battle-enemy-avatar-container">👾</div>
-            <div class="fighter-name" id="battle-enemy-name">Wild Anomaly</div>
-            <span class="element-badge" id="battle-enemy-element-badge">WATER</span>
-            <div class="bar-bg" style="width:100%"><div id="battle-enemy-hpbar" class="bar-fill" style="background:var(--accent-red);"></div></div>
-            <div id="battle-enemy-hptext" style="font-size:10px; font-family:monospace; margin-top:4px;">100/100 HP</div>
-          </div>
+        <div class="engine-header-panel">
+            <h2 class="engine-title">BEAST ENGINE</h2>
+            <p style="font-size:11px; color:#64748b; letter-spacing:1px;">Quantum Resonance Core Matrix v2.10</p>
         </div>
-        <div class="combat-logs" id="combat-log-box"></div>
-        <div class="combat-actions-grid">
-          <button class="skill-btn" onclick="executeSkill(1)"><span id="skill1-name">Skill 1</span><span class="dmg-hint" id="skill1-dmg">Dmg: 0</span></button>
-          <button class="skill-btn" onclick="executeSkill(2)"><span id="skill2-name">Skill 2</span><span class="dmg-hint" id="skill2-dmg">Dmg: 0</span></button>
-          <button class="skill-btn" onclick="executeSkill(3)"><span id="skill3-name">Skill 3</span><span class="dmg-hint" id="skill3-dmg">Dmg: 0</span></button>
-          <button class="skill-btn" onclick="attemptFlee()" style="color:var(--accent-red); border-color:var(--accent-red);">🏃 ESCAPE</button>
+
+        <div class="beast-selector-section">
+            <span class="section-label">Select Core Signature</span>
+            <div class="beast-grid-row">
+                <div class="beast-tab-card" id="tab-naga" onclick="switchActivePet('naga')">
+                    <div class="name-lbl">NAGA</div>
+                </div>
+                <div class="beast-tab-card" id="tab-serigala" onclick="switchActivePet('serigala')">
+                    <div class="name-lbl">SERIGALA</div>
+                </div>
+                <div class="beast-tab-card" id="tab-ikan" onclick="switchActivePet('ikan')">
+                    <div class="name-lbl">IKAN</div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div id="bestiary-screen" class="screen">
-      <div class="bestiary-container">
-        <h3 style="margin-top:0; color: var(--accent-green);">📖 Core Matrix Bestiary</h3>
-        <div class="pet-list" id="bestiary-list-wrapper"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="inventory-modal">
-    <div class="modal-box">
-      <h3>🎒 Matrix Supply Bag</h3>
-      <div class="item-circle" style="margin:20px auto;" onclick="usePotion()">🧪<span class="item-count" id="modal-qty-potion">0</span></div>
-      <p style="font-size:11px; color:#8b949e;">🧪 Mengembalikan keutuhan data HP Core Aktif sebesar 100%.</p>
-      <button class="close-modal" onclick="closeModal()">CLOSE</button>
-    </div>
-  </div>
-
-  <script>
-    const ELEMENT_COLORS = { FIRE:"#ff4a4a", WATER:"#00bfff", LIGHTNING:"#ffcc00", VOID:"#bf5af2", SPACE:"#7a22ff", EARTH:"#a0522d", NATURE:"#2ed573" };
-
-    const EVOLUTION_DATABASE = {
-      naga: { name: "Nova Wyrm", element: "FIRE", avatar: "🐉", hp: 120, power: 25, skills: [{name:"Ember Spit",ratio:0.8},{name:"Fire Tail",ratio:1.2},{name:"Supernova",ratio:1.7}], lore: "Anomali api dari runtuhnya node server utama." },
-      ikan: { name: "Abyssal Levi", element: "WATER", avatar: "🦈", hp: 100, power: 20, skills: [{name:"Aqua Shot",ratio:0.8},{name:"Tidal Wave",ratio:1.3},{name:"Deep Freeze",ratio:1.6}], lore: "Penguasa subroutine dingin enkripsi bawah laut siber." },
-      serigala: { name: "Volt Lupo", element: "LIGHTNING", avatar: "🐺", hp: 110, power: 24, skills: [{name:"Spark Bite",ratio:0.8},{name:"Thunder Bolt",ratio:1.2},{name:"Plasma Strike",ratio:1.7}], lore: "Memburu fragmen korup secepat kilat listrik statis." },
-      orion: { name: "Astral Gazer", element: "SPACE", avatar: "👽", hp: 130, power: 22, skills: [{name:"Meteor Dust",ratio:0.85},{name:"Cosmic Beam",ratio:1.25},{name:"Blackhole Squeeze",ratio:1.8}], lore: "Entitas dimensi luar angkasa pengendali gravitasi kosmik." },
-      golem: { name: "Titan Crag", element: "EARTH", avatar: "🪨", hp: 160, power: 18, skills: [{name:"Rock Hurl",ratio:0.75},{name:"Earthquake",ratio:1.2},{name:"Terra Slam",ratio:1.6}], lore: "Monolit pelindung batuan isolator penangkal arus listrik." },
-      flora: { name: "Thorn Weaver", element: "NATURE", avatar: "🌱", hp: 115, power: 23, skills: [{name:"Razor Leaf",ratio:0.8},{name:"Vine Whip",ratio:1.3},{name:"Solar Burst",ratio:1.75}], lore: "Menyerap data bandwidth air untuk siklus pemulihan sistem alami." },
-      ammit: { name: "Ammit Void-Guardian", element: "VOID", avatar: "🦁", hp: 500, power: 90, skills: [{name:"Void Bite",ratio:1.0},{name:"Calamity",ratio:1.5},{name:"Soul Devourer",ratio:2.1}], lore: "Ras Mythic legendaris pemusnah segala bentuk kode ilegal." }
-    };
-
-    // Sinkronisasi Terpusat via localStorage
-    let activePetKey = "naga";
-    let userInventory = { apple: 4, candy: 5, juice: 2, potion: 2 };
-    let discoveredPets = ["naga", "ikan", "serigala", "orion", "golem", "flora"];
-    let dominionName = "Explorer Core";
-    
-    let playerBeasts = {
-      naga: { level: 1, exp: 0, currentHp: 120, currentHng: 100 },
-      ikan: { level: 1, exp: 0, currentHp: 100, currentHng: 100 },
-      serigala: { level: 1, exp: 0, currentHp: 110, currentHng: 100 },
-      orion: { level: 1, exp: 0, currentHp: 130, currentHng: 100 },
-      golem: { level: 1, exp: 0, currentHp: 160, currentHng: 100 },
-      flora: { level: 1, exp: 0, currentHp: 115, currentHng: 100 },
-      ammit: { level: 1, exp: 0, currentHp: 500, currentHng: 100 }
-    };
-
-    let fusionSlots = [null, null, null];
-    let combatState = null;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadStateFromStorage();
-      syncDashboardUI();
-    });
-
-    function loadStateFromStorage() {
-      const savedCore = localStorage.getItem("BLDS_CORE_STR_DATA");
-      if(savedCore) {
-        const parsed = JSON.parse(savedCore);
-        dominionName = parsed.dominionName || dominionName;
-      }
-      document.getElementById('dominion-identity-tag').innerText = dominionName;
-
-      const savedBeastEngine = localStorage.getItem("BE_V3_SAVED_STATE");
-      if(savedBeastEngine) {
-        const engineData = JSON.parse(savedBeastEngine);
-        activePetKey = engineData.activePetKey;
-        userInventory = engineData.userInventory;
-        discoveredPets = engineData.discoveredPets;
-        playerBeasts = engineData.playerBeasts;
-      } else {
-        const savedGlobalPet = localStorage.getItem("BLDS_CORE_PET_DATA");
-        if(savedGlobalPet) {
-          const parsedPet = JSON.parse(savedGlobalPet);
-          activePetKey = parsedPet.name || activePetKey;
-          if(playerBeasts[activePetKey]) playerBeasts[activePetKey].level = parsedPet.level || 1;
-        }
-      }
-
-      const savedTheme = localStorage.getItem("BLDS_GLOBAL_THEME");
-      if(savedTheme) document.body.className = savedTheme;
-    }
-
-    function saveStateToStorage() {
-      localStorage.setItem("BE_V3_SAVED_STATE", JSON.stringify({activePetKey, discoveredPets, playerBeasts, userInventory}));
-      // Sinkronisasikan level ke launcher index
-      const basePetData = { name: activePetKey, level: playerBeasts[activePetKey].level };
-      localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(basePetData));
-    }
-
-    function switchToTab(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('#navigation-bar .menu-btn').forEach(b => b.classList.remove('active-tab'));
-      document.getElementById(screenId).classList.add('active');
-      document.getElementById(`tab-${screenId.split('-')[0]}`).classList.add('active-tab');
-      
-      if(screenId === 'bestiary-screen') renderBestiaryUI();
-      if(screenId === 'fusion-screen') renderFusionUI();
-      if(screenId === 'dash-screen') syncDashboardUI();
-    }
-
-    function syncDashboardUI() {
-      const pData = playerBeasts[activePetKey];
-      const db = EVOLUTION_DATABASE[activePetKey];
-      const maxHp = db.hp + (pData.level * 10);
-
-      document.getElementById('dash-name-label').innerText = `${db.name} [Lvl ${pData.level}] (${db.element})`;
-      document.getElementById('dash-avatar-container').innerText = db.avatar;
-      document.getElementById('dash-hp-text').innerText = `${pData.currentHp}/${maxHp}`;
-      document.getElementById('dash-hp-bar').style.width = `${(pData.currentHp/maxHp)*100}%`;
-      document.getElementById('dash-hng-text').innerText = `${pData.currentHng}/100`;
-      document.getElementById('dash-hng-bar').style.width = `${pData.currentHng}%`;
-      document.getElementById('dash-exp-text').innerText = `${pData.exp}%`;
-      document.getElementById('dash-exp-bar').style.width = `${pData.exp}%`;
-
-      document.getElementById('dash-qty-apple').innerText = userInventory.apple;
-      document.getElementById('dash-qty-candy').innerText = userInventory.candy;
-      document.getElementById('dash-qty-juice').innerText = userInventory.juice;
-      document.getElementById('dash-potion-count').innerText = userInventory.potion;
-    }
-
-    function feedPet(item) {
-      let map = {'🍎':'apple','🍬':'candy','🧃':'juice'};
-      let k = map[item];
-      if(userInventory[k] <= 0) return alert("Suplai item habis!");
-      userInventory[k]--;
-      playerBeasts[activePetKey].currentHng = Math.min(100, playerBeasts[activePetKey].currentHng + 25);
-      saveStateToStorage();
-      syncDashboardUI();
-    }
-
-    /* --- FUSION CHAMBER PROTOCOL ENGINE --- */
-    function renderFusionUI() {
-      for(let i=0; i<3; i++) {
-        const slotEl = document.getElementById(`f-slot-${i}`);
-        if(fusionSlots[i]) {
-          const db = EVOLUTION_DATABASE[fusionSlots[i]];
-          slotEl.className = "fusion-slot filled";
-          slotEl.innerHTML = `${db.avatar}<span style="font-size:10px; color:var(--accent-purple); font-weight:bold;">${db.name}</span><div class="slot-remove" onclick="removeSlot(${i}); event.stopPropagation();">X</div>`;
-        } else {
-          slotEl.className = "fusion-slot";
-          slotEl.innerHTML = `➕<span style="font-size:10px; color:#666;">Slot ${i+1}</span>`;
-        }
-      }
-
-      document.getElementById('btn-fuse-action').disabled = fusionSlots.includes(null);
-
-      const poolList = document.getElementById('fusion-pool-list');
-      poolList.innerHTML = "<b style='font-size:11px; color:#8b949e; font-family:monospace;'>AVAILABLE CORE MATRIX LIST:</b>";
-      
-      discoveredPets.forEach(key => {
-        if(fusionSlots.includes(key) || key === activePetKey) return;
-        const db = EVOLUTION_DATABASE[key];
-        let item = document.createElement('div');
-        item.className = "pet-list-item";
-        item.style.padding = "8px";
-        item.style.cursor = "pointer";
-        item.innerHTML = `<div style="display:flex; justify-content:between; align-items:center; width:100%;">
-          <span>${db.avatar} <b>${db.name}</b> (${db.element})</span>
-          <button class="switch-trigger-btn" style="border-color:var(--accent-purple); color:var(--accent-purple);" onclick="addPetToFusion('${key}')">SELECT CORE</button>
-        </div>`;
-        poolList.appendChild(item);
-      });
-    }
-
-    function addPetToFusion(key) {
-      let emptyIdx = fusionSlots.indexOf(null);
-      if(emptyIdx !== -1) {
-        fusionSlots[emptyIdx] = key;
-        renderFusionUI();
-      }
-    }
-
-    function removeSlot(idx) {
-      fusionSlots[idx] = null;
-      renderFusionUI();
-    }
-
-    function processCoreFusion() {
-      if(fusionSlots.includes(null)) return;
-
-      alert("🧬 WARNING: Menginisialisasi Protokol Penghancuran & Rekombinasi Struktur DNA Core...");
-      
-      fusionSlots.forEach(targetKey => {
-        discoveredPets = discoveredPets.filter(p => p !== targetKey);
-      });
-
-      const allPetPool = Object.keys(EVOLUTION_DATABASE);
-      let randomNewPet = allPetPool[Math.floor(Math.random() * allPetPool.length)];
-
-      if(!discoveredPets.includes(randomNewPet)) {
-        discoveredPets.push(randomNewPet);
-      }
-      
-      playerBeasts[randomNewPet].level = Math.min(50, playerBeasts[randomNewPet].level + Math.floor(Math.random() * 3) + 2);
-      const newDb = EVOLUTION_DATABASE[randomNewPet];
-
-      alert(`✨ SUCCESS MUTATION DETECTED!\n\nMaterial lama hancur. Lahir struktur core baru berdaya tinggi: ${newDb.avatar} ${newDb.name} [Element: ${newDb.element}]!`);
-
-      fusionSlots = [null, null, null];
-      activePetKey = randomNewPet;
-      saveStateToStorage();
-      switchToTab('dash-screen');
-    }
-
-    /* --- WILD HUNT & ARENA ENGINE --- */
-    function triggerHuntWild() {
-      const pData = playerBeasts[activePetKey];
-      const db = EVOLUTION_DATABASE[activePetKey];
-      if(pData.currentHp <= 0) return alert("HP Core hancur, lakukan pengisian daya atau gunakan potion!");
-
-      const enemyElements = ["FIRE", "WATER", "LIGHTNING", "SPACE", "EARTH", "NATURE"];
-      let randElem = enemyElements[Math.floor(Math.random()*enemyElements.length)];
-      
-      combatState = {
-        myKey: activePetKey,
-        myHp: pData.currentHp,
-        myMaxHp: db.hp + (pData.level * 10),
-        myPower: db.power + (pData.level * 4),
-        myElement: db.element,
-        enemyName: "Bug Anomaly Cluster",
-        enemyHp: 80 + (pData.level * 8),
-        enemyMaxHp: 80 + (pData.level * 8),
-        enemyPower: 15 + (pData.level * 3),
-        enemyElement: randElem
-      };
-
-      document.getElementById('battle-my-name').innerText = db.name;
-      document.getElementById('battle-my-avatar-container').innerText = db.avatar;
-      document.getElementById('battle-my-element-badge').innerText = db.element;
-      document.getElementById('battle-my-element-badge').style.background = ELEMENT_COLORS[db.element];
-
-      document.getElementById('battle-enemy-name').innerText = combatState.enemyName;
-      document.getElementById('battle-enemy-element-badge').innerText = randElem;
-      document.getElementById('battle-enemy-element-badge').style.background = ELEMENT_COLORS[randElem];
-
-      document.getElementById('skill1-name').innerText = db.skills[0].name;
-      document.getElementById('skill2-name').innerText = db.skills[0].name;
-      document.getElementById('skill3-name').innerText = db.skills[2].name;
-
-      document.getElementById('combat-log-box').innerHTML = "<div style='color:var(--accent-green);'>🔒 Jaringan sinkronisasi stabil. Mulai pertarungan ekstrim...</div>";
-      updateCombatUI();
-
-      document.getElementById('navigation-bar').style.display = 'none';
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('combat-screen').classList.add('active');
-    }
-
-    function updateCombatUI() {
-      document.getElementById('battle-my-hptext').innerText = `${combatState.myHp}/${combatState.myMaxHp} HP`;
-      document.getElementById('battle-my-hpbar').style.width = `${(combatState.myHp/combatState.myMaxHp)*100}%`;
-      document.getElementById('battle-enemy-hptext').innerText = `${combatState.enemyHp}/${combatState.enemyMaxHp} HP`;
-      document.getElementById('battle-enemy-hpbar').style.width = `${(combatState.enemyHp/combatState.enemyMaxHp)*100}%`;
-    }
-
-    function executeSkill(slot) {
-      const db = EVOLUTION_DATABASE[combatState.myKey];
-      const ratio = db.skills[slot-1].ratio;
-      let dmg = Math.floor(combatState.myPower * ratio * (0.9 + Math.random()*0.2));
-
-      if(combatState.myElement === "SPACE" && combatState.enemyElement === "VOID") dmg = Math.floor(dmg * 1.5);
-      if(combatState.myElement === "EARTH" && combatState.enemyElement === "LIGHTNING") dmg = Math.floor(dmg * 1.5);
-      if(combatState.myElement === "NATURE" && combatState.enemyElement === "WATER") dmg = Math.floor(dmg * 1.5);
-
-      combatState.enemyHp = Math.max(0, combatState.enemyHp - dmg);
-      logBattle(`💥 Core melepas [${db.skills[slot-1].name}] -> Mengurangi ${dmg} HP Anomaly!`, "var(--accent-green)");
-
-      if(combatState.enemyHp <= 0) {
-        logBattle("🏆 ANOMALY ERADICATED! Pembersihan modul siber sukses.", "var(--accent-green)");
-        playerBeasts[activePetKey].exp += 40;
-        if(playerBeasts[activePetKey].exp >= 100) {
-          playerBeasts[activePetKey].level++;
-          playerBeasts[activePetKey].exp = 0;
-        }
-        endBattle();
-        return;
-      }
-
-      setTimeout(() => {
-        let eDmg = Math.floor(combatState.enemyPower * (0.8 + Math.random()*0.4));
-        combatState.myHp = Math.max(0, combatState.myHp - eDmg);
-        playerBeasts[activePetKey].currentHp = combatState.myHp;
-        logBattle(`🚨 Anomaly menyerang balik! Mengurangi -${eDmg} HP Core Anda!`, "var(--accent-red)");
-        updateCombatUI();
-
-        if(combatState.myHp <= 0) {
-          logBattle("💀 SYSTEM COLLAPSED: Core utama hancur kritis. Memutus paksa kuadran jaringan!", "var(--accent-red)");
-          endBattle();
-        }
-      }, 600);
-      updateCombatUI();
-    }
-
-    function logBattle(txt, color) {
-      const box = document.getElementById('combat-log-box');
-      box.innerHTML += `<div style="color:${color}; margin-bottom:3px;">${txt}</div>`;
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function endBattle() {
-      saveStateToStorage();
-      setTimeout(() => {
-        document.getElementById('navigation-bar').style.display = 'grid';
-        switchToTab('dash-screen');
-      }, 1800);
-    }
-
-    function attemptFlee() { 
-      document.getElementById('navigation-bar').style.display = 'grid'; 
-      switchToTab('dash-screen'); 
-    }
-
-    /* --- STORAGE & SYSTEMS UI --- */
-    function renderBestiaryUI() {
-      const wrapper = document.getElementById('bestiary-list-wrapper');
-      wrapper.innerHTML = "";
-      Object.keys(EVOLUTION_DATABASE).forEach(k => {
-        const db = EVOLUTION_DATABASE[k];
-        const hasIt = discoveredPets.includes(k);
-        let div = document.createElement('div');
-        div.className = `pet-list-item ${k === activePetKey ? 'active-pet' : ''}`;
-        div.innerHTML = `<div class="item-main-row">
-          <div class="list-avatar-box ${hasIt ? '' : 'pet-locked-silhouette'}">${hasIt ? db.avatar : '❓'}</div>
-          <div>
-            <h4 style="margin:0;">${hasIt ? db.name : 'Unknown Fragment'}</h4>
-            <p style="margin:3px 0 0 0; font-size:10px; color:#8b949e;">Element: ${db.element}</p>
-          </div>
-          <div>${k === activePetKey ? '<b>ACTIVE</b>' : hasIt ? `<button class="switch-trigger-btn" onclick="setActivePet('${k}')">DEPLOY</button>` : '🔒'}</div>
+        <div class="stat-manifest-card">
+            <span class="section-label" style="margin-bottom:5px;">Resonance Metrics</span>
+            
+            <div class="manifest-row">
+                <span class="manifest-label">Active Core Identity</span>
+                <span class="manifest-value" id="metrics-name" style="text-transform:uppercase;">NAGA</span>
+            </div>
+            <div class="manifest-row">
+                <span class="manifest-label">Calculated Evolution Phase</span>
+                <span class="manifest-value" id="metrics-phase">Phase 1 (Telor)</span>
+            </div>
+            <div class="manifest-row">
+                <span class="manifest-label">Global Core Resonance Streak</span>
+                <span class="manifest-value" id="metrics-streak">0 Days</span>
+            </div>
+            <div class="manifest-row">
+                <span class="manifest-label">Engine Output Frequency</span>
+                <span class="manifest-value" style="color:#4ade80;">942.84 MHz</span>
+            </div>
         </div>
-        <div class="pet-lore-box">${hasIt ? db.lore : 'Deskripsi data terenkripsi.'}</div>`;
-        wrapper.appendChild(div);
-      });
-    }
 
-    function setActivePet(k) { 
-      activePetKey = k; 
-      saveStateToStorage();
-      renderBestiaryUI(); 
-    }
-    
-    function openBag() { document.getElementById('modal-qty-potion').innerText = userInventory.potion; document.getElementById('inventory-modal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('inventory-modal').style.display = 'none'; syncDashboardUI(); }
-    
-    function usePotion() {
-      if(userInventory.potion <= 0) return;
-      userInventory.potion--;
-      const db = EVOLUTION_DATABASE[activePetKey];
-      playerBeasts[activePetKey].currentHp = db.hp + (playerBeasts[activePetKey].level * 10);
-      document.getElementById('modal-qty-potion').innerText = userInventory.potion;
-      saveStateToStorage();
-      alert("🧪 Sistem pulih! Core HP kembali menyentuh batas 100%!");
-    }
+        <span class="section-label">Engine Kernel Logs</span>
+        <div class="console-log-box" id="terminal-output-log">
+            [system] Beast Engine initialized successfully.<br>
+            [system] Listening to core synchronized signals from LocalStorage matrix...
+        </div>
 
-    function returnToMainLauncher() {
-      saveStateToStorage();
-      window.location.href = "index.html";
-    }
-  </script>
+        <button class="interact-btn" onclick="fireResonancePulse()">FIRE RESONANCE PULSE</button>
+
+    </div>
+
+    <script>
+        let engineState = {
+            streak: 100,
+            highestPeak: 100,
+            petType: "naga",
+            cutscenePlayed100: false
+        };
+
+        // Sinkronisasi data real-time dengan memori index.html
+        function loadEngineState() {
+            const saved = localStorage.getItem("BLDS_CORE_STATE");
+            if (saved) {
+                try {
+                    engineState = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Failed to parse synchronized memory block.");
+                }
+            }
+            updateEngineUI();
+        }
+
+        function saveEngineState() {
+            localStorage.setItem("BLDS_CORE_STATE", JSON.stringify(engineState));
+        }
+
+        function updateEngineUI() {
+            document.querySelectorAll(".beast-tab-card").forEach(el => el.classList.remove("active"));
+            
+            const targetedTab = document.getElementById("tab-" + engineState.petType);
+            if (targetedTab) targetedTab.classList.add("active");
+
+            // Kalkulasi ulang fase untuk sinkronisasi teks deskripsi panel
+            let phaseName = "Fase 1 (Telor)";
+            if (engineState.streak >= 50) phaseName = "Fase 5 (Ancient Overlord)";
+            else if (engineState.streak >= 30) phaseName = "Fase 4 (Mature Alpha)";
+            else if (engineState.streak >= 15) phaseName = "Fase 3 (Growth Stage)";
+            else if (engineState.streak >= 3) phaseName = "Fase 2 (Hatched Creature)";
+
+            document.getElementById("metrics-name").innerText = engineState.petType;
+            document.getElementById("metrics-streak").innerText = engineState.streak + " Days";
+            document.getElementById("metrics-phase").innerText = phaseName;
+        }
+
+        // Ketika tombol hewan di-klik, ubah jenis hewan global dan simpan
+        function switchActivePet(newType) {
+            engineState.petType = newType;
+            saveEngineState();
+            updateEngineUI();
+            logToConsole(`[kernel] Shifted active pet signature template -> ${newType.toUpperCase()}.`);
+        }
+
+        function logToConsole(message) {
+            const box = document.getElementById("terminal-output-log");
+            box.innerHTML += `<br>${message}`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function fireResonancePulse() {
+            logToConsole(`[pulse] Dispatching energy wave into ${engineState.petType.toUpperCase()} core...`);
+            setTimeout(() => {
+                logToConsole(`[pulse] Core feedback received. Signal amplitude stable.`);
+                alert(`Resonance Pulse executed perfectly on pet signature: ${engineState.petType.toUpperCase()}!`);
+            }, 400);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            loadEngineState();
+        });
+    </script>
 </body>
 </html>
