@@ -14,6 +14,10 @@
       --accent-orange: #ffcc00;
       --accent-purple: #bf5af2;
       --accent-blue: #00bfff;
+      /* Elemen Baru Colors */
+      --accent-space: #7a22ff;
+      --accent-earth: #a0522d;
+      --accent-nature: #2ed573;
     }
 
     body, html {
@@ -98,9 +102,9 @@
     .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; font-size: 32px; }
     .fighter-avatar-wrapper img { width: 100%; height: 100%; object-fit: contain; }
     .fighter-name { font-size: 12px; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .element-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+    .element-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; display: inline-block; margin-bottom: 5px; color: #fff; }
     .status-container { position: absolute; top: 5px; right: 5px; display: flex; gap: 2px; }
-    .status-mini-tag { font-size: 8px; padding: 1px 3px; border-radius: 3px; font-weight: bold; text-transform: uppercase; }
+    .status-mini-tag { font-size: 8px; padding: 1px 3px; border-radius: 3px; font-weight: bold; text-transform: uppercase; color: #000; }
 
     .combat-logs {
       background: #090000; border: 1px solid #ff4a4a; border-radius: 6px; height: 130px;
@@ -219,7 +223,7 @@
 <body>
 
   <div id="cutscene-overlay">
-    <div id="cutscene-logo" class="glow-logo">🤖</div>
+    <div id="cutscene-logo" class="glow-logo">🛸</div>
     <div id="text-line-1" class="fade-text">You started 100 days ago...</div>
     <div id="text-line-2" class="fade-text">And now you have reached absolute supremacy.</div>
     <div id="text-streak-banner" class="big-streak-title">Streak 100 Day</div>
@@ -443,18 +447,26 @@
   <script>
     const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-    const ELEMENT_COLORS = { FIRE: "#ff4a4a", WATER: "#00bfff", LIGHTNING: "#ffcc00", VOID: "#bf5af2" };
+    const ELEMENT_COLORS = { 
+      FIRE: "#ff4a4a", 
+      WATER: "#00bfff", 
+      LIGHTNING: "#ffcc00", 
+      VOID: "#bf5af2",
+      SPACE: "#7a22ff",
+      EARTH: "#a0522d",
+      NATURE: "#2ed573"
+    };
 
     const EVOLUTION_DATABASE = {
       naga: {
         type: "epic-evo",
         element: "FIRE",
         phases: [
-          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 80, power: 18, lore: "A heavy cybernetic egg encapsulating a volatile remnant born from a dying neutron star. It constantly radiates thermal data anomalies." },
-          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐉', hp: 160, power: 38, lore: "A newborn data serpent fueled by thermonuclear heat. Its ignition sequence melt nearby system nodes within seconds." },
-          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔥', hp: 350, power: 80, lore: "An advanced combat Drake armored with molten firewalls. Its breath unleashes superheated data streams." },
-          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌌', hp: 700, power: 160, lore: "An ancient flyer traversing server fields. It warps plasma flares across network sectors, leaving charred protocols." },
-          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">👑', hp: 1500, power: 350, lore: "The absolute supreme celestial dragon. Harbinger of catastrophic starburst matrices, capable of collapsing entire servers into ash." }
+          { name: "Nebula Core Egg", avatar: '<img src="naga1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 80, power: 18, lore: "Sebuah telur cybernetic berat yang menyimpan remnants energi dari runtuhnya bintang neutron." },
+          { name: "Starfire Wyrm", avatar: '<img src="naga2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐉', hp: 160, power: 38, lore: "Ular data pembuat anomali suhu panas ekstrim pada node server terdekat." },
+          { name: "Volcanic Drake", avatar: '<img src="naga3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔥', hp: 350, power: 80, lore: "Drake tempur tingkat lanjut dengan lapisan perlindungan armor firewall lava cair." },
+          { name: "Cosmic Wyvern", avatar: '<img src="naga4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌌', hp: 700, power: 160, lore: "Terbang melintasi cluster jaringan untuk mendistorsikan plasma flare merusak." },
+          { name: "Aethelgard Nova Star", avatar: '<img src="naga5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">👑', hp: 1500, power: 350, lore: "Evolusi naga kosmik mutlak. Mampu menghancurkan protokol data musuh hingga menjadi abu sistem." }
         ],
         skills: [
           { name: "Cosmic Ember", ratio: 0.8, effect: "burn", chance: 0.3 },
@@ -466,11 +478,11 @@
         type: "epic-evo",
         element: "WATER",
         phases: [
-          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 50, power: 10, lore: "A perfectly streamlined shell containing an ancient hydrodynamic script. It hums with cold sub-zero pressure waves." },
-          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐟', hp: 100, power: 20, lore: "A fast, luminous data fish. It swims through network currents undetected, manipulating digital bandwidth pipelines." },
-          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🦈', hp: 220, power: 48, lore: "A razor-toothed cyber predator from the deepest server vaults. It strikes anomalies with freezing pressure." },
-          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐬', hp: 460, power: 95, lore: "A majestic ocean protector capable of forming absolute ice barriers. It freezes network bugs on contact." },
-          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔱', hp: 1000, power: 220, lore: "The ancient sovereign of the Blacklight depths. Commands absolute-zero subroutines that instantly freeze and shatter enemy defenses." }
+          { name: "Aqua Pearl Egg", avatar: '<img src="ikan1.png" class="pet-awesome" onerror="this.style.display=\'none\';">🥚', hp: 50, power: 10, lore: "Cangkang hidrodinamik yang berdengung konstan melepaskan sinyal gelombang sub-zero dingin." },
+          { name: "Neon Fry", avatar: '<img src="ikan2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐟', hp: 100, power: 20, lore: "Ikan data bercahaya digital cepat yang mampu menyelinap memanipulasi bandwidth pipa." },
+          { name: "Abyssal Pike", avatar: '<img src="ikan3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🦈', hp: 220, power: 48, lore: "Predator siber bergigi tajam dari vault terdalam. Menyerang target dengan tekanan air membekukan." },
+          { name: "Fin Sovereign", avatar: '<img src="ikan4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐬', hp: 460, power: 95, lore: "Pelindung lautan digital penahan bug dengan tameng es absolut." },
+          { name: "Moridun Ocean Overlord", avatar: '<img src="ikan5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔱', hp: 1000, power: 220, lore: "Penguasa Blacklight depths. Memerintah subroutine suhu nol mutlak untuk meretakkan pertahanan lawan." }
         ],
         skills: [
           { name: "Water Pulse", ratio: 0.8, effect: "freeze", chance: 0.25 },
@@ -482,11 +494,11 @@
         type: "epic-evo",
         element: "LIGHTNING",
         phases: [
-          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 60, power: 12, lore: "An digitized mechanical egg coated in high-voltage crackles. Stores immense kinetic plasma charges." },
-          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐺', hp: 120, power: 25, lore: "A highly agile tactical cyber pup. It disrupts enemy radar sweeps with bursts of static discharge." },
-          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">⚡', hp: 250, power: 55, lore: "A ferocious hunter utilizing localized storm modules. It stalks corrupted data fragments with blinding speed." },
-          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐾', hp: 500, power: 110, lore: "An heavily augmented wolf beast. Its heavy mechanical paws generate destructive seismic shockwaves." },
-          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🤖', hp: 1100, power: 240, lore: "A fully weaponized plasma thunder monolith. It initiates blitz strikes that paralyse and fry enemy code blocks instantly." }
+          { name: "Static Pup", avatar: '<img src="serigala1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🥚', hp: 60, power: 12, lore: "Telur mekanik bermuatan plasma kinetik yang terus memercikkan arus listrik statis tinggi." },
+          { name: "Spark Lupo", avatar: '<img src="serigala2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐺', hp: 120, power: 25, lore: "Cyber pup taktis lincah yang mengacaukan radar musuh lewat lonjakan distorsi frekuensi." },
+          { name: "Fulgur Hunter", avatar: '<img src="serigala3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">⚡', hp: 250, power: 55, lore: "Memburu fragmen korup dengan modul badai petir lokal berkecepatan cahaya." },
+          { name: "Thunder Warg", avatar: '<img src="serigala4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🐾', hp: 500, power: 110, lore: "Serigala bersenjata augmentasi berat. Pijakan kakinya memicu gelombang seismik listrik destruktif." },
+          { name: "Volkrieg Cyber-Storm", avatar: '<img src="serigala5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🤖', hp: 1100, power: 240, lore: "Monolit badai plasma bersenjata lengkap. Menghanguskan blok kode musuh secara instan lewat blitz strike." }
         ],
         skills: [
           { name: "Volt Bite", ratio: 0.8, effect: "stun", chance: 0.25 },
@@ -494,13 +506,65 @@
           { name: "Fulgur Blitz Strike", ratio: 1.6, effect: "stun", chance: 0.5 }
         ]
       },
+      /* --- ELEMENT BARU: SPACE (LUAR ANGKASA) --- */
+      orion: {
+        type: "epic-evo",
+        element: "SPACE",
+        phases: [
+          { name: "Cosmic Nebula Dust", avatar: '<img src="space1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌌', hp: 75, power: 15, lore: "Kumpulan debu bintang luar angkasa berbentuk inti energi makro." },
+          { name: "Astral Gazer", avatar: '<img src="space2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">👽', hp: 140, power: 30, lore: "Makhluk astral kecil yang memanipulasi jangkauan koordinat dimensi server." },
+          { name: "Meteor Vanguard", avatar: '<img src="space3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">☄️', hp: 290, power: 65, lore: "Penjaga tangguh berselimut pecahan meteorit angkasa berkecepatan tinggi." },
+          { name: "Starcluster Centurion", avatar: '<img src="space4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🔮', hp: 580, power: 130, lore: "Ksatria galaksi pelindung konstelasi utama, menembakkan laser kosmik konstan." },
+          { name: "Galaxia Singularity Overlord", avatar: '<img src="space5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🛸', hp: 1300, power: 290, lore: "Penguasa mutlak dimensi luar angkasa. Mampu membuat blackhole untuk melenyapkan pertahanan target." }
+        ],
+        skills: [
+          { name: "Meteor Shower", ratio: 0.85, effect: "slow", chance: 0.35 },
+          { name: "Astral Beam", ratio: 1.25, effect: "none", chance: 0 },
+          { name: "Supernova Explosion", ratio: 1.75, effect: "stun", chance: 0.6 }
+        ]
+      },
+      /* --- ELEMENT BARU: EARTH (BATU) --- */
+      golem: {
+        type: "epic-evo",
+        element: "EARTH",
+        phases: [
+          { name: "Pebble Core Mod", avatar: '<img src="earth1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🪨', hp: 95, power: 12, lore: "Sebongkah modul batu siber padat berkepadatan tinggi tak tertembus." },
+          { name: "Geode Sprite", avatar: '<img src="earth2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">💎', hp: 190, power: 26, lore: "Makhluk kristal bawah tanah yang menyerap energi mineral server untuk memperkuat diri." },
+          { name: "Obsidian Gargoyle", avatar: '<img src="earth3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🧱', hp: 400, power: 60, lore: "Gargoyle berlapis batuan keras vulkanik pemecah enkripsi musuh." },
+          { name: "Titan Crag", avatar: '<img src="earth4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🏔️', hp: 800, power: 120, lore: "Raksasa pegunungan batu berjalan penahan serangan petir terbaik." },
+          { name: "Aethelstone Terra Monolith", avatar: '<img src="earth5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">⛰️', hp: 1700, power: 260, lore: "Monolit pelindung bumi siber. Memiliki pertahanan mutlak dan serangan gempa penghancur kode." }
+        ],
+        skills: [
+          { name: "Rock Throw", ratio: 0.75, effect: "slow", chance: 0.4 },
+          { name: "Stone Wall Bash", ratio: 1.2, effect: "none", chance: 0 },
+          { name: "Continental Shatter", ratio: 1.65, effect: "stun", chance: 0.55 }
+        ]
+      },
+      /* --- ELEMENT BARU: NATURE (DAUN) --- */
+      flora: {
+        type: "epic-evo",
+        element: "NATURE",
+        phases: [
+          { name: "Cyber Seedling", avatar: '<img src="nature1.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌱', hp: 65, power: 14, lore: "Benih tanaman siber terenkripsi yang menyerap sisa bandwidth jaringan untuk tumbuh." },
+          { name: "Sprout Weaver", avatar: '<img src="nature2.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🍃', hp: 130, power: 32, lore: "Peri daun lincah pengendali akar data pencari kelemahan sistem musuh." },
+          { name: "Thorn Stalker", avatar: '<img src="nature3.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌵', hp: 260, power: 70, lore: "Monster semak berduri tajam pembawa racun pelumpuh node pertahanan lawan." },
+          { name: "Forest Sentry", avatar: '<img src="nature4.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌲', hp: 550, power: 140, lore: "Sentry pohon penjaga ekosistem server, menolak intrusi program berbahaya." },
+          { name: "Yggdrasil Core Matrix", avatar: '<img src="nature5.png" class="pet-avatar-render" onerror="this.style.display=\'none\';">🌿', hp: 1200, power: 310, lore: "Pohon dunia siber. Menyerap energi air musuh sepenuhnya untuk melakukan siklus regenerasi mutlak." }
+        ],
+        skills: [
+          { name: "Razor Leaf", ratio: 0.8, effect: "poison", chance: 0.35 },
+          { name: "Vine Entangle", ratio: 1.3, effect: "slow", chance: 0.4 },
+          { name: "Solar Beam Burst", ratio: 1.7, effect: "burn", chance: 0.5 }
+        ]
+      },
+      /* --- MYTHIC PETS --- */
       ammit: {
         type: "mythic-instan",
         element: "VOID",
         name: "Ammit Void-Guardian",
         avatar: '<img src="ammit.png" class="pet-avatar-render" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';"><span style="display:none; font-size:64px;">🦁</span>',
         hp: 1800, power: 380,
-        lore: "The absolute warden of the delete protocol. Born from deleted server chunks, it devours core metrics to fuel void rifts.",
+        lore: "Penjaga gerbang protokol penghapusan sistem. Terlahir dari sisa-sisa server yang sengaja dimusnahkan.",
         skills: [
           { name: "Void Chomp", ratio: 0.9, effect: "poison", chance: 0.4 },
           { name: "Dark Matter Pulse", ratio: 1.4, effect: "slow", chance: 0.5 },
@@ -513,7 +577,7 @@
         name: "Sleipnir Gravity-Drive",
         avatar: '<img src="sleipnir.png" class="pet-avatar-render" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';"><span style="display:none; font-size:64px;">🐴</span>',
         hp: 1600, power: 420,
-        lore: "An advanced reality-bending unit powered by a gravity engine. It bends local weight coordinates to paralyze enemy bandwidths.",
+        lore: "Unit penjelajah ruang dimensi bertenaga inti mesin gravitasi perusak struktur data lawan.",
         skills: [
           { name: "Quantum Stampede", ratio: 0.9, effect: "slow", chance: 0.5 },
           { name: "Aegis Overdrive", ratio: 1.3, effect: "none", chance: 0 },
@@ -526,7 +590,7 @@
         name: "Yatagarasu Eclipse-Lord",
         avatar: '<img src="yatagarasu.png" class="pet-avatar-render" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\';"><span style="display:none; font-size:64px;">🦅</span>',
         hp: 1400, power: 450,
-        lore: "The ominous bird of total software eclipse. Its wings generate intense dark light, burning target data fields via shadow embers.",
+        lore: "Burung legendaris pembawa software gerhana matahari total penutup field target.",
         skills: [
           { name: "Solar Eclipse", ratio: 0.9, effect: "burn", chance: 0.4 },
           { name: "Calamity Feather", ratio: 1.4, effect: "poison", chance: 0.4 },
@@ -543,12 +607,15 @@
 
     let userInventory = { apple: 5, candy: 3, juice: 4, bread: 2, potion: 2, pill: 1, feather: 1 };
     let totalHuntWins = 0;
-    let discoveredPets = ["naga", "serigala", "ikan"];
+    let discoveredPets = ["naga", "serigala", "ikan", "orion", "golem", "flora"];
 
     let playerBeasts = {
       naga: { level: 1, exp: 0, currentHp: 80, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 }, 
       serigala: { level: 1, exp: 0, currentHp: 60, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
       ikan: { level: 1, exp: 0, currentHp: 50, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
+      orion: { level: 1, exp: 0, currentHp: 75, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
+      golem: { level: 1, exp: 0, currentHp: 95, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
+      flora: { level: 1, exp: 0, currentHp: 65, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
       ammit: { level: 1, exp: 0, currentHp: 1800, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
       sleipnir: { level: 1, exp: 0, currentHp: 1600, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 },
       yatagarasu: { level: 1, exp: 0, currentHp: 1400, currentHng: 100, phaseIndex: 0, lastUpdated: Date.now(), respawnTime: 0 }
@@ -753,7 +820,7 @@
         let expectedPhase = Math.min(4, Math.floor(pData.level / 5));
         if (expectedPhase > pData.phaseIndex) {
           pData.phaseIndex = expectedPhase;
-          alert(`✨ PHENOMENAL! Your beast evolved to Phase ${pData.phaseIndex + 1}: ${db.phases[pData.phaseIndex].name}!`);
+          alert(`✨ PHENOMENAL! Core Matrix berevolusi ke Fase ${pData.phaseIndex + 1}: ${db.phases[pData.phaseIndex].name}!`);
         }
       }
     }
@@ -833,11 +900,11 @@
 
     function feedPet(itemType) {
       if (playerBeasts[activePetKey].respawnTime > Date.now()) {
-        alert("❌ Cannot feed. Active pet core is offline!"); return;
+        alert("❌ Pemuatan gagal. Core aktif sedang dalam perbaikan offline!"); return;
       }
       let mapping = { '🍎': 'apple', '🍬': 'candy', '🧃': 'juice', '🍞': 'bread' };
       let key = mapping[itemType];
-      if (userInventory[key] <= 0) { alert(`❌ Out of item supply ${itemType}!`); return; }
+      if (userInventory[key] <= 0) { alert(`❌ Stok item habis ${itemType}!`); return; }
       
       userInventory[key]--;
       let pData = playerBeasts[activePetKey];
@@ -848,14 +915,23 @@
       pData.currentHng = Math.min(100, pData.currentHng + 25);
       pData.lastUpdated = Date.now();
       saveEngineData(); syncDashboardUI();
-      alert(`✨ Feeder activated! HP +15 & Hunger +25 Poin!`);
+      alert(`✨ Sinkronisasi asupan berhasil! HP +15 & Hunger +25 Poin!`);
     }
 
     function calcElementMultiplier(attacker, defender) {
-      if (attacker === "VOID" || defender === "VOID") return { mult: 1.0, hint: "" };
+      // Mekanik Aturan Elemen Baru yang Saling Berkesinambungan
       if (attacker === "FIRE" && defender === "LIGHTNING") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
       if (attacker === "LIGHTNING" && defender === "WATER") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
       if (attacker === "WATER" && defender === "FIRE") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
+      
+      // Counter Elemen Kosmik & Alami Baru
+      if (attacker === "SPACE" && defender === "VOID") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
+      if (attacker === "VOID" && defender === "SPACE") return { mult: 0.75, hint: "NOT VERY EFFECTIVE" };
+      
+      if (attacker === "EARTH" && defender === "LIGHTNING") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
+      if (attacker === "NATURE" && defender === "WATER") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
+      if (attacker === "FIRE" && defender === "NATURE") return { mult: 1.5, hint: "SUPER EFFECTIVE" };
+      
       if (attacker === defender) return { mult: 0.75, hint: "NOT VERY EFFECTIVE" };
       return { mult: 1.0, hint: "" };
     }
@@ -864,12 +940,13 @@
       const pData = playerBeasts[activePetKey];
       const db = EVOLUTION_DATABASE[activePetKey];
 
-      if (pData.currentHng <= 15) { alert("❌ Pet is starving (below 15%). Supply food before hunting!"); return; }
-      if (pData.currentHp <= 0) { alert("❌ HP Exhausted. Revive or recover first!"); return; }
+      if (pData.currentHng <= 15) { alert("❌ Energi Core lemah (di bawah 15%). Isi daya/berikan suplai makanan terlebih dahulu!"); return; }
+      if (pData.currentHp <= 0) { alert("❌ HP Habis. Pulihkan sistem core matrix Anda!"); return; }
 
       const rarities = ["Common", "Rare", "Epic", "Mythic", "Celestial"];
       const rarityWeights = [0.45, 0.30, 0.15, 0.08, 0.02];
-      const enemyElements = ["FIRE", "WATER", "LIGHTNING"];
+      // Ditambahkan tipe musuh dengan elemen baru ke daftar acak domain liar
+      const enemyElements = ["FIRE", "WATER", "LIGHTNING", "SPACE", "EARTH", "NATURE"];
 
       let rand = Math.random(), pickedRarity = "Common", sum = 0;
       for(let i=0; i<rarities.length; i++){
@@ -881,9 +958,9 @@
       let enemyMaxHp = 60 * multiplier + Math.floor(Math.random() * 35);
       let enemyPower = 9 * multiplier;
 
-      buildCombatState(pickedRarity, enemyElem, enemyMaxHp, enemyPower, `Wild Fragment [${pickedRarity}]`);
+      buildCombatState(pickedRarity, enemyElem, enemyMaxHp, enemyPower, `Anomaly Fragment [${pickedRarity}]`);
       
-      document.getElementById('combat-log-box').innerHTML = `<div style="color:#00ffcc">⚠️ Domain Anomaly Opened... [${pickedRarity}] Entity approaching!</div>`;
+      document.getElementById('combat-log-box').innerHTML = `<div style="color:#00ffcc">⚠️ Domain Anomaly Terbuka... Ancaman luar terdeteksi!</div>`;
       setupCombatView();
     }
 
@@ -923,7 +1000,13 @@
       document.getElementById('battle-my-element-badge').style.background = ELEMENT_COLORS[combatState.myElement];
 
       document.getElementById('battle-enemy-name').innerText = combatState.enemyName;
-      document.getElementById('battle-enemy-avatar-container').innerHTML = '<span>👾</span>';
+      // Menyesuaikan tampilan avatar berdasarkan tipe elemen musuh
+      let enemyIcon = "👾";
+      if(combatState.enemyElement === "SPACE") enemyIcon = "🛸";
+      if(combatState.enemyElement === "EARTH") enemyIcon = "🪨";
+      if(combatState.enemyElement === "NATURE") enemyIcon = "🌿";
+      document.getElementById('battle-enemy-avatar-container').innerHTML = `<span>${enemyIcon}</span>`;
+      
       document.getElementById('battle-enemy-element-badge').innerText = combatState.enemyElement;
       document.getElementById('battle-enemy-element-badge').style.background = ELEMENT_COLORS[combatState.enemyElement];
 
@@ -945,9 +1028,10 @@
       for(let i=1; i<=3; i++) {
         let sk = combatState.skills[i-1];
         document.getElementById(`skill${i}-name`).innerText = sk.name;
-        document.getElementById(`skill${i}-dmg`).innerText = `Dmg: ${Math.floor(combatState.myBasePower * sk.ratio * multData.mult)}`;
+        document.getElementById(`skill${i}-dmg').innerText = `Dmg: ${Math.floor(combatState.myBasePower * sk.ratio * multData.mult)}`;
         document.getElementById(`skill${i}-dmg`).style = hintStyle;
-        if(hintText) document.getElementById(`skill${i}-name`).innerText += ` ${itemType === "VOID" ? "" : "⭐"}`;
+        // BUGFIX PERBAIKAN: Mengganti variabel global tak terdefinisi itemType dengan data elemen aktif combatState
+        if(hintText) document.getElementById(`skill${i}-name`).innerText += ` ${combatState.myElement === "VOID" ? "" : "⭐"}`;
       }
     }
 
@@ -986,7 +1070,7 @@
       if (combatState.myHp <= 0 || combatState.enemyHp <= 0) return;
 
       if (combatState.myStatuses['stun'] || combatState.myStatuses['freeze']) {
-        writeLog("❄️ Your beast is bound by status anomaly! Turn skipped.", "var(--accent-orange)");
+        writeLog("❄️ Modul sistem Anda terkunci oleh efek anomali musuh! Melewati giliran.", "var(--accent-orange)");
         processTurnEndTicks(); return;
       }
 
@@ -995,23 +1079,23 @@
       let dmg = Math.floor(combatState.myBasePower * sk.ratio * calc.mult * (0.85 + Math.random() * 0.3));
 
       if (combatState.myStatuses['slow']) dmg = Math.floor(dmg * 0.7);
-      if (combatState.damageBuffActive) { dmg *= 2; combatState.damageBuffActive = false; writeLog("✨ Power Booster Triggered! 2x Damage unleashed!", "#ffcc00"); }
+      if (combatState.damageBuffActive) { dmg *= 2; combatState.damageBuffActive = false; writeLog("✨ Power Booster Aktif! Kerusakan berlipat ganda dilepaskan!", "#ffcc00"); }
 
       combatState.enemyHp = Math.max(0, combatState.enemyHp - dmg);
       let effHit = ""; if(calc.mult > 1) effHit = " (Super Effective!)"; else if(calc.mult < 1) effHit = " (Not Very Effective...)";
-      writeLog(`💥 Cast [${sk.name}] ➡️ Deals ${dmg} damage${effHit}.`, "var(--accent-green)");
+      writeLog(`💥 Gunakan [${sk.name}] ➡️ Menghasilkan ${dmg} damage${effHit}.`, "var(--accent-green)");
 
       if (combatState.enemyHp > 0 && sk.effect !== "none" && Math.random() <= sk.chance) {
         if(!combatState.enemyStatuses['freeze'] || sk.effect !== 'freeze') {
           combatState.enemyStatuses[sk.effect] = sk.effect === 'freeze' ? 2 : 3;
-          writeLog(`🦠 Inflicted status [${sk.effect.toUpperCase()}] on target!`, "#bf5af2");
+          writeLog(`🦠 Berhasil menginfeksi lawan dengan payload status [${sk.effect.toUpperCase()}]!`, "#bf5af2");
         }
       }
 
       if (combatState.enemyStatuses['freeze'] && sk.effect === 'burn') {
         combatState.enemyHp = Math.max(0, combatState.enemyHp - 40);
         combatState.enemyStatuses['freeze'] = 0;
-        writeLog("🔥 Melt Triggered! Frozen ice shattered for +40 bonus damage!", "var(--accent-orange)");
+        writeLog("🔥 Thermal Melt! Status beku lawan hancur menghasilkan +40 ekstra damage!", "var(--accent-orange)");
       }
 
       updateCombatUI();
@@ -1020,15 +1104,13 @@
     }
 
     function processTurnEndTicks() {
-      // Enemy Dots Tick
       if (combatState.enemyHp > 0) {
-        if (combatState.enemyStatuses['burn']) { combatState.enemyHp = Math.max(0, combatState.enemyHp - 15); writeLog(`🔥 [BURN] Target data burning! -15 HP.`, "var(--accent-red)"); }
-        if (combatState.enemyStatuses['poison']) { combatState.enemyHp = Math.max(0, combatState.enemyHp - 20); writeLog(`🧪 [POISON] Malware expanding! -20 HP.`, "var(--accent-green)"); }
+        if (combatState.enemyStatuses['burn']) { combatState.enemyHp = Math.max(0, combatState.enemyHp - 15); writeLog(`🔥 [BURN] Kode fragment musuh terbakar! -15 HP.`, "var(--accent-red)"); }
+        if (combatState.enemyStatuses['poison']) { combatState.enemyHp = Math.max(0, combatState.enemyHp - 20); writeLog(`🧪 [POISON] Malware infeksi menyebar! -20 HP.`, "var(--accent-green)"); }
       }
-      // Player Dots Tick
       if (combatState.myHp > 0) {
-        if (combatState.myStatuses['burn']) { combatState.myHp = Math.max(0, combatState.myHp - 15); writeLog(`🔥 [BURN] Core matrix overheading! -15 HP.`, "var(--accent-red)"); }
-        if (combatState.myStatuses['poison']) { combatState.myHp = Math.max(0, combatState.myHp - 20); writeLog(`🧪 [POISON] System infection leakage! -20 HP.`, "var(--accent-green)"); }
+        if (combatState.myStatuses['burn']) { combatState.myHp = Math.max(0, combatState.myHp - 15); writeLog(`🔥 [BURN] Temperatur mesin inti meluap! -15 HP.`, "var(--accent-red)"); }
+        if (combatState.myStatuses['poison']) { combatState.myHp = Math.max(0, combatState.myHp - 20); writeLog(`🧪 [POISON] Kebocoran data enkripsi internal! -20 HP.`, "var(--accent-green)"); }
         playerBeasts[combatState.myKey].currentHp = combatState.myHp;
       }
 
@@ -1036,7 +1118,6 @@
       if (combatState.enemyHp <= 0) { handleCombatVictory(); return; }
       if (combatState.myHp <= 0) { handleCombatDefeat(); return; }
 
-      // Tick Down States
       Object.keys(combatState.myStatuses).forEach(k => { if(combatState.myStatuses[k]>0) combatState.myStatuses[k]--; });
       Object.keys(combatState.enemyStatuses).forEach(k => { if(combatState.enemyStatuses[k]>0) combatState.enemyStatuses[k]--; });
 
@@ -1047,7 +1128,7 @@
       if (combatState.myHp <= 0 || combatState.enemyHp <= 0) return;
 
       if (combatState.enemyStatuses['stun'] || combatState.enemyStatuses['freeze']) {
-        writeLog(`⚡ ${combatState.enemyName} is trapped in anomaly loop! Turn skipped.`, "var(--accent-orange)");
+        writeLog(`⚡ ${combatState.enemyName} terperangkap dalam loop error! Melewati giliran menyerang.`, "var(--accent-orange)");
         updateCombatUI(); return;
       }
 
@@ -1058,13 +1139,13 @@
       playerBeasts[combatState.myKey].currentHp = combatState.myHp;
       
       let effHit = ""; if(calc.mult > 1) effHit = " (Super Effective!)"; else if(calc.mult < 1) effHit = " (Not Very Effective...)";
-      writeLog(`🚨 ${combatState.enemyName} counters back! Inflicts -${enemyDmg} HP${effHit}.`, "var(--accent-red)");
+      writeLog(`🚨 ${combatState.enemyName} menyerang balik! Mengurangi -${enemyDmg} HP${effHit}.`, "var(--accent-red)");
 
       if (Math.random() <= 0.20) {
         let effs = ["burn", "stun", "poison", "slow"];
         let picked = effs[Math.floor(Math.random()*effs.length)];
         combatState.myStatuses[picked] = 2;
-        writeLog(`🚨 Anomaly payload attached! Core system afflicted with [${picked.toUpperCase()}].`, "#bf5af2");
+        writeLog(`🚨 Malicious Payload disuntikkan! Sistem utama terkena debuff [${picked.toUpperCase()}].`, "#bf5af2");
       }
 
       updateCombatUI();
@@ -1078,20 +1159,20 @@
 
     function confirmInstantRevive(useFeather) {
       if(useFeather) {
-        if(userInventory.feather <= 0) { alert("❌ Insufficient Angel Feather supply!"); return; }
+        if(userInventory.feather <= 0) { alert("❌ Bulu pemulih darurat tidak mencukupi!"); return; }
         userInventory.feather--;
         combatState.myHp = combatState.myMaxHp;
         playerBeasts[combatState.myKey].currentHp = combatState.myMaxHp;
         combatState.myStatuses = {};
-        writeLog("🪽 Instant Matrix Revive successful! Continuous flow preserved.", "var(--accent-purple)");
+        writeLog("🪽 Instant Matrix Revive berhasil! Keutuhan sistem dipulihkan sepenuhnya.", "var(--accent-purple)");
         updateCombatUI();
         document.getElementById('revive-prompt-panel').style.display = 'none';
         document.getElementById('combat-buttons-panel').style.display = 'grid';
         saveEngineData();
       } else {
-        writeLog(`💀 Matrix collapsed completely. Syncing network termination...`, "var(--accent-red)");
+        writeLog(`💀 Inti hancur total. Memutuskan jaringan sinkronisasi...`, "var(--accent-red)");
         playerBeasts[activePetKey].currentHp = 0;
-        playerBeasts[activePetKey].respawnTime = Date.now() + (12 * 60 * 60 * 1000); // Lock 12 Hours
+        playerBeasts[activePetKey].respawnTime = Date.now() + (12 * 60 * 60 * 1000); // Kunci Pemulihan 12 Jam
         saveEngineData();
         setTimeout(() => { 
           document.getElementById('navigation-bar').style.display = 'grid';
@@ -1115,7 +1196,7 @@
 
         let nameStr = db.type === "epic-evo" ? db.phases[state.phaseIndex].name : db.name;
         let multData = calcElementMultiplier(db.element, combatState.enemyElement);
-        let effStr = multData.mult > 1 ? "🟢 Effective" : multData.mult < 1 ? "🔴 Weak" : "⚪ Neutral";
+        let effStr = multData.mult > 1 ? "🟢 Unggul" : multData.mult < 1 ? "🔴 Lemah" : "⚪ Netral";
 
         let btn = document.createElement('button');
         btn.className = "menu-btn"; btn.style.textAlign = "left"; btn.style.padding = "8px"; btn.style.fontSize = "11px";
@@ -1133,34 +1214,34 @@
           combatState.skills = db.skills;
           combatState.myStatuses = {};
 
-          writeLog(`🔄 Retracted core matrix. Deploying ${nameStr}!`, "var(--accent-purple)");
+          writeLog(`🔄 Menarik kembali inti lama. Menyebarkan matriks ${nameStr}!`, "var(--accent-purple)");
           setupCombatView();
           panel.style.display = 'none';
           setTimeout(executeEnemyAiTurn, 600);
         };
         list.appendChild(btn);
       });
-      if(list.children.length === 0) list.innerHTML = "<div style='font-size:10px; color:var(--accent-red);'>No other healthy beasts available!</div>";
+      if(list.children.length === 0) list.innerHTML = "<div style='font-size:10px; color:var(--accent-red);'>Tidak ada data Beast cadangan sehat yang tersedia!</div>";
     }
 
     function closeBattleSwitchPanel() { document.getElementById('battle-switch-subpanel').style.display = 'none'; }
 
     function handleCombatVictory() {
       totalHuntWins += 1;
-      writeLog(`🏆 SUPREMACY SECURED! Total victories: ${totalHuntWins}`, "#00ffcc");
+      writeLog(`🏆 ANOMALIES ERADICATED! Total kemenangan: ${totalHuntWins}`, "#00ffcc");
       const r = combatState.rarity;
       let expGained = r === "Common" ? 30 : r === "Rare" ? 50 : r === "Epic" ? 90 : r === "Mythic" ? 170 : 350;
-      writeLog(`⭐ Network telemetry synced. Received +${expGained} EXP Matrix.`, "#00ffcc");
+      writeLog(`⭐ Sinkronisasi log selesai. Menerima +${expGained} EXP Inti.`, "#00ffcc");
 
       let pData = playerBeasts[activePetKey];
       pData.currentHp = combatState.myKey === activePetKey ? combatState.myHp : playerBeasts[activePetKey].currentHp;
       pData.exp += expGained;
 
-      if (Math.random() <= 0.05) { userInventory.feather++; writeLog("🪽 ANOMALY DETECTED: Obtained ultra-rare Angel Feather!", "var(--accent-purple)"); }
+      if (Math.random() <= 0.05) { userInventory.feather++; writeLog("🪽 RESOURCE DETECTED: Berhasil mengamankan item langka Angel Feather!", "var(--accent-purple)"); }
 
       if (pData.exp >= 100) {
         pData.level += 1; pData.exp -= 100;
-        writeLog(`🎉 SINKRONISASI LEVEL UP! Core Matrix enhanced to Level ${pData.level}!`, "#ffcc00");
+        writeLog(`🎉 LEVEL SYSTEM UPGRADED! Kekuatan inti meningkat ke Level ${pData.level}!`, "#ffcc00");
         checkEvolutionTrigger(activePetKey);
       }
 
@@ -1169,7 +1250,7 @@
     }
 
     function attemptFlee() {
-      writeLog("🏃 Aborting sequences... Fleeing back to Matrix Hub.", "#ffcc00");
+      writeLog("🏃 Memutus paksa arena kuadran... Mundur kembali ke Matrix Hub.", "#ffcc00");
       playerBeasts[activePetKey].currentHp = combatState.myKey === activePetKey ? combatState.myHp : playerBeasts[activePetKey].currentHp;
       saveEngineData();
       setTimeout(() => { document.getElementById('navigation-bar').style.display = 'grid'; switchToTab('dash-screen'); }, 1000);
@@ -1185,11 +1266,11 @@
 
     function fetchLiveLeaderboard() {
       const tbody = document.getElementById('leaderboard-data-rows');
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--accent-orange); padding:20px;">Synchronizing standings...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--accent-orange); padding:20px;">Menghubungkan ke pusat server database...</td></tr>`;
       fetch(`${FIREBASE_DB_URL}/leaderboard.json`)
       .then(res => res.json())
       .then(data => {
-        if (!data) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8b949e; padding:20px;">No records found.</td></tr>`; return; }
+        if (!data) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#8b949e; padding:20px;">Tidak ada rekam data logs pengguna.</td></tr>`; return; }
         let profileArray = Object.keys(data).map(key => data[key]);
         profileArray.sort((a, b) => (b.hunt || 0) - (a.hunt || 0) || (b.streak || 0) - (a.streak || 0));
         tbody.innerHTML = "";
@@ -1200,7 +1281,7 @@
           tr.innerHTML = `<td><span class="${badgeClass}">${rankNum}</span></td><td style="font-weight:bold; color:#fff;">${player.displayName || player.username}</td><td style="color:var(--accent-orange);">${player.streak || 0} Days</td><td style="color:var(--accent-purple);">Lvl ${player.level || 1}</td><td style="color:var(--accent-green); font-weight:bold;">${player.hunt || 0} Wins</td>`;
           tbody.appendChild(tr);
         });
-      }).catch(() => { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--accent-red); padding:20px;">Database connection failure.</td></tr>`; });
+      }).catch(() => { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--accent-red); padding:20px;">Kegagalan koneksi database sinkronisasi data global.</td></tr>`; });
     }
 
     let bagContext = "dash";
@@ -1216,20 +1297,20 @@
 
     function useItemInBattle(type) {
       if (type === '🧪') {
-        if (userInventory.potion <= 0) { alert("Empty!"); return; }
+        if (userInventory.potion <= 0) { alert("Habis!"); return; }
         userInventory.potion--;
         if (bagContext === "battle") {
           combatState.myHp = combatState.myMaxHp; playerBeasts[combatState.myKey].currentHp = combatState.myMaxHp; updateCombatUI();
-          writeLog("🧪 Purified Matrix Potion applied! HP recovered to 100%!", "var(--accent-green)");
+          writeLog("🧪 Ramuan Pembersih Malware dipasang! Pemulihan sistem inti 100%!", "var(--accent-green)");
         } else {
           let pData = playerBeasts[activePetKey]; const db = EVOLUTION_DATABASE[activePetKey];
           pData.currentHp = db.type === "epic-evo" ? (db.phases[pData.phaseIndex].hp + (pData.level * 15)) : (db.hp + (pData.level * 30));
         }
       } else if (type === '💊') {
-        if (bagContext !== "battle") { alert("Combat usage item only!"); return; }
-        if (userInventory.pill <= 0) { alert("Empty!"); return; }
+        if (bagContext !== "battle") { alert("Item penunjang ini hanya dapat dipasang saat pertarungan!"); return; }
+        if (userInventory.pill <= 0) { alert("Habis!"); return; }
         userInventory.pill--; combatState.damageBuffActive = true;
-        writeLog("💊 Burst Pill injected! Damage matrix for the next skill call will double!", "var(--accent-orange)");
+        writeLog("💊 Burst Pill diinjeksikan! Penggandaan daya serang untuk giliran selanjutnya siap!", "var(--accent-orange)");
       }
       openModal(); saveEngineData();
     }
@@ -1239,7 +1320,7 @@
 
       Object.keys(EVOLUTION_DATABASE).forEach(key => {
         const db = EVOLUTION_DATABASE[key]; const state = playerBeasts[key]; const isDiscovered = discoveredPets.includes(key);
-        let renderName = "Locked Fragment", avatarHtml = '<span>❓</span>', subText = `Classification: ${key.toUpperCase()}`, loreStr = "Decrypt deeper matrix segments to access this core log.";
+        let renderName = "Locked Fragment", avatarHtml = '<span>❓</span>', subText = `Classification: ${key.toUpperCase()}`, loreStr = "Buka lebih banyak enkripsi data server untuk mengakses rekaman database ini.";
 
         if(isDiscovered) {
           if(db.type === "epic-evo") {
@@ -1278,7 +1359,7 @@
 
         if (isDiscovered && key !== activePetKey) {
           node.querySelector('.switch-trigger-btn').onclick = function(e) {
-            e.stopPropagation(); if(playerBeasts[key].respawnTime > Date.now()) { alert("❌ Cannot swap. Target core is still in recovery!"); return; }
+            e.stopPropagation(); if(playerBeasts[key].respawnTime > Date.now()) { alert("❌ Gagal menukar. Core target sedang diisolasi dalam perbaikan offline!"); return; }
             activePetKey = key; saveEngineData(); renderBestiaryUI(); 
           };
         }
