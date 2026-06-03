@@ -536,9 +536,9 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     <input type="text" id="dominionNameInput" placeholder="Enter Dominion Name" maxlength="15" style="text-align:center; margin-bottom:15px;">
     
     <select id="petSelectInput" style="text-align:center; margin-bottom:20px;">
-      <option value="Naga1">🐉 Dragon Core (Naga)</option>
-      <option value="Serigala1">🐺 Wolf Vanguard (Serigala)</option>
-      <option value="Ikan1">🐟 Abyssal Leviathan (Ikan)</option>
+      <option value="naga">🐉 Dragon Core (Naga)</option>
+      <option value="serigala">🐺 Wolf Vanguard (Serigala)</option>
+      <option value="ikan">🐟 Abyssal Leviathan (Ikan)</option>
     </select>
     
     <button onclick="saveDominionName()">Register To Core</button>
@@ -569,7 +569,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     
     <div class="title-pet-display" id="titlePetDisplay">
       <div class="pet-image-frame" id="petImageFrame"></div>
-      <div class="title-pet-details" id="titlePetDetails">Naga1.png [Lvl 1]</div>
+      <div class="title-pet-details" id="titlePetDetails">naga.png [Lvl 1]</div>
     </div>
 
     <button id="enterBtn" onclick="enter()">Enter The Eclipse</button>
@@ -580,7 +580,7 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     <button onclick="showPage('achievement')">Achievements</button>
     <button onclick="showPage('archives')">Archives</button>
     <button onclick="showPage('code')">Code</button>
-    <button onclick="showPage('beastPage')">👾 Beast Engine</button>
+    <button onclick="navigateToBeastEngine()">👾 Beast Engine</button>
   </div>
 
   <div class="page" id="origin">
@@ -632,16 +632,6 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
     </div>
   </div>
 
-  <div class="page" id="beastPage">
-    <div class="box" style="padding: 5px; background: #000; border-color: rgba(255,255,255,0.2);">
-      <div class="fullscreen-header-nav" style="padding: 10px; margin-bottom: 10px;">
-        <h2 class="fullscreen-header-title" style="font-size:14px;">Beast Engine Runtime</h2>
-        <button class="back-panel-btn" style="padding: 6px 16px; font-size: 10px;" onclick="exitFullscreenPage()">⬅️ Return To Core</button>
-      </div>
-      <iframe src="beast.html" id="beastIframe" style="width:100%; height:700px; border:none; display:block; background:transparent; overflow:hidden;" scrolling="no"></iframe>
-    </div>
-  </div>
-
   <div class="calibration-container" id="calibrationHud">
     <div class="calibration-box">
       <p id="calibrationStatus" style="margin-top:0;">System ready for resonance integration</p>
@@ -669,9 +659,9 @@ footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding: 20p
       <label>Pet Engine Core Configuration</label>
       <select id="admPetName" style="margin-bottom:8px;">
         <option value="">-- Select Pet Model --</option>
-        <option value="Naga1">Naga1.png</option>
-        <option value="Serigala1">Serigala1.png</option>
-        <option value="Ikan1">Ikan1.png</option>
+        <option value="naga">naga.png</option>
+        <option value="serigala">serigala.png</option>
+        <option value="ikan">ikan.png</option>
       </select>
       <input type="number" id="admPetLevel" placeholder="Override Pet Level" style="margin-bottom:8px;">
     </div>
@@ -716,7 +706,7 @@ const badgesNames = ["Eclipse Ignition", "Dual Spark", "Tri-Matrix Sync", "Quart
 
 let tempSelectedTheme = "default";
 let streakData = { count: 0, highestCount: 0, lastCalibratedTimestamp: null, dominionName: "" };
-let petData = { name: "Naga1", level: 1 };
+let petData = { name: "naga", level: 1 };
 let cooldownInterval = null;
 
 const FIREBASE_DB_URL = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -759,17 +749,17 @@ for(let i=0; i<30; i++) {
 document.getElementById("achGrid").innerHTML = badgesNames.map((name, i) => `<div class="achievement-card" id="ach${i+1}" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); padding:15px; border-radius:6px; text-align:center;"><span class="ach-badge locked-badge" id="ach${i+1}Badge" style="font-size:9px; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; opacity:0.5;">🔒 Locked</span><h4 style="margin:8px 0 4px 0; font-size:12px; letter-spacing:1px;">${name}</h4><p style="font-size:10px; opacity:0.5; margin:0;">Target: ${targets[i]} Days</p></div>`).join('');
 document.getElementById("floatingViewToggleBtn").addEventListener("click", () => document.getElementById("themeSelectorModal").style.display="flex");
 function selectThemeOption(t) { tempSelectedTheme = t; }
+
 function applySelectedTheme() {
   document.body.classList.remove("theme-matrix", "theme-crimson");
   if(tempSelectedTheme !== "default") document.body.classList.add("theme-" + tempSelectedTheme);
   document.getElementById("themeSelectorModal").style.display="none";
-  broadcastToBeast();
+  localStorage.setItem("BLDS_GLOBAL_THEME", document.body.className);
 }
 
 function saveState() { 
   localStorage.setItem("BLDS_CORE_STR_DATA", JSON.stringify(streakData));
   localStorage.setItem("BLDS_CORE_PET_DATA", JSON.stringify(petData));
-  broadcastToBeast();
   pushStreakToFirebase();
 }
 
@@ -781,6 +771,10 @@ function loadState() {
   }
   const savedPet = localStorage.getItem("BLDS_CORE_PET_DATA");
   if(savedPet) petData = JSON.parse(savedPet);
+  
+  const savedTheme = localStorage.getItem("BLDS_GLOBAL_THEME");
+  if(savedTheme) document.body.className = savedTheme;
+
   updateUI();
   checkCooldownLoop();
 }
@@ -851,7 +845,6 @@ function resetCalibrationBtnUI() {
   document.getElementById("calibrationStatus").innerText = "System ready for resonance integration";
 }
 
-// Modifikasi saat klik tombol ada transisi GELAP perlahan
 function enter() {
   if(!streakData.dominionName) { 
     document.getElementById("modalTitle").innerText = "Main Matrix Registration";
@@ -912,7 +905,6 @@ function confirmResetStreak() {
   document.getElementById("nameModal").style.display = "flex";
 }
 
-// Fungsi Trigger Efek Suara Tombol
 function playClickSound() {
   const snd = document.getElementById("menuClickSound");
   if(snd) {
@@ -921,9 +913,6 @@ function playClickSound() {
   }
 }
 
-// ==========================================
-// CORE DECRYPTION ENGINE (MODIFIKASI KODE)
-// ==========================================
 function unlockCode() { 
   playClickSound();
   const codeVal = document.getElementById("codeInput").value.trim().toUpperCase();
@@ -954,7 +943,6 @@ function unlockCode() {
   }
 }
 
-// 🎬 Perbaikan Urutan Cutscene & Efek Bersinar Logo + Teks BLDS
 function runBldsCutscene() {
   const theater = document.getElementById("cutsceneTheater");
   const logo = document.getElementById("cutsceneLogo");
@@ -1005,7 +993,6 @@ function runBldsCutscene() {
   }, 21500);
 }
 
-// 🎬 Sekuens Cinematic: FORGOTTEN & 12 FLAMES
 function runCinematicSequence(type) {
   const theater = document.getElementById("cutsceneTheater");
   const logo = document.getElementById("cutsceneLogo");
@@ -1082,19 +1069,14 @@ function executeAdminUpdate() {
   alert("Perubahan berhasil diterapkan.");
 }
 
-// Memperbaiki komunikasi runtime data telemetry dengan Beast Engine Frame
-function broadcastToBeast() {
-  const f = document.getElementById("beastIframe");
-  if(f && f.contentWindow) {
-    const activeTheme = document.body.className;
-    // Mengirim payload lengkap terstruktur agar dibaca engine beast.html
-    f.contentWindow.postMessage({ 
-      type: 'TELEMETRY_UPDATE', 
-      data: streakData, 
-      pet: petData, 
-      theme: activeTheme 
-    }, '*');
-  }
+/* REDIREKSI HALAMAN PENUH MENUJU BEAST ENGINE */
+function navigateToBeastEngine() {
+  playClickSound();
+  const overlay = document.getElementById("smoothEnterOverlay");
+  overlay.classList.add("active");
+  setTimeout(() => {
+    window.location.href = "beast.html";
+  }, 600);
 }
 
 function showPage(id) {
@@ -1107,10 +1089,6 @@ function showPage(id) {
   
   const targetPage = document.getElementById(id);
   targetPage.style.display = "block";
-  
-  if(id === 'beastPage') { 
-    setTimeout(broadcastToBeast, 200); 
-  }
 }
 
 function exitFullscreenPage() {
@@ -1123,12 +1101,6 @@ function exitFullscreenPage() {
   document.getElementById("streakWidget").style.display = "flex";
   document.getElementById("titlePetDisplay").style.display = "flex";
 }
-
-window.addEventListener("message", (e) => { 
-  if(!e.data) return;
-  if(e.data.type === 'BEAST_HANDSHAKE_REQ') { broadcastToBeast(); }
-  if(e.data.type === 'BEAST_NAVIGATE_BACK' || e.data === 'BACK_TO_MAIN') { exitFullscreenPage(); }
-});
 
 window.addEventListener("load", () => { injectDatabase(); loadState(); setTimeout(()=>document.getElementById("loader").classList.add("hidden"), 800); });
 
