@@ -1,557 +1,358 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blacklightdoms Core</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLDS Official Website</title>
+  <style>
+    :root {
+      --bg-black: #000000;
+      --neon-cyan: #00ffcc;
+      --neon-red: #ff4a4a;
+    }
+    body {
+      margin: 0; padding: 0; background: var(--bg-black);
+      color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+    .container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box;
+    }
+    h1 { font-family: monospace; letter-spacing: 2px; margin-bottom: 30px; }
+    
+    /* Menu Archives */
+    .archive-box {
+      border: 1px solid #1f2026; background: #070708; border-radius: 12px;
+      padding: 25px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .archive-title { font-size: 14px; color: #8b949e; font-family: monospace; margin-bottom: 15px; }
+    
+    .nav-btn {
+      display: block; width: 100%; padding: 14px; margin: 10px 0; box-sizing: border-box;
+      background: #111215; border: 1px solid #2d3039; color: #fff; border-radius: 8px;
+      font-weight: bold; text-decoration: none; cursor: pointer; transition: all 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+    
+    /* Code Input Box */
+    .secret-input-container { margin-top: 20px; }
+    .secret-input {
+      width: 100%; padding: 10px; background: #111215; border: 1px solid #2d3039;
+      color: var(--neon-cyan); border-radius: 6px; text-align: center; font-family: monospace;
+      box-sizing: border-box; margin-bottom: 8px;
+    }
+    .secret-input:focus { outline: none; border-color: var(--neon-cyan); }
 
-        body {
-            background-color: #050508;
-            color: #e2e8f0;
-            font-family: 'Courier New', Courier, monospace;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    /* Owner Panel Styles */
+    #owner-panel {
+      display: none; margin-top: 20px; border: 1px dashed var(--neon-cyan);
+      padding: 15px; border-radius: 8px; background: rgba(0,255,204,0.02);
+    }
 
-        /* CRT Scanline Overlay Effect */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 99999;
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none;
-        }
+    /* Cinematic Cutscene Overlay */
+    #cinema-overlay {
+      position: fixed; inset: 0; background: #000; z-index: 10000;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      padding: 20px; box-sizing: border-box; text-align: center;
+    }
+    .cinema-text {
+      font-family: monospace; font-size: 15px; line-height: 1.8; color: #fff;
+      opacity: 0; transition: opacity 0.6s ease; max-width: 600px; white-space: pre-line;
+    }
+    
+    /* Logo Animations */
+    .blds-logo-container {
+      position: relative; width: 150px; height: 150px; display: none; margin-bottom: 20px;
+    }
+    .blds-logo-img {
+      width: 100%; height: 100%; object-fit: contain;
+      filter: drop-shadow(0 0 15px var(--neon-cyan)) drop-shadow(0 0 30px rgba(0,255,204,0.5));
+    }
+    .slam-tilt {
+      animation: slamTiltAnim 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes slamTiltAnim {
+      0% { transform: scale(4) rotate(-25deg); opacity: 0; }
+      30% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: rotate(-12deg); }
+      70% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
 
-        /* Cutscene Fullscreen Layer */
-        #cutscene-layer {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000000;
-            z-index: 10000;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-        }
+    /* BLDS Split Screen Layout */
+    #blds-split-screen {
+      position: fixed; inset: 0; z-index: 10001; display: none;
+    }
+    .split-half {
+      position: absolute; top: 0; width: 50%; height: 100%; background: #000;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .split-left { left: 0; border-right: 1px solid rgba(255,255,255,0.1); }
+    .split-right { right: 0; filter: invert(1); } /* Inversi bentuk vertikal setengah layar */
+    .spinning-logo {
+      width: 160px; height: 160px; object-fit: contain;
+      animation: slowSpin 12s linear infinite;
+    }
+    @keyframes slowSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(3deg); } }
+    
+    .shake-active { animation: screenShake 0.1s linear infinite; }
+    @keyframes screenShake {
+      0% { transform: translate(2px, 1px); } 50% { transform: translate(-2px, -1px); } 100% { transform: translate(1px, 2px); }
+    }
 
-        .glitch-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ffffff, 0 0 20px #ff0055;
-            letter-spacing: 4px;
-            margin-bottom: 20px;
-            animation: textGlitch 0.15s infinite linear alternate-reverse;
-        }
-
-        .terminal-text {
-            font-size: 14px;
-            color: #a78bfa;
-            max-width: 600px;
-            line-height: 1.8;
-            border-right: 2px solid #a78bfa;
-            white-space: pre-wrap;
-            animation: blink 0.6s infinite steps(2);
-            text-align: left;
-        }
-
-        /* Core Application Container */
-        #main-container {
-            display: block;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 20px 15px;
-            position: relative;
-        }
-
-        /* System Header Banner */
-        .system-banner {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 35px;
-            background: rgba(10, 10, 15, 0.8);
-            position: relative;
-        }
-
-        .owner-badge {
-            display: inline-block;
-            background: #ffffff;
-            color: #000000;
-            font-weight: bold;
-            font-size: 11px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(255,255,255,0.4);
-        }
-
-        .streak-info {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #94a3b8;
-        }
-
-        .highlight-white {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        /* Cyber Title */
-        .brand-title {
-            text-align: center;
-            font-size: 26px;
-            letter-spacing: 6px;
-            font-weight: normal;
-            margin-bottom: 30px;
-            color: #ffffff;
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-        }
-
-        /* Pet Viewer Frame Module */
-        .pet-display-box {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 15px auto;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            background: rgba(15, 15, 25, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pet-display-box img {
-            max-width: 80%;
-            max-height: 80%;
-            object-fit: contain;
-        }
-
-        .pet-meta {
-            text-align: center;
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 35px;
-            letter-spacing: 1px;
-        }
-
-        /* Navigation Links / Action Control Buttons */
-        .action-button {
-            display: block;
-            width: 100%;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #cbd5e1;
-            padding: 14px;
-            border-radius: 30px;
-            text-align: center;
-            text-decoration: none;
-            font-family: inherit;
-            font-size: 13px;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .action-button:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-        }
-
-        /* Beast Engine Specific Theme Glow */
-        .action-button.purple-accent {
-            border-color: rgba(168, 85, 247, 0.3);
-            text-shadow: 0 0 5px rgba(168, 85, 247, 0.5);
-        }
-        
-        .action-button.purple-accent:hover {
-            background: rgba(168, 85, 247, 0.1);
-            border-color: rgba(168, 85, 247, 0.6);
-        }
-
-        /* Lock Screen Panel */
-        .status-panel {
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 40px;
-            background: rgba(5, 5, 10, 0.9);
-            text-align: center;
-        }
-
-        .lock-notice {
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            line-height: 1.5;
-        }
-
-        .countdown-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 25px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #64748b;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-        }
-
-        .footer-label {
-            font-size: 10px;
-            color: #b91c1c;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .reset-btn {
-            background: transparent;
-            border: 1px solid rgba(185, 28, 28, 0.3);
-            color: #ef4444;
-            font-family: inherit;
-            font-size: 11px;
-            padding: 10px;
-            width: 100%;
-            border-radius: 30px;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-        }
-
-        .reset-btn:hover {
-            background: rgba(185, 28, 28, 0.1);
-            border-color: #ef4444;
-        }
-
-        /* Encryption Decoupler Modal System */
-        #code-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 5000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-box {
-            background: #0d0d15;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
-            padding: 25px;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-        }
-
-        .modal-box input {
-            width: 100%;
-            background: #050508;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: inherit;
-            text-align: center;
-            font-size: 16px;
-            letter-spacing: 2px;
-            margin: 15px 0;
-            outline: none;
-        }
-
-        .modal-btn-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #ffffff;
-        }
-
-        .modal-btn.confirm {
-            background: #ffffff;
-            color: #000000;
-            font-weight: bold;
-        }
-
-        /* Keyframes Animations */
-        @keyframes textGlitch {
-            0% { text-shadow: 2px -1px 0 #ff0055, -1px 2px 0 #00ffaa; }
-            100% { text-shadow: -2px 1px 0 #ff0055, 2px -2px 0 #00ffaa; }
-        }
-        @keyframes blink {
-            from { border-color: transparent; }
-            to { border-color: #a78bfa; }
-        }
-    </style>
+    /* Global Transitions */
+    .smooth-whiteout {
+      position: fixed; inset: 0; background: #fff; z-index: 10005;
+      opacity: 0; pointer-events: none; transition: opacity 2.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .half-inverted-body {
+      filter: url(#half-invert-filter); /* Fallback style or direct css logic built inside beast */
+    }
+  </style>
 </head>
 <body>
 
-    <div id="cutscene-layer">
-        <div class="glitch-text">RESONANCE OVERRIDE ATTAINED</div>
-        <div class="terminal-text" id="cutscene-body"></div>
-    </div>
+  <div class="smooth-whiteout" id="whiteout-trigger"></div>
 
-    <div id="main-container">
+  <div id="blds-split-screen">
+    <div class="split-half split-left" id="half-l"></div>
+    <div class="split-half split-right" id="half-r"></div>
+  </div>
+
+  <div id="cinema-overlay">
+    <div class="blds-logo-container" id="cinema-logo-box">
+      <img src="logo.png" class="blds-logo-img" alt="BLDS Logo">
+    </div>
+    <div class="cinema-text" id="cinema-text-box"></div>
+  </div>
+
+  <div class="container" id="main-web-layout">
+    <h1>BLACKLIGHTDOMS CORE</h1>
+    
+    <div class="archive-box">
+      <div class="archive-title">📁 PERANGKAT ARSIP GENERASI</div>
+      
+      <a href="beast.html" class="nav-btn">🛸 MASUK BEAST ENGINE ENGINE V3</a>
+      
+      <div class="secret-input-container">
+        <input type="text" class="secret-input" id="code-terminal" placeholder="SUNTIKKAN KODE DEKRIPSI..." oninput="checkSecretCode()">
+      </div>
+
+      <div id="owner-panel">
+        <h4 style="margin:0 0 10px 0; color: var(--neon-cyan); font-family: monospace;">👑 ACCESS GRANTED: OWNER PANEL</h4>
+        <button class="nav-btn" style="font-size:11px; padding:6px;" onclick="ownerAction('max-stats')">Set Max All Pet Stats</button>
+        <button class="nav-btn" style="font-size:11px; padding:6px; border-color: var(--neon-red); color: var(--neon-red);" onclick="ownerAction('infinite-items')">Suntik Max Booster & Makanan</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="bg-ambient" src="ambience.mp3" loop></audio>
+
+  <script>
+    const codeTerminal = document.getElementById('code-terminal');
+    const ownerPanel = document.getElementById('owner-panel');
+    const cinemaOverlay = document.getElementById('cinema-overlay');
+    const cinemaTextBox = document.getElementById('cinema-text-box');
+    const cinemaLogoBox = document.getElementById('cinema-logo-box');
+    const splitScreen = document.getElementById('blds-split-screen');
+    const whiteout = document.getElementById('whiteout-trigger');
+    const ambient = document.getElementById('bg-ambient');
+
+    function checkSecretCode() {
+      const val = codeTerminal.value.trim();
+      
+      if (val === 'OWNERONLYBLDS') {
+        ownerPanel.style.display = 'block';
+        alert("🛡️ Hak Akses Admin Terbuka. Selamat Datang, Owner.");
+      } 
+      else if (val === 'BLDS') {
+        codeTerminal.value = "";
+        triggerBldsCutscene();
+      }
+      else if (val === '12 Flames') {
+        codeTerminal.value = "";
+        trigger12FlamesCutscene();
+      }
+      else if (val === 'FORGOTTEN') {
+        codeTerminal.value = "";
+        triggerForgottenCutscene();
+      }
+    }
+
+    function playSoundSafely() {
+      ambient.play().catch(() => {});
+    }
+
+    function runTextSequence(lines, delayTime, callback) {
+      cinemaOverlay.style.display = 'flex';
+      cinemaTextBox.style.opacity = '0';
+      let currentLine = 0;
+
+      function next() {
+        if (currentLine >= lines.length) {
+          if (callback) callback();
+          return;
+        }
+        cinemaTextBox.innerText = lines[currentLine];
+        cinemaTextBox.style.opacity = '1';
         
-        <div class="system-banner">
-            <div class="owner-badge">⚡ Owner Menu</div>
-            <div class="streak-info">
-                Resonance Streak: <span class="highlight-white" id="streak-counter-val">0 Days</span> | <br>
-                Rank: <span class="highlight-white" id="rank-val">The Initialize Core</span><br>
-                <span style="font-size: 11px; color:#475569;">Highest Peak Record: <span id="high-peak-val">0 Days</span> | Owner: BladeS</span>
-            </div>
-        </div>
+        setTimeout(() => {
+          cinemaTextBox.style.opacity = '0';
+          setTimeout(() => {
+            currentLine++;
+            next();
+          }, 600);
+        }, delayTime);
+      }
+      next();
+    }
 
-        <h1 class="brand-title">Blacklightdoms</h1>
-
-        <div class="pet-display-box" id="pet-frame">
-            <span class="pet-fallback">Loading core matrix...</span>
-        </div>
-        <div class="pet-meta" id="pet-status-label">
-            core.png [Lvl 0]
-        </div>
-
-        <button class="action-button" onclick="alert('Origin Matrix Protocol Alpha active. System stable.')">Origin</button>
-        <button class="action-button" onclick="alert('Evolusi Pet: Lvl 1 (0-2 hari), Lvl 2 (3-14 hari), Lvl 3 (15-29 hari), Lvl 4 (30-49 hari), Lvl 5 (50+ hari).')">Achievements</button>
-        <button class="action-button" onclick="alert('Archives Node synchronized with GitHub deployment tree.')">Archives</button>
-        <button class="action-button" onclick="openCodeModal()">Code</button>
+    // 🎬 CUTSCENE 1: FORGOTTEN SYSTEM
+    function triggerForgottenCutscene() {
+      playSoundSafely();
+      const lines = [
+        "Forgotten",
+        "NO ACTIVE RECORD FOUND",
+        "Attempting reconstruction...",
+        "Searching fragments...\nSearching fragments...\nSearching fragments...",
+        "1 Fragment Detected\n\nCore Signature Match:\n99.87%",
+        "Historical Reconstruction Available\n\nOpening Archive..."
+      ];
+      
+      runTextSequence(lines, 2000, () => {
+        cinemaTextBox.innerHTML = `<span style="color: var(--neon-cyan); font-weight: bold; font-size: 18px;">THE FORGOTTEN ECLIPSE</span>\nCLASSIFICATION: FORBIDDEN ARCHIVE\n\nBefore BLDS. Before the Core. Before the Eclipse became known. There existed another generation.\nA generation history no longer remembers.\nThey were not heroes. They were not rulers. They were not legends.\nThey were ordinary people carrying extraordinary burdens.\nPeople abandoned by hope. People consumed by failure. People who had forgotten how to believe in themselves.\n\nYet among the darkness, they found one another. And together they created something the world believed impossible.\nThe First Eclipse.\nA sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.\nFor a time, the Eclipse flourished. The Core grew brighter. More people arrived. More souls found purpose. More hearts found direction.\n\nThe Eclipse was never built upon strength. It was built upon belief.\nBelief that even the most lost person could still become something greater.\n\nBut darkness rarely attacks from outside. It grows from within.\nOne member began losing faith. They looked beyond the Eclipse and saw recognition. Status. Validation. Attention. Things the Eclipse never promised.\nEventually they left. Not because they hated the Eclipse. But because they no longer believed in it.\nBefore disappearing, they spoke words that spread through the Eclipse like a disease:\n"What is the point of carrying a light that nobody sees?"\n\nOthers began asking the same question. Then more. Then even more. One by one, people abandoned the Core. One by one, the light faded.\nNot because darkness became stronger. But because belief became weaker.\n\nThe Eclipse did not fall in a single night. It died slowly. Silently. Painfully. Until only a fragment remained. A single piece of the Core. Still shining. Still waiting.\n\nYears passed. The world forgot. History moved on. The Eclipse became a myth. Yet the fragment endured. And one day, it was discovered.\nNot by a king. Not by a hero. Not by a chosen one. By an unknown individual whose identity remains absent from every surviving archive.\nEvery attempt to recover their name results in corruption. Every reference ends in missing data.\n\nWhat is known is this: They chose not to preserve the fragment. They chose to reignite it. The Core awakened once more. The Eclipse returned. And from its rebirth emerged a new generation. A new dominion. A second chance.\nA name eventually formed around it.\nBLACKLIGHTDOMS\n\nBefore disappearing, the unknown Keeper left behind a final message:\n"The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."`;
+        cinemaTextBox.style.opacity = '1';
+        cinemaTextBox.style.overflowY = 'auto';
+        cinemaTextBox.style.maxHeight = '80vh';
         
-        <button class="action-button purple-accent" onclick="navigateToBeastEngine()">
-            👾 Beast Engine
-        </button>
-
-        <div class="status-panel">
-            <div class="lock-notice">
-                Resonance system lock active.<br>
-                Cooldown applied globally.
-            </div>
-            <div class="countdown-badge" id="lock-timer">
-                Locked (23h 59m 55s)
-            </div>
-            <div class="footer-label">System Core Parameter</div>
-            <button class="reset-btn" onclick="triggerIdentityReset()">Reset & Re-spec Identity</button>
-        </div>
-
-    </div>
-
-    <div id="code-modal">
-        <div class="modal-box">
-            <h3 style="color:#ffffff; font-size:14px; letter-spacing:1px;">ENTER DECOUPLER KEY</h3>
-            <input type="text" id="decoupler-input" placeholder="••••" autocomplete="off">
-            <div class="modal-btn-row">
-                <button class="modal-btn" onclick="closeCodeModal()">Abort</button>
-                <button class="modal-btn confirm" onclick="submitDecouplerKey()">Inject</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Default System Global State Engine Configuration Layout
-        let systemState = {
-            streak: 100, // Default diset langsung 100 agar langsung memicu cutscene otomatis saat dipasang!
-            highestPeak: 100,
-            petType: "naga", // Pilihan awal: naga / serigala / ikan
-            cutscenePlayed100: false
+        // Buat penutup biar user bisa klik untuk kembali
+        let closePrompt = document.createElement('div');
+        closePrompt.innerText = "[ KLIK DIMANA SAJA UNTUK MENUTUP ARSIP ]";
+        closePrompt.style.cssText = "color: #8b949e; font-size:11px; margin-top:20px; cursor:pointer;";
+        cinemaTextBox.appendChild(closePrompt);
+        
+        cinemaOverlay.onclick = () => {
+          cinemaOverlay.style.display = 'none';
+          cinemaOverlay.onclick = null;
         };
+      });
+    }
 
-        // Load parameter variables from shared LocalStorage Matrix
-        function loadSystemState() {
-            const saved = localStorage.getItem("BLDS_CORE_STATE");
-            if (saved) {
-                try {
-                    systemState = JSON.parse(saved);
-                } catch(e) {
-                    console.error("State corrupted. Falling back to defaults.");
-                }
-            } else {
-                saveSystemState();
-            }
-            renderSystemMetrics();
-            checkAndTriggerCutscene();
-        }
+    // 🎬 CUTSCENE 2: 12 FLAMES CORE
+    function trigger12FlamesCutscene() {
+      playSoundSafely();
+      const lines = [
+        "ARCHIVE STATUS: STABLE",
+        "Loading Flame Database...",
+        "10 Entries Found.",
+        "Verification Complete.",
+        "...",
+        "Unexpected Result Detected.",
+        "Database Scan Repeated.",
+        "10 Entries Found.",
+        "Unexpected Result Detected."
+      ];
 
-        function saveSystemState() {
-            localStorage.setItem("BLDS_CORE_STATE", JSON.stringify(systemState));
-        }
+      runTextSequence(lines, 1400, () => {
+        // Tampilkan logo bersinar dengan efek kebanting + tilt miring
+        cinemaTextBox.style.opacity = '0';
+        cinemaLogoBox.style.display = 'block';
+        cinemaLogoBox.classList.add('slam-tilt');
 
-        // Render Asset Images based on 1 to 5 Tier Phase Rules
-        function renderSystemMetrics() {
-            document.getElementById("streak-counter-val").innerText = systemState.streak + " Days";
-            document.getElementById("high-peak-val").innerText = systemState.highestPeak + " Days";
+        setTimeout(() => {
+          cinemaTextBox.innerHTML = `<span style="font-size:16px; color: var(--neon-cyan);">You Found it\n\n12 Flames\n\nI thought you guys forgot about it</span>`;
+          cinemaTextBox.style.opacity = '1';
+        }, 1800);
 
-            // Rank assignment
-            let rankStr = "The Initialize Core";
-            if (systemState.streak >= 100) rankStr = "The Eternal Core";
-            else if (systemState.streak >= 50) rankStr = "The Ancient Overlord";
-            else if (systemState.streak >= 15) rankStr = "The Awakened Core";
-            else if (systemState.streak >= 3) rankStr = "The Hatchling Core";
-            document.getElementById("rank-val").innerText = rankStr;
+        setTimeout(() => {
+          cinemaLogoBox.style.display = 'none';
+          cinemaTextBox.innerHTML = `<span style="color: #ffcc00; font-weight: bold;">THE 12 FLAMES PROTOCOL</span>\nCLASSIFICATION: RESTRICTED ARCHIVE\n\nHumanity remembers Ten Flames. Not because only Ten Flames exist. But because everything beyond the Tenth Flame is rejected by human cognition.\nThroughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance.\nThis anomaly became known as: THE MEMORY COLLAPSE PHENOMENON\n\nResearchers initially believed the phenomenon to be a recording failure. They were wrong. The information was not being erased. Humanity was rejecting it. The mind instinctively refused to retain what existed beyond the Tenth Flame.\nYet scattered fragments continued appearing across unrelated archives. Fragments referencing two impossible entries. Entry Eleven. Entry Twelve.\n\n<span style="color: var(--neon-cyan);">FLAME 11 — SACRED FLAME</span>\nThe Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one.\nVision. Discipline. Loyalty. Ambition. Resilience. Hope. Awareness. Patience. Courage. Unity.\nAncient records suggest these Flames were never meant to exist separately. They are fragments of a greater whole. Each Flame strengthens another. Each Flame protects another. Each Flame preserves the Core. When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater: The Sacred Flame.\nAncient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division. Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater.\nFor this reason, the Sacred Flame is remembered by many titles: The Flame of Unity. The Flame Beyond Division. The Crown of the Ten Flames. The Flame That Contains All Flames.\nLegends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.\n\n<span style="color: var(--neon-red);">FLAME 12 — HIDDEN FLAME</span>\nWARNING: ARCHIVE INSTABILITY DETECTED\nBeyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records.\nThe Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal.\nIt does not choose. It does not command. It does not interfere. It simply watches.\nResearchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written.\nOnly one statement survived every reconstruction attempt. A single sentence recovered from dozens of unrelated archives:\n"It does not participate in existence. It observes whether existence should continue."\n\nNo archive continues beyond this point. No explanation follows. No conclusion exists. Only silence.\n\nEND OF RESTRICTED ARCHIVE\nTotal Recorded Flames: 10\nTotal Observed Flames: 12\nReason for discrepancy: UNKNOWN`;
+          cinemaTextBox.style.overflowY = 'auto';
+          cinemaTextBox.style.maxHeight = '85vh';
+          
+          let closePrompt = document.createElement('div');
+          closePrompt.innerText = "[ KLIK DIMANA SAJA UNTUK RE-BOOT MATRIX HUB ]";
+          closePrompt.style.cssText = "color: #8b949e; font-size:11px; margin-top:20px; cursor:pointer;";
+          cinemaTextBox.appendChild(closePrompt);
 
-            // Logika Fase Evolusi Sesuai Aturan (1 sampai 5)
-            let phaseNumber = 1; // Fase 1: Telor (0 - 2 hari)
-            if (systemState.streak >= 50) {
-                phaseNumber = 5; // Fase 5 (Wajib streak 50 ke atas)
-            } else if (systemState.streak >= 30) {
-                phaseNumber = 4; // Fase 4
-            } else if (systemState.streak >= 15) {
-                phaseNumber = 3; // Fase 3
-            } else if (systemState.streak >= 3) {
-                phaseNumber = 2; // Fase 2: Telor Menetas (setelah 3 hari)
-            }
+          cinemaOverlay.onclick = () => {
+            cinemaOverlay.style.display = 'none';
+            cinemaOverlay.onclick = null;
+          };
+        }, 6000);
+      });
+    }
 
-            // Gabungkan string dinamis sesuai nama file asset asli kamu! (contoh: naga1.png)
-            const filename = systemState.petType + phaseNumber + ".png";
-            
-            const petFrame = document.getElementById("pet-frame");
-            petFrame.innerHTML = `<img src="${filename}" onerror="handleImgMissing(this, '${filename}')" alt="${systemState.petType}">`;
-            
-            document.getElementById("pet-status-label").innerText = `${filename} [Lvl ${phaseNumber}]`;
-        }
+    // 🎬 CUTSCENE 3: BLDS SYSTEM SPLIT TRANSITION
+    function triggerBldsCutscene() {
+      playSoundSafely();
+      const lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
+      
+      runTextSequence(lines, 1200, () => {
+        cinemaOverlay.style.display = 'none';
+        
+        // Fase BLACK: Tampilkan Split View Kiri dan Kanan Inversi Vertikal
+        splitScreen.style.display = 'block';
+        document.body.classList.add('shake-active');
+        
+        // Pasang konten logo setengah terpisah
+        document.getElementById('half-l').innerHTML = `<div style="text-align:right; width:100%; font-size:24px; font-weight:900; font-family:monospace; padding-right:10px;">BLACK <img src="logo.png" class="spinning-logo" style="float:right; clip-path: inset(0 50% 0 0);"></div>`;
+        document.getElementById('half-r').innerHTML = `<div style="text-align:left; width:100%; font-size:24px; font-weight:900; font-family:monospace; padding-left:10px; transform: scaleY(-1);"><img src="logo.png" class="spinning-logo" style="float:left; clip-path: inset(0 0 0 50%);"> LIGHT</div>`;
 
-        // Error handler jika nama gambar belum di-upload / salah ketik
-        function handleImgMissing(imgElement, triedName) {
-            imgElement.parentElement.innerHTML = `
-                <div style="text-align:center; padding:10px;">
-                    <span style="color:#ef4444; font-size:11px; display:block; margin-bottom:5px;">⚠️ File Pecah</span>
-                    <span style="color:#64748b; font-size:10px;">Belum ter-upload:<br><b>${triedName}</b></span>
-                </div>`;
-        }
+        // Baris narasi di tengah split screen
+        let centerCaption = document.createElement('div');
+        centerCaption.innerHTML = "Two opposites.<br>Two destinies.<br>Two truths.<br>Both necessary.";
+        centerCaption.style.cssText = "position:absolute; top:70%; left:50%; transform:translate(-50%, -50%); text-align:center; font-family:monospace; font-size:14px; color:#fff; z-index:10003; line-height:2;";
+        splitScreen.appendChild(centerCaption);
 
-        // Pengecekan Otomatis Cutscene Streak 100
-        function checkAndTriggerCutscene() {
-            if (systemState.streak >= 100 && !systemState.cutscenePlayed100) {
-                runCinematicSequence();
-            }
-        }
+        // Transisi Layar Memutih Smooth Parah dan Lambat
+        setTimeout(() => {
+          whiteout.style.opacity = '1';
+        }, 4000);
 
-        // Jalankan Sekuens Animasi Teks Ketik Hitam Sinematik
-        function runCinematicSequence() {
-            const layer = document.getElementById("cutscene-layer");
-            const bodyText = document.getElementById("cutscene-body");
-            layer.style.display = "flex";
-            
-            const logs = [
-                ">> INITIALIZING CORE RESONANCE OVERRIDE...",
-                ">> STREAK MATRIX CONFIRMED: INTEGRITY AT 100 DAYS.",
-                ">> SYSTEM STATUS: STABLE // CRACKING BIOLOGICAL RESTRAINTS...",
-                ">> EVOLUTION LOGIC UNLOCKED: EVOLVING RANK -> THE ETERNAL CORE.",
-                ">> THE BLACKLIGHT ENERGY GRADIENT IS TOTALLY REALIGNED.",
-                ">> WELCOME BACK LOGGED OPERATOR: BladeS.",
-                ">> REDIRECTING ENGINES AND SYNCHRONIZING CORE CHANNELS... COMPLETE."
-            ];
+        // Setelah memutih total, kembalikan tampilan awal tetapi dengan efek sisi kanan terinversi
+        setTimeout(() => {
+          splitScreen.style.display = 'none';
+          document.body.classList.remove('shake-active');
+          whiteout.style.opacity = '0';
+          
+          // Tambahkan CSS filter inversi vertikal setengah layar permanen di index.html
+          let invStyle = document.createElement('style');
+          invStyle.innerText = "body { background: linear-gradient(to right, #000 50%, #fff 50%); color: #fff; } .container { mix-blend-mode: difference; }";
+          document.head.appendChild(invStyle);
+          
+          // Set bendera status ke localStorage supaya beast.html mendeteksi perubahan gaya BLDS
+          localStorage.setItem("BLDS_INVERSION_MATRIX_ACTIVE", "true");
+          alert("⚙️ BLDS Matrix Alteration Complete. Setengah layar vertikal bagian kanan masuk ke mode inversi!");
+        }, 7000);
+      });
+    }
 
-            let logIndex = 0;
-            bodyText.innerHTML = "";
-
-            function printLog() {
-                if (logIndex < logs.length) {
-                    bodyText.innerHTML += logs[logIndex] + "\n\n";
-                    logIndex++;
-                    setTimeout(printLog, 800);
-                } else {
-                    setTimeout(() => {
-                        systemState.cutscenePlayed100 = true; // Tandai true agar tidak berulang terus saat refresh
-                        saveSystemState();
-                        layer.style.display = "none";
-                    }, 2000);
-                }
-            }
-            printLog();
-        }
-
-        function navigateToBeastEngine() {
-            window.location.href = "beast.html";
-        }
-
-        function openCodeModal() {
-            document.getElementById("code-modal").style.display = "flex";
-        }
-
-        function closeCodeModal() {
-            document.getElementById("code-modal").style.display = "none";
-            document.getElementById("decoupler-input").value = "";
-        }
-
-        function submitDecouplerKey() {
-            const val = document.getElementById("decoupler-input").value.trim().toLowerCase();
-            if (val === "blds" || val === "blds100") {
-                closeCodeModal();
-                systemState.cutscenePlayed100 = false; // reset flag agar bisa nonton ulang lewat kode blds
-                runCinematicSequence();
-            } else if (val === "pet1" || val === "pet2" || val === "pet3" || val === "pet4" || val === "pet5") {
-                // KODE MOD KILAT: Ketik kode ini (misal: pet2 atau pet5) untuk mengubah hari secara instan untuk testing!
-                const daysMap = { "pet1": 0, "pet2": 4, "pet3": 16, "pet4": 32, "pet5": 55 };
-                systemState.streak = daysMap[val];
-                saveSystemState();
-                renderSystemMetrics();
-                closeCodeModal();
-            } else {
-                alert("DECOUPLER KEY INVALID. TRANSMISSION ABORTED.");
-            }
-        }
-
-        function triggerIdentityReset() {
-            if (confirm("Apakah kamu yakin ingin mereset seluruh database localstorage? Streak akan kembali ke default.")) {
-                localStorage.removeItem("BLDS_CORE_STATE");
-                location.reload();
-            }
-        }
-
-        // Ticker simulasi hitung mundur
-        function startLockTimerTicker() {
-            const timerBox = document.getElementById("lock-timer");
-            let hours = 23, minutes = 59, seconds = 55;
-            setInterval(() => {
-                seconds--;
-                if (seconds < 0) {
-                    seconds = 59;
-                    minutes--;
-                    if (minutes < 0) {
-                        minutes = 59;
-                        hours--;
-                        if (hours < 0) { hours = 23; }
-                    }
-                }
-                const pad = (n) => String(n).padStart(2, '0');
-                timerBox.innerText = `Locked (${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s)`;
-            }, 1000);
-        }
-
-        window.addEventListener("DOMContentLoaded", () => {
-            loadSystemState();
-            startLockTimerTicker();
+    function ownerAction(type) {
+      // Mengirim modifikasi state langsung via localStorage sebelum user buka beast engine
+      let engineCache = localStorage.getItem("BLDS_BEAST_SYSTEM_V3_STATE");
+      let state = engineCache ? JSON.parse(engineCache) : null;
+      
+      if (!state) {
+        alert("❌ Silakan masuk ke Beast Engine minimal sekali dulu untuk inisialisasi berkas!");
+        return;
+      }
+      
+      if (type === 'max-stats') {
+        Object.keys(state.playerBeasts).forEach(k => {
+          state.playerBeasts[k].level = 100;
+          state.playerBeasts[k].currentHp = 9999;
+          state.playerBeasts[k].exp = 0;
         });
-    </script>
+        alert("👑 Owner Power: Seluruh level pet dikunci pada Level 100!");
+      } else if (type === 'infinite-items') {
+        state.userInventory = { apple: 99, candy: 99, juice: 99, bread: 99, potion: 99, pill: 99, wings: 99 };
+        alert("👑 Owner Power: Paket Logistik Obat Langka & Makanan diisi 99 unit!");
+      }
+      
+      localStorage.setItem("BLDS_BEAST_SYSTEM_V3_STATE", JSON.stringify(state));
+    }
+  </script>
 </body>
 </html>
