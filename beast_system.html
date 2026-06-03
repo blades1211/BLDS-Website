@@ -1,343 +1,1342 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beast Engine Dashboard</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Beast Engine v3 - Blacklight Realtime System</title>
+  <style>
+    :root {
+      --bg-main: #000000;
+      --panel-bg: #070708;
+      --border-color: #1f2026;
+      --accent-green: #00ffcc;
+      --accent-red: #ff4a4a;
+      --accent-orange: #ffcc00;
+      --accent-purple: #bf5af2;
+    }
 
-        body {
-            background-color: #030306;
-            color: #e2e8f0;
-            font-family: 'Courier New', Courier, monospace;
-            min-height: 100vh;
-        }
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background-color: var(--bg-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #ffffff; overflow-x: hidden; user-select: none; -webkit-user-select: none;
+    }
 
-        /* Ambient Purple Cyber Glow Scanlines */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(168, 85, 247, 0.04), rgba(0, 255, 242, 0.02));
-            z-index: 99999;
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none;
-        }
+    #app-container {
+      display: flex; flex-direction: column; min-height: 100vh; padding: 15px; box-sizing: border-box;
+    }
 
-        #beast-container {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 20px 15px;
-        }
+    /* Split Screen Inversion jika dipicu dari mode BLDS */
+    .blds-inverted-active {
+      background: linear-gradient(to right, #000000 50%, #ffffff 50%) !important;
+    }
 
-        /* Navigation Menu Panel Header bar */
-        .engine-nav-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+    /* --- TOP MENU BAR --- */
+    .top-menu {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 15px;
+    }
+    .menu-btn {
+      background: transparent; border: 1px solid #2d3039; color: #fff;
+      padding: 10px 2px; border-radius: 20px; font-size: 11px; cursor: pointer; text-align: center;
+      font-weight: bold; letter-spacing: 0.5px;
+    }
+    .menu-btn:active { background: #111215; }
+    .menu-btn.active-tab { border-color: var(--accent-green); color: var(--accent-green); background: rgba(0, 255, 204, 0.05); }
 
-        .back-core-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #94a3b8;
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 11px;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-        }
+    /* --- VIEW SCREENS --- */
+    .screen { display: none; width: 100%; }
+    .screen.active { display: block; }
 
-        .back-core-btn:hover {
-            border-color: #ffffff;
-            color: #ffffff;
-            background: rgba(255,255,255,0.05);
-        }
+    /* --- MAIN DASHBOARD VIEW --- */
+    .main-panel {
+      border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg);
+      position: relative; display: flex; flex-direction: column; align-items: center; min-height: 520px;
+    }
+    .panel-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px; }
+    
+    .stats-box { width: 62%; background: #111215; padding: 10px; border-radius: 8px; border: 1px solid #1f2026; }
+    .stat-bar-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
+    .bar-bg { width: 75px; height: 8px; background: #22242b; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; width: 100%; transition: width 0.3s; }
 
-        .engine-status-badge {
-            font-size: 11px;
-            color: #a78bfa;
-            text-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
+    /* Draggable Pet Area */
+    .pet-environment {
+      flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: center; 
+      align-items: center; position: relative; min-height: 240px; overflow: hidden;
+      border: 1px dashed #2d3039; border-radius: 8px; margin-bottom: 10px;
+    }
+    .pet-box {
+      position: absolute; display: flex; flex-direction: column; align-items: center; cursor: grab;
+      transition: transform 0.1s ease; touch-action: none;
+    }
+    .pet-box:active { cursor: grabbing; }
+    
+    .pet-avatar-render { 
+      width: 100px; height: 100px; object-fit: contain; pointer-events: none; user-select: none;
+    }
+    .pet-label { font-size: 13px; margin-top: 5px; font-family: monospace; color: #8b949e; text-align: center; }
 
-        /* Header Console Panel */
-        .engine-header-panel {
-            text-align: center;
-            border: 1px dashed rgba(168, 85, 247, 0.3);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            background: rgba(13, 10, 25, 0.5);
-        }
+    /* Container Aksesoris Dinamis di Atas Kepala Pet */
+    .accessory-slots-layer {
+      position: absolute; pointer-events: auto; width: 40px; height: 40px;
+      font-size: 30px; display: flex; align-items: center; justify-content: center;
+      cursor: move; transform-origin: center center;
+    }
 
-        .engine-title {
-            font-size: 20px;
-            color: #ffffff;
-            letter-spacing: 4px;
-            margin-bottom: 8px;
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
-        }
+    /* Tombol Hunt Wild */
+    .hunt-trigger-zone { width: 100%; display: flex; justify-content: center; margin: 10px 0; }
+    .btn-hunt-wild {
+      width: 100%; border: 1px solid var(--accent-red); background: rgba(255, 74, 74, 0.1);
+      color: var(--accent-red); padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center;
+      letter-spacing: 1px; transition: all 0.2s;
+    }
+    .btn-hunt-wild:active { background: rgba(255, 74, 74, 0.25); transform: scale(0.98); }
 
-        /* Core Signature Selector Grid Menu Row */
-        .beast-selector-section {
-            margin-bottom: 35px;
-        }
+    /* Footer Items */
+    .items-footer { width: 100%; text-align: center; margin-top: auto; }
+    .footer-title { font-size: 11px; color: #8b949e; margin-bottom: 6px; font-family: monospace; }
+    .items-row { display: flex; justify-content: center; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
+    .item-circle {
+      width: 42px; height: 42px; background: #111215; border: 1px solid #1f2026; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center; font-size: 18px; position: relative; cursor: pointer;
+    }
+    .item-count {
+      position: absolute; bottom: -2px; right: -2px; background: #00ffcc; color: #000;
+      font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 10px;
+    }
 
-        .section-label {
-            font-size: 11px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            display: block;
-        }
+    /* --- COMBAT FIELD VIEW --- */
+    .combat-arena { border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg); }
+    .combat-header { display: flex; justify-content: space-between; color: #ff4a4a; font-weight: bold; font-size: 14px; margin-bottom: 15px; }
+    .combat-vs-display { display: flex; justify-content: space-around; align-items: center; margin-bottom: 15px; }
+    .fighter-card { background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px; width: 45%; text-align: center; position: relative; }
+    .fighter-avatar-wrapper { width: 65px; height: 65px; margin: 0 auto 5px auto; display: flex; justify-content: center; align-items: center; }
+    .fighter-avatar-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+    
+    /* Siluet Hitam untuk Pet yang Terkunci di Bestiary */
+    .siluet-locked { filter: brightness(0) !important; }
 
-        .beast-grid-row {
-            display: flex;
-            gap: 10px;
-        }
+    .combat-logs {
+      background: #090000; border: 1px solid #ff4a4a; border-radius: 6px; height: 120px;
+      overflow-y: auto; padding: 8px; font-family: monospace; font-size: 11px; margin-bottom: 12px; text-align: left;
+    }
+    .combat-actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .skill-btn {
+      background: #1f2026; border: 1px solid #2d3039; color: #fff; padding: 10px 5px;
+      border-radius: 6px; font-size: 11px; cursor: pointer; text-align: center; display: flex; flex-direction: column; gap: 2px;
+    }
+    .skill-btn .dmg-hint { font-size: 9px; color: #8b949e; }
+    .skill-btn:active { background: #2d3039; }
+    
+    /* --- SYSTEM STATUS MODIFIER ICON --- */
+    .status-badge-row { display: flex; gap: 3px; justify-content: center; margin-top: 4px; min-height: 14px; }
+    .badge-fx { font-size: 9px; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
 
-        .beast-tab-card {
-            flex: 1;
-            background: rgba(15,15,25,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+    /* --- TABLES & BESTIARY DETAIL --- */
+    .bestiary-container { border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; background: var(--panel-bg); }
+    .pet-list { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
+    .pet-list-item {
+      display: flex; align-items: center; justify-content: space-between; background: #111215;
+      border: 1px solid #1f2026; border-radius: 8px; padding: 10px; cursor: pointer;
+    }
+    .pet-list-item.active-pet { border-color: var(--accent-green); background: #0c2b26; }
+    
+    .biodata-card-pop {
+      background: #111215; border: 1px solid #2d3039; border-radius: 8px; padding: 12px;
+      margin-bottom: 15px; display: none; text-align: left; font-size: 11px; font-family: monospace;
+    }
 
-        .beast-tab-card:hover {
-            border-color: rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.02);
-        }
+    /* Leaderboard Controls */
+    .lb-sub-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px; }
+    .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .leaderboard-table th { padding: 8px 4px; border-bottom: 1px solid #1f2026; color: #8b949e; text-align: left; }
+    .leaderboard-table td { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.02); }
 
-        .beast-tab-card.active {
-            border-color: #a78bfa;
-            background: rgba(168, 85, 247, 0.1);
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
-        }
+    /* --- CUTSCENE STREAK 100 CONFIG --- */
+    #cutscene-overlay {
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .glow-logo {
+      width: 120px; height: 120px; object-fit: contain;
+      filter: drop-shadow(0 0 15px var(--accent-green));
+    }
+    .fade-text { font-family: monospace; font-size: 13px; text-align: center; margin: 10px 20px; opacity: 0; transition: opacity 0.6s; }
+    .big-streak-title { font-size: 28px; font-weight: 900; color: var(--accent-orange); opacity: 0; transform: scale(0.8); transition: all 0.8s; }
+    .big-streak-title.reveal { opacity: 1; transform: scale(1); }
 
-        .beast-tab-card .name-lbl {
-            font-size: 12px;
-            font-weight: bold;
-            color: #cbd5e1;
-            letter-spacing: 1px;
-        }
+    .screen-shake-active { animation: globalVibrate 0.1s linear infinite; }
+    @keyframes globalVibrate { 0% { transform: translate(2px, 1px); } 50% { transform: translate(-2px, -1px); } 100% { transform: translate(1px, 2px); } }
+    .color-invert-active { animation: colorInversion 0.8s ease-in-out infinite alternate; }
+    @keyframes colorInversion { 0% { filter: invert(0); } 100% { filter: invert(0.9); } }
 
-        .beast-tab-card.active .name-lbl {
-            color: #ffffff;
-        }
+    #mythic-pet-selector {
+      position: absolute; bottom: -100%; left: 0; width: 100%; background: #0c0d12;
+      border-top: 2px solid var(--accent-purple); border-radius: 20px 20px 0 0; padding: 20px 15px;
+      box-sizing: border-box; display: flex; flex-direction: column; gap: 15px; align-items: center;
+      transition: bottom 0.6s ease; z-index: 10000;
+    }
+    #mythic-pet-selector.slide-up { bottom: 0; }
+    .selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+    .mythic-card { background: #111215; border: 1px solid #1f2026; border-radius: 8px; padding: 10px 2px; text-align: center; cursor: pointer; }
+    
+    /* Accessory Toolset CSS */
+    .acc-control-box {
+      background: #111215; border: 1px solid #1f2026; border-radius: 6px; padding: 8px;
+      margin-top: 10px; width: 100%; box-sizing: border-box; font-size: 11px;
+    }
+    .acc-control-box display { display: flex; justify-content: space-between; margin-bottom: 5px; }
 
-        /* Data Parameters Table Card */
-        .stat-manifest-card {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 20px;
-            background: rgba(5, 5, 8, 0.9);
-            margin-bottom: 30px;
-        }
-
-        .manifest-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-size: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .manifest-row:last-child {
-            border-bottom: none;
-        }
-
-        .manifest-label {
-            color: #64748b;
-        }
-
-        .manifest-value {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        /* Shell Console Output Logs screen window */
-        .console-log-box {
-            background: #000000;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 8px;
-            padding: 15px;
-            height: 120px;
-            overflow-y: auto;
-            font-size: 11px;
-            color: #4ade80;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .interact-btn {
-            display: block;
-            width: 100%;
-            background: #a78bfa;
-            color: #000000;
-            border: none;
-            padding: 15px;
-            border-radius: 30px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-            transition: all 0.2s ease;
-        }
-
-        .interact-btn:hover {
-            background: #c084fc;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
-        }
-    </style>
+    /* Revive Waiting Layout */
+    .revive-timer-mask {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.85);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; font-size: 12px; border-radius: 12px; z-index: 50;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="beast-container">
-        
-        <div class="engine-nav-row">
-            <a href="index.html" class="back-core-btn">◀ BLDS Core</a>
-            <div class="engine-status-badge">● Engine Online</div>
-        </div>
+  <div id="cutscene-overlay">
+    <img src="logo.png" id="cutscene-logo" class="glow-logo" alt="Logo">
+    <div id="text-line-1" class="fade-text"></div>
+    <div id="text-line-2" class="fade-text"></div>
+    <div id="text-line-3" class="fade-text"></div>
+    <div id="text-streak-banner" class="big-streak-title">STREAK 100</div>
+  </div>
 
-        <div class="engine-header-panel">
-            <h2 class="engine-title">BEAST ENGINE</h2>
-            <p style="font-size:11px; color:#64748b; letter-spacing:1px;">Quantum Resonance Core Matrix v2.10</p>
-        </div>
+  <div id="mythic-pet-selector">
+    <h4 style="margin:0; color: var(--accent-purple); font-family: monospace;">🌌 CHOOSE MYTHIC DOMINION GUARDIAN</h4>
+    <div class="selector-grid">
+      <div class="mythic-card" onclick="highlightMythic('golem')"><h5>Golem</h5></div>
+      <div class="mythic-card" onclick="highlightMythic('leviathan')"><h5>Leviathan</h5></div>
+      <div class="mythic-card" onclick="highlightMythic('fenrir')"><h5>Fenrir</h5></div>
+    </div>
+    <button id="btn-take-pet" style="width:100%; display:none; background:var(--accent-purple); border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="executeTakePet()">TAKE PET</button>
+  </div>
 
-        <div class="beast-selector-section">
-            <span class="section-label">Select Core Signature</span>
-            <div class="beast-grid-row">
-                <div class="beast-tab-card" id="tab-naga" onclick="switchActivePet('naga')">
-                    <div class="name-lbl">NAGA</div>
-                </div>
-                <div class="beast-tab-card" id="tab-serigala" onclick="switchActivePet('serigala')">
-                    <div class="name-lbl">SERIGALA</div>
-                </div>
-                <div class="beast-tab-card" id="tab-ikan" onclick="switchActivePet('ikan')">
-                    <div class="name-lbl">IKAN</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="stat-manifest-card">
-            <span class="section-label" style="margin-bottom:5px;">Resonance Metrics</span>
-            
-            <div class="manifest-row">
-                <span class="manifest-label">Active Core Identity</span>
-                <span class="manifest-value" id="metrics-name" style="text-transform:uppercase;">NAGA</span>
-            </div>
-            <div class="manifest-row">
-                <span class="manifest-label">Calculated Evolution Phase</span>
-                <span class="manifest-value" id="metrics-phase">Phase 1 (Telor)</span>
-            </div>
-            <div class="manifest-row">
-                <span class="manifest-label">Global Core Resonance Streak</span>
-                <span class="manifest-value" id="metrics-streak">0 Days</span>
-            </div>
-            <div class="manifest-row">
-                <span class="manifest-label">Engine Output Frequency</span>
-                <span class="manifest-value" style="color:#4ade80;">942.84 MHz</span>
-            </div>
-        </div>
-
-        <span class="section-label">Engine Kernel Logs</span>
-        <div class="console-log-box" id="terminal-output-log">
-            [system] Beast Engine initialized successfully.<br>
-            [system] Listening to core synchronized signals from LocalStorage matrix...
-        </div>
-
-        <button class="interact-btn" onclick="fireResonancePulse()">FIRE RESONANCE PULSE</button>
-
+  <div id="app-container">
+    
+    <div class="top-menu" id="navigation-bar">
+      <button class="menu-btn active-tab" id="tab-dash" onclick="switchToTab('dash-screen')">HUB</button>
+      <button class="menu-btn" id="tab-bestiary" onclick="switchToTab('bestiary-screen')">BESTIARY</button>
+      <button class="menu-btn" id="tab-fuse" onclick="switchToTab('fuse-screen')">FUSE</button>
+      <button class="menu-btn" id="tab-leaderboard" onclick="switchToTab('leaderboard-screen')">RANK</button>
     </div>
 
-    <script>
-        let engineState = {
-            streak: 100,
-            highestPeak: 100,
-            petType: "naga",
-            cutscenePlayed100: false
+    <div id="dash-screen" class="screen active">
+      <a href="index.html" style="color:var(--accent-green); text-decoration:none; font-size:11px; font-family:monospace; margin-bottom:10px; display:inline-block;">⬅ KEMBALI KE BERANDA (INDEX)</a>
+      
+      <div class="main-panel" id="primary-hub-panel">
+        
+        <div class="revive-timer-mask" id="death-timer-block">
+          <p style="color:var(--accent-red); font-weight:bold; margin:0 0 10px 0;">☠️ PET ANDA MEMASUKI FASE RE-MATERIALISASI</p>
+          <div id="timer-string-countdown" style="font-family:monospace; margin-bottom:15px;">Mundur: 12 Jam 00 Menit</div>
+          <button class="menu-btn" style="border-color:var(--accent-purple); color:var(--accent-purple); padding:8px 15px;" onclick="instantReviveViaWings()">🪽 Instant Revive dengan Wings</button>
+        </div>
+
+        <div class="panel-header">
+          <div class="menu-btn" style="padding:5px 8px; font-size:10px;" id="identity-node-tag" onclick="promptRename()">Rename Pet</div>
+          
+          <div class="stats-box">
+            <div class="stat-bar-container"><span>HP</span><span id="dash-hp-text">100/100</span><div class="bar-bg"><div id="dash-hp-bar" class="bar-fill" style="background:var(--accent-red);"></div></div></div>
+            <div class="stat-bar-container"><span>EXP</span><span id="dash-exp-text">0%</span><div class="bar-bg"><div id="dash-exp-bar" class="bar-fill" style="background:var(--accent-green);"></div></div></div>
+          </div>
+        </div>
+
+        <div class="pet-environment" id="drag-container-boundary">
+          <div class="pet-box" id="pet-draggable-avatar-node">
+            <div class="accessory-slots-layer" id="live-accessory-node" onmousedown="initAccessoryDrag(event)" ontouchstart="initAccessoryDrag(event)"></div>
+            <div id="dash-avatar-container-render"></div>
+            <div class="pet-label" id="dash-display-title">Loading Module...</div>
+          </div>
+        </div>
+
+        <div class="acc-control-box" id="acc-toolset-ui" style="display:none;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="color:var(--accent-green)">🔧 Pengaturan Aksesoris</span>
+            <button style="background:transparent; border:none; color:var(--accent-red); font-size:10px; cursor:pointer;" onclick="unequipAccessory()">UNEQUIP</button>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:4px;">
+            <button class="menu-btn" style="padding:4px 0;" onclick="adjustAcc('rot', 15)">🔄 Putar</button>
+            <button class="menu-btn" style="padding:4px 0;" onclick="adjustAcc('scale', 0.1)">➕ Besar</button>
+            <button class="menu-btn" style="padding:4px 0;" onclick="adjustAcc('scale', -0.1)">➖ Kecil</button>
+          </div>
+        </div>
+
+        <div class="hunt-trigger-zone">
+          <button class="btn-hunt-wild" onclick="enterWildHuntingMatch()">⚔️ HUNT WILD (POKEMON SYSTEM)</button>
+        </div>
+
+        <div class="items-footer">
+          <div class="footer-title">Matrix Inventory Storage Grid</div>
+          <div class="items-row">
+            <div class="item-circle" onclick="applyFood('🍎')">🍎<span class="item-count" id="qty-apple">0</span></div>
+            <div class="item-circle" onclick="applyFood('🍬')">🍬<span class="item-count" id="qty-candy">0</span></div>
+            <div class="item-circle" onclick="applyFood('🧃')">🧃<span class="item-count" id="qty-juice">0</span></div>
+            <div class="item-circle" onclick="applyFood('🍞')">🍞<span class="item-count" id="qty-bread">0</span></div>
+            <div class="item-circle" onclick="applyFood('🍔')">🍔<span class="item-count" id="qty-hamburger">0</span></div>
+            <div class="item-circle" onclick="applyFood('🍕')">🍕<span class="item-count" id="qty-pizza">0</span></div>
+            <div class="item-circle" onclick="toggleWingsUI()">🪽<span class="item-count" id="qty-wings">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="combat-screen" class="screen">
+      <div class="combat-arena">
+        <div class="combat-header">
+          <span>⚔️ WILD FIGHT ENGINES</span>
+          <span id="enemy-tier-badge">COMMON</span>
+        </div>
+
+        <div class="combat-vs-display">
+          <div class="fighter-card">
+            <div class="fighter-avatar-wrapper" id="combat-player-avatar-render"></div>
+            <div class="fighter-name" id="combat-player-title">Pet Player</div>
+            <div class="bar-bg" style="width:100%; height:6px;"><div id="combat-player-hp-bar" class="bar-fill" style="background:var(--accent-red);"></div></div>
+            <div id="combat-player-hp-numeric" style="font-size:10px; font-family:monospace; margin-top:3px;">0/0 HP</div>
+            <div class="status-badge-row" id="combat-player-status-row"></div>
+          </div>
+
+          <div style="font-size:14px; font-weight:bold; color:#444;">VS</div>
+
+          <div class="fighter-card" style="border-color: var(--accent-red);">
+            <div class="fighter-avatar-wrapper" id="combat-enemy-avatar-render"></div>
+            <div class="fighter-name" id="combat-enemy-title">Wild Enemy</div>
+            <div class="bar-bg" style="width:100%; height:6px;"><div id="combat-enemy-hp-bar" class="bar-fill" style="background:var(--accent-red);"></div></div>
+            <div id="combat-enemy-hp-numeric" style="font-size:10px; font-family:monospace; margin-top:3px;">0/0 HP</div>
+            <div class="status-badge-row" id="combat-enemy-status-row"></div>
+          </div>
+        </div>
+
+        <div class="combat-logs" id="battle-logger-terminal"></div>
+
+        <div class="combat-actions-grid">
+          <button class="skill-btn" onclick="triggerSkillCores(1)"><span id="label-sk1">Move 1</span><span class="dmg-hint" id="hint-sk1">Dmg: 0</span></button>
+          <button class="skill-btn" onclick="triggerSkillCores(2)"><span id="label-sk2">Move 2</span><span class="dmg-hint" id="hint-sk2">Dmg: 0</span></button>
+          <button class="skill-btn" onclick="triggerSkillCores(3)"><span id="label-sk3">Move 3</span><span class="dmg-hint" id="hint-sk3">Dmg: 0</span></button>
+          <button class="skill-btn" style="border-color:var(--accent-purple); color:var(--accent-purple);" onclick="triggerSkillCores(4)" id="btn-ultimate-move"><span>⚡ ULTIMATE</span><span class="dmg-hint" id="hint-sk4" style="color:var(--accent-purple);">Butuh 5x Turn Skill</span></button>
+          <button class="skill-btn" style="background:#0c2b26; border-color:var(--accent-green);" onclick="openCombatInventory()">🎒 TAS MEDIS</button>
+          <button class="skill-btn" style="background:#2b1111; border-color:var(--accent-red);" onclick="executeFleeBattle()">🏃 KABUR</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="bestiary-screen" class="screen">
+      <div class="bestiary-container">
+        <h3 style="margin:0 0 10px 0; color:var(--accent-green); font-family:monospace;">📖 CORE BESTIARY ARCHIVES</h3>
+        
+        <div class="biodata-card-pop" id="pop-biodata-node"></div>
+
+        <div class="pet-list" id="bestiary-dynamic-injector"></div>
+      </div>
+    </div>
+
+    <div id="fuse-screen" class="screen">
+      <div class="bestiary-container" style="border-color:var(--accent-purple); text-align:center;">
+        <h3 style="margin:0 0 5px 0; color:var(--accent-purple); font-family:monospace;">🧪 PET FUSION LAB CORE</h3>
+        <p style="font-size:10px; color:#8b949e; margin-bottom:15px;">Gabungkan 3 pet pilihan Anda untuk dilebur menjadi 1 pet berkekuatan mutlak acak dengan rarity yang lebih tinggi.</p>
+        
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-bottom:15px;" id="fuse-selectors-display">
+          <div style="background:#111215; border:1px solid #2d3039; padding:15px 5px; border-radius:6px; font-size:11px;" id="slot-fuse-0" onclick="chooseFuseSlot(0)">Pilih Pet 1</div>
+          <div style="background:#111215; border:1px solid #2d3039; padding:15px 5px; border-radius:6px; font-size:11px;" id="slot-fuse-1" onclick="chooseFuseSlot(1)">Pilih Pet 2</div>
+          <div style="background:#111215; border:1px solid #2d3039; padding:15px 5px; border-radius:6px; font-size:11px;" id="slot-fuse-2" onclick="chooseFuseSlot(2)">Pilih Pet 3</div>
+        </div>
+        
+        <button class="btn-hunt-wild" style="border-color:var(--accent-purple); color:var(--accent-purple); background:rgba(191,90,242,0.1);" onclick="processFusionMechanism()">MULAI PROSES FUSION MATRIX</button>
+      </div>
+    </div>
+
+    <div id="leaderboard-screen" class="screen">
+      <div class="bestiary-container" style="border-color:var(--accent-orange);">
+        <h3 style="margin:0 0 10px 0; color:var(--accent-orange); font-family:monospace;">🏆 STREAMING REALTIME LEADERBOARD</h3>
+        
+        <div class="lb-sub-tabs">
+          <button class="menu-btn active-tab" id="lbl-streak" onclick="changeLeaderboardSort('streak')">STREAK</button>
+          <button class="menu-btn" id="lbl-hunt" onclick="changeLeaderboardSort('hunt')">HUNT WINS</button>
+          <button class="menu-btn" id="lbl-level" onclick="changeLeaderboardSort('level')">MAX LVL PET</button>
+        </div>
+
+        <table class="leaderboard-table">
+          <thead><tr><th>RANK</th><th>DOMINION CORE NODE</th><th id="table-dynamic-header-label">STREAK</th></tr></thead>
+          <tbody id="leaderboard-live-rows-target"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" id="combat-item-bag-modal">
+    <div style="background:#0c0d12; border:1px solid var(--border-color); border-radius:12px; padding:20px; width:100%; max-width:280px; text-align:center;">
+      <h4 style="margin:0 0 15px 0; font-family:monospace;">🎒 TAS AMUNISI MEDIS</h4>
+      <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
+        <div class="item-circle" onclick="applyCombatMedicine('🧪')">🧪<span class="item-count" id="bag-qty-potion">0</span></div>
+        <div class="item-circle" onclick="applyCombatMedicine('💊')">💊<span class="item-count" id="bag-qty-pill">0</span></div>
+      </div>
+      <p style="font-size:10px; color:#8b949e; line-height:1.4;">🧪 Pulihkan HP Penuh 100%<br>💊 Gandakan Serangan 2x Lipat (Turn Berikutnya)</p>
+      <button class="menu-btn" style="padding:5px 15px; margin-top:10px;" onclick="closeCombatInventory()">TUTUP TAS</button>
+    </div>
+  </div>
+
+  <script>
+    // URL DATABASE REALTIME FIREBASE SINKRONISASI LIVE
+    const FIREBASE_ENDPOINT = "https://blds-beast-engine-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+    // CORE MASTER PET ARCHIVE REGISTRY
+    const ENGINE_PET_REGISTRY = {
+      naga: { name: "Nebula Dragon Core", element: "Api", rarity: "Epic", lore: "Naga legendaris pelindung ekosistem nebula fasa awal.", eggStreakLimit: 3 },
+      ikan: { name: "Abyssal Sovereign Fin", element: "Air", rarity: "Epic", lore: "Entitas samudera terdalam yang mampu mengendalikan arus medan magnetik planet.", eggStreakLimit: 3 },
+      serigala: { name: "Cyber-Storm Volkrieg", element: "Listrik", rarity: "Epic", lore: "Predator fasa kilat mekanikal berdaya hancur tinggi.", eggStreakLimit: 3 },
+      golem: { name: "Behemoth Void Golem", element: "Tanah", rarity: "Mythic", lore: "Pelindung gerbang dimensi mati penyerap partikel energi bebas.", eggStreakLimit: 0 },
+      leviathan: { name: "Leviathan Chrono-Tidal", element: "Air", rarity: "Mythic", lore: "Ular raksasa temporal penjaga kestabilan poros ekosistem.", eggStreakLimit: 0 },
+      fenrir: { name: "Fenrir Cosmic Eclipse", element: "Kegelapan", rarity: "Mythic", lore: "Serigala raksasa pemakan bintang fasa kehancuran mutlak.", eggStreakLimit: 0 }
+    };
+
+    const PHASE_ASSETS = {
+      naga: ["naga1.png", "naga2.png", "naga3.png", "naga4.png", "naga5.png"],
+      ikan: ["ikan1.png", "ikan2.png", "ikan3.png", "ikan4.png", "ikan5.png"],
+      serigala: ["serigala1.png", "serigala2.png", "serigala3.png", "serigala4.png", "serigala5.png"]
+    };
+
+    // MATRIX COUNTER ELEMENT ENGINE LOGIC
+    const ELEMENT_CHART_MULTIPLIERS = {
+      "Api": { "Tumbuhan": 2.0, "Air": 0.5 },
+      "Air": { "Api": 2.0, "Tanah": 0.5 },
+      "Tanah": { "Air": 2.0, "Listrik": 0.5 },
+      "Listrik": { "Tanah": 2.0, "Air": 1.5 },
+      "Kegelapan": { "Cahaya": 2.0 }
+    };
+
+    // SYSTEM DESERIALIZE ENGINE RUNTIME
+    let gameState = {
+      activePetKey: "naga",
+      username: "Player Node",
+      streakCount: 0,
+      huntWins: 0,
+      discoveredKeys: ["naga", "ikan", "serigala"],
+      inventory: { apple: 3, candy: 3, juice: 3, bread: 3, hamburger: 3, pizza: 3, potion: 2, pill: 1, wings: 1 },
+      petsData: {
+        naga: { level: 1, exp: 0, currentHp: 100, customName: "", deathTimestamp: null },
+        ikan: { level: 1, exp: 0, currentHp: 100, customName: "", deathTimestamp: null },
+        serigala: { level: 1, exp: 0, currentHp: 100, customName: "", deathTimestamp: null },
+        golem: { level: 1, exp: 0, currentHp: 500, customName: "", deathTimestamp: null },
+        leviathan: { level: 1, exp: 0, currentHp: 500, customName: "", deathTimestamp: null },
+        fenrir: { level: 1, exp: 0, currentHp: 500, customName: "", deathTimestamp: null }
+      },
+      accessoryState: { equippedIcon: "👑", posX: 0, posY: -45, rot: 0, scale: 1.0 },
+      streakCutsceneTriggered: false
+    };
+
+    let battleState = null;
+    let selectedSortTab = 'streak';
+    let localFuseSelections = [];
+
+    document.addEventListener("DOMContentLoaded", function() {
+      loadStateFromLocalStorage();
+      checkBldsScreenMatrixInversion();
+      evaluateGlobalDeathTimers();
+      initDraggableEnvironment();
+      syncDashboardViewUI();
+      verifyStreak100AutomatedTrigger();
+      
+      setInterval(evaluateGlobalDeathTimers, 10000); // Cek timer kematian setiap 10 detik
+    });
+
+    function checkBldsScreenMatrixInversion() {
+      if (localStorage.getItem("BLDS_INVERSION_MATRIX_ACTIVE") === "true") {
+        document.getElementById('primary-hub-panel').classList.add('blds-inverted-active');
+      }
+    }
+
+    function saveStateToLocalStorage() {
+      localStorage.setItem("BLDS_BEAST_SYSTEM_V3_STATE", JSON.stringify(gameState));
+    }
+
+    function loadStateFromLocalStorage() {
+      const cache = localStorage.getItem("BLDS_BEAST_SYSTEM_V3_STATE");
+      if (cache) {
+        const parsed = JSON.parse(cache);
+        if (parsed) gameState = { ...gameState, ...parsed };
+      }
+      // Dapatkan data streak real dari index jika dikomunikasikan via storage lama atau gunakan fallback default
+      if(!gameState.streakCount || gameState.streakCount < 100) {
+         // Fallback testing simulation mode, jika butuh disinkronisasikan otomatis
+      }
+    }
+
+    // ========================================================
+    // ⏰ DEATH ENGINE MECHANICS & 12 HOUR TIMEOUTS
+    // ========================================================
+    function evaluateGlobalDeathTimers() {
+      const pet = gameState.petsData[gameState.activePetKey];
+      const block = document.getElementById('death-timer-block');
+      
+      if (pet.deathTimestamp) {
+        const now = Date.now();
+        const diff = pet.deathTimestamp + (12 * 60 * 60 * 1000) - now;
+        
+        if (diff <= 0) {
+          pet.deathTimestamp = null;
+          pet.currentHp = calculateMaxHp(gameState.activePetKey);
+          block.style.display = 'none';
+          saveStateToLocalStorage();
+          syncDashboardViewUI();
+        } else {
+          block.style.display = 'flex';
+          const hrs = Math.floor(diff / (1000 * 60 * 60));
+          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          document.getElementById('timer-string-countdown').innerText = `Rematerialisasi: ${hrs} Jam ${mins} Menit`;
+        }
+      } else {
+        block.style.display = 'none';
+      }
+    }
+
+    function instantReviveViaWings() {
+      if (gameState.inventory.wings <= 0) {
+        alert("❌ Item Revive Wings (🪽) Anda Habis!");
+        return;
+      }
+      gameState.inventory.wings--;
+      const pet = gameState.petsData[gameState.activePetKey];
+      pet.deathTimestamp = null;
+      pet.currentHp = calculateMaxHp(gameState.activePetKey);
+      
+      alert("🪽 Pet berhasil di-revive instan secara penuh!");
+      saveStateToLocalStorage();
+      evaluateGlobalDeathTimers();
+      syncDashboardViewUI();
+    }
+
+    function toggleWingsUI() {
+      if(gameState.petsData[gameState.activePetKey].deathTimestamp) {
+        instantReviveViaWings();
+      } else {
+        alert("✨ Pet Anda sehat, tidak membutuhkan item Revive Wings.");
+      }
+    }
+
+    // ========================================================
+    // 🎬 AUTOMATED STREAK 100 CUTSCENE ENGINE
+    // ========================================================
+    function verifyStreak100AutomatedTrigger() {
+      if (gameState.streakCount >= 100 && !gameState.streakCutsceneTriggered) {
+        runStreak100Sequence();
+      }
+    }
+
+    function runStreak100Sequence() {
+      gameState.streakCutsceneTriggered = true;
+      saveStateToLocalStorage();
+
+      const overlay = document.getElementById('cutscene-overlay');
+      const logo = document.getElementById('cutscene-logo');
+      const lines = [
+        document.getElementById('text-line-1'),
+        document.getElementById('text-line-2'),
+        document.getElementById('text-line-3')
+      ];
+      const banner = document.getElementById('text-streak-banner');
+
+      overlay.style.display = 'flex';
+      
+      // Animasi smooth perlahan logo naik turun
+      logo.style.transform = 'translateY(20px) scale(0.3)';
+      logo.style.opacity = '0.3';
+      logo.style.transition = 'all 4s ease';
+
+      setTimeout(() => {
+        logo.style.transform = 'translateY(-10px) scale(0.8)';
+        logo.style.opacity = '0.6';
+        lines[0].innerText = "For a hundred days...\nthe Eclipse watched.";
+        lines[0].style.opacity = '1';
+      }, 1500);
+
+      setTimeout(() => {
+        lines[0].style.opacity = '0';
+        lines[1].innerText = "Many flames burned brightly...\nonly to disappear.\nMany lights promised eternity...\nonly to fade.";
+        lines[1].style.opacity = '1';
+        logo.style.transform = 'translateY(5px) scale(1.1)';
+        logo.style.opacity = '1';
+      }, 5000);
+
+      setTimeout(() => {
+        lines[1].style.opacity = '0';
+        lines[2].innerText = "Yet yours remained.\nNot because it was the brightest.\nNot because it was the strongest.\nBut because it refused to die.";
+        lines[2].style.opacity = '1';
+        logo.style.transform = 'scale(1.4)';
+      }, 9500);
+
+      setTimeout(() => {
+        lines[2].style.opacity = '0';
+        banner.innerText = "And now...\nthe Core remembers your name.";
+        banner.classList.add('reveal');
+        document.body.classList.add('screen-shake-active', 'color-invert-active');
+      }, 14000);
+
+      setTimeout(() => {
+        document.body.classList.remove('screen-shake-active', 'color-invert-active');
+        banner.classList.remove('reveal');
+        overlay.style.backgroundColor = '#fff'; // Transisi full putih
+        overlay.innerHTML = `<h1 style="color:#000; font-family:monospace; animation:globalVibrate 0.1s infinite;">STREAK 100 DAY ACHIEVED</h1>`;
+      }, 19000);
+
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        document.getElementById('mythic-pet-selector').classList.add('slide-up');
+      }, 22000);
+    }
+
+    let localMythicSelected = null;
+    function highlightMythic(key) {
+      localMythicSelected = key;
+      document.querySelectorAll('.mythic-card').forEach(c => c.style.borderColor = '#1f2026');
+      event.currentTarget.style.borderColor = 'var(--accent-purple)';
+      document.getElementById('btn-take-pet').style.display = 'block';
+    }
+
+    function executeTakePet() {
+      if(!localMythicSelected) return;
+      if(!gameState.discoveredKeys.includes(localMythicSelected)) {
+        gameState.discoveredKeys.push(localMythicSelected);
+      }
+      gameState.activePetKey = localMythicSelected;
+      gameState.petsData[localMythicSelected].currentHp = calculateMaxHp(localMythicSelected);
+      
+      alert("Take...");
+      document.getElementById('mythic-pet-selector').classList.remove('slide-up');
+      saveStateToLocalStorage();
+      syncDashboardViewUI();
+      pushDataToServerFirebase();
+    }
+
+    // ========================================================
+    // 🐉 PET RENDERERS, CALCULATION & INTERACTIVE DRAG ENGINE
+    // ========================================================
+    function calculateMaxHp(key) {
+      const base = ENGINE_PET_REGISTRY[key];
+      const data = gameState.petsData[key];
+      let rarityMultiplier = base.rarity === "Mythic" ? 4.5 : 2.0;
+      return 100 + (data.level * 15) + Math.floor(data.exp * rarityMultiplier);
+    }
+
+    function calculatePower(key) {
+      const base = ENGINE_PET_REGISTRY[key];
+      const data = gameState.petsData[key];
+      let rarityBonus = base.rarity === "Mythic" ? 30 : 10;
+      return 15 + (data.level * 4) + rarityBonus;
+    }
+
+    function getPetAvatarHTML(key, isBattle = false) {
+      const data = gameState.petsData[key];
+      if (PHASE_ASSETS[key]) {
+        // Sistem fase evolusi untuk naga, ikan, serigala
+        let phaseIndex = Math.min(4, Math.floor((data.level - 1) / 5));
+        if (data.level < 3 && key !== 'naga' && !isBattle) {
+          // Telur tidak bisa berantem (harus nunggu level 3 keatas atau steak terpenuhi)
+          return `<img src="${PHASE_ASSETS[key][0]}" class="pet-avatar-render" style="filter:grayscale(0.5)">`;
+        }
+        return `<img src="${PHASE_ASSETS[key][phaseIndex]}" class="pet-avatar-render">`;
+      } else {
+        // Pet Instant Mythic (Golem, Leviathan, Fenrir)
+        return `<img src="${key}.png" class="pet-avatar-render" onerror="this.src='https://api.iconify.design/pixelarticons:creature.svg?color=%23bf5af2'">`;
+      }
+    }
+
+    function syncDashboardViewUI() {
+      const key = gameState.activePetKey;
+      const base = ENGINE_PET_REGISTRY[key];
+      const data = gameState.petsData[key];
+
+      const maxHp = calculateMaxHp(key);
+      const nameTag = data.customName ? `${data.customName} (${base.name})` : base.name;
+
+      document.getElementById('dash-display-title').innerText = `${nameTag} [Lvl ${data.level}]`;
+      document.getElementById('dash-avatar-container-render').innerHTML = getPetAvatarHTML(key);
+      document.getElementById('identity-node-tag').innerText = data.customName ? "📝 Ganti Nama" : "📝 Beri Nama";
+
+      // Bind Stats Bar
+      document.getElementById('dash-hp-text').innerText = `${data.currentHp}/${maxHp}`;
+      document.getElementById('dash-hp-bar').style.width = `${Math.min(100, (data.currentHp / maxHp) * 100)}%`;
+      document.getElementById('dash-exp-text').innerText = `${data.exp}%`;
+      document.getElementById('dash-exp-bar').style.width = `${data.exp}%`;
+
+      // Sync Inventory Counts
+      Object.keys(gameState.inventory).forEach(k => {
+        const node = document.getElementById(`qty-${k}`) || document.getElementById(`bag-qty-${k}`);
+        if(node) node.innerText = gameState.inventory[k];
+      });
+
+      // Render Dynamic Live Accessory State
+      const accNode = document.getElementById('live-accessory-node');
+      if (gameState.accessoryState.equippedIcon) {
+        accNode.style.display = 'flex';
+        accNode.innerText = gameState.accessoryState.equippedIcon;
+        accNode.style.transform = `translate(${gameState.accessoryState.posX}px, ${gameState.accessoryState.posY}px) rotate(${gameState.accessoryState.rot}deg) scale(${gameState.accessoryState.scale})`;
+        document.getElementById('acc-toolset-ui').style.display = 'block';
+      } else {
+        accNode.style.display = 'none';
+        document.getElementById('acc-toolset-ui').style.display = 'none';
+      }
+    }
+
+    function promptRename() {
+      let name = prompt("Masukkan nama kustom baru untuk pet aktif anda:", gameState.petsData[gameState.activePetKey].customName);
+      if (name !== null) {
+        gameState.petsData[gameState.activePetKey].customName = name.trim();
+        saveStateToLocalStorage();
+        syncDashboardViewUI();
+        pushDataToServerFirebase();
+      }
+    }
+
+    function applyFood(emoji) {
+      const map = { '🍎':'apple', '🍬':'candy', '🧃':'juice', '🍞':'bread', '🍔':'hamburger', '🍕':'pizza' };
+      const key = map[emoji];
+      if (gameState.inventory[key] <= 0) {
+        alert("❌ Stok makanan habis!");
+        return;
+      }
+      gameState.inventory[key]--;
+      const pet = gameState.petsData[gameState.activePetKey];
+      const maxHp = calculateMaxHp(gameState.activePetKey);
+      
+      pet.currentHp = Math.min(maxHp, pet.currentHp + 25);
+      pet.exp = Math.min(99, pet.exp + 5); // Kasih exp sedikit saat dikasih makan
+      
+      if(pet.exp >= 99) {
+        pet.level++;
+        pet.exp = 0;
+      }
+
+      saveStateToLocalStorage();
+      syncDashboardViewUI();
+    }
+
+    // ========================================================
+    // 🛠️ DRAG & DYNAMIC TRANSFORM ACCESSORIES LOGIC
+    // ========================================================
+    function initDraggableEnvironment() {
+      const pet = document.getElementById('pet-draggable-avatar-node');
+      const boundary = document.getElementById('drag-container-boundary');
+      let isDragging = false;
+      let startX, startY, currentX = 0, currentY = 0;
+
+      pet.addEventListener('mousedown', dStart);
+      pet.addEventListener('touchstart', dStart, { passive: true });
+      window.addEventListener('mousemove', dMove);
+      window.addEventListener('touchmove', dMove, { passive: false });
+      window.addEventListener('mouseup', dEnd);
+      window.addEventListener('touchend', dEnd);
+
+      function dStart(e) {
+        if (e.target.id === 'live-accessory-node') return; // Lewati jika nge-drag aksesoris
+        isDragging = true;
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        startX = cx - currentX;
+        startY = cy - currentY;
+      }
+      function dMove(e) {
+        if (!isDragging) return;
+        if(e.cancelable) e.preventDefault();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        let tx = cx - startX;
+        let ty = cy - startY;
+
+        const bounds = boundary.getBoundingClientRect();
+        const mx = (bounds.width / 2) - 45;
+        const my = (bounds.height / 2) - 45;
+
+        currentX = Math.max(-mx, Math.min(mx, tx));
+        currentY = Math.max(-my, Math.min(my, ty));
+        pet.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      }
+      function dEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        pet.style.transition = "transform 0.5s ease";
+        currentX = 0; currentY = 0;
+        pet.style.transform = `translate(0px, 0px)`;
+        setTimeout(() => { pet.style.transition = "none"; }, 500);
+      }
+    }
+
+    let isAccDragging = false;
+    let accX = 0, accY = -45;
+    function initAccessoryDrag(e) {
+      e.stopPropagation();
+      isAccDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      let sX = clientX - gameState.accessoryState.posX;
+      let sY = clientY - gameState.accessoryState.posY;
+
+      function moveAcc(evt) {
+        if (!isAccDragging) return;
+        const cx = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        const cy = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        gameState.accessoryState.posX = cx - sX;
+        gameState.accessoryState.posY = cy - sY;
+        syncAccessoryTransformStyle();
+      }
+      function stopAcc() {
+        isAccDragging = false;
+        saveStateToLocalStorage();
+        window.removeEventListener('mousemove', moveAcc);
+        window.removeEventListener('touchmove', moveAcc);
+        window.removeEventListener('mouseup', stopAcc);
+        window.removeEventListener('touchend', stopAcc);
+      }
+      window.addEventListener('mousemove', moveAcc);
+      window.addEventListener('touchmove', moveAcc, { passive: false });
+      window.addEventListener('mouseup', stopAcc);
+      window.addEventListener('touchend', stopAcc);
+    }
+
+    function syncAccessoryTransformStyle() {
+      const node = document.getElementById('live-accessory-node');
+      node.style.transform = `translate(${gameState.accessoryState.posX}px, ${gameState.accessoryState.posY}px) rotate(${gameState.accessoryState.rot}deg) scale(${gameState.accessoryState.scale})`;
+    }
+
+    function adjustAcc(type, amt) {
+      if(type === 'rot') gameState.accessoryState.rot += amt;
+      if(type === 'scale') gameState.accessoryState.scale = Math.max(0.5, Math.min(2.5, gameState.accessoryState.scale + amt));
+      saveStateToLocalStorage();
+      syncAccessoryTransformStyle();
+    }
+
+    function unequipAccessory() {
+      gameState.accessoryState.equippedIcon = "";
+      saveStateToLocalStorage();
+      syncDashboardViewUI();
+    }
+
+    // ========================================================
+    // ⚔️ INTEGRATED COMBAT SYSTEM (POKEMON + STATUS EFFECTS)
+    // ========================================================
+    function enterWildHuntingMatch() {
+      const pData = gameState.petsData[gameState.activePetKey];
+      if (pData.level < 3 && gameState.activePetKey !== 'naga') {
+        alert("❌ Fase Egg (Lvl < 3) tidak dapat digunakan bertarung! Silakan feeding dulu.");
+        return;
+      }
+      if (pData.currentHp <= 0 || pData.deathTimestamp) {
+        alert("❌ Pet pingsan. Butuh di-revive atau tunggu pemulihan.");
+        return;
+      }
+
+      const pool = ["naga", "ikan", "serigala", "golem"];
+      let randEnemyKey = pool[Math.floor(Math.random() * pool.length)];
+      let enemyBase = ENGINE_PET_REGISTRY[randEnemyKey];
+
+      const tiers = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Celestial"];
+      let rolledTier = "Common";
+      let r = Math.random();
+      if(r > 0.95) rolledTier = "Celestial";
+      else if(r > 0.88) rolledTier = "Mythic";
+      else if(r > 0.75) rolledTier = "Legendary";
+      else if(r > 0.55) rolledTier = "Epic";
+      else if(r > 0.35) rolledTier = "Rare";
+      else if(r > 0.15) rolledTier = "Uncommon";
+
+      let multiplier = tiers.indexOf(rolledTier) + 1;
+      let eMaxHp = 80 * multiplier + Math.floor(Math.random() * 40);
+      let ePower = 10 + (multiplier * 6);
+
+      battleState = {
+        playerKey: gameState.activePetKey,
+        playerMaxHp: calculateMaxHp(gameState.activePetKey),
+        playerHp: pData.currentHp,
+        playerPower: calculatePower(gameState.activePetKey),
+        playerStatus: [], // Wadah status efek negatif
+        enemyKey: randEnemyKey,
+        enemyName: `Wild ${enemyBase.name}`,
+        enemyMaxHp: eMaxHp,
+        enemyHp: eMaxHp,
+        enemyPower: ePower,
+        enemyStatus: [],
+        turnCounter: 0,
+        doubleDamageActive: false
+      };
+
+      document.getElementById('enemy-tier-badge').innerText = rolledTier.toUpperCase();
+      document.getElementById('combat-player-title').innerText = pData.customName || ENGINE_PET_REGISTRY[gameState.activePetKey].name;
+      document.getElementById('combat-player-avatar-render').innerHTML = getPetAvatarHTML(gameState.activePetKey, true);
+      document.getElementById('combat-enemy-title').innerText = battleState.enemyName;
+      document.getElementById('combat-enemy-avatar-render').innerHTML = getPetAvatarHTML(randEnemyKey, true);
+
+      // Set Label Skills Dinamis
+      document.getElementById('label-sk1').innerText = "Normal Attack";
+      document.getElementById('label-sk2').innerText = "Elemental Burst";
+      document.getElementById('label-sk3').innerText = "Status Ailment Slash";
+      
+      document.getElementById('hint-sk1').innerText = `Dmg: ${Math.floor(battleState.playerPower * 0.9)}`;
+      document.getElementById('hint-sk2').innerText = `Dmg: Elemental Factor`;
+      document.getElementById('hint-sk3').innerText = `Dmg: ${Math.floor(battleState.playerPower * 0.6)} + Status FX`;
+
+      document.getElementById('battle-logger-terminal').innerHTML = `<div style="color:var(--accent-green)">Domain Terbuka. ${battleState.enemyName} menghadang jalan!</div>`;
+      
+      updateCombatStatusBars();
+      document.getElementById('navigation-bar').style.display = 'none';
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('combat-screen').classList.add('active');
+    }
+
+    function updateCombatStatusBars() {
+      document.getElementById('combat-player-hp-numeric').innerText = `${battleState.playerHp}/${battleState.playerMaxHp} HP`;
+      document.getElementById('combat-player-hp-bar').style.width = `${(battleState.playerHp / battleState.playerMaxHp) * 100}%`;
+      document.getElementById('combat-enemy-hp-numeric').innerText = `${battleState.enemyHp}/${battleState.enemyMaxHp} HP`;
+      document.getElementById('combat-enemy-hp-bar').style.width = `${(battleState.enemyHp / battleState.enemyMaxHp) * 100}%`;
+
+      // Render Visual Ikon Badges Status Efek
+      renderStatusBadges('combat-player-status-row', battleState.playerStatus);
+      renderStatusBadges('combat-enemy-status-row', battleState.enemyStatus);
+    }
+
+    function renderStatusBadges(domId, statusList) {
+      const container = document.getElementById(domId);
+      container.innerHTML = "";
+      statusList.forEach(st => {
+        let color = "var(--accent-orange)";
+        if(st.type === 'burn') color = "orange";
+        if(st.type === 'bleed') color = "red";
+        if(st.type === 'freeze') color = "cyan";
+        container.innerHTML += `<span class="badge-fx" style="background:${color}">${st.type.toUpperCase()}</span>`;
+      });
+    }
+
+    function printBattleLog(msg, color="#fff") {
+      const term = document.getElementById('battle-logger-terminal');
+      term.innerHTML += `<div style="color:${color}; margin-bottom:2px;">• ${msg}</div>`;
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function triggerSkillCores(slot) {
+      if (battleState.playerHp <= 0 || battleState.enemyHp <= 0) return;
+
+      // Cek Efek Stun / Freeze Player
+      if (hasStatusActive(battleState.playerStatus, 'stun') || hasStatusActive(battleState.playerStatus, 'freeze')) {
+        printBattleLog("Pet Anda kaku/membeku dan kehilangan turn ini!", "var(--accent-red)");
+        processStatusDotsTicks('player');
+        executeEnemyTurnLogic();
+        return;
+      }
+
+      battleState.turnCounter++;
+      let baseDmg = battleState.playerPower;
+      let finalDmg = 0;
+
+      // Ambil elemen dasar untuk elemental calculation counter
+      let pElem = ENGINE_PET_REGISTRY[battleState.playerKey].element;
+      let eElem = ENGINE_PET_REGISTRY[battleState.enemyKey].element;
+
+      if (slot === 1) {
+        finalDmg = Math.floor(baseDmg * (0.85 + Math.random() * 0.2));
+      } 
+      else if (slot === 2) {
+        let modifier = 1.0;
+        if (ELEMENT_CHART_MULTIPLIERS[pElem] && ELEMENT_CHART_MULTIPLIERS[pElem][eElem]) {
+          modifier = ELEMENT_CHART_MULTIPLIERS[pElem][eElem];
+          printBattleLog(`🔥 Element Counter efektif! Penggandaan x${modifier}`, "var(--accent-orange)");
+        }
+        finalDmg = Math.floor(baseDmg * 1.1 * modifier);
+      } 
+      else if (slot === 3) {
+        finalDmg = Math.floor(baseDmg * 0.6);
+        // Sematkan random abnormal status effect
+        const fxList = ['stun', 'bleed', 'burn', 'freeze', 'slow'];
+        let pickedFx = fxList[Math.floor(Math.random() * fxList.length)];
+        applyStatusEffect(battleState.enemyStatus, pickedFx, 2);
+        printBattleLog(`⚠️ Senjata taktis memicu status buruk [${pickedFx.toUpperCase()}] ke musuh!`, "yellow");
+      }
+      else if (slot === 4) {
+        if(battleState.turnCounter < 5) {
+          alert("Ultimate belum siap dikompresi!");
+          return;
+        }
+        finalDmg = Math.floor(baseDmg * 2.5);
+        battleState.turnCounter = 0;
+        printBattleLog("⚡ MATRIX ULTIMATE SMASH HIT DIRECTLY!", "var(--accent-purple)");
+      }
+
+      if (battleState.doubleDamageActive) {
+        finalDmg = finalDmg * 2;
+        battleState.doubleDamageActive = false;
+        printBattleLog("🧪 Overdrive Pill aktif! Serangan berlipat ganda 2x!", "var(--accent-green)");
+      }
+
+      // Kurangi Turn Slow jika ada dampaknya
+      if (hasStatusActive(battleState.playerStatus, 'slow')) finalDmg = Math.floor(finalDmg * 0.7);
+
+      battleState.enemyHp = Math.max(0, battleState.enemyHp - finalDmg);
+      printBattleLog(`Pet menyerang menghasilkan ${finalDmg} damage.`, "var(--accent-green)");
+      
+      updateCombatStatusBars();
+      processStatusDotsTicks('enemy');
+
+      if (battleState.enemyHp <= 0) {
+        handleMatchVictoryOutcome();
+        return;
+      }
+
+      setTimeout(executeEnemyTurnLogic, 800);
+    }
+
+    function executeEnemyTurnLogic() {
+      if (battleState.enemyHp <= 0 || battleState.playerHp <= 0) return;
+
+      if (hasStatusActive(battleState.enemyStatus, 'stun') || hasStatusActive(battleState.enemyStatus, 'freeze')) {
+        printBattleLog("Musuh ter-stun/beku! Turn mereka terlewat.", "var(--accent-green)");
+        processStatusDotsTicks('enemy');
+        updateCombatStatusBars();
+        return;
+      }
+
+      let eDmg = Math.floor(battleState.enemyPower * (0.8 + Math.random() * 0.3));
+      
+      // Random memicu status ke player
+      if (Math.random() > 0.75) {
+        applyStatusEffect(battleState.playerStatus, 'burn', 2);
+        printBattleLog("🔥 Serangan balasan musuh membakar kulit pet Anda!", "orange");
+      }
+
+      battleState.playerHp = Math.max(0, battleState.playerHp - eDmg);
+      gameState.petsData[gameState.activePetKey].currentHp = battleState.playerHp;
+      printBattleLog(`🚨 Musuh menyerang balik, mengurangi ${eDmg} HP Pet Anda.`, "var(--accent-red)");
+
+      processStatusDotsTicks('player');
+      updateCombatStatusBars();
+
+      if (battleState.playerHp <= 0) {
+        // Pemicu kematian: Catat timestamp untuk cooldown 12 jam
+        gameState.petsData[gameState.activePetKey].deathTimestamp = Date.now();
+        printBattleLog("☠️ Pet Anda gugur di pertempuran. Pemulihan Matrix membutuhkan waktu 12 Jam.", "var(--accent-red)");
+        saveStateToLocalStorage();
+        
+        setTimeout(() => {
+          document.getElementById('navigation-bar').style.display = 'grid';
+          switchToTab('dash-screen');
+          evaluateGlobalDeathTimers();
+        }, 3000);
+      }
+    }
+
+    function applyStatusEffect(list, type, duration) {
+      list.push({ type: type, duration: duration });
+    }
+
+    function hasStatusActive(list, type) {
+      return list.some(s => s.type === type && s.duration > 0);
+    }
+
+    function processStatusDotsTicks(target) {
+      let list = target === 'player' ? battleState.playerStatus : battleState.enemyStatus;
+      list.forEach(s => {
+        if (s.duration > 0) {
+          if (s.type === 'burn' || s.type === 'bleed') {
+            let dot = 12;
+            if(target === 'player') {
+              battleState.playerHp = Math.max(1, battleState.playerHp - dot);
+              printBattleLog(`♨️ Efek DOT mengurangi HP pet Anda sebesar -${dot}`, "red");
+            } else {
+              battleState.enemyHp = Math.max(0, battleState.enemyHp - dot);
+              printBattleLog(`♨️ Efek DOT menguras HP musuh sebesar -${dot}`, "orange");
+            }
+          }
+          s.duration--;
+        }
+      });
+      // Bersihkan durasi 0
+      if(target === 'player') battleState.playerStatus = list.filter(s => s.duration > 0);
+      else battleState.enemyStatus = list.filter(s => s.duration > 0);
+    }
+
+    function openCombatInventory() {
+      document.getElementById('bag-qty-potion').innerText = gameState.inventory.potion;
+      document.getElementById('bag-qty-pill').innerText = gameState.inventory.pill;
+      document.getElementById('combat-item-bag-modal').style.display = 'flex';
+    }
+
+    function closeCombatInventory() {
+      document.getElementById('combat-item-bag-modal').style.display = 'none';
+    }
+
+    function applyCombatMedicine(type) {
+      if (type === '🧪') {
+        if(gameState.inventory.potion <= 0) return;
+        gameState.inventory.potion--;
+        battleState.playerHp = battleState.playerMaxHp;
+        printBattleLog("🧪 Potion berhasil memulihkan 100% kondisi HP!", "var(--accent-green)");
+      } else if (type === '💊') {
+        if(gameState.inventory.pill <= 0) return;
+        gameState.inventory.pill--;
+        battleState.doubleDamageActive = true;
+        printBattleLog("💊 Booster pil digandakan untuk turn berikutnya!", "var(--accent-purple)");
+      }
+      saveStateToLocalStorage();
+      updateCombatStatusBars();
+      closeCombatInventory();
+    }
+
+    function handleMatchVictoryOutcome() {
+      gameState.huntWins++;
+      printBattleLog("🏆 Kemenangan mutlak dikonfirmasi!", "var(--accent-green)");
+      
+      // DROP ITEM ACCORDING TO DIFFICULTY VALUE / RARITY HIGHER = EASIER GET MEDICINE
+      let rollDrop = Math.random();
+      if (rollDrop > 0.5) {
+        gameState.inventory.potion++;
+        printBattleLog("🎁 Menemukan pasokan medis tambahan: 1x Potion (🧪)", "cyan");
+      }
+      if (rollDrop > 0.85) {
+        gameState.inventory.pill++;
+        printBattleLog("🎁 Drop Langka Terdeteksi: 1x Overdrive Pill (💊)", "purple");
+      }
+      
+      // Kasih makan gratis acak
+      const items = ['apple', 'candy', 'juice', 'bread'];
+      gameState.inventory[items[Math.floor(Math.random()*4)]]++;
+
+      // Handle Exp & Level Up Matrix
+      const p = gameState.petsData[gameState.activePetKey];
+      p.exp += 40;
+      if (p.exp >= 100) {
+        p.level++;
+        p.exp = 0;
+        alert(`🎉 LEVEL UP! Pet Anda naik ke Level ${p.level}`);
+      }
+
+      saveStateToLocalStorage();
+      pushDataToServerFirebase();
+
+      setTimeout(() => {
+        document.getElementById('navigation-bar').style.display = 'grid';
+        switchToTab('dash-screen');
+      }, 2500);
+    }
+
+    function executeFleeBattle() {
+      if(confirm("Tinggalkan pertempuran? Stat kemenangan tidak akan dihitung.")) {
+        document.getElementById('navigation-bar').style.display = 'grid';
+        switchToTab('dash-screen');
+      }
+    }
+
+    // ========================================================
+    // 📖 CORES DISCOVERY BESTIARY INFRASTRUCTURE
+    // ========================================================
+    function renderDiscoveryBestiaryUI() {
+      const container = document.getElementById('bestiary-dynamic-injector');
+      container.innerHTML = "";
+
+      Object.keys(ENGINE_PET_REGISTRY).forEach(key => {
+        const base = ENGINE_PET_REGISTRY[key];
+        const data = gameState.petsData[key];
+        const isDiscovered = gameState.discoveredKeys.includes(key);
+
+        let card = document.createElement('div');
+        card.className = `pet-list-item ${key === gameState.activePetKey ? 'active-pet' : ''}`;
+        
+        let avatarStyle = isDiscovered ? "" : "siluet-locked";
+        let displayTitle = isDiscovered ? (data.customName ? data.customName : base.name) : "🔒 Locked Silhouette";
+        let subDetails = isDiscovered ? `Rarity: ${base.rarity} | Elemen: ${base.element} | Lvl ${data.level}` : "Pecahkan fragmen liar untuk membuka kunci.";
+
+        card.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:45px; height:45px;" class="${avatarStyle}">${getPetAvatarHTML(key, true)}</div>
+            <div>
+              <h5 style="margin:0; font-size:12px;">${displayTitle}</h5>
+              <p style="margin:2px 0 0 0; font-size:10px; color:#8b949e;">${subDetails}</p>
+            </div>
+          </div>
+          <div>
+            ${key === gameState.activePetKey ? '<span style="font-size:10px; color:var(--accent-green)">EQUIPPED</span>' : isDiscovered ? '<button class="switch-trigger-btn" style="padding:4px 8px; font-size:9px;">EQUIP</button>' : ''}
+          </div>
+        `;
+
+        // Klik item list memunculkan Biodata Taktis lengkap dengan Lore kustom
+        card.onclick = () => {
+          if(!isDiscovered) return;
+          const pop = document.getElementById('pop-biodata-node');
+          pop.style.display = 'block';
+          pop.innerHTML = `
+            <h4 style="margin:0 0 6px 0; color:var(--accent-green)">BIODATA FRAGMEN METADATA</h4>
+            <b>Nama Asli Spesies:</b> ${base.name}<br>
+            <b>Nama Buatan User:</b> ${data.customName || "Belum Diberi Nama"}<br>
+            <b>Elemen Dasar Matrix:</b> ${base.element}<br>
+            <b>Tingkat Kelangkaan:</b> <span style="color:var(--accent-purple)">${base.rarity}</span><br>
+            <b>Daya Serang (Power):</b> ${calculatePower(key)} Poin<br>
+            <b>Ketahanan Hidup (HP Max):</b> ${calculateMaxHp(key)} HP<br>
+            <b>Arsip Lore Sistem:</b> <i>${base.lore}</i>
+          `;
         };
 
-        // Sinkronisasi data real-time dengan memori index.html
-        function loadEngineState() {
-            const saved = localStorage.getItem("BLDS_CORE_STATE");
-            if (saved) {
-                try {
-                    engineState = JSON.parse(saved);
-                } catch(e) {
-                    console.error("Failed to parse synchronized memory block.");
-                }
-            }
-            updateEngineUI();
+        if (isDiscovered && key !== gameState.activePetKey) {
+          card.querySelector('.switch-trigger-btn').onclick = (e) => {
+            e.stopPropagation();
+            gameState.activePetKey = key;
+            saveStateToLocalStorage();
+            renderDiscoveryBestiaryUI();
+            syncDashboardViewUI();
+          };
         }
 
-        function saveEngineState() {
-            localStorage.setItem("BLDS_CORE_STATE", JSON.stringify(engineState));
+        container.appendChild(card);
+      });
+    }
+
+    // ========================================================
+    // 🧪 LAB CORES FUSION MECHANISMS (3 PETS -> 1 RANDOM STRONGER)
+    // ========================================================
+    function chooseFuseSlot(index) {
+      let pool = gameState.discoveredKeys.filter(k => k !== gameState.activePetKey);
+      if(pool.length === 0) {
+        alert("Tidak ada stok pet cadangan untuk dilebur!");
+        return;
+      }
+      let chosen = prompt(`Ketik kunci pet untuk Slot ${index+1} (${pool.join(', ')}):`);
+      if (chosen && pool.includes(chosen.toLowerCase().trim())) {
+        localFuseSelections[index] = chosen.toLowerCase().trim();
+        document.getElementById(`slot-fuse-${index}`).innerText = ENGINE_PET_REGISTRY[localFuseSelections[index]].name;
+        document.getElementById(`slot-fuse-${index}`).style.borderColor = "var(--accent-purple)";
+      }
+    }
+
+    function processFusionMechanism() {
+      if(localFuseSelections.length < 3 || !localFuseSelections[0] || !localFuseSelections[1] || !localFuseSelections[2]) {
+        alert("❌ Harap isi ketiga slot penampung fusi terlebih dahulu!");
+        return;
+      }
+      
+      // Hapus ketiga pet tersebut dari kepemilikan cadangan
+      localFuseSelections.forEach(k => {
+        gameState.discoveredKeys = gameState.discoveredKeys.filter(dk => dk !== k);
+      });
+
+      // Berikan hasil acak mutlak tipe Mythic / Rarity tinggi
+      const rewards = ["golem", "leviathan", "fenrir"];
+      let finalReward = rewards[Math.floor(Math.random() * rewards.length)];
+
+      if(!gameState.discoveredKeys.includes(finalReward)) {
+        gameState.discoveredKeys.push(finalReward);
+      }
+      
+      // Tingkatkan level hasil fusi secara drastis
+      gameState.petsData[finalReward].level = Math.min(100, gameState.petsData[finalReward].level + 15);
+      gameState.activePetKey = finalReward;
+
+      alert(`🧪 LAB CORE SUCCESS: Melebur komponen selesai. Anda mendapatkan pet berkekuatan mutlak: ${ENGINE_PET_REGISTRY[finalReward].name}!`);
+      
+      // Reset Layout UI Fusi
+      localFuseSelections = [];
+      for(let i=0; i<3; i++) {
+        document.getElementById(`slot-fuse-${i}`).innerText = `Pilih Pet ${i+1}`;
+        document.getElementById(`slot-fuse-${i}`).style.borderColor = "#2d3039";
+      }
+
+      saveStateToLocalStorage();
+      syncDashboardViewUI();
+      pushDataToServerFirebase();
+      switchToTab('dash-screen');
+    }
+
+    // ========================================================
+    // 🌐 FIREBASE LIVE LEADERBOARD STREAM SINKRONISASI
+    // ========================================================
+    function changeLeaderboardSort(type) {
+      selectedSortTab = type;
+      document.querySelectorAll('.lb-sub-tabs .menu-btn').forEach(b => b.classList.remove('active-tab'));
+      document.getElementById(`lbl-${type}`).classList.add('active-tab');
+      
+      const headers = { 'streak': 'TOTAL STREAK', 'hunt': 'HUNT TOTAL WINS', 'level': 'MAX LEVEL PET' };
+      document.getElementById('table-dynamic-header-label').innerText = headers[type];
+      
+      streamFirebaseLeaderboardRows();
+    }
+
+    function pushDataToServerFirebase() {
+      if (!FIREBASE_ENDPOINT) return;
+      const cleanNodeKey = gameState.username.replace(/[.#$\[\]]/g, "_");
+      
+      // Ambil level tertinggi dari seluruh komponen armada pet
+      let maxLvlFound = 1;
+      Object.keys(gameState.petsData).forEach(k => {
+        if(gameState.petsData[k].level > maxLvlFound) maxLvlFound = gameState.petsData[k].level;
+      });
+
+      const payload = {
+        nodeKey: cleanNodeKey,
+        displayName: gameState.username,
+        streak: gameState.streakCount,
+        hunt: gameState.huntWins,
+        level: maxLvlFound
+      };
+
+      fetch(`${FIREBASE_ENDPOINT}/leaderboard/${cleanNodeKey}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(err => console.error("Firebase Transport Failed: ", err));
+    }
+
+    function streamFirebaseLeaderboardRows() {
+      const tbody = document.getElementById('leaderboard-live-rows-target');
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--accent-orange);">Menghubungkan Server Matrix...</td></tr>`;
+
+      fetch(`${FIREBASE_ENDPOINT}/leaderboard.json`)
+      .then(res => res.json())
+      .then(data => {
+        if(!data) {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#8b949e;">Arsip data server kosong.</td></tr>`;
+          return;
         }
 
-        function updateEngineUI() {
-            document.querySelectorAll(".beast-tab-card").forEach(el => el.classList.remove("active"));
-            
-            const targetedTab = document.getElementById("tab-" + engineState.petType);
-            if (targetedTab) targetedTab.classList.add("active");
+        let profiles = Object.keys(data).map(k => data[k]);
+        
+        // Atur sorting secara live berdasarkan sub-tab terikat
+        profiles.sort((a, b) => (b[selectedSortTab] || 0) - (a[selectedSortTab] || 0));
 
-            // Kalkulasi ulang fase untuk sinkronisasi teks deskripsi panel
-            let phaseName = "Fase 1 (Telor)";
-            if (engineState.streak >= 50) phaseName = "Fase 5 (Ancient Overlord)";
-            else if (engineState.streak >= 30) phaseName = "Fase 4 (Mature Alpha)";
-            else if (engineState.streak >= 15) phaseName = "Fase 3 (Growth Stage)";
-            else if (engineState.streak >= 3) phaseName = "Fase 2 (Hatched Creature)";
-
-            document.getElementById("metrics-name").innerText = engineState.petType;
-            document.getElementById("metrics-streak").innerText = engineState.streak + " Days";
-            document.getElementById("metrics-phase").innerText = phaseName;
-        }
-
-        // Ketika tombol hewan di-klik, ubah jenis hewan global dan simpan
-        function switchActivePet(newType) {
-            engineState.petType = newType;
-            saveEngineState();
-            updateEngineUI();
-            logToConsole(`[kernel] Shifted active pet signature template -> ${newType.toUpperCase()}.`);
-        }
-
-        function logToConsole(message) {
-            const box = document.getElementById("terminal-output-log");
-            box.innerHTML += `<br>${message}`;
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function fireResonancePulse() {
-            logToConsole(`[pulse] Dispatching energy wave into ${engineState.petType.toUpperCase()} core...`);
-            setTimeout(() => {
-                logToConsole(`[pulse] Core feedback received. Signal amplitude stable.`);
-                alert(`Resonance Pulse executed perfectly on pet signature: ${engineState.petType.toUpperCase()}!`);
-            }, 400);
-        }
-
-        window.addEventListener("DOMContentLoaded", () => {
-            loadEngineState();
+        tbody.innerHTML = "";
+        profiles.forEach((p, idx) => {
+          let scoreVal = selectedSortTab === 'streak' ? `${p.streak || 0} Hari` : selectedSortTab === 'hunt' ? `${p.hunt || 0} Kemenangan` : `Level ${p.level || 1}`;
+          
+          let tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="rank-badge" style="background:#222; padding:2px 6px; border-radius:4px;">${idx + 1}</span></td>
+            <td style="font-weight:bold;">${p.displayName || p.nodeKey}</td>
+            <td style="color:var(--accent-orange); font-weight:bold;">${scoreVal}</td>
+          `;
+          tbody.appendChild(tr);
         });
-    </script>
+      }).catch(() => {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--accent-red);">Koneksi database Vercel/Firebase terputus.</td></tr>`;
+      });
+    }
+
+    function switchToTab(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('#navigation-bar .menu-btn').forEach(b => b.classList.remove('active-tab'));
+      
+      const target = document.getElementById(id);
+      if(target) target.classList.add('active');
+
+      if(id === 'dash-screen') {
+        document.getElementById('tab-dash').classList.add('active-tab');
+        syncDashboardViewUI();
+        evaluateGlobalDeathTimers();
+      } else if (id === 'bestiary-screen') {
+        document.getElementById('tab-bestiary').classList.add('active-tab');
+        renderDiscoveryBestiaryUI();
+      } else if (id === 'leaderboard-screen') {
+        document.getElementById('tab-leaderboard').classList.add('active-tab');
+        changeLeaderboardSort('streak');
+      } else if (id === 'fuse-screen') {
+        document.getElementById('tab-fuse').classList.add('active-tab');
+      }
+    }
+  </script>
 </body>
 </html>
