@@ -60,7 +60,7 @@
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             background: rgba(255,255,255,0.95); color: #000; padding: 15px 30px;
             border-radius: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.5);
-            z-index: 9999; font-weight: bold; letter-spacing: 1px; text-align: center;
+            z-index: 10005; font-weight: bold; letter-spacing: 1px; text-align: center;
             transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #achievement-toast span { display: block; font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #444; }
@@ -118,13 +118,13 @@
         .lore-scroll-box h2 { letter-spacing: 4px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 5px;}
         .lore-scroll-box h4 { color: #888; letter-spacing: 2px; margin-bottom: 15px;}
 
-        /* --- LOGO ANIMATION FOR BLDS CUTSCENE --- */
+        /* --- LOGO ANIMATION (FIXED Z-INDEX ABOVE INVERSION) --- */
         #cutscene-logo { 
             position: absolute;
-            width: 220px;
+            width: 350px; 
             display: none; 
             opacity: 0;
-            z-index: 5;
+            z-index: 10000; 
             transition: transform 4s ease-out, opacity 1s ease;
         }
 
@@ -162,15 +162,15 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop src="freesound_community-space-ambience-56265.mp3"></audio>
-    <audio id="sfx-click" src="universfield-scary-swoosh-142323.mp3"></audio>
-    <audio id="sfx-text-fade" src="universfield-scary-swoosh-142323.mp3"></audio>
-    <audio id="sfx-streak100" loop src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
-    <audio id="sfx-blds-init" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
-    <audio id="sfx-blds-loop" loop src="black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
-    <audio id="sfx-blds-logo" src="dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
-    <audio id="sfx-forgotten" loop src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
-    <audio id="sfx-flames" loop src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
+    <audio id="bgm" loop src="https://actions.google.com/sounds/v1/ambiences/ambient_hum_air_conditioner.ogg"></audio>
+    <audio id="sfx-click" src="https://actions.google.com/sounds/v1/science_fiction/alien_computer_terminal.ogg"></audio>
+    <audio id="sfx-text-fade" src="https://actions.google.com/sounds/v1/science_fiction/tech_interface_click.ogg"></audio>
+    <audio id="sfx-streak100" loop src="https://actions.google.com/sounds/v1/ambiences/cosmic_drone.ogg"></audio>
+    <audio id="sfx-blds-init" src="https://actions.google.com/sounds/v1/science_fiction/deep_space_sub.ogg"></audio>
+    <audio id="sfx-blds-loop" loop src="https://actions.google.com/sounds/v1/ambiences/sub_bass_hum.ogg"></audio>
+    <audio id="sfx-blds-logo" src="https://actions.google.com/sounds/v1/science_fiction/power_down_cyber_attack.ogg"></audio>
+    <audio id="sfx-forgotten" loop src="https://actions.google.com/sounds/v1/ambiences/industrial_sub_basement.ogg"></audio>
+    <audio id="sfx-flames" loop src="https://actions.google.com/sounds/v1/ambiences/field_recording_waves_crashing.ogg"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -271,7 +271,7 @@
 
     <div id="leaderboard-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <span class="close-modal" onclick="closeModal('leaderboard-modal')">&times;</span>
+            <span class="close-modal" onclick="closeLeaderboardModal()">&times;</span>
             <h3 style="letter-spacing:3px; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px;">LIVE STREAKS</h3>
             <div style="max-height: 50vh; overflow-y: auto;">
                 <table class="ld-table">
@@ -295,17 +295,26 @@
     <script>
         const BASE_DB_URL = "https://blds-streaks-default-rtdb.asia-southeast1.firebasedatabase.app/";
         
-        let userId = localStorage.getItem('blds_user_uuid') || 'user_' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('blds_user_uuid', userId);
+        // Buat ID unik permanen per browser
+        let userId = localStorage.getItem('blds_user_uuid');
+        if(!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+            localStorage.setItem('blds_user_uuid', userId);
+        }
 
         let username = localStorage.getItem('blds_username') || '';
-        let currentStreak = 0;
-        let highStreak = 0;
-        let lastClickTime = 0;
+        let currentStreak = parseInt(localStorage.getItem('blds_c_str')) || 0;
+        let highStreak = parseInt(localStorage.getItem('blds_h_str')) || 0;
+        let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
+        
         let cdInterval = null;
+        let lbInterval = null; // Handler live update papan peringkat
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Pasang backup data lokal sebagai nilai awal biar tidak kedip jadi 0 pas refresh
+            updateUI();
+
             setTimeout(() => {
                 document.getElementById('loading-spinner').style.display = 'none';
                 document.getElementById('loading-txt').style.display = 'none';
@@ -315,25 +324,27 @@
                     document.getElementById('dominion-name-input').value = username;
                 }
             }, 2500);
+
             if(username) {
                 syncWithFirebase();
             }
         });
 
-        // --- SISTEM SYNC ABSEN & RESET BERDASARKAN WAKTU 48 JAM ---
+        // AMBIL DATA DARI FIREBASE (DENGAN BEBAN VALIDASI)
         function syncWithFirebase() {
+            if(!username) return;
+            
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
                 .then(res => res.json())
                 .then(data => {
                     if(data) {
-                        currentStreak = data.streak !== undefined ? data.streak : 0;
-                        highStreak = data.highStreak !== undefined ? data.highStreak : 0;
-                        lastClickTime = data.lastClick || 0;
+                        // Utamakan data dari server cloud jika tersedia
+                        currentStreak = data.streak !== undefined ? data.streak : currentStreak;
+                        highStreak = data.highStreak !== undefined ? data.highStreak : highStreak;
+                        lastClickTime = data.lastClick || lastClickTime;
                         username = data.username || username;
                         
-                        // LOGIKA RESET: Batas toleransi mencet adalah 48 jam penuh dari klik terakhir.
-                        // 24 jam pertama = Masa Cooldown (tombol ke-lock).
-                        // 24 jam kedua = Masa Aktif klaim berikutnya. Jika lewat dari batas ini (Total 48 jam), streak hangus!
+                        // Validasi Batas Reset Rentang Waktu 48 Jam
                         let now = Date.now();
                         let limitReset = 48 * 60 * 60 * 1000; 
                         
@@ -341,15 +352,14 @@
                             currentStreak = 0; 
                             saveToFirebase();
                         }
+                    } else {
+                        // Jika di Firebase belum ada datanya (User baru), langsung daftarkan nilai lokalnya
+                        saveToFirebase();
                     }
                     updateUI();
                 })
                 .catch(() => {
-                    // Backup offline lokal
-                    currentStreak = parseInt(localStorage.getItem('blds_c_str')) || 0;
-                    highStreak = parseInt(localStorage.getItem('blds_h_str')) || 0;
-                    lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
-                    
+                    // Proteksi Offline: Hitung reset berbasis waktu lokal saja
                     let now = Date.now();
                     if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
                         currentStreak = 0;
@@ -358,7 +368,10 @@
                 });
         }
 
+        // KIRIM DATA KE DATABASE SECARA PARALEL (CLOUD & LOCAL)
         function saveToFirebase() {
+            if(!username) return;
+
             let payload = {
                 username: username,
                 streak: currentStreak,
@@ -367,21 +380,23 @@
                 updatedAt: Date.now()
             };
             
+            // Simpan di memori internal browser terlebih dahulu
             localStorage.setItem('blds_username', username);
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
             localStorage.setItem('blds_l_clk', lastClickTime);
 
+            // Tembak Server Firebase Cloud (menggunakan metode PUT agar struktur direktori rapi)
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(payload)
-            }).catch(() => console.log("Lokal berhasil dicadangkan."));
+            }).catch(() => console.log("Database offline, cadangan lokal aktif."));
             
             updateUI();
         }
 
         function updateUI() {
-            document.getElementById('display-user-name').innerText = username;
+            document.getElementById('display-user-name').innerText = username ? username : "-";
             document.getElementById('current-streak-val').innerText = currentStreak;
             document.getElementById('high-streak-val').innerText = highStreak;
 
@@ -405,7 +420,7 @@
             cdInterval = setInterval(() => {
                 let now = Date.now();
                 let timeDiff = now - lastClickTime;
-                let cooldown = 24 * 60 * 60 * 1000; // Mengunci tombol selama 24 jam awal
+                let cooldown = 24 * 60 * 60 * 1000; 
 
                 if (lastClickTime !== 0 && timeDiff < cooldown) {
                     let remaining = cooldown - timeDiff;
@@ -416,11 +431,10 @@
                     btn.innerText = `COOLDOWN (${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')})`;
                     btn.disabled = true;
                 } else {
-                    // Masuk ke rentang waktu klaim (24 jam sisa menuju limit hangus 48 jam)
                     btn.innerText = "CLAIM DAILY STREAK";
                     btn.disabled = false;
                     
-                    // Cek real-time saat aplikasi terbuka, jika melewati batas toleransi 48 jam, auto reset
+                    // Cek real-time: jika melewati batas toleransi 48 jam penuh dari pencetan terakhir, reset otomatis.
                     if (lastClickTime !== 0 && timeDiff > (48 * 60 * 60 * 1000)) {
                         currentStreak = 0;
                         saveToFirebase();
@@ -451,7 +465,9 @@
             }
             username = inputName;
             
-            syncWithFirebase();
+            // Simpan nama baru ke memori, lalu sinkronkan
+            localStorage.setItem('blds_username', username);
+            saveToFirebase();
 
             document.getElementById('sfx-click').play().catch(()=>{});
             document.getElementById('bgm').play().catch(()=>{});
@@ -491,7 +507,6 @@
             }
         }
 
-        // --- INSTANT SHOW LORE: ORIGIN ---
         function triggerOriginLore() {
             document.getElementById('sfx-text-fade').currentTime = 0;
             document.getElementById('sfx-text-fade').play().catch(()=>{});
@@ -522,11 +537,10 @@
             `;
         }
 
-        function openLeaderboard() {
-            openModal('leaderboard-modal');
+        // AMBIL DATA & AKTIFKAN INTERVAL REALTIME LEADERBOARD
+        function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
-            container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
-
+            
             fetch(`${BASE_DB_URL}leaderboard.json`)
                 .then(res => res.json())
                 .then(data => {
@@ -536,15 +550,17 @@
                     }
 
                     let records = [];
+                    // Ambil seluruh key ID user dari Firebase
                     for(let key in data) {
                         if(data[key] && data[key].username) {
                             records.push({
                                 name: data[key].username,
-                                streak: data[key].streak || 0
+                                streak: parseInt(data[key].streak) || 0
                             });
                         }
                     }
 
+                    // Urutkan peringkat dari ranking streak tertinggi
                     records.sort((a, b) => b.streak - a.streak);
 
                     container.innerHTML = "";
@@ -559,8 +575,31 @@
                     });
                 })
                 .catch(() => {
-                    container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff3333;">Connection Failed.</td></tr>`;
+                    if (container.innerHTML.includes("Fetching")) {
+                        container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff3333;">Connection Failed.</td></tr>`;
+                    }
                 });
+        }
+
+        function openLeaderboard() {
+            openModal('leaderboard-modal');
+            const container = document.getElementById('leaderboard-data-rows');
+            container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
+            
+            // Jalankan fetch instan pertama kali dibuka
+            fetchLeaderboardData();
+
+            // Atur loop update otomatis setiap 10 detik agar data live masuk
+            if(lbInterval) clearInterval(lbInterval);
+            lbInterval = setInterval(fetchLeaderboardData, 10000);
+        }
+
+        function closeLeaderboardModal() {
+            closeModal('leaderboard-modal');
+            if(lbInterval) {
+                clearInterval(lbInterval); // Matikan interval saat modal ditutup biar hemat kuota database
+                lbInterval = null;
+            }
         }
 
         function escapeHTML(str) {
@@ -569,7 +608,6 @@
             );
         }
 
-        // --- SEQUENCE KHAS: JEDA PASTI 4 DETIK PER TEKS ---
         async function runTextSequence(lines, delay = 4000) {
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
@@ -654,11 +692,11 @@
                 let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
                 await runTextSequence(lines, 4000); 
 
-                // Setup logo dari arah samping kiri layar (proporsional)
+                // Setup logo (Besar 350px & Z-index Teratas)
                 logo.style.display = 'block';
-                logo.style.left = '-300px';
+                logo.style.left = '-400px';
                 logo.style.right = 'auto';
-                logo.style.top = 'calc(50% - 110px)';
+                logo.style.top = 'calc(50% - 175px)';
                 logo.style.transform = 'scale(1) rotate(-180deg)';
                 logo.style.opacity = '0';
                 
@@ -668,11 +706,10 @@
                 document.getElementById('sfx-blds-logo').currentTime = 0;
                 document.getElementById('sfx-blds-logo').play().catch(()=>{});
                 
-                // Slide in dari kiri & memutar perlahan
                 setTimeout(() => {
-                    logo.style.opacity = '0.5';
-                    logo.style.left = '-50px'; 
-                    logo.style.transform = 'scale(1.1) rotate(-30deg)';
+                    logo.style.opacity = '0.7';
+                    logo.style.left = '-30px'; 
+                    logo.style.transform = 'scale(1.1) rotate(-20deg)';
                 }, 50);
                 
                 await new Promise(r => setTimeout(r, 4000)); 
@@ -684,17 +721,16 @@
                 
                 logo.style.opacity = '0';
                 logo.style.left = 'auto';
-                logo.style.right = '-300px';
+                logo.style.right = '-400px';
                 logo.style.transform = 'scale(1) rotate(180deg)';
                 
                 document.getElementById('sfx-blds-logo').currentTime = 0;
                 document.getElementById('sfx-blds-logo').play().catch(()=>{});
                 
-                // Slide in dari kanan & memutar perlahan
                 setTimeout(() => {
-                    logo.style.opacity = '0.5';
-                    logo.style.right = '-50px'; 
-                    logo.style.transform = 'scale(1.1) rotate(30deg)';
+                    logo.style.opacity = '0.7';
+                    logo.style.right = '-30px'; 
+                    logo.style.transform = 'scale(1.1) rotate(20deg)';
                 }, 50);
                 
                 await new Promise(r => setTimeout(r, 4000)); 
@@ -710,14 +746,12 @@
                 overlay.style.background = '#fff';
                 await new Promise(r => setTimeout(r, 4000));
 
-                // Keluar cutscene, kunci efek invert-half-right secara PERMANEN!
                 overlay.style.display = 'none';
                 bodyEl.classList.add('invert-half-right');
                 
                 document.getElementById('sfx-blds-loop').pause();
                 document.getElementById('bgm').play().catch(()=>{});
             } 
-            // --- INSTANT SHOW LORE: FORGOTTEN ---
             else if (code === "Forgotten") {
                 unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
                 document.getElementById('bgm').pause();
@@ -741,7 +775,6 @@
                 </div>`;
                 box.style.opacity = '1';
             } 
-            // --- INSTANT SHOW LORE: 12 FLAMES ---
             else if (code === "12 Flames") {
                 unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden');
                 document.getElementById('bgm').pause();
