@@ -116,9 +116,16 @@
 
         /* --- OVERLAY CUTSCENE STREAK 100 NEW --- */
         #cutscene-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center; }
-        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.6s ease; opacity: 0; margin-top: 20px; }
-        .shake-epic { animation: shake 0.1s infinite alternate; }
-        .shake-text { animation: textGlowShake 0.15s infinite alternate; font-weight: bold; text-shadow: 0 0 25px rgba(0,0,0,0.8); }
+        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; margin-top: 20px; }
+        
+        .shake-epic { animation: shake 0.15s infinite alternate; }
+        
+        /* JINAKKAN JADI GETARAN ELEGAN, BUKAN KEJANG-KEJANG */
+        .shake-text { 
+            animation: textGlowShake 0.25s infinite ease-in-out alternate; 
+            font-weight: bold; 
+            text-shadow: 0 0 30px rgba(0,0,0,0.6); 
+        }
 
         /* ANIMASI LOGO NAIK TURUN SMOOTH (CUTSCENE 100) */
         .logo-streak-dynamic {
@@ -134,9 +141,11 @@
             50% { transform: translateY(-12px); }
             100% { transform: translateY(0px); }
         }
+        
+        /* ADJUST GETARAN SUPAYA HALUS DAN BERBOBOT */
         @keyframes textGlowShake {
-            0% { transform: translate(1px, 1px) scale(1); text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-            50% { transform: translate(-1px, -1px) scale(1.02); text-shadow: 0 0 25px rgba(0,0,0,0.9); }
+            0% { transform: translate(1.5px, 1px) scale(1); text-shadow: 0 0 15px rgba(0,0,0,0.4); }
+            50% { transform: translate(-1.5px, -1px) scale(1.03); text-shadow: 0 0 35px rgba(0,0,0,0.8); }
             100% { transform: translate(1px, -1px) scale(1); }
         }
 
@@ -456,6 +465,7 @@
         let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         
+        // AMBIL STATUS OWNER PANEL YANG TERSIMPAN DI BROWSER
         let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
 
         let cdInterval = null;
@@ -474,6 +484,7 @@
             updateUI();
             makeElementDraggable(document.getElementById("owner-panel"));
 
+            // JIKA OWNER SUDAH PERNAH DI-UNLOCK, TETAP TAMPILKAN SETELAH REFRESH
             if (isOwnerUnlocked) {
                 document.getElementById('owner-trigger-btn').style.display = 'flex';
             }
@@ -849,7 +860,7 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC REMASTERED --- */
+        /* --- STREAK 100 SYSTEM CINEMATIC REMASTERED (4 SECONDS FADE) --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
@@ -871,14 +882,14 @@
             logo.style.width = '140px';
             logo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4))';
 
-            // Helper internal untuk text fade-in & out 3 detik pas
+            // SEKARANG FADE IN OUT PAS 4 DETIK (3200ms TAMPIL, 800ms OUT TRANSITION)
             async function showLine(txt) {
                 box.innerText = txt;
                 box.style.opacity = '1';
                 playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, 2400)); // Tampil
+                await new Promise(r => setTimeout(r, 3200)); // Tampil mantap
                 box.style.opacity = '0';
-                await new Promise(r => setTimeout(r, 600)); // Durasi out total 3 detik
+                await new Promise(r => setTimeout(r, 800));  // Selesai dalam putaran waktu 4 detik
             }
 
             // --- PHASE 1 ---
@@ -926,7 +937,7 @@
             box.innerText = "STREAK 100";
             box.style.fontSize = "3.8rem";
             box.style.color = "#000"; // Teks hitam di atas background putih biar kontras kelihatan gila
-            box.classList.add('shake-text');
+            box.classList.add('shake-text'); // Animasi getar yang baru, dijamin ga kejang-kejang lagi
             box.style.opacity = "1";
             
             playAudio('sfx-blds-init');
