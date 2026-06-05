@@ -386,13 +386,13 @@
         }
 
         async function submitPublicReply(commentId, inputId) {
+            if (!commentId || commentId === "undefined") { alert("Gagal memproses ID komentar!"); return; }
             if (await checkBanStatus()) { alert("Akses Anda diblokir (BANNED)!"); return; }
             
             let inputEl = document.getElementById(inputId);
             let text = inputEl.value.trim();
             if(!text) return;
 
-            // Ambil data balasan saat ini untuk mengecek batasan maksimal 200 reply per komentar
             let currentRes = await fetch(`${BASE_DB_URL}feedbacks/${commentId}/replies.json`);
             let currentReplies = await currentRes.json();
             if(currentReplies && Object.keys(currentReplies).length >= 200) {
@@ -453,6 +453,10 @@
 
                 Object.keys(data).forEach(key => {
                     if(data[key]) {
+                        // FIX: Jika ID dalam objek bernilai undefined, paksa pakai key aslinya dari Firebase
+                        if (!data[key].id || data[key].id === "undefined") {
+                            data[key].id = key;
+                        }
                         feedbackList.push(data[key]);
                         let r = parseInt(data[key].rating) || 5;
                         starCounts[r] = (starCounts[r] || 0) + 1;
@@ -498,7 +502,6 @@
                         });
                     }
 
-                    // TIKTOK STYLE: Pas diklik, tombol "Lihat Balasan (X)" muncul jika balasan > 0, terisolasi per postingan komentar
                     let viewRepliesBtn = totalReplies > 0 ? 
                         `<button class="reply-trigger-btn" id="trigger-btn-${item.id}" data-open-text="Lihat Balasan (${totalReplies})" onclick="toggleRepliesVisibility('${item.id}')">Lihat Balasan (${totalReplies})</button>` : "";
 
@@ -542,23 +545,27 @@
             }
         }
 
-        // FORCE DELETE VIA DIRECT FIREBASE URL TARGETING (Bypass Client Sync Delay)
+        // FIX FORCE EXPLICIT PATH DELETE (Bypass Sync Bug)
         async function deleteCommentFromOwner(commentId) {
-            if(confirm("Hapus total komentar ini dari server database?")) {
+            if (!commentId || commentId === "undefined") {
+                alert("Gagal menghapus otomatis karena ID terdeteksi undefined di memori lokal. Silakan gunakan Cara 1 (Hapus via Firebase Console) untuk membersihkan sisa data kotor ini.");
+                return;
+            }
+            if(confirm(`Hapus total komentar dengan ID: ${commentId}?`)) {
                 try {
                     await fetch(`${BASE_DB_URL}feedbacks/${commentId}.json`, { 
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' }
+                        method: 'DELETE'
                     });
-                    alert("Komentar utama dan seluruh sub-reply di bawahnya berhasil dibersihkan!");
+                    alert("Data berhasil dipangkas habis dari database!");
                     fetchFeedbackData();
                 } catch(err) {
-                    alert("Gagal menghapus! Cek setelan Rules Firebase Console Anda.");
+                    alert("Akses ditolak. Periksa Rules Realtime Database Firebase Anda.");
                 }
             }
         }
 
         async function replyCommentFromOwner(commentId) {
+            if (!commentId || commentId === "undefined") { alert("Komentar target rusak / undefined!"); return; }
             let pseudo = document.getElementById('owner-reply-pseudo').value.trim() || "BladeS";
             let txt = document.getElementById('owner-reply-text').value.trim();
             if(!txt) { alert("Tulis konten teks di kotak STAFF REPLY CONTENT!"); return; }
@@ -591,7 +598,7 @@
             fetchFeedbackData();
         }
 
-        // HARD PURGE & AUTO BAN USER BY USERNAME MATCH
+        // BAN SYSTEM & HARD PURGE
         async function banUserByName() {
             let targetName = document.getElementById('owner-target-name').value.trim();
             if(!targetName) { alert("Masukkan nama target di kolom TARGET DOMINION NAME!"); return; }
@@ -614,7 +621,7 @@
                 let dataFb = await resFb.json();
                 if(dataFb) {
                     for (let commentId in dataFb) {
-                        if (dataFb[commentId]?.userId === targetUUID) {
+                        if (dataFb[commentId]?.userId === targetUUID || commentId === targetUUID) {
                             await fetch(`${BASE_DB_URL}feedbacks/${commentId}.json`, { method: 'DELETE' });
                         } else if (dataFb[commentId]?.replies) {
                             let replies = dataFb[commentId].replies;
@@ -627,7 +634,7 @@
                     }
                 }
 
-                alert(`${targetName} Berhasil di BAN dan semua komentar kotornya telah dibersihkan!`);
+                alert(`${targetName} Berhasil di BAN dan seluruh rekam jejak komentarnya dihapus bersih!`);
                 fetchFeedbackData();
             }
         }
