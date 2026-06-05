@@ -67,7 +67,7 @@
 
         /* --- PROGRESS BAR ACHIEVEMENT --- */
         .progress-container { width: 100%; background: #222; border: 1px solid #444; height: 15px; margin: 15px 0; position: relative; }
-        .progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.5s ease; shadow: 0 0 10px #fff; }
+        .progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.5s ease; }
 
         /* --- GATE SCREEN --- */
         #gate-screen {
@@ -158,7 +158,7 @@
                 HIGH STREAK: <span id="high-streak-val" style="color:#fff; font-weight:bold;">0</span> Days
             </div>
             <button class="menu-btn" id="origin-btn" onclick="triggerOriginStreak()">ORIGIN (STREAK)</button>
-            <button class="menu-btn" onclick="window.open('https://blds-streaks-default-rtdb.asia-southeast1.firebasedatabase.app/.json','_blank')">LEADERBOARD LIVE</button>
+            <button class="menu-btn" onclick="triggerAccessDenied()">LEADERBOARD LIVE</button>
             <button class="menu-btn" onclick="openModal('achievements-modal')">ACHIEVEMENT</button>
             <button class="menu-btn" onclick="openModal('archive-modal')">ARCHIVE</button>
             <button class="menu-btn" onclick="openModal('code-modal')">CODE</button>
@@ -227,7 +227,6 @@
     </div>
 
     <script>
-        // Gunakan ID unik per device simulasi agar tidak tabrakan di Firebase DB lu
         const userId = localStorage.getItem('blds_user_uuid') || 'user_' + Math.random().toString(36).substr(2, 9);
         localStorage.setItem('blds_user_uuid', userId);
 
@@ -246,7 +245,6 @@
             syncWithFirebase();
         });
 
-        // Sync & Ambil Data Realtime Dari URL Firebase Lu
         function syncWithFirebase() {
             fetch(FIREBASE_URL)
                 .then(res => res.json())
@@ -256,7 +254,6 @@
                         highStreak = data.highStreak || 0;
                         lastClickTime = data.lastClick || 0;
                         
-                        // Validasi Aturan Kematian Streak (Lewat 48 Jam)
                         let now = Date.now();
                         if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
                             currentStreak = 0;
@@ -266,7 +263,6 @@
                     updateUI();
                 })
                 .catch(err => {
-                    // Fallback Local Storage kalau internet rtdb lambat/offline
                     currentStreak = parseInt(localStorage.getItem('blds_c_str')) || 0;
                     highStreak = parseInt(localStorage.getItem('blds_h_str')) || 0;
                     lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
@@ -282,7 +278,6 @@
                 updatedAt: Date.now()
             };
             
-            // Backup Local
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
             localStorage.setItem('blds_l_clk', lastClickTime);
@@ -299,13 +294,11 @@
             document.getElementById('current-streak-val').innerText = currentStreak;
             document.getElementById('high-streak-val').innerText = highStreak;
 
-            // Update Status Badge Visual Card
             if(unlockedBadges.includes('made-it')) document.getElementById('ac-made-it').classList.add('badge-unlocked');
             if(unlockedBadges.includes('2-dim')) document.getElementById('ac-2-dim').classList.add('badge-unlocked');
             if(unlockedBadges.includes('forgotten')) document.getElementById('ac-forgotten').classList.add('badge-unlocked');
             if(unlockedBadges.includes('2-flames')) document.getElementById('ac-2-flames').classList.add('badge-unlocked');
 
-            // Hitung Progress Bar
             let totalUnlocked = unlockedBadges.length;
             let percent = (totalUnlocked / 4) * 100;
             document.getElementById('ach-progress-bar').style.width = percent + "%";
@@ -318,7 +311,6 @@
                 localStorage.setItem('blds_badges', JSON.stringify(unlockedBadges));
                 updateUI();
                 
-                // Show Popup Toast Notification
                 const toast = document.getElementById('achievement-toast');
                 document.getElementById('toast-title').innerText = name;
                 toast.style.top = "20px";
@@ -341,11 +333,9 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- TRIGGER BUTTON ORIGIN (WITH BLINK TRANSITION) ---
         function triggerOriginStreak() {
             let now = Date.now();
 
-            // Validasi Cooldown 24 Jam
             if (lastClickTime !== 0 && (now - lastClickTime) < (24 * 60 * 60 * 1000)) {
                 let timeLeft = (24 * 60 * 60 * 1000) - (now - lastClickTime);
                 let hours = Math.ceil(timeLeft / (1000 * 60 * 60));
@@ -353,7 +343,6 @@
                 return;
             }
 
-            // Animasi transisi kedip sebentar di tombol/layar menu
             const body = document.getElementById('app-body');
             body.classList.add('blink-effect');
             document.getElementById('sfx-click').play().catch(()=>{});
@@ -375,7 +364,39 @@
             }, 400);
         }
 
-        // --- SEQUENCE ENGINE FOR TEXT TRANSITIONS ---
+        /* --- LEADERBOARD ACCESS DENIED PROTOCOL --- */
+        function triggerAccessDenied() {
+            document.getElementById('sfx-click').play().catch(()=>{});
+            
+            const overlay = document.getElementById('cutscene-overlay');
+            const box = document.getElementById('cutscene-text-box');
+            
+            overlay.style.display = 'flex';
+            overlay.style.background = '#000';
+            overlay.classList.add('shake-epic');
+            
+            box.innerText = "ACCESS DENIED.";
+            box.style.color = "#ff3333";
+            box.style.fontSize = "3.5rem";
+            box.style.fontWeight = "bold";
+            box.style.letterSpacing = "5px";
+            box.style.textShadow = "0 0 20px #ff0000";
+            box.style.opacity = "1";
+            
+            document.getElementById('sfx-forgotten').play().catch(()=>{});
+
+            setTimeout(() => {
+                overlay.classList.remove('shake-epic');
+                overlay.style.display = 'none';
+                
+                box.style.color = "#fff";
+                box.style.fontSize = "1.5rem";
+                box.style.fontWeight = "normal";
+                box.style.letterSpacing = "3px";
+                box.style.textShadow = "none";
+            }, 2500);
+        }
+
         async function runTextSequence(lines, delay = 1500, milestones = []) {
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
@@ -401,7 +422,6 @@
             }
         }
 
-        // --- CUTSCENE STREAK 100 ---
         async function startStreak100Cutscene() {
             document.getElementById('bgm').pause();
             document.getElementById('sfx-streak100').play().catch(()=>{});
@@ -442,7 +462,6 @@
             }, 600);
         }
 
-        // --- CODES HANDLER FUNCTION ---
         async function submitCode() {
             let code = document.getElementById('code-input-field').value.trim();
             closeModal('code-modal');
@@ -468,7 +487,6 @@
                 let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
                 await runTextSequence(lines, 1400);
 
-                // BLACK STAGE (Gempa + Separuh Logo Kiri Berputar)
                 overlay.classList.add('shake-epic');
                 box.innerText = "BLACK"; box.style.opacity = '1';
                 logo.style.display = 'block'; logo.style.opacity = '0.5';
@@ -476,7 +494,6 @@
                 logo.style.transform = 'rotate(-30deg)';
                 await new Promise(r => setTimeout(r, 2000));
 
-                // LIGHT STAGE (Inversi Vertikal Kanan)
                 overlay.classList.remove('shake-epic');
                 overlay.classList.add('invert-half-right');
                 box.innerText = "LIGHT";
@@ -489,7 +506,6 @@
                 logo.style.display = 'none';
                 await runTextSequence(lines2, 1400);
 
-                // Transisi Memutih Lambat
                 overlay.style.transition = 'background 2.5s ease';
                 overlay.style.background = '#fff';
                 await new Promise(r => setTimeout(r, 2500));
@@ -536,7 +552,6 @@
                 ];
                 await runTextSequence(lines, 1000);
 
-                // Smooth Tilt / Kebanting Animation
                 logo.style.display = 'block'; logo.style.opacity = '1';
                 logo.style.filter = 'drop-shadow(0 0 25px #fff)';
                 logo.style.transform = 'scale(1.2) rotate(-15deg)';
@@ -558,7 +573,7 @@
                         The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one. (Vision, Discipline, Loyalty, Ambition, Resilience, Hope, Awareness, Patience, Courage, Unity). When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame. Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.<br><br>
                         Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles: The Flame of Unity, The Flame Beyond Division, The Crown of the Ten Flames, The Flame That Contains All Flames. Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.<br><br>
                         <strong>FLAME 12 — HIDDEN FLAME</strong><br>
-                        <span style="color:#ff3333;">WARNING: ARCHIVE INSTABILITY DETECTED</span><br>
+                        <span style="color:#ff3333;">WARNING: ARCHIVE INSTABILITY DETANCE CODE DETECTED</span><br>
                         Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records. The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.<br><br>
                         Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written. Only one statement survived every reconstruction attempt: "It does not participate in existence. It observes whether existence should continue." No archive continues beyond this point. Only silence.<br><br>
                         END OF RESTRICTED ARCHIVE<br>Total Recorded Flames: 10<br>Total Observed Flames: 12<br>Reason for discrepancy: UNKNOWN
