@@ -192,12 +192,13 @@
         footer a { color: #888; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dashed #444; padding-bottom: 2px; }
         footer a:hover { color: #fff; border-bottom-color: #fff; }
 
-        /* --- DRAGGABLE OWNER PANEL PANEL --- */
+        /* --- DRAGGABLE OWNER PANEL --- */
         #owner-trigger-btn {
             position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px;
             border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid #444;
             color: #fff; font-size: 1.2rem; cursor: pointer; z-index: 99999;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none; 
+            align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             transition: transform 0.2s;
         }
         #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
@@ -361,17 +362,18 @@
                 <h4>"2 Flames"</h4>
                 <small>Sacred and hidden</small>
             </div>
+            
             <div id="ac-michael" class="badge-card">
-                <h4>"Michael"</h4>
-                <small>Lorenzo / Who is That</small>
+                <h4>"Lorenzo"</h4>
+                <small>Who is That?</small>
             </div>
             <div id="ac-william" class="badge-card">
-                <h4>"William"</h4>
-                <small>Nayottama / Who is That</small>
+                <h4>"Nayottama"</h4>
+                <small>Who is That?</small>
             </div>
             <div id="ac-felix" class="badge-card">
-                <h4>"Felix"</h4>
-                <small>Prince / Who is That</small>
+                <h4>"Prince"</h4>
+                <small>Who is That?</small>
             </div>
         </div>
     </div>
@@ -424,6 +426,8 @@
         let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         
+        let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
+
         let cdInterval = null;
         let lbInterval = null; 
 
@@ -439,6 +443,10 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateUI();
             makeElementDraggable(document.getElementById("owner-panel"));
+
+            if (isOwnerUnlocked) {
+                document.getElementById('owner-trigger-btn').style.display = 'flex';
+            }
 
             setTimeout(() => {
                 document.getElementById('loading-spinner').style.opacity = '0';
@@ -682,7 +690,6 @@
                 overlay.style.background = '#000';
                 box.style.opacity = '1';
 
-                // JALUR SUARA DIPERBAIKI (Dimainkan sesudah display layout flex siap)
                 playAudio('sfx-text-fade');
 
                 box.innerHTML = `
@@ -933,15 +940,21 @@
                 box.innerHTML = '';
                 box.style.opacity = '0';
 
-                // CODES DETECTIONS FOR NEW REWARD ACHIEVEMENT
-                if (code === "Michael") {
-                    unlockAchievement('michael', '"Michael"\nLorenzo\nWho is That');
+                // --- UNLOCK OWNER PANEL CODE ---
+                if (code === "OWNERONLY") {
+                    localStorage.setItem('blds_owner_unlocked', 'true');
+                    document.getElementById('owner-trigger-btn').style.display = 'flex';
+                    alert("System Authorization Granted. Owner Interface Unlocked!");
+                }
+                // --- REVISED REWARD CODES ---
+                else if (code === "Michael") {
+                    unlockAchievement('michael', '"Lorenzo"\nWho is That?');
                 }
                 else if (code === "William") {
-                    unlockAchievement('william', '"William"\nNayottama\nWho is That');
+                    unlockAchievement('william', '"Nayottama"\nWho is That?');
                 }
                 else if (code === "Felix") {
-                    unlockAchievement('felix', '"Felix"\nPrince\nWho is That');
+                    unlockAchievement('felix', '"Prince"\nWho is That?');
                 }
                 else if (code === "White") {
                     bodyEl.classList.remove('invert-half-right');
