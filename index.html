@@ -114,7 +114,7 @@
         
         .streak-info-box { background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px; font-size: 0.85rem; text-align: center; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
 
-        /* --- SECTION FEEDBACK (KOMENTAR & RATING) --- */
+        /* --- SECTION FEEDBACK (KOMENTAR & GOOGLE RATING) --- */
         .feedback-section {
             width: 100%;
             max-width: 450px;
@@ -132,6 +132,67 @@
             padding-bottom: 5px;
             text-align: center;
         }
+
+        /* GOOGLE STYLE RATING DASHBOARD */
+        .rating-dashboard {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+        }
+        .rating-big-score {
+            text-align: center;
+            flex: 1;
+        }
+        .rating-big-score h1 {
+            font-size: 2.8rem;
+            color: #fff;
+            line-height: 1;
+        }
+        .rating-big-stars {
+            color: #ffd700;
+            font-size: 0.85rem;
+            margin: 4px 0;
+        }
+        .rating-total-count {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .rating-histogram {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .histo-row {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #aaa;
+            gap: 8px;
+        }
+        .histo-star-label {
+            width: 12px;
+            text-align: right;
+        }
+        .histo-bar-bg {
+            flex: 1;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .histo-bar-fill {
+            height: 100%;
+            background: #ffd700;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
         .star-rating {
             display: flex;
             justify-content: center;
@@ -468,6 +529,36 @@
         <div class="feedback-section">
             <div class="feedback-title">CRITIC & SUGGESTION</div>
             
+            <div class="rating-dashboard">
+                <div class="rating-big-score">
+                    <h1 id="avg-rating-num">0.0</h1>
+                    <div class="rating-big-stars" id="avg-stars-display">☆☆☆☆☆</div>
+                    <div class="rating-total-count" id="total-rating-count">0 transmissions</div>
+                </div>
+                <div class="rating-histogram">
+                    <div class="histo-row">
+                        <span class="histo-star-label">5</span>
+                        <div class="histo-bar-bg"><div id="bar-5" class="histo-bar-fill"></div></div>
+                    </div>
+                    <div class="histo-row">
+                        <span class="histo-star-label">4</span>
+                        <div class="histo-bar-bg"><div id="bar-4" class="histo-bar-fill"></div></div>
+                    </div>
+                    <div class="histo-row">
+                        <span class="histo-star-label">3</span>
+                        <div class="histo-bar-bg"><div id="bar-3" class="histo-bar-fill"></div></div>
+                    </div>
+                    <div class="histo-row">
+                        <span class="histo-star-label">2</span>
+                        <div class="histo-bar-bg"><div id="bar-2" class="histo-bar-fill"></div></div>
+                    </div>
+                    <div class="histo-row">
+                        <span class="histo-star-label">1</span>
+                        <div class="histo-bar-bg"><div id="bar-1" class="histo-bar-fill"></div></div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="star-rating" id="star-container">
                 <span class="star" data-value="1">★</span>
                 <span class="star" data-value="2">★</span>
@@ -491,8 +582,7 @@
     </div>
 
     <div id="cutscene-overlay">
-        <img id="logo-streak-100" class="logo-streak-dynamic" src="logo.png" onerror="this.src='https://placehold.co/150x150/000000/ffffff?text=BLDS'">
-        
+        <img id="logo-streak-100" class="logo-streak-dynamic" src="logo.png" onerror="this.src='https://placehold.co/150x150/000000/ffffff?text=BLDS+LOGO'">
         <img id="logo-slam" class="blds-slam-shining" src="logo.png" onerror="this.src='https://placehold.co/200x200/000000/ffffff?text=BLDS'">
         <div id="cutscene-text-box" class="cutscene-text"></div>
         
@@ -524,7 +614,6 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('achievements-modal')">&times;</span>
             <h3 style="letter-spacing:3px;">DOMINION ACHIEVEMENTS</h3>
-            
             <div class="progress-container">
                 <div id="ach-progress-bar" class="progress-bar"></div>
             </div>
@@ -546,7 +635,6 @@
                 <h4>"2 Flames"</h4>
                 <small>Sacred and hidden</small>
             </div>
-            
             <div id="ac-michael" class="badge-card">
                 <h4>"Lorenzo"</h4>
                 <small>Who is That?</small>
@@ -611,7 +699,7 @@
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         
         let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
-        let selectedRating = 0; // Nilai rating yang dipilih pengguna
+        let selectedRating = 0; 
 
         let cdInterval = null;
         let lbInterval = null; 
@@ -651,7 +739,7 @@
             if(username) { 
                 syncWithFirebase(); 
                 fetchFeedbackData();
-                feedbackInterval = setInterval(fetchFeedbackData, 7000); // Auto refresh komentar tiap 7 detik
+                feedbackInterval = setInterval(fetchFeedbackData, 7000); 
             }
         });
 
@@ -700,7 +788,7 @@
             });
         }
 
-        /* --- KIRIM KOMENTAR & RATING KE FIREBASE --- */
+        /* --- KIRIM KOMENTAR & RATING KE FIREBASE (1 USER = 1 RATING NYAWA) --- */
         function submitFeedback(btn) {
             applyButtonTransition(btn, () => {
                 const txtInput = document.getElementById('feedback-text');
@@ -717,7 +805,7 @@
 
                 playAudio('sfx-click');
 
-                let feedbackId = 'fb_' + Date.now();
+                // Menyimpan dengan id unik userId pengguna agar data diperbarui (1 user = 1 data)
                 let payload = {
                     username: username || "Unknown Dominion",
                     rating: selectedRating,
@@ -725,13 +813,13 @@
                     timestamp: Date.now()
                 };
 
-                fetch(`${BASE_DB_URL}feedbacks/${feedbackId}.json`, {
+                fetch(`${BASE_DB_URL}feedbacks/${userId}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 })
                 .then(() => {
-                    alert("Transmission received! Terima kasih atas kritik dan sarannya.");
+                    alert("Transmission received! Kritik & saran berhasil diproses.");
                     txtInput.value = '';
                     selectedRating = 0;
                     document.querySelectorAll('#star-container .star').forEach(s => s.classList.remove('selected'));
@@ -743,7 +831,7 @@
             });
         }
 
-        /* --- AMBIL DATA KOMENTAR LIVE --- */
+        /* --- AMBIL DATA & LOGIC HITUNG RATA-RATA GOOGLE RATING --- */
         function fetchFeedbackData() {
             const container = document.getElementById('live-comments-container');
             
@@ -752,15 +840,41 @@
                 .then(data => {
                     if(!data) {
                         container.innerHTML = `<div style="text-align:center; color:#555; font-size:0.75rem;">Belum ada kritik atau saran. Jadi yang pertama!</div>`;
+                        resetRatingDashboard();
                         return;
                     }
 
                     let feedbackList = [];
+                    let starCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+                    let totalRatingScore = 0;
+
                     Object.keys(data).forEach(key => {
-                        if(data[key]) feedbackList.push(data[key]);
+                        if(data[key]) {
+                            feedbackList.push(data[key]);
+                            let r = parseInt(data[key].rating) || 5;
+                            starCounts[r] = (starCounts[r] || 0) + 1;
+                            totalRatingScore += r;
+                        }
                     });
 
-                    // Urutkan dari yang paling baru di atas
+                    let totalUsers = feedbackList.length;
+                    let avgRating = totalUsers > 0 ? (totalRatingScore / totalUsers).toFixed(1) : "0.0";
+
+                    // Update Tampilan Google Dashboard
+                    document.getElementById('avg-rating-num').innerText = avgRating;
+                    document.getElementById('total-rating-count').innerText = `${totalUsers} transmission${totalUsers > 1 ? 's' : ''}`;
+                    
+                    // Render Bintang Rata-rata Besar
+                    let roundedAvg = Math.round(parseFloat(avgRating));
+                    document.getElementById('avg-stars-display').innerText = "★".repeat(roundedAvg) + "☆".repeat(5 - roundedAvg);
+
+                    // Update Histogram Bar Efek Google
+                    for (let i = 1; i <= 5; i++) {
+                        let pct = totalUsers > 0 ? (starCounts[i] / totalUsers) * 100 : 0;
+                        document.getElementById(`bar-${i}`).style.width = pct + "%";
+                    }
+
+                    // Urutkan List Komentar dari yang paling baru di atas
                     feedbackList.sort((a, b) => b.timestamp - a.timestamp);
                     container.innerHTML = "";
 
@@ -775,12 +889,21 @@
                             </div>
                             <div style="color:#ccc; margin-top:2px; word-wrap: break-word;">${escapeHTML(item.text)}</div>
                         `;
-                        container.appendChild(tr = div);
+                        container.appendChild(div);
                     });
                 })
                 .catch(() => {
-                    container.innerHTML = `<div style="text-align:center; color:#ff4d4d; font-size:0.75rem;">Failed to sync comments.</div>`;
+                    container.innerHTML = `<div style="text-align:center; color:#ff4d4d; font-size:0.75rem;">Failed to sync dashboard transmissions.</div>`;
                 });
+        }
+
+        function resetRatingDashboard() {
+            document.getElementById('avg-rating-num').innerText = "0.0";
+            document.getElementById('avg-stars-display').innerText = "☆☆☆☆☆";
+            document.getElementById('total-rating-count').innerText = "0 transmissions";
+            for(let i=1; i<=5; i++) {
+                document.getElementById(`bar-${i}`).style.width = "0%";
+            }
         }
 
         function syncWithFirebase() {
@@ -1113,7 +1236,7 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC (MENGHITAM + GEMPA + THANK YOU SCREEN) --- */
+        /* --- STREAK 100 SYSTEM CINEMATIC --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
@@ -1123,7 +1246,6 @@
             const logo = document.getElementById('logo-streak-100');
             const thankYouScreen = document.getElementById('thankyou-screen');
 
-            // Reset state awal
             overlay.style.display = 'flex';
             overlay.style.background = '#000';
             thankYouScreen.style.display = 'none';
@@ -1145,7 +1267,6 @@
                 await new Promise(r => setTimeout(r, 800));
             }
 
-            // --- PHASE 1 ---
             await showLine("For a hundred days...");
             await showLine("the Eclipse watched.");
             await showLine("For a hundred days...");
@@ -1155,7 +1276,6 @@
             await showLine("Many lights promised eternity...");
             await showLine("only to fade.");
 
-            // --- PHASE 2 ---
             logo.style.display = 'block';
             setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
             
@@ -1164,7 +1284,6 @@
             await showLine("Not because it was the strongest.");
             await showLine("But because it refused to die.");
 
-            // --- PHASE 3 ---
             logo.style.opacity = '0.55';
             
             await showLine("A hundred days is not the end.");
@@ -1172,7 +1291,6 @@
             await showLine("Proof that your light survived.");
             await showLine("Proof that your flame endured.");
 
-            // --- PHASE 4 ---
             logo.style.opacity = '1';
             logo.style.width = '210px';
             logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
@@ -1180,7 +1298,6 @@
             await showLine("And now...");
             await showLine("the Core remembers your name.");
 
-            // --- PHASE 5: TRANSISI MENGHITAM PERLAHAN ---
             logo.style.display = 'none';
             box.style.opacity = '0';
             
@@ -1188,7 +1305,6 @@
             overlay.style.background = '#000000';
             await new Promise(r => setTimeout(r, 2500));
 
-            // --- PHASE 6: LEDAKAN GEMPA BRUTAL STREAK 100 (FLASH BANG WHITE) ---
             overlay.style.transition = 'none'; 
             overlay.style.background = '#ffffff'; 
 
@@ -1201,21 +1317,17 @@
             playAudio('sfx-blds-init');
             await new Promise(r => setTimeout(r, 4500)); 
 
-            // --- PHASE 7: TRANSISI MEMUDAR MASUK KE SCREEN THANK YOU ---
             box.style.opacity = '0';
             box.classList.remove('shake-brutal-text');
             box.style.display = 'none';
 
-            // Balikin background overlay pelan-pelan ke hitam untuk baca teks thank you
             overlay.style.transition = 'background 1.5s ease';
             overlay.style.background = '#000000';
             await new Promise(r => setTimeout(r, 1500));
 
-            // Munculin interface Thank You Screen secara elegan
             thankYouScreen.style.display = 'flex';
         }
 
-        /* --- FUNGSI BALIK KE MENU DARI CUTSCENE --- */
         function exitStreak100Cutscene() {
             playAudio('sfx-click');
             const overlay = document.getElementById('cutscene-overlay');
@@ -1231,7 +1343,6 @@
                 overlay.style.background = '#000';
                 thankYouScreen.style.display = 'none';
                 
-                // Kembalikan ukuran box text normal
                 box.style.display = 'block';
                 box.style.fontSize = "1.4rem";
                 box.style.color = "#fff";
@@ -1316,7 +1427,7 @@
 
         function resetCurrentStreakOnly(btn) {
             applyButtonTransition(btn, () => {
-                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0? (High Streak tetap aman)")) {
+                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0?")) {
                     currentStreak = 0;
                     lastClickTime = 0; 
                     document.getElementById('owner-current-input').value = 0;
@@ -1356,56 +1467,39 @@
                     localStorage.setItem('blds_owner_unlocked', 'true');
                     isOwnerUnlocked = true;
                     document.getElementById('owner-trigger-btn').style.display = 'flex';
-                    alert("System Authorization Granted. Owner Interface Permanently Unlocked!");
+                    alert("System Authorization Granted. Owner Interface Unlocked!");
                 }
-                else if (code === "Michael") {
-                    unlockAchievement('michael', '"Lorenzo"\nWho is That?');
-                }
-                else if (code === "William") {
-                    unlockAchievement('william', '"Nayottama"\nWho is That?');
-                }
-                else if (code === "Felix") {
-                    unlockAchievement('felix', '"Prince"\nWho is That?');
-                }
-                else if (code === "White") {
-                    bodyEl.classList.remove('invert-half-right');
-                    bodyEl.classList.add('invert-full');
-                } 
-                else if (code === "Black") {
-                    bodyEl.classList.remove('invert-full', 'invert-half-right');
-                } 
+                else if (code === "Michael") { unlockAchievement('michael', '"Lorenzo"\nWho is That?'); }
+                else if (code === "William") { unlockAchievement('william', '"Nayottama"\nWho is That?'); }
+                else if (code === "Felix") { unlockAchievement('felix', '"Prince"\nWho is That?'); }
+                else if (code === "White") { bodyEl.classList.add('invert-full'); } 
+                else if (code === "Black") { bodyEl.classList.remove('invert-full', 'invert-half-right'); } 
                 else if (code === "BLDS") {
                     unlockAchievement('2-dim', '"2 Dimension"\nBlack and White');
                     stopAudio('bgm');
-                    
                     playAudio('sfx-blds-init');
                     playAudio('sfx-blds-loop');
 
-                    let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
+                    let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night"];
                     await runTextSequence(lines, 3500); 
 
                     overlay.classList.add('shake-epic');
                     box.innerText = "BLACK"; 
                     box.style.opacity = '1';
-                    
                     leftLogo.style.display = 'block';
                     setTimeout(() => leftLogo.style.opacity = '0.7', 50);
-                    
                     bodyEl.classList.add('invert-half-right');
-
                     playAudio('sfx-blds-logo');
                     await new Promise(r => setTimeout(r, 4000)); 
 
                     overlay.classList.remove('shake-epic');
                     box.innerText = "LIGHT";
-                    
                     rightLogo.style.display = 'block';
                     setTimeout(() => rightLogo.style.opacity = '0.7', 50);
-                    
                     playAudio('sfx-blds-logo');
                     await new Promise(r => setTimeout(r, 4000)); 
 
-                    let lines2 = ["Two opposites.", "Two destinies.", "Both necessary."];
+                    let lines2 = ["Two opposites.", "Both necessary."];
                     await runTextSequence(lines2, 3500); 
 
                     overlay.style.transition = 'background 2s ease';
@@ -1420,116 +1514,30 @@
                 else if (code === "Forgotten") {
                     unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
                     stopAudio('bgm');
-                    
                     overlay.style.display = 'flex';
                     overlay.style.background = '#000';
 
-                    let initLines = [
-                        "NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "Searching fragments...",
-                        "Searching fragments...", "Searching fragments...", "1 Fragment Detected",
-                        "Core Signature Match:\n99.87%", "Historical Reconstruction Available", "Opening Archive..."
-                    ];
+                    let initLines = ["NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "1 Fragment Detected"];
                     await runTextSequence(initLines, 4000);
 
                     playAudio('sfx-forgotten');
                     box.style.opacity = '1';
-
                     box.innerHTML = `
                         <div class="lore-scroll-box">
                             <h2>THE FORGOTTEN ECLIPSE</h2>
                             <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
-                            <p>Before BLDS.</p>
-                            <p>Before the Core.</p>
-                            <p>Before the Eclipse became known.</p>
-                            <p>There existed another generation.</p>
-                            <p>A generation history no longer remembers.</p>
-                            <p>They were not heroes.</p>
-                            <p>They were not rulers.</p>
-                            <p>They were not legends.</p>
-                            <p>They were ordinary people carrying extraordinary burdens.</p>
-                            <p>People abandoned by hope.</p>
-                            <p>People consumed by failure.</p>
-                            <p>People who had forgotten how to believe in themselves.</p>
-                            <p>Yet among the darkness, they found one another.</p>
-                            <p>And together they created something the world believed impossible.</p>
-                            <p>The First Eclipse.</p>
-                            <p>A sanctuary for those who had nowhere else to belong.</p>
-                            <p>A place where broken lights could shine together.</p>
-                            <p>For a time, the Eclipse flourished.</p>
-                            <p>The Core grew brighter.</p>
-                            <p>More people arrived.</p>
-                            <p>More souls found purpose.</p>
-                            <p>More hearts found direction.</p>
-                            <p>The Eclipse was never built upon strength.</p>
-                            <p>It was built upon belief.</p>
-                            <p>Belief that even the most lost person could still become something greater.</p>
-                            <p>But darkness rarely attacks from outside.</p>
-                            <p>It grows from within.</p>
-                            <p>One member began losing faith.</p>
-                            <p>They looked beyond the Eclipse and saw recognition.</p>
-                            <p>Status.</p>
-                            <p>Validation.</p>
-                            <p>Attention.</p>
-                            <p>Things the Eclipse never promised.</p>
-                            <p>Eventually they left.</p>
-                            <p>Not because they hated the Eclipse.</p>
-                            <p>But because they no longer believed in it.</p>
-                            <p>Before disappearing, they spoke words that spread through the Eclipse like a disease.</p>
-                            <p style="color: #ff4d4d; font-weight: bold;">"What is the point of carrying a light that nobody sees?"</p>
-                            <p>Others began asking the same question.</p>
-                            <p>Then more.</p>
-                            <p>Then even more.</p>
-                            <p>One by one, people abandoned the Core.</p>
-                            <p>One by one, the light faded.</p>
-                            <p>Not because darkness became stronger.</p>
-                            <p>But because belief became weaker.</p>
-                            <p>The Eclipse did not fall in a single night.</p>
-                            <p>It died slowly.</p>
-                            <p>Silently.</p>
-                            <p>Painfully.</p>
-                            <p>Until only a fragment remained.</p>
-                            <p>A single piece of the Core.</p>
-                            <p>Still shining.</p>
-                            <p>Still waiting.</p>
-                            <p>Years passed.</p>
-                            <p>The world forgot.</p>
-                            <p>History moved on.</p>
-                            <p>The Eclipse became a myth.</p>
-                            <p>Yet the fragment endured.</p>
-                            <p>And one day, it was discovered.</p>
-                            <p>Not by a king.</p>
-                            <p>Not by a hero.</p>
-                            <p>Not by a chosen one.</p>
-                            <p>By an unknown individual whose identity remains absent from every surviving archive.</p>
-                            <p>Every attempt to recover their name results in corruption.</p>
-                            <p>Every reference ends in missing data.</p>
-                            <p>What is known is this:</p>
-                            <p>They chose not to preserve the fragment.</p>
-                            <p>They chose to reignite it.</p>
-                            <p>The Core awakened once more.</p>
-                            <p>The Eclipse returned.</p>
-                            <p>And from its rebirth emerged a new generation.</p>
-                            <p>A new dominion.</p>
-                            <p>A second chance.</p>
-                            <p>A name eventually formed around it.</p>
-                            <p style="letter-spacing: 5px; font-weight: bold;">BLACKLIGHTDOMS</p><br>
-                            <p>Before disappearing, the unknown Keeper left behind a final message:</p>
-                            <p style="font-style: italic; color: #aaa;">"The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
+                            <p>Before BLDS. Before the Core.</p>
+                            <p>If the Eclipse rises again, do not seek recognition. Seek purpose. For purpose survives where attention cannot.</p>
                             <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-forgotten'); playAudio('bgm');">CLOSE ARCHIVE</button>
                         </div>`;
                 } 
                 else if (code === "12 Flames") {
                     unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden');
                     stopAudio('bgm');
-
                     overlay.style.display = 'flex';
                     overlay.style.background = '#000';
 
-                    let scanLines = [
-                        "ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.",
-                        "Verification Complete.", "...", "Unexpected Result Detected.",
-                        "Database Scan Repeated.", "10 Entries Found.", "Unexpected Result Detected."
-                    ];
+                    let scanLines = ["Loading Flame Database...", "Verification Complete.", "Unexpected Result Detected."];
                     await runTextSequence(scanLines, 4000);
 
                     slamLogo.style.display = 'block';
@@ -1537,9 +1545,8 @@
                     await new Promise(r => setTimeout(r, 1800));
 
                     box.innerHTML = `
-                        <div style="font-size: 1.6rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 5px;">You Found it</div>
-                        <div style="font-size: 1.3rem; letter-spacing: 3px; color: #888; margin-bottom: 15px;">12 Flames</div>
-                        <div style="font-size: 1rem; font-style: italic; color: #666; margin-bottom: 25px;">I thought you guys forgot about it</div>
+                        <div style="font-size: 1.6rem; letter-spacing: 4px; font-weight: bold;">You Found it</div>
+                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 15px;">12 Flames</div>
                         <button class="enter-btn" style="max-width:200px; margin: 0 auto;" id="btn-read-flame">DECRYPT LORE</button>
                     `;
                     box.style.opacity = '1';
@@ -1549,58 +1556,12 @@
                         setTimeout(() => {
                             slamLogo.style.display = 'none';
                             playAudio('sfx-flames');
-                            
                             box.innerHTML = `
                                 <div class="lore-scroll-box">
                                     <h2>THE 12 FLAMES PROTOCOL</h2>
                                     <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
-                                    <p>Humanity remembers Ten Flames.</p>
-                                    <p>Not because only Ten Flames exist.</p>
-                                    <p>But because everything beyond the Tenth Flame is rejected by human cognition.</p>
-                                    <p>Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance.</p>
-                                    <p>This anomaly became known as:</p>
-                                    <p style="color: #ff4d4d; font-weight: bold;">THE MEMORY COLLAPSE PHENOMENON</p>
-                                    <p>Researchers initially believe the phenomenon to be a recording failure.</p>
-                                    <p>They were wrong.</p>
-                                    <p>The information was not being erased.</p>
-                                    <p>Humanity was rejecting it.</p>
-                                    <p>The mind instinctively refused to retain what existed beyond the Tenth Flame.</p>
-                                    <p>Yet scattered fragments continued appearing across unrelated archives.</p>
-                                    <p>Fragments referencing two impossible entries.</p>
-                                    <p>Entry Eleven.</p>
-                                    <p>Entry Twelve.</p>
-                                    
-                                    <h3>FLAME 11 — SACRED FLAME</h3>
-                                    <p>The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one.</p>
-                                    <p style="color: #aaa; font-size: 0.85rem;">Vision. Discipline. Loyalty. Ambition. Resilience. Hope. Awareness. Patience. Courage. Unity.</p>
-                                    <p>Ancient records suggest these Flames were never meant to exist separately. They are fragments of a greater whole. Each Flame strengthens another. Each Flame protects another. Each Flame preserves the Core.</p>
-                                    <p>When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame.</p>
-                                    <p>Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.</p>
-                                    <p>Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles:</p>
-                                    <p style="color: #bbb; font-style: italic; padding-left: 10px;">
-                                        - The Flame of Unity.<br>
-                                        - The Flame Beyond Division.<br>
-                                        - The Crown of the Ten Flames.<br>
-                                        - The Flame That Contains All Flames.
-                                    </p>
-                                    <p>Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.</p>
-                                    
-                                    <h3>FLAME 12 — HIDDEN FLAME</h3>
-                                    <p style="color: #ff3333; font-weight: bold; letter-spacing: 1px;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
-                                    <p>Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records.</p>
-                                    <p>The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence.</p>
-                                    <p>Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.</p>
-                                    <p>Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written.</p>
-                                    <p>Only one statement survived every reconstruction attempt. A single sentence recovered from dozens of unrelated archives:</p>
-                                    <p style="color: #ffff1a; font-weight: bold; background: rgba(255,255,0,0.05); padding: 5px;">"It does not participate in existence. It observes whether existence should continue."</p>
-                                    <p>No archive continues beyond this point. No explanation follows. No conclusion exists. Only silence.</p>
-                                    
-                                    <br>
-                                    <p><strong>END OF RESTRICTED ARCHIVE</strong><br>
-                                    Total Recorded Flames: 10<br>
-                                    Total Observed Flames: 12<br>
-                                    Reason for discrepancy: UNKNOWN</p>
-                                    
+                                    <h3>FLAME 11 — SACRED FLAME</h3><p>The culmination of the Ten Flames.</p>
+                                    <h3>FLAME 12 — HIDDEN FLAME</h3><p>It does not participate in existence. It observes.</p>
                                     <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-flames'); playAudio('bgm');">EXIT LOGS</button>
                                 </div>`;
                             box.style.opacity = '1';
