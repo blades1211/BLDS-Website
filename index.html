@@ -145,17 +145,6 @@
         footer { margin-top: 20px; display: flex; gap: 20px; }
         footer a { color: #888; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dashed #444; padding-bottom: 2px; }
         footer a:hover { color: #fff; border-bottom-color: #fff; }
-
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes logoGlow { from { filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); } to { filter: drop-shadow(0 0 30px rgba(255,255,255,0.9)); } }
-        @keyframes shake {
-            0% { transform: translate(2px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(0px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
     </style>
 </head>
 <body id="app-body">
@@ -382,7 +371,15 @@
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).catch(() => console.log("Offline backup active."));
+            })
+            .then(() => {
+                console.log("Firebase sync successful.");
+                // Jika modal leaderboard terbuka, langsung perbarui tabel secara instan
+                if(document.getElementById('leaderboard-modal').style.display === 'flex') {
+                    fetchLeaderboardData();
+                }
+            })
+            .catch(() => console.log("Offline backup active."));
             
             updateUI();
         }
@@ -459,7 +456,6 @@
             localStorage.setItem('blds_username', username);
             saveToFirebase();
 
-            // Selesaikan Autoplay Block Policy Browser melalui interaksi ini
             const coreBGM = document.getElementById('bgm');
             coreBGM.muted = false;
             coreBGM.volume = 0.2;
@@ -542,7 +538,7 @@
             `;
         }
 
-        // AMBIL DATA & PEMBARUAN TABEL LEADERBOARD 2 KOLOM (Diperbaiki parsing URL-nya)
+        // AMBIL DATA & PEMBARUAN TABEL LEADERBOARD 2 KOLOM
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
             
@@ -575,9 +571,12 @@
 
                     records.forEach((player, index) => {
                         let tr = document.createElement('tr');
+                        // Menambahkan penanda visual jika ini adalah data milik user saat ini
+                        let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
+                        
                         tr.innerHTML = `
                             <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
-                            <td>${escapeHTML(player.name)}</td>
+                            <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
                             <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
                             <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
                         `;
@@ -599,7 +598,7 @@
             fetchLeaderboardData();
 
             if(lbInterval) clearInterval(lbInterval);
-            lbInterval = setInterval(fetchLeaderboardData, 5000);
+            lbInterval = setInterval(fetchLeaderboardData, 4000); // Polling setiap 4 detik
         }
 
         function closeLeaderboardModal() {
@@ -770,7 +769,7 @@
                 box.innerHTML = `<div class="lore-scroll-box">
                     <h2>THE FORGOTTEN ECLIPSE</h2>
                     <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
-                    <p>Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation... (skrip teks berlanjut)</p>
+                    <p>Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation...</p>
                     <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-forgotten').pause(); document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
                 </div>`;
                 box.style.opacity = '1';
@@ -787,7 +786,7 @@
                 box.innerHTML = `<div class="lore-scroll-box">
                     <h2>THE 12 FLAMES PROTOCOL</h2>
                     <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
-                    <p>Humanity remembers Ten Flames... (skrip teks berlanjut)</p>
+                    <p>Humanity remembers Ten Flames...</p>
                     <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-flames').pause(); document.getElementById('bgm').play();">EXIT SYSTEM</button>
                 </div>`;
                 box.style.opacity = '1';
