@@ -413,9 +413,10 @@
         #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
         
         #owner-panel {
-            position: fixed; top: 15%; left: 30%; width: 320px;
+            position: fixed; top: 10%; left: 30%; width: 340px;
             background: #0a0a0a; border: 2px solid #fff; z-index: 999999;
             box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
+            max-height: 85vh; overflow-y: auto;
         }
         .owner-header {
             background: #151515; padding: 10px; cursor: move; font-weight: bold;
@@ -423,6 +424,7 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .owner-section-title { font-size: 0.8rem; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 3px; color: #fff; letter-spacing: 1px; margin-top: 5px; }
         .owner-field { display: flex; flex-direction: column; gap: 4px; }
         .owner-field label { font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .owner-field input {
@@ -434,6 +436,12 @@
         }
         .btn-danger:hover {
             background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d;
+        }
+        .btn-warn {
+            background: rgba(255, 165, 0, 0.1); border: 1px solid #ffa500; color: #ffa500;
+        }
+        .btn-warn:hover {
+            background: #ffa500; color: #000; box-shadow: 0 0 15px #ffa500;
         }
 
         /* --- ANIMATIONS --- */
@@ -479,6 +487,7 @@
             <span style="cursor:pointer; font-weight:bold; font-size:1.1rem;" onclick="toggleOwnerPanel()">&times;</span>
         </div>
         <div class="owner-body">
+            <div class="owner-section-title">YOUR CURRENT DOMINION</div>
             <div class="owner-field">
                 <label>DOMINION NAME</label>
                 <input type="text" id="owner-name-input">
@@ -491,8 +500,23 @@
                 <label>HIGHEST STREAK</label>
                 <input type="number" id="owner-high-input">
             </div>
-            <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE CHANGES</button>
-            <button class="enter-btn btn-danger" style="margin-top:0px; padding:8px;" onclick="resetCurrentStreakOnly(this)">RESET CURRENT STREAK (0)</button>
+            <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE MY DATA</button>
+            <button class="enter-btn btn-danger" style="margin-top:0px; padding:8px;" onclick="resetCurrentStreakOnly(this)">RESET MY CURRENT STREAK (0)</button>
+
+            <div class="owner-section-title">MANIPULATE OTHERS BY NAME</div>
+            <div class="owner-field">
+                <label>TARGET DOMINION NAME</label>
+                <input type="text" id="owner-target-name" placeholder="Ketik nama persis di leaderboard...">
+            </div>
+            <div class="owner-field">
+                <label>NEW CURRENT STREAK</label>
+                <input type="number" id="owner-target-current" placeholder="Isi angka streak baru">
+            </div>
+            <div class="owner-field">
+                <label>NEW HIGHEST STREAK</label>
+                <input type="number" id="owner-target-high" placeholder="Isi angka high streak baru">
+            </div>
+            <button class="enter-btn btn-warn" style="margin-top:5px; padding:8px;" onclick="executeTargetChanges(this)">EXECUTE TARGET CHANGES</button>
         </div>
     </div>
 
@@ -770,7 +794,6 @@
             if(el) el.pause();
         }
 
-        /* --- LOGIC RATING BINTANG INTERAKTIF --- */
         function setupStars() {
             const stars = document.querySelectorAll('#star-container .star');
             stars.forEach(star => {
@@ -788,7 +811,6 @@
             });
         }
 
-        /* --- KIRIM KOMENTAR & RATING KE FIREBASE (1 USER = 1 RATING NYAWA) --- */
         function submitFeedback(btn) {
             applyButtonTransition(btn, () => {
                 const txtInput = document.getElementById('feedback-text');
@@ -805,7 +827,6 @@
 
                 playAudio('sfx-click');
 
-                // Menyimpan dengan id unik userId pengguna agar data diperbarui (1 user = 1 data)
                 let payload = {
                     username: username || "Unknown Dominion",
                     rating: selectedRating,
@@ -831,7 +852,6 @@
             });
         }
 
-        /* --- AMBIL DATA & LOGIC HITUNG RATA-RATA GOOGLE RATING --- */
         function fetchFeedbackData() {
             const container = document.getElementById('live-comments-container');
             
@@ -860,21 +880,17 @@
                     let totalUsers = feedbackList.length;
                     let avgRating = totalUsers > 0 ? (totalRatingScore / totalUsers).toFixed(1) : "0.0";
 
-                    // Update Tampilan Google Dashboard
                     document.getElementById('avg-rating-num').innerText = avgRating;
                     document.getElementById('total-rating-count').innerText = `${totalUsers} transmission${totalUsers > 1 ? 's' : ''}`;
                     
-                    // Render Bintang Rata-rata Besar
                     let roundedAvg = Math.round(parseFloat(avgRating));
                     document.getElementById('avg-stars-display').innerText = "★".repeat(roundedAvg) + "☆".repeat(5 - roundedAvg);
 
-                    // Update Histogram Bar Efek Google
                     for (let i = 1; i <= 5; i++) {
                         let pct = totalUsers > 0 ? (starCounts[i] / totalUsers) * 100 : 0;
                         document.getElementById(`bar-${i}`).style.width = pct + "%";
                     }
 
-                    // Urutkan List Komentar dari yang paling baru di atas
                     feedbackList.sort((a, b) => b.timestamp - a.timestamp);
                     container.innerHTML = "";
 
@@ -904,6 +920,123 @@
             for(let i=1; i<=5; i++) {
                 document.getElementById(`bar-${i}`).style.width = "0%";
             }
+        }
+
+        /* --- SISTEM REGISTRASI DENGAN VALIDASI NAMA UNIK --- */
+        function registerAndEnter(btn) {
+            applyButtonTransition(btn, () => {
+                let inputName = document.getElementById('dominion-name-input').value.trim();
+                if(!inputName) {
+                    alert("Harap masukkan nama Dominion Anda!");
+                    return;
+                }
+
+                // Cek nama di Firebase terlebih dahulu untuk validasi keunikan
+                fetch(`${BASE_DB_URL}leaderboard.json`)
+                .then(res => res.json())
+                .then(data => {
+                    let nameExists = false;
+                    if(data) {
+                        Object.keys(data).forEach(idKey => {
+                            if(idKey !== userId && data[idKey] && data[idKey].username) {
+                                if(data[idKey].username.toLowerCase() === inputName.toLowerCase()) {
+                                    nameExists = true;
+                                }
+                            }
+                        });
+                    }
+
+                    if(nameExists) {
+                        alert("Gagal Masuk: Nama Dominion tersebut sudah dipakai orang lain! Pilih nama yang unik.");
+                        return;
+                    }
+
+                    // Jika nama aman, silakan login/register
+                    username = inputName;
+                    localStorage.setItem('blds_username', username);
+                    saveToFirebase();
+
+                    playAudio('bgm');
+                    playAudio('sfx-click');
+                    fetchFeedbackData();
+                    
+                    document.getElementById('gate-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('gate-screen').style.display = 'none';
+                        const menu = document.getElementById('main-menu');
+                        menu.style.display = 'flex';
+                        setTimeout(() => menu.style.opacity = '1', 50);
+                    }, 1500);
+                })
+                .catch(() => {
+                    alert("Koneksi database bermasalah. Coba lagi.");
+                });
+            });
+        }
+
+        /* --- FITUR MANIPULASI STREAK ORANG LAIN BERDASARKAN NAMA --- */
+        function executeTargetChanges(btn) {
+            applyButtonTransition(btn, () => {
+                let targetName = document.getElementById('owner-target-name').value.trim();
+                let targetCurrent = document.getElementById('owner-target-current').value;
+                let targetHigh = document.getElementById('owner-target-high').value;
+
+                if(!targetName) {
+                    alert("Masukkan nama target Dominion yang ingin lu ubah!");
+                    return;
+                }
+                if(targetCurrent === "" && targetHigh === "") {
+                    alert("Harap isi salah satu kolom: Current Streak atau High Streak baru!");
+                    return;
+                }
+
+                // Ambil seluruh data leaderboard untuk mendeteksi ID target berdasarkan namanya
+                fetch(`${BASE_DB_URL}leaderboard.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data) { alert("Tidak ada data user di database."); return; }
+                    
+                    let targetUUID = null;
+                    let targetOldData = null;
+
+                    Object.keys(data).forEach(uuid => {
+                        if(data[uuid] && data[uuid].username && data[uuid].username.toLowerCase() === targetName.toLowerCase()) {
+                            targetUUID = uuid;
+                            targetOldData = data[uuid];
+                        }
+                    });
+
+                    if(!targetUUID) {
+                        alert(`Dominion bernama "${targetName}" tidak ditemukan di database. Cek lagi penulisan huruf besar/kecilnya di Leaderboard!`);
+                        return;
+                    }
+
+                    // Susun payload modifikasi data target
+                    let updatedPayload = { ...targetOldData };
+                    if(targetCurrent !== "") updatedPayload.streak = parseInt(targetCurrent);
+                    if(targetHigh !== "") updatedPayload.highStreak = parseInt(targetHigh);
+                    updatedPayload.updatedAt = Date.now();
+
+                    // Kirim pembaruan ke node UUID target di Firebase
+                    fetch(`${BASE_DB_URL}leaderboard/${targetUUID}.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedPayload)
+                    })
+                    .then(() => {
+                        alert(`🔥 COMMAND EXECUTED SUCCESSFULLY!\nDominion "${targetName}" berhasil diubah di database.`);
+                        document.getElementById('owner-target-name').value = '';
+                        document.getElementById('owner-target-current').value = '';
+                        document.getElementById('owner-target-high').value = '';
+                        
+                        // Sinkronisasi ulang jika mengubah data diri sendiri
+                        if(targetUUID === userId) {
+                            syncWithFirebase();
+                        }
+                    })
+                    .catch(() => alert("Gagal memperbarui data target. Server error."));
+                });
+            });
         }
 
         function syncWithFirebase() {
@@ -1029,32 +1162,6 @@
                 toast.style.top = "20px";
                 setTimeout(() => { toast.style.top = "-100px"; }, 4000);
             }
-        }
-
-        function registerAndEnter(btn) {
-            applyButtonTransition(btn, () => {
-                let inputName = document.getElementById('dominion-name-input').value.trim();
-                if(!inputName) {
-                    alert("Harap masukkan nama Dominion Anda!");
-                    return;
-                }
-                username = inputName;
-                
-                localStorage.setItem('blds_username', username);
-                saveToFirebase();
-
-                playAudio('bgm');
-                playAudio('sfx-click');
-                fetchFeedbackData();
-                
-                document.getElementById('gate-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('gate-screen').style.display = 'none';
-                    const menu = document.getElementById('main-menu');
-                    menu.style.display = 'flex';
-                    setTimeout(() => menu.style.opacity = '1', 50);
-                }, 1500);
-            });
         }
 
         function openModal(id, btn) { 
@@ -1236,7 +1343,6 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
@@ -1352,7 +1458,6 @@
             }, 1200);
         }
 
-        /* --- DRAGGABLE INTERFACE HANDLER --- */
         function makeElementDraggable(elmnt) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             const header = document.getElementById(elmnt.id + "0g-dragheader") || document.getElementById(elmnt.id + "-dragheader");
@@ -1420,14 +1525,14 @@
                 highStreak = newHigh;
 
                 saveToFirebase();
-                alert("Owner Commands Executed! Data synced.");
+                alert("Owner Commands Executed! Data diri berhasil disinkronisasi.");
                 toggleOwnerPanel();
             });
         }
 
         function resetCurrentStreakOnly(btn) {
             applyButtonTransition(btn, () => {
-                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0?")) {
+                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK Anda menjadi 0?")) {
                     currentStreak = 0;
                     lastClickTime = 0; 
                     document.getElementById('owner-current-input').value = 0;
