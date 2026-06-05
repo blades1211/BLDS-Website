@@ -80,7 +80,7 @@
             animation: spin 3s linear infinite;
         }
         #enter-container { display: none; text-align: center; animation: fadeIn 1.5s ease forwards; width: 100%; max-width: 320px; padding: 20px; }
-        .blds-logo-glow { width: 150px; filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)); animation: logoGlow 3s infinite alternate; display: block; margin: 0 auto; }
+        .blds-logo-glow { width: 150px; filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.9)); animation: logoGlow 3s infinite alternate; display: block; margin: 0 auto; }
 
         /* --- BUTTONS & MENU --- */
         .enter-btn {
@@ -102,8 +102,18 @@
 
         /* --- OVERLAY CUTSCENE --- */
         #cutscene-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center; }
-        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; opacity: 0; max-width: 800px; }
+        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; opacity: 0; max-width: 800px; z-index: 10; }
         .shake-epic { animation: shake 0.1s infinite alternate; }
+
+        /* --- LOGO ANIMATION FOR BLDS CUTSCENE --- */
+        #cutscene-logo { 
+            position: absolute;
+            width: 450px; 
+            display: none; 
+            opacity: 0;
+            z-index: 5;
+            transition: transform 3s linear, opacity 1s ease;
+        }
 
         /* --- MODAL --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 150; justify-content: center; align-items: center; padding: 20px; }
@@ -139,12 +149,15 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop src="ganti_audio_loop_utama.mp3"></audio>
-    <audio id="sfx-click" src="ganti_sfx_click.mp3"></audio>
-    <audio id="sfx-streak100" src="ganti_sfx_epic_streak100.mp3"></audio>
-    <audio id="sfx-blds" src="ganti_sfx_blds_cutscene.mp3"></audio>
-    <audio id="sfx-forgotten" src="ganti_sfx_forgotten.mp3"></audio>
-    <audio id="sfx-flames" src="ganti_sfx_12flames.mp3"></audio>
+    <audio id="bgm" loop src="freesound_community-space-ambience-56265.mp3"></audio>
+    <audio id="sfx-click" src="universfield-scary-swoosh-142323.mp3"></audio>
+    <audio id="sfx-text-fade" src="universfield-scary-swoosh-142323.mp3"></audio>
+    <audio id="sfx-streak100" loop src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
+    <audio id="sfx-blds-init" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
+    <audio id="sfx-blds-loop" loop src="black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
+    <audio id="sfx-blds-logo" src="dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
+    <audio id="sfx-forgotten" loop src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
+    <audio id="sfx-flames" loop src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -189,7 +202,7 @@
 
     <div id="cutscene-overlay">
         <div id="cutscene-text-box" class="cutscene-text"></div>
-        <img id="cutscene-logo" src="logo.png" style="width:180px; display:none; margin-top:20px; transition: all 1s ease;" onerror="this.src='https://placehold.co/180x180/000000/ffffff?text=BLDS+LOGO'">
+        <img id="cutscene-logo" src="logo.png" onerror="this.src='https://placehold.co/150x150/000000/ffffff?text=BLDS+LOGO'">
     </div>
 
     <div id="archive-modal" class="modal">
@@ -422,7 +435,6 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- TOMBOL CLAIM STREAK BARU ---
         function claimDailyStreak() {
             let now = Date.now();
             let cooldown = 24 * 60 * 60 * 1000;
@@ -446,7 +458,6 @@
             }
         }
 
-        // --- TOMBOL ORIGIN SEKARANG UNTUK MENAMPILKAN LORE ---
         function triggerOriginLore() {
             const body = document.getElementById('app-body');
             body.classList.add('blink-effect');
@@ -494,7 +505,6 @@
             }, 400);
         }
 
-        // --- FETCH REAL-TIME LEADERBOARD FROM RTDB ---
         function openLeaderboard() {
             openModal('leaderboard-modal');
             const container = document.getElementById('leaderboard-data-rows');
@@ -508,7 +518,6 @@
                         return;
                     }
 
-                    // Mapping objek Firebase ke Array
                     let records = [];
                     for(let key in data) {
                         if(data[key] && data[key].username) {
@@ -519,7 +528,6 @@
                         }
                     }
 
-                    // Urutkan berdasarkan streak tertinggi
                     records.sort((a, b) => b.streak - a.streak);
 
                     container.innerHTML = "";
@@ -544,35 +552,27 @@
             );
         }
 
-        // --- SEQUENCE ENGINE FOR TEXT TRANSITIONS ---
-        async function runTextSequence(lines, delay = 1500, milestones = []) {
+        async function runTextSequence(lines, delay = 1500) {
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
-            const logo = document.getElementById('cutscene-logo');
             overlay.style.display = 'flex';
             overlay.style.background = '#000';
             
             for(let i=0; i<lines.length; i++) {
-                let milestone = milestones.find(m => m.lineIndex === i);
-                if(milestone) {
-                    logo.style.display = 'block';
-                    logo.style.opacity = milestone.opacity;
-                    if(milestone.scale) logo.style.transform = `scale(${milestone.scale})`;
-                    if(milestone.glow) logo.style.filter = "drop-shadow(0 0 30px #fff)";
-                }
-
                 box.innerText = lines[i];
                 box.style.transition = 'opacity 0.8s ease';
                 box.style.opacity = '1';
+                document.getElementById('sfx-text-fade').currentTime = 0;
+                document.getElementById('sfx-text-fade').play().catch(()=>{});
                 await new Promise(r => setTimeout(r, delay));
                 box.style.opacity = '0';
                 await new Promise(r => setTimeout(r, 800));
             }
         }
 
-        // --- CUTSCENE STREAK 100 ---
         async function startStreak100Cutscene() {
             document.getElementById('bgm').pause();
+            document.getElementById('sfx-streak100').currentTime = 0;
             document.getElementById('sfx-streak100').play().catch(()=>{});
 
             const lines = [
@@ -582,13 +582,8 @@
                 "A hundred days is not the end.", "It is proof.", "Proof that your light survived.", "Proof that your flame endured.",
                 "And now...", "The core remembers your name."
             ];
-            const milestones = [
-                { lineIndex: 9, opacity: "0.25" },
-                { lineIndex: 12, opacity: "0.55" },
-                { lineIndex: 16, opacity: "1", glow: true }
-            ];
 
-            await runTextSequence(lines, 2000, milestones);
+            await runTextSequence(lines, 2000);
 
             const overlay = document.getElementById('cutscene-overlay');
             overlay.style.transition = 'background 0.5s ease';
@@ -604,14 +599,13 @@
                 setTimeout(() => {
                     overlay.classList.remove('invert-full', 'shake-epic');
                     overlay.style.display = 'none';
-                    document.getElementById('cutscene-logo').style.display = 'none';
                     document.getElementById('cutscene-text-box').style.fontSize = "1.5rem";
+                    document.getElementById('sfx-streak100').pause();
                     document.getElementById('bgm').play().catch(()=>{});
                 }, 5000);
             }, 600);
         }
 
-        // --- CODES HANDLER FUNCTION ---
         async function submitCode() {
             let code = document.getElementById('code-input-field').value.trim();
             closeModal('code-modal');
@@ -632,28 +626,55 @@
             else if (code === "BLDS") {
                 unlockAchievement('2-dim', '"2 Dimension"\nBlack and White');
                 document.getElementById('bgm').pause();
-                document.getElementById('sfx-blds').play().catch(()=>{});
+                
+                document.getElementById('sfx-blds-init').currentTime = 0;
+                document.getElementById('sfx-blds-init').play().catch(()=>{});
+                
+                document.getElementById('sfx-blds-loop').currentTime = 0;
+                document.getElementById('sfx-blds-loop').play().catch(()=>{});
 
                 let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
                 await runTextSequence(lines, 1400);
 
+                // Setup Logo raksasa dari luar layar (tersembunyi secara posisi/skala awal)
+                logo.style.display = 'block';
+                logo.style.transform = 'translate(-100vw, -100vh) scale(3) rotate(-180deg)';
+                logo.style.opacity = '0';
+                
+                // Trigger BLACK
                 overlay.classList.add('shake-epic');
                 box.innerText = "BLACK"; box.style.opacity = '1';
-                logo.style.display = 'block'; logo.style.opacity = '0.5';
-                logo.style.clipPath = 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)';
-                logo.style.transform = 'rotate(-30deg)';
-                await new Promise(r => setTimeout(r, 2000));
+                
+                document.getElementById('sfx-blds-logo').currentTime = 0;
+                document.getElementById('sfx-blds-logo').play().catch(()=>{});
+                
+                // Transisi logo masuk setengah bagian secara perlahan
+                setTimeout(() => {
+                    logo.style.opacity = '0.4';
+                    logo.style.transform = 'translate(-40%, -20%) scale(2.2) rotate(-45deg)';
+                }, 50);
+                
+                await new Promise(r => setTimeout(r, 2500));
 
+                // Trigger LIGHT
                 overlay.classList.remove('shake-epic');
                 overlay.classList.add('invert-half-right');
                 box.innerText = "LIGHT";
-                logo.style.clipPath = 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)';
-                logo.style.transform = 'rotate(30deg)';
-                await new Promise(r => setTimeout(r, 2000));
+                
+                document.getElementById('sfx-blds-logo').currentTime = 0;
+                document.getElementById('sfx-blds-logo').play().catch(()=>{});
+                
+                setTimeout(() => {
+                    logo.style.transform = 'translate(-35%, -15%) scale(2.2) rotate(-20deg)';
+                }, 50);
+                
+                await new Promise(r => setTimeout(r, 2500));
 
                 overlay.classList.remove('invert-half-right');
+                logo.style.opacity = '0';
+                setTimeout(() => { logo.style.display = 'none'; }, 1000);
+                
                 let lines2 = ["Two opposites.", "Two destinies.", "Two truths.", "Both necessary."];
-                logo.style.display = 'none';
                 await runTextSequence(lines2, 1400);
 
                 overlay.style.transition = 'background 2.5s ease';
@@ -662,11 +683,14 @@
 
                 overlay.style.display = 'none';
                 bodyEl.classList.add('invert-half-right');
+                
+                document.getElementById('sfx-blds-loop').pause();
                 document.getElementById('bgm').play().catch(()=>{});
             } 
             else if (code === "Forgotten") {
                 unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
                 document.getElementById('bgm').pause();
+                document.getElementById('sfx-forgotten').currentTime = 0;
                 document.getElementById('sfx-forgotten').play().catch(()=>{});
 
                 let lines = [
@@ -676,7 +700,7 @@
                 ];
                 await runTextSequence(lines, 1200);
 
-                box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace;">
+                box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace; z-index:20; position:relative;">
                     <h2>THE FORGOTTEN ECLIPSE</h2>
                     <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4><br>
                     Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation. A generation history no longer remembers. They were not heroes. They were not rulers. They were not legends. They were ordinary people carrying extraordinary burdens. People abandoned by hope. People consumed by failure. People who had forgotten how to believe in themselves. Yet among the darkness, they found one another. And together they created something the world believed impossible. The First Eclipse. A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.<br><br>
@@ -686,13 +710,14 @@
                     Years passed. The world forgot. History moved on. The Eclipse became a myth. Yet the fragment endured. And one day, it was discovered. Not by a king. Not by a hero. Not by a chosen one. By an unknown individual whose identity remains absent from every surviving archive. Every attempt to recover their name results in corruption. Every reference ends in missing data.<br><br>
                     What is known is this: They chose not to preserve the fragment. They chose to reignite it. The Core awakened once more. The Eclipse returned. And from its rebirth emerged a new generation. A new dominion. A second chance. A name eventually formed around it. BLACKLIGHTDOMS<br><br>
                     Before disappearing, the unknown Keeper left behind a final message: "The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."
-                    <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
+                    <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-forgotten').push?null:document.getElementById('sfx-forgotten').pause(); document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
                 </div>`;
                 box.style.opacity = '1';
             } 
             else if (code === "12 Flames") {
                 unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden');
                 document.getElementById('bgm').pause();
+                document.getElementById('sfx-flames').currentTime = 0;
                 document.getElementById('sfx-flames').play().catch(()=>{});
 
                 let lines = [
@@ -702,20 +727,12 @@
                 ];
                 await runTextSequence(lines, 1000);
 
-                logo.style.display = 'block'; logo.style.opacity = '1';
-                logo.style.filter = 'drop-shadow(0 0 25px #fff)';
-                logo.style.transform = 'scale(1.2) rotate(-15deg)';
-                await new Promise(r => setTimeout(r, 450));
-                logo.style.transform = 'scale(1) rotate(15deg)';
-                await new Promise(r => setTimeout(r, 450));
-                logo.style.transform = 'scale(1) rotate(0deg)';
-
                 box.innerHTML = `<br><h3>You Found it</h3><br><h2>12 Flames</h2><br><p>I thought you guys forgot about it</p>
                 <br><button class="enter-btn" id="next-flame-btn" style="padding:5px 15px; font-size:0.9rem;">READ RESTRICTED LORE</button>`;
                 box.style.opacity = '1';
 
                 document.getElementById('next-flame-btn').onclick = () => {
-                    box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace;">
+                    box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace; z-index:20; position:relative;">
                         <h2>THE 12 FLAMES PROTOCOL</h2>
                         <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4><br>
                         Humanity remembers Ten Flames. Not because only Ten Flames exist. But because everything beyond the Tenth Flame is rejected by human cognition. Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance. This anomaly became known as: THE MEMORY COLLAPSE PHENOMENON.<br><br>
@@ -739,7 +756,7 @@
                         Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records. The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.<br><br>
                         Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written. Only one statement survived every reconstruction attempt: "It does not participate in existence. It observes whether existence should continue." No archive continues beyond this point. Only silence.<br><br>
                         END OF RESTRICTED ARCHIVE<br>Total Recorded Flames: 10<br>Total Observed Flames: 12<br>Reason for discrepancy: UNKNOWN
-                        <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('cutscene-logo').style.display='none'; document.getElementById('bgm').play();">EXIT SYSTEM</button>
+                        <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-flames').pause(); document.getElementById('bgm').play();">EXIT SYSTEM</button>
                     </div>`;
                 };
             } else {
