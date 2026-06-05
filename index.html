@@ -221,11 +221,49 @@
         .ld-table th { background: #111; color: #fff; letter-spacing: 1px; }
         .ld-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 
+        /* --- PLAY STORE RATING SUMMARY COMPONENT --- */
+        .playstore-rating-dashboard {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #222;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .rating-huge-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1;
+            text-align: center;
+            flex: 1;
+        }
+        .rating-huge-stars-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 2;
+            padding-left: 15px;
+            border-left: 1px solid #222;
+        }
+        .stars-row-summary {
+            color: #ffd700;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .total-reviewers-text {
+            font-size: 0.72rem;
+            color: #888;
+            font-family: monospace;
+        }
+
         /* --- RATING & COMMENTS UX SYSTEM --- */
         .rating-select { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; }
         .star-box { font-size: 1.6rem; cursor: pointer; color: #444; transition: color 0.2s; }
         .star-box.selected { color: #ffd700; filter: drop-shadow(0 0 5px #ffd700); }
-        .comment-container { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 40vh; overflow-y: auto; padding-right: 5px; }
+        .comment-container { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 35vh; overflow-y: auto; padding-right: 5px; }
         .comment-node { border-left: 2px solid #333; padding-left: 12px; margin-bottom: 5px; background: rgba(255,255,255,0.01); padding: 10px; position: relative; }
         .comment-meta { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .comment-text { font-size: 0.85rem; line-height: 1.5; color: #ddd; word-break: break-all; }
@@ -449,7 +487,7 @@
             <button class="menu-btn" id="streak-claim-btn" onclick="claimDailyStreak(this)">CLAIM DAILY STREAK</button>
             <button class="menu-btn" id="origin-btn" onclick="triggerOriginLore(this)">ORIGIN (LORE)</button>
             <button class="menu-btn" onclick="openLeaderboard(this)">LEADERBOARD LIVE</button>
-            <button class="menu-btn" onclick="openModal('rating-modal', this)">FEEDBACK & COMMENTS</button>
+            <button class="menu-btn" onclick="openModal('rating-modal', this)">FEEDBACK & RATINGS</button>
             <button class="menu-btn" onclick="openModal('achievements-modal', this)">ACHIEVEMENT</button>
             <button class="menu-btn" onclick="openModal('archive-modal', this)">ARCHIVE</button>
             <button class="menu-btn" onclick="openModal('code-modal', this)">CODE</button>
@@ -487,9 +525,17 @@
     <div id="rating-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <span class="close-modal" onclick="closeModal('rating-modal')">&times;</span>
-            <h3 style="letter-spacing:3px; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:15px;">DOMINION TRANSMISSIONS</h3>
+            <h3 style="letter-spacing:3px; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">DOMINION TRANSMISSIONS</h3>
             
-            <div class="comment-input-area">
+            <div class="playstore-rating-dashboard">
+                <div class="rating-huge-number" id="live-avg-rating-num">0.0</div>
+                <div class="rating-huge-stars-box">
+                    <div class="stars-row-summary" id="live-avg-stars-row">☆☆☆☆☆</div>
+                    <div class="total-reviewers-text" id="live-total-reviewers-count">0 total reviews</div>
+                </div>
+            </div>
+
+            <div class="comment-input-area" style="border-top: none; padding-top: 0; margin-bottom: 15px;">
                 <div class="rating-select" id="feedback-star-row">
                     <span class="star-box" data-value="1" onclick="setFeedbackRating(1)">★</span>
                     <span class="star-box" data-value="2" onclick="setFeedbackRating(2)">★</span>
@@ -724,7 +770,6 @@
         }
 
         function syncCmsAndCommunications() {
-            // Live security lock validation check
             if(username) {
                 fetch(`${BASE_DB_URL}leaderboard/${userId}/isBanned.json`)
                     .then(res => res.json())
@@ -756,7 +801,6 @@
                     }
                 });
 
-            // Keep full database map cached for owner lookup searches
             fetch(`${BASE_DB_URL}leaderboard.json`)
                 .then(res => res.json())
                 .then(data => { if(data) fullLeaderboardCache = data; });
@@ -832,7 +876,6 @@
                 username = inputName;
                 localStorage.setItem('blds_username', username);
                 
-                // Validate if newly entered name is already locked/banned
                 fetch(`${BASE_DB_URL}leaderboard.json`)
                     .then(res => res.json())
                     .then(allData => {
@@ -938,7 +981,6 @@
             });
         }
 
-        // Action function for owner to delete feedback records
         function removePublicCommentByOwner(commentId) {
             if(confirm("Delete this transmission node permanently from Firebase?")) {
                 fetch(`${BASE_DB_URL}comments/${commentId}.json`, { method: 'DELETE' })
@@ -953,14 +995,29 @@
                 .then(data => {
                     if(!data) {
                         listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
+                        document.getElementById('live-avg-rating-num').innerText = "0.0";
+                        document.getElementById('live-avg-stars-row').innerText = "☆☆☆☆☆";
+                        document.getElementById('live-total-reviewers-count').innerText = "0 total reviews";
                         return;
                     }
+
+                    // CALCULATE PLAY STORE SUMMARY STATISTICS DYNAMICALLY
+                    let totalRatingSum = 0;
+                    let totalCommentsCount = 0;
+
                     listContainer.innerHTML = '';
                     Object.keys(data).forEach(id => {
                         let node = data[id];
+                        
+                        // Accumulate stars calculation
+                        if(node.rating !== undefined) {
+                            totalRatingSum += parseInt(node.rating);
+                            totalCommentsCount++;
+                        }
+
                         let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
                         let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-                        let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.7rem; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
+                        let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.7 habit; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
 
                         let mainNodeHtml = `
                             <div class="comment-node" id="node-block-${id}">
@@ -993,6 +1050,20 @@
                             });
                         }
                     });
+
+                    // Update UI Statistics Box
+                    if(totalCommentsCount > 0) {
+                        let avg = (totalRatingSum / totalCommentsCount);
+                        document.getElementById('live-avg-rating-num').innerText = avg.toFixed(1);
+                        
+                        let roundedStars = Math.round(avg);
+                        document.getElementById('live-avg-stars-row').innerText = '★'.repeat(roundedStars) + '☆'.repeat(5 - roundedStars);
+                        document.getElementById('live-total-reviewers-count').innerText = `${totalCommentsCount} total reviews`;
+                    } else {
+                        document.getElementById('live-avg-rating-num').innerText = "0.0";
+                        document.getElementById('live-avg-stars-row').innerText = "☆☆☆☆☆";
+                        document.getElementById('live-total-reviewers-count').innerText = "0 total reviews";
+                    }
                 });
         }
 
