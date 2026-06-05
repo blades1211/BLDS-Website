@@ -78,6 +78,20 @@
         }
         #achievement-toast span { display: block; font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #444; }
 
+        /* --- BROADCAST ANNOUNCEMENT BANNER --- */
+        #global-announcement-banner {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(10, 10, 10, 0.95); border-bottom: 2px solid #ff0055;
+            color: #fff; padding: 12px 20px; z-index: 99998; font-size: 0.85rem;
+            letter-spacing: 1px; display: none; text-align: center;
+            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.3);
+            animation: pulseBorder 2s infinite alternate;
+        }
+        @keyframes pulseBorder {
+            from { border-bottom-color: #ff0055; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
+            to { border-bottom-color: #ffffff; box-shadow: 0 5px 25px rgba(255, 255, 255, 0.4); }
+        }
+
         /* --- PROGRESS BAR ACHIEVEMENT --- */
         .progress-container { width: 100%; background: #222; border: 1px solid #444; height: 15px; margin: 15px 0; position: relative; }
         .progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.5s ease; }
@@ -99,16 +113,16 @@
         /* --- BUTTONS & MENU --- */
         .enter-btn {
             background: transparent; border: 1px solid #fff; color: #fff; padding: 12px 30px; font-size: 1rem; cursor: pointer; letter-spacing: 3px;
-            transition: all 0.3s; width: 100%; margin-top: 15px;
+            transition: all 0.3s; width: 100%; margin-top: 15px; font-family: monospace;
         }
         .enter-btn:hover { background: #fff; color: #000; box-shadow: 0 0 25px #fff; }
         
-        #main-menu { display: none; opacity: 0; min-height: 100vh; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px; transition: opacity 1.5s ease; }
+        #main-menu { display: none; opacity: 0; min-height: 100vh; flex-direction: column; align-items: center; justify-content: space-between; padding: 60px 20px 40px 20px; transition: opacity 1.5s ease; }
         .header-section { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
         .title-glow { font-size: 2.1rem; letter-spacing: 6px; text-shadow: 0 0 20px rgba(255,255,255,0.7); margin-top: 15px; text-align: center; }
         
         .menu-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 350px; margin: 20px 0; }
-        .menu-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.3); color: #ccc; padding: 14px; font-size: 0.95rem; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; text-align: center; }
+        .menu-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.3); color: #ccc; padding: 14px; font-size: 0.95rem; cursor: pointer; letter-spacing: 2px; transition: all 0.3s; text-align: center; font-family: monospace; }
         .menu-btn:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.1); transform: scale(1.02); }
         .menu-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #333; color: #666; }
         
@@ -118,28 +132,23 @@
         #cutscene-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; 
             display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center;
-            transition: background 1s ease; /* Untuk transisi menghitam/memutih halus */
+            transition: background 1s ease;
         }
         .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; margin-top: 20px; }
         
         .shake-epic { animation: shake 0.15s infinite alternate; }
         
-        /* GUNCANGAN BRUTAL ACAK DAN FONT TEBAL UNTUK STREAK 100 */
         .shake-brutal-text { 
             font-family: 'Impact', 'Arial Black', sans-serif !important;
             animation: brutalGquake 0.08s infinite alternate ease-in-out; 
             letter-spacing: 4px;
-            filter: drop-shadow(0 0 20px rgba(255,0,0,0.6)); /* Tambah aura shockwave tipis */
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.6));
         }
 
-        /* LOGO ANIMASI NAIK TURUN SMOOTH */
         .logo-streak-dynamic {
-            width: 150px;
-            opacity: 0;
-            display: none;
+            width: 150px; opacity: 0; display: none;
             transition: opacity 1s ease, transform 1s ease, width 1s ease, filter 1s ease;
-            animation: floatUpDown 4s ease-in-out infinite;
-            z-index: 5;
+            animation: floatUpDown 4s ease-in-out infinite; z-index: 5;
         }
         @keyframes floatUpDown {
             0% { transform: translateY(0px); }
@@ -147,7 +156,6 @@
             100% { transform: translateY(0px); }
         }
         
-        /* ANIMASI GEMPA BRUTAL: ATAS, BAWAH, KIRI, KANAN, MIRING SECARA ACAK */
         @keyframes brutalGquake {
             0% { transform: translate(5px, 3px) rotate(1deg); }
             20% { transform: translate(-4px, -5px) rotate(-1.5deg); }
@@ -159,25 +167,14 @@
 
         /* --- MECHANISM DUAL LOGO CODE BLDS --- */
         .side-logo {
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            top: calc(50% - 150px);
-            z-index: 10000;
-            display: none;
-            opacity: 0;
-            transition: opacity 1.5s ease;
+            position: fixed; width: 300px; height: 300px; top: calc(50% - 150px); z-index: 10000; display: none; opacity: 0; transition: opacity 1.5s ease;
         }
         #logo-left { left: -150px; animation: spinExtremelySlow 25s linear infinite; }
         #logo-right { right: -150px; animation: spinExtremelySlow 25s linear infinite; }
 
         /* --- SPECIAL ANIMATION LOGO 12 FLAMES --- */
         .blds-slam-shining {
-            width: 200px;
-            filter: drop-shadow(0 0 35px rgba(255, 255, 255, 1));
-            animation: slamTiltSmooth 1.8s ease-in-out forwards;
-            display: none;
-            margin-bottom: 20px;
+            width: 200px; filter: drop-shadow(0 0 35px rgba(255, 255, 255, 1)); animation: slamTiltSmooth 1.8s ease-in-out forwards; display: none; margin-bottom: 20px;
         }
         @keyframes slamTiltSmooth {
             0% { transform: scale(3) rotate(0deg); opacity: 0; }
@@ -189,16 +186,7 @@
 
         /* --- LORE CONTAINER --- */
         .lore-scroll-box {
-            text-align: left; 
-            max-height: 75vh; 
-            overflow-y: auto; 
-            font-size: 0.9rem; 
-            line-height: 1.7; 
-            font-family: monospace; 
-            padding-right: 10px;
-            width: 100%;
-            max-width: 800px;
-            animation: fadeIn 1s ease forwards;
+            text-align: left; max-height: 75vh; overflow-y: auto; font-size: 0.9rem; line-height: 1.7; font-family: monospace; padding-right: 10px; width: 100%; max-width: 800px; animation: fadeIn 1s ease forwards;
         }
         .lore-scroll-box h2 { letter-spacing: 4px; margin-bottom: 5px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 5px;}
         .lore-scroll-box h3 { letter-spacing: 3px; margin-top: 20px; margin-bottom: 5px; color: #fff; border-bottom: 1px dashed #333; }
@@ -214,17 +202,41 @@
 
         /* --- MODAL --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 150; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #050505; border: 1px solid #333; padding: 30px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; }
+        .modal-content { background: #050505; border: 1px solid #333; padding: 30px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; }
         .close-modal { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
         .code-input { width: 100%; padding: 12px; background: #111; border: 1px solid #444; color: #fff; font-family: monospace; font-size: 1rem; text-align: center; margin-bottom: 15px; }
         .badge-card { border: 1px dashed #333; padding: 15px; margin-bottom: 10px; opacity: 0.2; transition: all 0.5s ease; }
         .badge-unlocked { opacity: 1 !important; border: 1px solid #fff !important; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-        /* --- LEADERBOARD TABLE --- */
+        /* --- LEADERBOARD & RATING COMS --- */
         .ld-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
         .ld-table th, .ld-table td { border: 1px solid #222; padding: 10px 8px; text-align: left; }
         .ld-table th { background: #111; color: #fff; letter-spacing: 1px; }
         .ld-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+        /* --- RATING & COMMENTS UX SYSTEM --- */
+        .rating-select { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; }
+        .star-box { font-size: 1.6rem; cursor: pointer; color: #444; transition: color 0.2s; }
+        .star-box.selected { color: #ffd700; filter: drop-shadow(0 0 5px #ffd700); }
+        .comment-container { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 40vh; overflow-y: auto; padding-right: 5px; }
+        .comment-node { border-left: 2px solid #333; padding-left: 12px; margin-bottom: 5px; background: rgba(255,255,255,0.01); padding: 10px; }
+        .comment-meta { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .comment-text { font-size: 0.85rem; line-height: 1.5; color: #ddd; word-break: break-all; }
+        .reply-node { margin-left: 20px; margin-top: 10px; border-left: 2px dashed #555; padding-left: 10px; background: rgba(255,255,255,0.005); padding: 8px; }
+        
+        /* UNCOPYABLE ANTI-TIRU STAFF STYLING */
+        .staff-badge {
+            background: linear-gradient(45deg, #ffd700, #ff0055);
+            color: #000; font-weight: bold; font-size: 0.65rem;
+            padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
+            margin-left: 5px; display: inline-block;
+            box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
+            text-shadow: none;
+        }
+
+        .comment-input-area { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #222; padding-top: 15px; }
+        .reply-btn-ui { font-size: 0.7rem; color: #00ffaa; background: transparent; border: none; cursor: pointer; font-family: monospace; text-transform: uppercase; margin-top: 5px; display: inline-block; }
+        .reply-btn-ui:hover { text-decoration: underline; }
 
         footer { margin-top: 20px; display: flex; gap: 20px; }
         footer a { color: #888; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dashed #444; padding-bottom: 2px; }
@@ -235,35 +247,35 @@
             position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px;
             border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid #444;
             color: #fff; font-size: 1.2rem; cursor: pointer; z-index: 99999;
-            display: none; 
-            align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
             transition: transform 0.2s;
         }
         #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
         
         #owner-panel {
-            position: fixed; top: 15%; left: 30%; width: 320px;
+            position: fixed; top: 10%; left: 25%; width: 360px; max-height: 80vh;
             background: #0a0a0a; border: 2px solid #fff; z-index: 999999;
             box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
+            overflow: hidden;
         }
         .owner-header {
-            background: #151515; padding: 10px; cursor: move; font-weight: bold;
+            background: #151515; padding: 12px; cursor: move; font-weight: bold;
             font-size: 0.85rem; letter-spacing: 2px; border-bottom: 1px solid #333;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .owner-tabs { display: flex; background: #111; border-bottom: 1px solid #222; }
+        .owner-tab-btn { flex: 1; padding: 8px; background: transparent; border: none; color: #666; font-family: monospace; font-size: 0.75rem; cursor: pointer; border-bottom: 2px solid transparent; }
+        .owner-tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.02); }
+        .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
         .owner-field { display: flex; flex-direction: column; gap: 4px; }
         .owner-field label { font-size: 0.75rem; color: #888; letter-spacing: 1px; }
-        .owner-field input {
+        .owner-field input, .owner-field textarea {
             padding: 8px; background: #111; border: 1px solid #444; color: #fff;
             font-family: monospace; font-size: 0.9rem;
         }
-        .btn-danger {
-            background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d;
-        }
-        .btn-danger:hover {
-            background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d;
-        }
+        .owner-field textarea { resize: vertical; min-height: 80px; font-size: 0.8rem; }
+        .btn-danger { background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d; }
+        .btn-danger:hover { background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d; }
 
         /* --- ANIMATIONS --- */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -287,13 +299,16 @@
     <audio id="sfx-click" preload="auto" src="sfx-click.mp3"></audio> 
     <audio id="sfx-text-fade" preload="auto" src="Dragon-studio-blizzard-transition-463210.mp3"></audio>
     <audio id="sfx-streak100" loop preload="auto" src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
-    
     <audio id="sfx-blds-init" preload="auto" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
     <audio id="sfx-blds-loop" loop preload="auto" src="black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
     <audio id="sfx-blds-logo" preload="auto" src="dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
-    
     <audio id="sfx-forgotten" loop preload="auto" src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
     <audio id="sfx-flames" loop preload="auto" src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
+
+    <div id="global-announcement-banner">
+        <span style="font-weight:bold; color:#ff0055;" id="announce-staff-title">[📢 STAFF ANNOUNCEMENT]</span> 
+        <span id="announce-text-content">Connecting to timeline broadcast...</span>
+    </div>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -304,10 +319,16 @@
 
     <div id="owner-panel">
         <div class="owner-header" id="owner-panel-dragheader">
-            <span>OWNER INTERFACE</span>
+            <span>OWNER HUB CONTROL</span>
             <span style="cursor:pointer; font-weight:bold; font-size:1.1rem;" onclick="toggleOwnerPanel()">&times;</span>
         </div>
-        <div class="owner-body">
+        <div class="owner-tabs">
+            <button class="owner-tab-btn active" id="tab-btn-core" onclick="switchOwnerTab('core')">CORE STREAK</button>
+            <button class="owner-tab-btn" id="tab-btn-cms" onclick="switchOwnerTab('cms')">CMS DATA</button>
+            <button class="owner-tab-btn" id="tab-btn-comm" onclick="switchOwnerTab('comm')">STAFF COMMUNICATIONS</button>
+        </div>
+
+        <div class="owner-body" id="owner-tab-core-content">
             <div class="owner-field">
                 <label>DOMINION NAME</label>
                 <input type="text" id="owner-name-input">
@@ -322,6 +343,50 @@
             </div>
             <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE CHANGES</button>
             <button class="enter-btn btn-danger" style="margin-top:0px; padding:8px;" onclick="resetCurrentStreakOnly(this)">RESET CURRENT STREAK (0)</button>
+        </div>
+
+        <div class="owner-body" id="owner-tab-cms-content" style="display:none;">
+            <div class="owner-field">
+                <label>EDIT ORIGIN LORE CONTENT (HTML Allowed)</label>
+                <textarea id="cms-origin-textarea"></textarea>
+            </div>
+            <div class="owner-field">
+                <label>EDIT ARCHIVES BLDS CONTENT (HTML Allowed)</label>
+                <textarea id="cms-archive-textarea"></textarea>
+            </div>
+            <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="pushCmsContent(this)">PUSH CMS UPDATES</button>
+        </div>
+
+        <div class="owner-body" id="owner-tab-comm-content" style="display:none;">
+            <div style="border-bottom:1px solid #222; padding-bottom:10px; margin-bottom:5px;">
+                <h4 style="font-size:0.75rem; letter-spacing:1px; margin-bottom:8px; color:#ff0055;">BROADCAST GLOBAL ANNOUNCEMENT</h4>
+                <div class="owner-field" style="margin-bottom:8px;">
+                    <label>CUSTOM SENDER NAME</label>
+                    <input type="text" id="announce-sender-input" placeholder="e.g. MICHAEL LORENZO">
+                </div>
+                <div class="owner-field">
+                    <label>ANNOUNCEMENT TEXT</label>
+                    <textarea id="announce-msg-input" placeholder="Type global system alert details..."></textarea>
+                </div>
+                <button class="enter-btn" style="margin-top:8px; padding:6px; font-size:0.8rem;" onclick="broadcastGlobalAnnouncement(this)">TRANSMIT BROADCAST</button>
+                <button class="enter-btn btn-danger" style="margin-top:4px; padding:6px; font-size:0.8rem;" onclick="clearGlobalAnnouncement(this)">TERMINATE BROADCAST</button>
+            </div>
+            <div>
+                <h4 style="font-size:0.75rem; letter-spacing:1px; margin-bottom:8px; color:#00ffaa;">VERIFIED OWNER REPLY BOX</h4>
+                <div class="owner-field" style="margin-bottom:8px;">
+                    <label>REPLY TO TARGET (COMMENT ID)</label>
+                    <input type="text" id="owner-reply-target-id" readonly placeholder="Click 'REPLY' on public comment list">
+                </div>
+                <div class="owner-field" style="margin-bottom:8px;">
+                    <label>CUSTOM STAFF DISPENSATION NAME</label>
+                    <input type="text" id="owner-reply-name-input" placeholder="e.g. Right Hand - Nayottama">
+                </div>
+                <div class="owner-field">
+                    <label>VERIFIED STAFF MESSAGE</label>
+                    <textarea id="owner-reply-text-input" placeholder="Type verified staff response..."></textarea>
+                </div>
+                <button class="enter-btn" style="margin-top:8px; padding:6px; font-size:0.8rem;" onclick="submitOwnerVerifiedReply(this)">EXECUTE SECURE REPLY</button>
+            </div>
         </div>
     </div>
 
@@ -350,6 +415,7 @@
             <button class="menu-btn" id="streak-claim-btn" onclick="claimDailyStreak(this)">CLAIM DAILY STREAK</button>
             <button class="menu-btn" id="origin-btn" onclick="triggerOriginLore(this)">ORIGIN (LORE)</button>
             <button class="menu-btn" onclick="openLeaderboard(this)">LEADERBOARD LIVE</button>
+            <button class="menu-btn" onclick="openModal('rating-modal', this)">FEEDBACK & COMMENTS</button>
             <button class="menu-btn" onclick="openModal('achievements-modal', this)">ACHIEVEMENT</button>
             <button class="menu-btn" onclick="openModal('archive-modal', this)">ARCHIVE</button>
             <button class="menu-btn" onclick="openModal('code-modal', this)">CODE</button>
@@ -363,7 +429,6 @@
 
     <div id="cutscene-overlay">
         <img id="logo-streak-100" class="logo-streak-dynamic" src="logo.png" onerror="this.src='https://placehold.co/150x150/000000/ffffff?text=BLDS'">
-        
         <img id="logo-slam" class="blds-slam-shining" src="logo.png" onerror="this.src='https://placehold.co/200x200/000000/ffffff?text=BLDS'">
         <div id="cutscene-text-box" class="cutscene-text"></div>
         <img id="logo-left" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
@@ -373,13 +438,38 @@
     <div id="archive-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('archive-modal')">&times;</span>
-            <h3 style="letter-spacing:3px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:5px;">BLDS ARCHIVES</h3>
-            <p><strong>Founder:</strong> Michael Lorenzo</p>
-            <p><strong>Right Hand of BLDS:</strong> William Nayottama</p>
-            <p><strong>Left Hand of BLDS:</strong> Prince Felix</p><br>
-            <p><strong>Admin:</strong> Steven Cleo</p>
-            <p><strong>Admin:</strong> Denzel Arnold</p>
-            <p><strong>Admin:</strong> George Alfred</p>
+            <div id="dynamic-archive-container">
+                <h3 style="letter-spacing:3px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:5px;">BLDS ARCHIVES</h3>
+                <p><strong>Founder:</strong> Michael Lorenzo</p>
+                <p><strong>Right Hand of BLDS:</strong> William Nayottama</p>
+                <p><strong>Left Hand of BLDS:</strong> Prince Felix</p><br>
+                <p><strong>Admin:</strong> Steven Cleo</p>
+                <p><strong>Admin:</strong> Denzel Arnold</p>
+                <p><strong>Admin:</strong> George Alfred</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="rating-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="closeModal('rating-modal')">&times;</span>
+            <h3 style="letter-spacing:3px; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:15px;">DOMINION TRANSMISSIONS</h3>
+            
+            <div class="comment-input-area">
+                <div class="rating-select" id="feedback-star-row">
+                    <span class="star-box" data-value="1" onclick="setFeedbackRating(1)">★</span>
+                    <span class="star-box" data-value="2" onclick="setFeedbackRating(2)">★</span>
+                    <span class="star-box" data-value="3" onclick="setFeedbackRating(3)">★</span>
+                    <span class="star-box" data-value="4" onclick="setFeedbackRating(4)">★</span>
+                    <span class="star-box" data-value="5" onclick="setFeedbackRating(5)">★</span>
+                </div>
+                <input type="text" id="public-reply-indicator-text" readonly style="background:transparent; border:none; color:#00ffaa; font-size:0.75rem; display:none; font-family:monospace;">
+                <textarea id="public-comment-input" class="code-input" style="text-align:left; min-height:60px; margin-bottom:5px;" placeholder="Write public record transmission..."></textarea>
+                <button class="enter-btn" style="margin-top:0;" onclick="submitPublicComment(this)">TRANSMIT MESSAGE</button>
+            </div>
+
+            <div class="comment-container" id="public-comments-box-list">
+                </div>
         </div>
     </div>
 
@@ -409,7 +499,6 @@
                 <h4>"2 Flames"</h4>
                 <small>Sacred and hidden</small>
             </div>
-            
             <div id="ac-michael" class="badge-card">
                 <h4>"Lorenzo"</h4>
                 <small>Who is That?</small>
@@ -472,11 +561,19 @@
         let highStreak = parseInt(localStorage.getItem('blds_h_str')) || 0;
         let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
-        
         let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
 
         let cdInterval = null;
         let lbInterval = null; 
+        let commsInterval = null;
+
+        // Feedbacks variables
+        let selectedRatingValue = 5;
+        let replyTargetCommentId = null;
+
+        // Local Fallback CMS Strings
+        let dbCmsOriginHtml = ""; 
+        let dbCmsArchiveHtml = "";
 
         function unlockAudioContext() {
             const audios = document.querySelectorAll('audio');
@@ -490,6 +587,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateUI();
             makeElementDraggable(document.getElementById("owner-panel"));
+            setFeedbackRating(5);
 
             if (isOwnerUnlocked) {
                 document.getElementById('owner-trigger-btn').style.display = 'flex';
@@ -509,6 +607,8 @@
             }, 3000);
 
             if(username) { syncWithFirebase(); }
+            syncCmsAndCommunications();
+            setInterval(syncCmsAndCommunications, 5000);
         });
 
         function applyButtonTransition(btnElement, callback) {
@@ -523,24 +623,16 @@
         function playAudio(id) {
             const el = document.getElementById(id);
             if(el) {
-                el.muted = false; 
-                el.pause(); 
-                el.currentTime = 0; 
-                let playPromise = el.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(e => console.log(`Audio error ${id}:`, e));
-                }
+                el.muted = false; el.pause(); el.currentTime = 0; 
+                let p = el.play();
+                if (p !== undefined) { p.catch(e => console.log(`Audio error: ${id}`)); }
             }
         }
 
-        function stopAudio(id) {
-            const el = document.getElementById(id);
-            if(el) el.pause();
-        }
+        function stopAudio(id) { const el = document.getElementById(id); if(el) el.pause(); }
 
         function syncWithFirebase() {
             if(!username) return;
-            
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
                 .then(res => res.json())
                 .then(data => {
@@ -552,51 +644,70 @@
                         
                         let now = Date.now();
                         if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
-                            currentStreak = 0; 
-                            saveToFirebase();
+                            currentStreak = 0; saveToFirebase();
                         }
-                    } else {
-                        saveToFirebase();
-                    }
+                    } else { saveToFirebase(); }
                     updateUI();
                 })
                 .catch(() => {
                     let now = Date.now();
-                    if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
-                        currentStreak = 0;
-                    }
+                    if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) { currentStreak = 0; }
                     updateUI();
                 });
         }
 
         function saveToFirebase() {
             if(!username) return;
-
             let payload = {
-                username: username,
-                streak: parseInt(currentStreak),
-                highStreak: parseInt(highStreak),
-                lastClick: parseInt(lastClickTime),
-                updatedAt: Date.now()
+                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), updatedAt: Date.now()
             };
-            
             localStorage.setItem('blds_username', username);
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
             localStorage.setItem('blds_l_clk', lastClickTime);
 
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                if(document.getElementById('leaderboard-modal').style.display === 'flex') {
-                    fetchLeaderboardData();
-                }
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            }).then(() => {
+                if(document.getElementById('leaderboard-modal').style.display === 'flex') fetchLeaderboardData();
             });
-            
             updateUI();
+        }
+
+        function syncCmsAndCommunications() {
+            // Fetch CMS Content data
+            fetch(`${BASE_DB_URL}cms.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data) {
+                        if(data.originText) {
+                            dbCmsOriginHtml = data.originText;
+                        }
+                        if(data.archiveText) {
+                            dbCmsArchiveHtml = data.archiveText;
+                            document.getElementById('dynamic-archive-container').innerHTML = data.archiveText;
+                        }
+                    }
+                });
+
+            // Fetch Announcements data
+            fetch(`${BASE_DB_URL}announcement.json`)
+                .then(res => res.json())
+                .then(data => {
+                    const banner = document.getElementById('global-announcement-banner');
+                    if(data && data.active === true && data.message) {
+                        document.getElementById('announce-staff-title').innerText = `[📢 STAFF - ${data.sender || 'SECURE CORE'}]:`;
+                        document.getElementById('announce-text-content').innerText = data.message;
+                        banner.style.display = 'block';
+                    } else {
+                        banner.style.display = 'none';
+                    }
+                });
+
+            // Fetch Comments real-time
+            if(document.getElementById('rating-modal').style.display === 'flex') {
+                renderPublicCommentsList();
+            }
         }
 
         function updateUI() {
@@ -634,17 +745,12 @@
                     let hrs = Math.floor(remaining / (1000 * 60 * 60));
                     let mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
                     let secs = Math.floor((remaining % (1000 * 60)) / 1000);
-                    
                     btn.innerText = `COOLDOWN (${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')})`;
                     btn.disabled = true;
                 } else {
-                    btn.innerText = "CLAIM DAILY STREAK";
-                    btn.disabled = false;
-                    
+                    btn.innerText = "CLAIM DAILY STREAK"; btn.disabled = false;
                     if (lastClickTime !== 0 && timeDiff > (48 * 60 * 60 * 1000)) {
-                        currentStreak = 0;
-                        saveToFirebase();
-                        clearInterval(cdInterval);
+                        currentStreak = 0; saveToFirebase(); clearInterval(cdInterval);
                     }
                 }
             }, 1000);
@@ -655,7 +761,6 @@
                 unlockedBadges.push(id);
                 localStorage.setItem('blds_badges', JSON.stringify(unlockedBadges));
                 updateUI();
-                
                 const toast = document.getElementById('achievement-toast');
                 document.getElementById('toast-title').innerText = name;
                 toast.style.top = "20px";
@@ -666,18 +771,12 @@
         function registerAndEnter(btn) {
             applyButtonTransition(btn, () => {
                 let inputName = document.getElementById('dominion-name-input').value.trim();
-                if(!inputName) {
-                    alert("Harap masukkan nama Dominion Anda!");
-                    return;
-                }
+                if(!inputName) { alert("Harap masukkan nama Dominion Anda!"); return; }
                 username = inputName;
-                
                 localStorage.setItem('blds_username', username);
                 saveToFirebase();
 
-                playAudio('bgm');
-                playAudio('sfx-click');
-                
+                playAudio('bgm'); playAudio('sfx-click');
                 document.getElementById('gate-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('gate-screen').style.display = 'none';
@@ -692,38 +791,143 @@
             applyButtonTransition(btn, () => {
                 playAudio('sfx-click');
                 document.getElementById(id).style.display = 'flex'; 
+                if(id === 'rating-modal') renderPublicCommentsList();
             });
         }
-        
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; resetCommentReplyChain(); }
 
         function claimDailyStreak(btn) {
             applyButtonTransition(btn, () => {
                 let now = Date.now();
                 let cooldown = 24 * 60 * 60 * 1000;
-
-                if (lastClickTime !== 0 && (now - lastClickTime) < cooldown) {
-                    alert("Sistem cooldown sedang berjalan. Harap tunggu!");
-                    return;
-                }
+                if (lastClickTime !== 0 && (now - lastClickTime) < cooldown) { alert("Sistem cooldown sedang berjalan. Harap tunggu!"); return; }
 
                 playAudio('sfx-click');
-                
                 currentStreak += 1;
                 if(currentStreak > highStreak) highStreak = currentStreak;
                 lastClickTime = now;
-                
                 saveToFirebase();
 
                 if(currentStreak === 100) {
                     unlockAchievement('made-it', 'You Made it\nStreak 100 days');
                     startStreak100Cutscene();
+                } else { alert(`Streak berhasil diklaim! Kedudukan saat ini: ${currentStreak} Hari.`); }
+            });
+        }
+
+        // --- COMMENTS SYSTEMS FEEDBACK LOGICS ---
+        function setFeedbackRating(val) {
+            selectedRatingValue = val;
+            const stars = document.querySelectorAll('#feedback-star-row .star-box');
+            stars.forEach(st => {
+                if(parseInt(st.getAttribute('data-value')) <= val) { st.classList.add('selected'); }
+                else { st.classList.remove('selected'); }
+            });
+        }
+
+        function selectCommentToReply(commentId, authorName) {
+            replyTargetCommentId = commentId;
+            const indicator = document.getElementById('public-reply-indicator-text');
+            indicator.innerText = `REPLYING TO: @${authorName} (Click to Cancel)`;
+            indicator.style.display = 'block';
+            indicator.onclick = resetCommentReplyChain;
+
+            // Update side-panel text if Owner open tab 3
+            document.getElementById('owner-reply-target-id').value = commentId;
+        }
+
+        function resetCommentReplyChain() {
+            replyTargetCommentId = null;
+            document.getElementById('public-reply-indicator-text').style.display = 'none';
+            document.getElementById('owner-reply-target-id').value = '';
+        }
+
+        function submitPublicComment(btn) {
+            if(!username) return;
+            const txt = document.getElementById('public-comment-input').value.trim();
+            if(!txt) { alert("Komentar tidak boleh kosong!"); return; }
+
+            applyButtonTransition(btn, () => {
+                playAudio('sfx-click');
+                
+                if(replyTargetCommentId) {
+                    // Add nested reply to target node
+                    let replyPayload = {
+                        author: username, message: txt, timestamp: Date.now(), isStaff: false
+                    };
+                    fetch(`${BASE_DB_URL}comments/${replyTargetCommentId}/replies.json`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyPayload)
+                    }).then(() => {
+                        document.getElementById('public-comment-input').value = '';
+                        resetCommentReplyChain(); renderPublicCommentsList();
+                    });
                 } else {
-                    alert(`Streak berhasil diklaim! Kedudukan saat ini: ${currentStreak} Hari.`);
+                    // Main Node Comment
+                    let commentPayload = {
+                        author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), isStaff: false
+                    };
+                    fetch(`${BASE_DB_URL}comments.json`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentPayload)
+                    }).then(() => {
+                        document.getElementById('public-comment-input').value = '';
+                        renderPublicCommentsList();
+                    });
                 }
             });
         }
 
+        function renderPublicCommentsList() {
+            const listContainer = document.getElementById('public-comments-box-list');
+            fetch(`${BASE_DB_URL}comments.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data) {
+                        listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
+                        return;
+                    }
+                    listContainer.innerHTML = '';
+                    // Sort nodes
+                    Object.keys(data).forEach(id => {
+                        let node = data[id];
+                        let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
+                        let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+
+                        let mainNodeHtml = `
+                            <div class="comment-node" id="node-block-${id}">
+                                <div class="comment-meta">
+                                    <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}</span>
+                                    <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
+                                </div>
+                                <div class="comment-text">${escapeHTML(node.message || '')}</div>
+                                <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
+                                <div id="replies-sub-list-${id}"></div>
+                            </div>
+                        `;
+                        listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
+
+                        // Parse nested sub-replies
+                        if(node.replies) {
+                            const subContainer = document.getElementById(`replies-sub-list-${id}`);
+                            Object.keys(node.replies).forEach(rId => {
+                                let subNode = node.replies[rId];
+                                let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+                                let replyHtml = `
+                                    <div class="reply-node">
+                                        <div class="comment-meta">
+                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
+                                            <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
+                                        </div>
+                                        <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
+                                    </div>
+                                `;
+                                subContainer.insertAdjacentHTML('beforeend', replyHtml);
+                            });
+                        }
+                    });
+                });
+        }
+
+        // --- ORIGIN CONTENT HANDLER (DYNAMIC CMS) ---
         function triggerOriginLore(btn) {
             applyButtonTransition(btn, () => {
                 const overlay = document.getElementById('cutscene-overlay');
@@ -740,84 +944,80 @@
 
                 playAudio('sfx-text-fade');
 
-                box.innerHTML = `
-                    <div class="lore-scroll-box">
-                        <h2>BLACKLIGHTDOMS ORIGIN</h2>
-                        <h4>CLASSIFICATION: MAIN CORE RECORD</h4>
-                        <p>BEFORE BLDS HAD A NAME... BEFORE THE SYMBOL EXISTED. BEFORE THE SQUAD WAS FORMED...</p>
-                        <p>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.</p>
-                        <p>SOME WERE IGNORED. SOME WERE UNDERESTIMATED. SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.</p>
-                        <p>THEY WATCHED OTHERS RISE FASTER. WATCHED OTHERS GAIN RECOGNITION. WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.</p>
-                        <p>AND SLOWLY, THEY REALIZED SOMETHING: MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT. BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.</p>
-                        <p>THAT REALIZATION BECAME THE BEGINNING OF BLDS. NOT A SQUAD CREATED FOR FAME. NOT A KINGDOM BUILT ON ARROGANCE. NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY. BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.</p>
-                        
-                        <h3>--- THE BLACKLIGHT CORE ---</h3>
-                        <p>AT THE CENTER OF THE ECLIPSE LIES THE CORE. A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.</p>
-                        <p>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS. NOT A PURPOSE GIVEN BY THE WORLD. NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY. BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.</p>
-                        <p>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES... EVEN WHEN PEOPLE LEAVE... EVEN WHEN FAILURE SURROUNDS YOU... YOUR INNER LIGHT CAN STILL REMAIN ALIVE.</p>
-                        <p>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL. THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL. THAT IS WHY THE CORE NEVER DISAPPEARS. BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.</p>
-                        
-                        <h3>--- THE TEN FLAMES OF BLDS ---</h3>
-                        <p>5 Greater Flames & 5 Lesser Flames. Five flames grant strength, five flames preserve it. Together, they protect the Core.</p>
-                        
-                        <div class="flames-grid">
-                            <div class="flames-col">
-                                <h5>GREATER FLAMES</h5>
-                                <ul class="flames-list">
-                                    <li><strong>I. Vision</strong><span>The ability to see direction even when others are lost.</span></li>
-                                    <li><strong>II. Discipline</strong><span>To continue growing even when nobody is watching.</span></li>
-                                    <li><strong>III. Loyalty</strong><span>To stand together through victory and defeat.</span></li>
-                                    <li><strong>IV. Ambition</strong><span>The desire to surpass limits and continue evolving.</span></li>
-                                    <li><strong>V. Resilience</strong><span>The strength to rise again after every fall.</span></li>
-                                </ul>
+                if(dbCmsOriginHtml && dbCmsOriginHtml.trim() !== "") {
+                    box.innerHTML = dbCmsOriginHtml;
+                } else {
+                    // Default Fallback template
+                    box.innerHTML = `
+                        <div class="lore-scroll-box">
+                            <h2>BLACKLIGHTDOMS ORIGIN</h2>
+                            <h4>CLASSIFICATION: MAIN CORE RECORD</h4>
+                            <p>BEFORE BLDS HAD A NAME... BEFORE THE SYMBOL EXISTED. BEFORE THE SQUAD WAS FORMED...</p>
+                            <p>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.</p>
+                            <p>SOME WERE IGNORED. SOME WERE UNDERESTIMATED. SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.</p>
+                            <p>THEY WATCHED OTHERS RISE FASTER. WATCHED OTHERS GAIN RECOGNITION. WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.</p>
+                            <p>AND SLOWLY, THEY REALIZED SOMETHING: MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT. BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.</p>
+                            <p>THAT REALIZATION BECAME THE BEGINNING OF BLDS. NOT A SQUAD CREATED FOR FAME. NOT A KINGDOM BUILT ON ARROGANCE. NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY. BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.</p>
+                            
+                            <h3>--- THE BLACKLIGHT CORE ---</h3>
+                            <p>AT THE CENTER OF THE ECLIPSE LIES THE CORE. A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.</p>
+                            <p>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS. NOT A PURPOSE GIVEN BY THE WORLD. NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY. BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.</p>
+                            <p>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES... EVEN WHEN PEOPLE LEAVE... EVEN WHEN FAILURE SURROUNDS YOU... YOUR INNER LIGHT CAN STILL REMAIN ALIVE.</p>
+                            <p>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL. THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL. THAT IS WHY THE CORE NEVER DISAPPEARS. BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.</p>
+                            
+                            <h3>--- THE TEN FLAMES OF BLDS ---</h3>
+                            <p>5 Greater Flames & 5 Lesser Flames. Five flames grant strength, five flames preserve it. Together, they protect the Core.</p>
+                            
+                            <div class="flames-grid">
+                                <div class="flames-col">
+                                    <h5>GREATER FLAMES</h5>
+                                    <ul class="flames-list">
+                                        <li><strong>I. Vision</strong><span>The ability to see direction even when others are lost.</span></li>
+                                        <li><strong>II. Discipline</strong><span>To continue growing even when nobody is watching.</span></li>
+                                        <li><strong>III. Loyalty</strong><span>To stand together through victory and defeat.</span></li>
+                                        <li><strong>IV. Ambition</strong><span>The desire to surpass limits and continue evolving.</span></li>
+                                        <li><strong>V. Resilience</strong><span>The strength to rise again after every fall.</span></li>
+                                    </ul>
+                                </div>
+                                <div class="flames-col">
+                                    <h5>LESSER FLAMES</h5>
+                                    <ul class="flames-list">
+                                        <li><strong>I. Hope</strong><span>The light that remains during difficult times.</span></li>
+                                        <li><strong>II. Awareness</strong><span>The ability to stay conscious and understand reality.</span></li>
+                                        <li><strong>III. Patience</strong><span>Growth takes time and elegance.</span></li>
+                                        <li><strong>IV. Courage</strong><span>The will to move forward despite fear.</span></li>
+                                        <li><strong>V. Unity</strong><span>The bond that turns individuals into something greater. Though smaller, these flames are just as important.</span></li>
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="flames-col">
-                                <h5>LESSER FLAMES</h5>
-                                <ul class="flames-list">
-                                    <li><strong>I. Hope</strong><span>The light that remains during difficult times.</span></li>
-                                    <li><strong>II. Awareness</strong><span>The ability to stay conscious and understand reality.</span></li>
-                                    <li><strong>III. Patience</strong><span>Growth takes time and elegance.</span></li>
-                                    <li><strong>IV. Courage</strong><span>The will to move forward despite fear.</span></li>
-                                    <li><strong>V. Unity</strong><span>The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.</span></li>
-                                </ul>
-                            </div>
+                            <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none';">CLOSE LORE</button>
                         </div>
-
-                        <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none';">CLOSE LORE</button>
-                    </div>
-                `;
+                    `;
+                }
             });
         }
 
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
-            
             fetch(`${BASE_DB_URL}leaderboard.json`)
                 .then(res => res.json())
                 .then(data => {
                     if(!data) {
-                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`;
-                        return;
+                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`; return;
                     }
-
                     let records = [];
                     Object.keys(data).forEach(key => {
                         if(data[key] && data[key].username) {
                             records.push({
-                                name: data[key].username,
-                                current: parseInt(data[key].streak) || 0,
-                                high: parseInt(data[key].highStreak) || 0
+                                name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0
                             });
                         }
                     });
-
                     records.sort((a, b) => b.high - a.high);
                     container.innerHTML = "";
-
                     records.forEach((player, index) => {
                         let tr = document.createElement('tr');
                         let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
-                        
                         tr.innerHTML = `
                             <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
                             <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
@@ -835,30 +1035,20 @@
                 const container = document.getElementById('leaderboard-data-rows');
                 container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
                 fetchLeaderboardData();
-
                 if(lbInterval) clearInterval(lbInterval);
                 lbInterval = setInterval(fetchLeaderboardData, 4000);
             });
         }
 
-        function closeLeaderboardModal() {
-            closeModal('leaderboard-modal');
-            if(lbInterval) { clearInterval(lbInterval); lbInterval = null; }
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-        }
+        function closeLeaderboardModal() { closeModal('leaderboard-modal'); if(lbInterval) { clearInterval(lbInterval); lbInterval = null; } }
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
 
         async function runTextSequence(lines, delay = 4000) {
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
-            overlay.style.display = 'flex';
-            overlay.style.background = '#000';
-            
+            overlay.style.display = 'flex'; overlay.style.background = '#000';
             for(let i=0; i<lines.length; i++) {
-                box.innerText = lines[i];
-                box.style.opacity = '1';
+                box.innerText = lines[i]; box.style.opacity = '1';
                 playAudio('sfx-text-fade');
                 await new Promise(r => setTimeout(r, delay));
                 box.style.opacity = '0';
@@ -868,166 +1058,110 @@
 
         /* --- STREAK 100 SYSTEM CINEMATIC (4s FADE + BRUTAL QUAKE) --- */
         async function startStreak100Cutscene() {
-            stopAudio('bgm');
-            playAudio('sfx-streak100');
-
+            stopAudio('bgm'); playAudio('sfx-streak100');
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
             const logo = document.getElementById('logo-streak-100');
-            const bodyEl = document.getElementById('app-body');
 
-            // Reset Default State Cutscene
-            overlay.style.display = 'flex';
-            overlay.style.background = '#000';
-            box.classList.remove('shake-brutal-text');
-            box.style.color = '#fff';
+            overlay.style.display = 'flex'; overlay.style.background = '#000';
+            box.classList.remove('shake-brutal-text'); box.style.color = '#fff';
+            logo.style.display = 'none'; logo.style.opacity = '0'; logo.style.width = '140px';
 
-            logo.style.display = 'none';
-            logo.style.opacity = '0';
-            logo.style.width = '140px';
-            logo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4))';
-
-            // Fade In Out Pas 4 Detik (3200ms Tampil, 800ms Transisi Hilang)
             async function showLine(txt) {
-                box.innerText = txt;
-                box.style.opacity = '1';
-                playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, 3200));
-                box.style.opacity = '0';
+                box.innerText = txt; box.style.opacity = '1'; playAudio('sfx-text-fade');
+                await new Promise(r => setTimeout(r, 3200)); box.style.opacity = '0';
                 await new Promise(r => setTimeout(r, 800));
             }
 
-            // --- PHASE 1 ---
-            await showLine("For a hundred days...");
-            await showLine("the Eclipse watched.");
-            await showLine("For a hundred days...");
-            await showLine("you continued forward.");
-            await showLine("Many flames burned brightly...");
-            await showLine("only to disappear.");
-            await showLine("Many lights promised eternity...");
-            await showLine("only to fade.");
+            await showLine("For a hundred days..."); await showLine("the Eclipse watched.");
+            await showLine("For a hundred days..."); await showLine("you continued forward.");
+            await showLine("Many flames burned brightly..."); await showLine("only to disappear.");
+            await showLine("Many lights promised eternity..."); await showLine("only to fade.");
 
-            // --- PHASE 2 (Logo muncul tipis) ---
-            logo.style.display = 'block';
-            setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
-            
-            await showLine("Yet yours remained.");
-            await showLine("Not because it was the brightest.");
-            await showLine("Not because it was the strongest.");
-            await showLine("But because it refused to die.");
+            logo.style.display = 'block'; setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
+            await showLine("Yet yours remained."); await showLine("Not because it was the brightest.");
+            await showLine("Not because it was the strongest."); await showLine("But because it refused to die.");
 
-            // --- PHASE 3 (Logo menebal) ---
             logo.style.opacity = '0.55';
-            
-            await showLine("A hundred days is not the end.");
-            await showLine("It is proof.");
-            await showLine("Proof that your light survived.");
-            await showLine("Proof that your flame endured.");
+            await showLine("A hundred days is not the end."); await showLine("It is proof.");
+            await showLine("Proof that your light survived."); await showLine("Proof that your flame endured.");
 
-            // --- PHASE 4 (Logo Maksimal) ---
-            logo.style.opacity = '1';
-            logo.style.width = '210px';
-            logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
+            logo.style.opacity = '1'; logo.style.width = '210px'; logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
+            await showLine("And now..."); await showLine("the Core remembers your name.");
 
-            await showLine("And now...");
-            await showLine("the Core remembers your name.");
+            logo.style.display = 'none'; box.style.opacity = '0';
+            overlay.style.transition = 'background 2.5s ease-in-out'; overlay.style.background = '#000000';
+            await new Promise(r => setTimeout(r, 2500));
 
-            // --- PHASE 5: TRANSISI MENGHITAM PERLAHAN ---
-            logo.style.display = 'none';
-            box.style.opacity = '0';
-            
-            // Ubah background ke hitam legam perlahan-lahan
-            overlay.style.transition = 'background 2.5s ease-in-out';
-            overlay.style.background = '#000000';
-            await new Promise(r => setTimeout(r, 2500)); // Nunggu proses menghitam selesai
-
-            // --- PHASE 6: LEDAKAN GETARAN BRUTAL (STREAK 100) ---
-            // Tiba-tiba background dihentak jadi PUTIH BENDERANG untuk efek flash bang kejutan
-            overlay.style.transition = 'none'; 
-            overlay.style.background = '#ffffff'; 
-
-            box.innerText = "STREAK 100";
-            box.style.fontSize = "4.5rem"; // Diperbesar biar mantap
-            box.style.color = "#000000";   // Hitam tebal di atas putih
-            box.classList.add('shake-brutal-text'); // AKSI GEMPA BRUTAL AKTIF
-            box.style.opacity = "1";
-            
+            overlay.style.transition = 'none'; overlay.style.background = '#ffffff'; 
+            box.innerText = "STREAK 100"; box.style.fontSize = "4.5rem"; box.style.color = "#000000";
+            box.classList.add('shake-brutal-text'); box.style.opacity = "1";
             playAudio('sfx-blds-init');
 
-            // Durasi gempa bumi brutal di layar
             await new Promise(r => setTimeout(r, 4500)); 
-
-            // --- PHASE 7: SELESAI & BALIK MENU ---
-            box.style.opacity = '0';
-            box.classList.remove('shake-brutal-text');
-            
-            overlay.style.transition = 'opacity 1.2s ease';
-            overlay.style.opacity = '0';
+            box.style.opacity = '0'; box.classList.remove('shake-brutal-text');
+            overlay.style.transition = 'opacity 1.2s ease'; overlay.style.opacity = '0';
             
             setTimeout(() => {
-                overlay.style.display = 'none';
-                overlay.style.opacity = '1';
-                overlay.style.background = '#000';
-                box.style.fontSize = "1.4rem";
-                box.style.color = "#fff";
-                
-                stopAudio('sfx-streak100');
-                playAudio('bgm');
+                overlay.style.display = 'none'; overlay.style.opacity = '1'; overlay.style.background = '#000';
+                box.style.fontSize = "1.4rem"; box.style.color = "#fff";
+                stopAudio('sfx-streak100'); playAudio('bgm');
             }, 1200);
         }
 
         /* --- DRAGGABLE INTERFACE HANDLER --- */
         function makeElementDraggable(elmnt) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            const header = document.getElementById(elmnt.id + "0g-dragheader") || document.getElementById(elmnt.id + "-dragheader");
-            if (header) {
-                header.onmousedown = dragMouseDown;
-                header.ontouchstart = dragMouseDown;
-            } else {
-                elmnt.onmousedown = dragMouseDown;
-                elmnt.ontouchstart = dragMouseDown;
-            }
-
+            const header = document.getElementById(elmnt.id + "-dragheader");
+            if (header) { header.onmousedown = dragMouseDown; header.ontouchstart = dragMouseDown; }
             function dragMouseDown(e) {
-                e = e || window.event;
-                if(e.type !== 'touchstart') { e.preventDefault(); }
+                e = e || window.event; if(e.type !== 'touchstart') { e.preventDefault(); }
                 pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
                 pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-                document.onmouseup = closeDragElement;
-                document.ontouchend = closeDragElement;
-                document.onmousemove = elementDrag;
-                document.ontouchmove = elementDrag;
+                document.onmouseup = closeDragElement; document.ontouchend = closeDragElement;
+                document.onmousemove = elementDrag; document.ontouchmove = elementDrag;
             }
-
             function elementDrag(e) {
                 e = e || window.event;
                 let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
                 let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-                pos1 = pos3 - clientX;
-                pos2 = pos4 - clientY;
-                pos3 = clientX;
-                pos4 = clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                pos1 = pos3 - clientX; pos2 = pos4 - clientY; pos3 = clientX; pos4 = clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             }
-
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-                document.ontouchend = null;
-                document.ontouchmove = null;
-            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
         }
 
+        // --- OWNER HUB NAVIGATION & OPERATIONS ---
         function toggleOwnerPanel() {
             const panel = document.getElementById('owner-panel');
-            if(panel.style.display === 'flex') {
-                panel.style.display = 'none';
-            } else {
+            if(panel.style.display === 'flex') { panel.style.display = 'none'; } 
+            else {
                 panel.style.display = 'flex';
                 document.getElementById('owner-name-input').value = username;
                 document.getElementById('owner-current-input').value = currentStreak;
                 document.getElementById('owner-high-input').value = highStreak;
+                
+                // Pre-populate CMS inputs with current HTML string cache
+                document.getElementById('cms-origin-textarea').value = dbCmsOriginHtml;
+                document.getElementById('cms-archive-textarea').value = dbCmsArchiveHtml;
+            }
+        }
+
+        function switchOwnerTab(tabName) {
+            document.querySelectorAll('.owner-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('owner-tab-core-content').style.display = 'none';
+            document.getElementById('owner-tab-cms-content').style.display = 'none';
+            document.getElementById('owner-tab-comm-content').style.display = 'none';
+
+            if(tabName === 'core') {
+                document.getElementById('tab-btn-core').classList.add('active');
+                document.getElementById('owner-tab-core-content').style.display = 'flex';
+            } else if(tabName === 'cms') {
+                document.getElementById('tab-btn-cms').classList.add('active');
+                document.getElementById('owner-tab-cms-content').style.display = 'flex';
+            } else if(tabName === 'comm') {
+                document.getElementById('tab-btn-comm').classList.add('active');
+                document.getElementById('owner-tab-comm-content').style.display = 'flex';
             }
         }
 
@@ -1036,38 +1170,94 @@
                 let newName = document.getElementById('owner-name-input').value.trim();
                 let newCurrent = parseInt(document.getElementById('owner-current-input').value) || 0;
                 let newHigh = parseInt(document.getElementById('owner-high-input').value) || 0;
-
                 if(!newName) { alert("Nama tidak boleh kosong!"); return; }
-
-                username = newName;
-                currentStreak = newCurrent;
-                highStreak = newHigh;
-
-                saveToFirebase();
-                alert("Owner Commands Executed! Data synced.");
-                toggleOwnerPanel();
+                username = newName; currentStreak = newCurrent; highStreak = newHigh;
+                saveToFirebase(); alert("Owner Commands Executed! Data synced."); toggleOwnerPanel();
             });
         }
 
         function resetCurrentStreakOnly(btn) {
             applyButtonTransition(btn, () => {
-                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0? (High Streak tetap aman)")) {
-                    currentStreak = 0;
-                    lastClickTime = 0; 
-                    document.getElementById('owner-current-input').value = 0;
-                    
-                    saveToFirebase();
-                    alert("Current Streak telah di-reset menjadi 0!");
-                    toggleOwnerPanel();
+                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0?")) {
+                    currentStreak = 0; lastClickTime = 0; document.getElementById('owner-current-input').value = 0;
+                    saveToFirebase(); alert("Current Streak telah di-reset menjadi 0!"); toggleOwnerPanel();
                 }
             });
         }
 
+        // CMS Dynamic Pushes
+        function pushCmsContent(btn) {
+            applyButtonTransition(btn, () => {
+                let originVal = document.getElementById('cms-origin-textarea').value;
+                let archiveVal = document.getElementById('cms-archive-textarea').value;
+
+                let cmsPayload = { originText: originVal, archiveText: archiveVal };
+                fetch(`${BASE_DB_URL}cms.json`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cmsPayload)
+                }).then(() => {
+                    alert("CMS Overwrites Pushed Successfully!");
+                    syncCmsAndCommunications();
+                });
+            });
+        }
+
+        // Live Communication Controls
+        function broadcastGlobalAnnouncement(btn) {
+            applyButtonTransition(btn, () => {
+                let sender = document.getElementById('announce-sender-input').value.trim() || "STAFF ENGINE";
+                let msg = document.getElementById('announce-msg-input').value.trim();
+                if(!msg) { alert("Pesan announcement kosong!"); return; }
+
+                let announcePayload = { active: true, sender: sender, message: msg, timestamp: Date.now() };
+                fetch(`${BASE_DB_URL}announcement.json`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(announcePayload)
+                }).then(() => {
+                    alert("Global Broadcast Transmitted!");
+                    document.getElementById('announce-msg-input').value = '';
+                });
+            });
+        }
+
+        function clearGlobalAnnouncement(btn) {
+            applyButtonTransition(btn, () => {
+                fetch(`${BASE_DB_URL}announcement.json`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: false })
+                }).then(() => {
+                    alert("Broadcast Stream Terminated.");
+                });
+            });
+        }
+
+        function submitOwnerVerifiedReply(btn) {
+            let targetId = document.getElementById('owner-reply-target-id').value;
+            let staffName = document.getElementById('owner-reply-name-input').value.trim() || "FOUNDER";
+            let replyMsg = document.getElementById('owner-reply-text-input').value.trim();
+
+            if(!targetId) { alert("Pilih target komentar publik terlebih dahulu!"); return; }
+            if(!replyMsg) { alert("Isi balasan pesan staff kosong!"); return; }
+
+            applyButtonTransition(btn, () => {
+                // Securely write directly into nested array with isStaff force flag
+                let staffReplyPayload = {
+                    author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true
+                };
+
+                fetch(`${BASE_DB_URL}comments/${targetId}/replies.json`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(staffReplyPayload)
+                }).then(() => {
+                    alert("Verified Staff Reply Sequenced!");
+                    document.getElementById('owner-reply-text-input').value = '';
+                    resetCommentReplyChain();
+                    syncCmsAndCommunications();
+                });
+            });
+        }
+
+        // --- SUBMIT PARADOX ARCHIVE CODES ENGINE ---
         async function submitCode(btn) {
             applyButtonTransition(btn, async () => {
                 let code = document.getElementById('code-input-field').value.trim();
-                closeModal('code-modal');
-                document.getElementById('code-input-field').value = '';
+                closeModal('code-modal'); document.getElementById('code-input-field').value = '';
                 
                 const overlay = document.getElementById('cutscene-overlay');
                 const box = document.getElementById('cutscene-text-box');
@@ -1077,195 +1267,88 @@
                 const logo100 = document.getElementById('logo-streak-100');
                 const bodyEl = document.getElementById('app-body');
 
-                leftLogo.style.display = 'none';
-                rightLogo.style.display = 'none';
-                slamLogo.style.display = 'none';
-                logo100.style.display = 'none';
-                box.innerHTML = '';
-                box.style.opacity = '0';
+                leftLogo.style.display = 'none'; rightLogo.style.display = 'none'; slamLogo.style.display = 'none'; logo100.style.display = 'none';
+                box.innerHTML = ''; box.style.opacity = '0';
 
                 if (code === "OWNERONLY") {
-                    localStorage.setItem('blds_owner_unlocked', 'true');
-                    isOwnerUnlocked = true;
+                    localStorage.setItem('blds_owner_unlocked', 'true'); isOwnerUnlocked = true;
                     document.getElementById('owner-trigger-btn').style.display = 'flex';
                     alert("System Authorization Granted. Owner Interface Permanently Unlocked!");
                 }
-                else if (code === "Michael") {
-                    unlockAchievement('michael', '"Lorenzo"\nWho is That?');
-                }
-                else if (code === "William") {
-                    unlockAchievement('william', '"Nayottama"\nWho is That?');
-                }
-                else if (code === "Felix") {
-                    unlockAchievement('felix', '"Prince"\nWho is That?');
-                }
-                else if (code === "White") {
-                    bodyEl.classList.remove('invert-half-right');
-                    bodyEl.classList.add('invert-full');
-                } 
-                else if (code === "Black") {
-                    bodyEl.classList.remove('invert-full', 'invert-half-right');
-                } 
+                else if (code === "Michael") { unlockAchievement('michael', '"Lorenzo"\nWho is That?'); }
+                else if (code === "William") { unlockAchievement('william', '"Nayottama"\nWho is That?'); }
+                else if (code === "Felix") { unlockAchievement('felix', '"Prince"\nWho is That?'); }
+                else if (code === "White") { bodyEl.classList.remove('invert-half-right'); bodyEl.classList.add('invert-full'); } 
+                else if (code === "Black") { bodyEl.classList.remove('invert-full', 'invert-half-right'); } 
                 else if (code === "BLDS") {
-                    unlockAchievement('2-dim', '"2 Dimension"\nBlack and White');
-                    stopAudio('bgm');
-                    
-                    playAudio('sfx-blds-init');
-                    playAudio('sfx-blds-loop');
+                    unlockAchievement('2-dim', '"2 Dimension"\nBlack and White'); stopAudio('bgm');
+                    playAudio('sfx-blds-init'); playAudio('sfx-blds-loop');
 
                     let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
                     await runTextSequence(lines, 3500); 
 
-                    overlay.classList.add('shake-epic');
-                    box.innerText = "BLACK"; 
-                    box.style.opacity = '1';
-                    
-                    leftLogo.style.display = 'block';
-                    setTimeout(() => leftLogo.style.opacity = '0.7', 50);
-                    
+                    overlay.classList.add('shake-epic'); box.innerText = "BLACK"; box.style.opacity = '1';
+                    leftLogo.style.display = 'block'; setTimeout(() => leftLogo.style.opacity = '0.7', 50);
                     bodyEl.classList.add('invert-half-right');
 
-                    playAudio('sfx-blds-logo');
-                    await new Promise(r => setTimeout(r, 4000)); 
+                    playAudio('sfx-blds-logo'); await new Promise(r => setTimeout(r, 4000)); 
 
-                    overlay.classList.remove('shake-epic');
-                    box.innerText = "LIGHT";
+                    overlay.classList.remove('shake-epic'); box.innerText = "LIGHT";
+                    rightLogo.style.display = 'block'; setTimeout(() => rightLogo.style.opacity = '0.7', 50);
                     
-                    rightLogo.style.display = 'block';
-                    setTimeout(() => rightLogo.style.opacity = '0.7', 50);
-                    
-                    playAudio('sfx-blds-logo');
-                    await new Promise(r => setTimeout(r, 4000)); 
+                    playAudio('sfx-blds-logo'); await new Promise(r => setTimeout(r, 4000)); 
 
                     let lines2 = ["Two opposites.", "Two destinies.", "Both necessary."];
                     await runTextSequence(lines2, 3500); 
 
-                    overlay.style.transition = 'background 2s ease';
-                    overlay.style.background = '#fff';
+                    overlay.style.transition = 'background 2s ease'; overlay.style.background = '#fff';
                     await new Promise(r => setTimeout(r, 2000));
-
-                    overlay.style.display = 'none';
-                    overlay.style.background = '#000'; 
-                    stopAudio('sfx-blds-loop');
-                    playAudio('bgm');
+                    overlay.style.display = 'none'; overlay.style.background = '#000'; 
+                    stopAudio('sfx-blds-loop'); playAudio('bgm');
                 } 
                 else if (code === "Forgotten") {
-                    unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
-                    stopAudio('bgm');
-                    
-                    overlay.style.display = 'flex';
-                    overlay.style.background = '#000';
+                    unlockAchievement('forgotten', '"Forgotten"\nHow do you know?'); stopAudio('bgm');
+                    overlay.style.display = 'flex'; overlay.style.background = '#000';
 
                     let initLines = [
                         "NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "Searching fragments...",
-                        "Searching fragments...", "Searching fragments...", "1 Fragment Detected",
-                        "Core Signature Match:\n99.87%", "Historical Reconstruction Available", "Opening Archive..."
+                        "1 Fragment Detected", "Core Signature Match:\n99.87%", "Opening Archive..."
                     ];
                     await runTextSequence(initLines, 4000);
 
-                    playAudio('sfx-forgotten');
-                    box.style.opacity = '1';
-
+                    playAudio('sfx-forgotten'); box.style.opacity = '1';
                     box.innerHTML = `
                         <div class="lore-scroll-box">
                             <h2>THE FORGOTTEN ECLIPSE</h2>
                             <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
-                            <p>Before BLDS.</p>
-                            <p>Before the Core.</p>
-                            <p>Before the Eclipse became known.</p>
-                            <p>There existed another generation.</p>
-                            <p>A generation history no longer remembers.</p>
-                            <p>They were not heroes.</p>
-                            <p>They were not rulers.</p>
-                            <p>They were not legends.</p>
-                            <p>They were ordinary people carrying extraordinary burdens.</p>
-                            <p>People abandoned by hope.</p>
-                            <p>People consumed by failure.</p>
-                            <p>People who had forgotten how to believe in themselves.</p>
-                            <p>Yet among the darkness, they found one another.</p>
-                            <p>And together they created something the world believed impossible.</p>
-                            <p>The First Eclipse.</p>
-                            <p>A sanctuary for those who had nowhere else to belong.</p>
-                            <p>A place where broken lights could shine together.</p>
-                            <p>For a time, the Eclipse flourished.</p>
-                            <p>The Core grew brighter.</p>
-                            <p>More people arrived.</p>
-                            <p>More souls found purpose.</p>
-                            <p>More hearts found direction.</p>
-                            <p>The Eclipse was never built upon strength.</p>
-                            <p>It was built upon belief.</p>
-                            <p>Belief that even the most lost person could still become something greater.</p>
-                            <p>But darkness rarely attacks from outside.</p>
-                            <p>It grows from within.</p>
-                            <p>One member began losing faith.</p>
-                            <p>They looked beyond the Eclipse and saw recognition.</p>
-                            <p>Status.</p>
-                            <p>Validation.</p>
-                            <p>Attention.</p>
-                            <p>Things the Eclipse never promised.</p>
-                            <p>Eventually they left.</p>
-                            <p>Not because they hated the Eclipse.</p>
-                            <p>But because they no longer believed in it.</p>
-                            <p>Before disappearing, they spoke words that spread through the Eclipse like a disease.</p>
+                            <p>Before BLDS. Before the Core. Before the Eclipse became known.</p>
+                            <p>There existed another generation. A generation history no longer remembers.</p>
+                            <p>They were ordinary people carrying extraordinary burdens. People abandoned by hope, consumed by failure.</p>
+                            <p>Yet among the darkness, they found one another. And together they created the First Eclipse.</p>
+                            <p>A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.</p>
+                            <p>But darkness rarely attacks from outside. It grows from within.</p>
+                            <p>One member began losing faith, seeking recognition, status, and attention.</p>
+                            <p>Before disappearing, they spoke words that spread like a disease:</p>
                             <p style="color: #ff4d4d; font-weight: bold;">"What is the point of carrying a light that nobody sees?"</p>
-                            <p>Others began asking the same question.</p>
-                            <p>Then more.</p>
-                            <p>Then even more.</p>
-                            <p>One by one, people abandoned the Core.</p>
-                            <p>One by one, the light faded.</p>
-                            <p>Not because darkness became stronger.</p>
-                            <p>But because belief became weaker.</p>
-                            <p>The Eclipse did not fall in a single night.</p>
-                            <p>It died slowly.</p>
-                            <p>Silently.</p>
-                            <p>Painfully.</p>
-                            <p>Until only a fragment remained.</p>
-                            <p>A single piece of the Core.</p>
-                            <p>Still shining.</p>
-                            <p>Still waiting.</p>
-                            <p>Years passed.</p>
-                            <p>The world forgot.</p>
-                            <p>History moved on.</p>
-                            <p>The Eclipse became a myth.</p>
-                            <p>Yet the fragment endured.</p>
-                            <p>And one day, it was discovered.</p>
-                            <p>Not by a king.</p>
-                            <p>Not by a hero.</p>
-                            <p>Not by a chosen one.</p>
-                            <p>By an unknown individual whose identity remains absent from every surviving archive.</p>
-                            <p>Every attempt to recover their name results in corruption.</p>
-                            <p>Every reference ends in missing data.</p>
-                            <p>What is known is this:</p>
-                            <p>They chose not to preserve the fragment.</p>
-                            <p>They chose to reignite it.</p>
-                            <p>The Core awakened once more.</p>
-                            <p>The Eclipse returned.</p>
-                            <p>And from its rebirth emerged a new generation.</p>
-                            <p>A new dominion.</p>
-                            <p>A second chance.</p>
-                            <p>A name eventually formed around it.</p>
-                            <p style="letter-spacing: 5px; font-weight: bold;">BLACKLIGHTDOMS</p><br>
+                            <p>One by one, people abandoned the Core. The light faded. Not because darkness became stronger, but because belief became weaker.</p>
+                            <p>The Eclipse died slowly. Silently. Painfully. Until only a single fragment remained.</p>
+                            <p>Years passed. The world forgot. The Eclipse became a myth.</p>
+                            <p>Yet the fragment endured. And one day, it was discovered by an unknown individual whose identity remains absent from archives due to system corruption.</p>
+                            <p>They chose not to preserve the fragment. They chose to reignite it.</p>
+                            <p>The Core awakened once more. The Eclipse returned. And from its rebirth emerged BLACKLIGHTDOMS.</p><br>
                             <p>Before disappearing, the unknown Keeper left behind a final message:</p>
-                            <p style="font-style: italic; color: #aaa;">"The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
+                            <p style="font-style: italic; color: #aaa;">"The First Eclipse was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
                             <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-forgotten'); playAudio('bgm');">CLOSE ARCHIVE</button>
                         </div>`;
                 } 
                 else if (code === "12 Flames") {
-                    unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden');
-                    stopAudio('bgm');
+                    unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden'); stopAudio('bgm');
+                    overlay.style.display = 'flex'; overlay.style.background = '#000';
 
-                    overlay.style.display = 'flex';
-                    overlay.style.background = '#000';
-
-                    let scanLines = [
-                        "ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.",
-                        "Verification Complete.", "...", "Unexpected Result Detected.",
-                        "Database Scan Repeated.", "10 Entries Found.", "Unexpected Result Detected."
-                    ];
+                    let scanLines = ["ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.", "Verification Complete.", "...", "Unexpected Result Detected.", "2 Entries Found Beyond Horizon."];
                     await runTextSequence(scanLines, 4000);
 
-                    slamLogo.style.display = 'block';
-                    playAudio('sfx-blds-init'); 
+                    slamLogo.style.display = 'block'; playAudio('sfx-blds-init'); 
                     await new Promise(r => setTimeout(r, 1800));
 
                     box.innerHTML = `
@@ -1279,68 +1362,31 @@
                     document.getElementById('btn-read-flame').onclick = () => {
                         box.style.opacity = '0';
                         setTimeout(() => {
-                            slamLogo.style.display = 'none';
-                            playAudio('sfx-flames');
-                            
+                            slamLogo.style.display = 'none'; playAudio('sfx-flames');
                             box.innerHTML = `
                                 <div class="lore-scroll-box">
                                     <h2>THE 12 FLAMES PROTOCOL</h2>
                                     <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
-                                    <p>Humanity remembers Ten Flames.</p>
-                                    <p>Not because only Ten Flames exist.</p>
-                                    <p>But because everything beyond the Tenth Flame is rejected by human cognition.</p>
-                                    <p>Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance.</p>
-                                    <p>This anomaly became known as:</p>
-                                    <p style="color: #ff4d4d; font-weight: bold;">THE MEMORY COLLAPSE PHENOMENON</p>
-                                    <p>Researchers initially believe the phenomenon to be a recording failure.</p>
-                                    <p>They were wrong.</p>
-                                    <p>The information was not being erased.</p>
-                                    <p>Humanity was rejecting it.</p>
-                                    <p>The mind instinctively refused to retain what existed beyond the Tenth Flame.</p>
-                                    <p>Yet scattered fragments continued appearing across unrelated archives.</p>
-                                    <p>Fragments referencing two impossible entries.</p>
-                                    <p>Entry Eleven.</p>
-                                    <p>Entry Twelve.</p>
+                                    <p>Humanity remembers Ten Flames because everything beyond the Tenth Flame is rejected by human cognition.</p>
+                                    <p>This anomaly became known as: <span style="color: #ff4d4d; font-weight: bold;">THE MEMORY COLLAPSE PHENOMENON</span></p>
                                     
                                     <h3>FLAME 11 — SACRED FLAME</h3>
-                                    <p>The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one.</p>
-                                    <p style="color: #aaa; font-size: 0.85rem;">Vision. Discipline. Loyalty. Ambition. Resilience. Hope. Awareness. Patience. Courage. Unity.</p>
-                                    <p>Ancient records suggest these Flames were never meant to exist separately. They are fragments of a greater whole. Each Flame strengthens another. Each Flame protects another. Each Flame preserves the Core.</p>
-                                    <p>When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame.</p>
-                                    <p>Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.</p>
-                                    <p>Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles:</p>
-                                    <p style="color: #bbb; font-style: italic; padding-left: 10px;">
-                                        - The Flame of Unity.<br>
-                                        - The Flame Beyond Division.<br>
-                                        - The Crown of the Ten Flames.<br>
-                                        - The Flame That Contains All Flames.
-                                    </p>
-                                    <p>Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.</p>
+                                    <p>The Sacred Flame is the culmination of the Ten Flames. It is the moment all paths become one in perfect harmony.</p>
+                                    <p>When Vision, Discipline, Loyalty, Ambition, Resilience, Hope, Awareness, Patience, Courage, and Unity achieve resonance, they become the Crown of the Ten Flames.</p>
+                                    <p>Legends claim that when the Sacred Flame appears, the Core becomes brighter than any darkness surrounding it.</p>
                                     
                                     <h3>FLAME 12 — HIDDEN FLAME</h3>
-                                    <p style="color: #ff3333; font-weight: bold; letter-spacing: 1px;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
-                                    <p>Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records.</p>
-                                    <p>The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence.</p>
-                                    <p>Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.</p>
-                                    <p>Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written.</p>
-                                    <p>Only one statement survived every reconstruction attempt. A single sentence recovered from dozens of unrelated archives:</p>
+                                    <p style="color: #ff3333; font-weight: bold;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
+                                    <p>The Hidden Flame does not grant power or wisdom. It does not participate in existence. It stands beyond reality as an observer.</p>
+                                    <p>Only one sentence survived every system data reconstruction attempt:</p>
                                     <p style="color: #ffff1a; font-weight: bold; background: rgba(255,255,0,0.05); padding: 5px;">"It does not participate in existence. It observes whether existence should continue."</p>
-                                    <p>No archive continues beyond this point. No explanation follows. No conclusion exists. Only silence.</p>
-                                    
-                                    <br>
-                                    <p><strong>END OF RESTRICTED ARCHIVE</strong><br>
-                                    Total Recorded Flames: 10<br>
-                                    Total Observed Flames: 12<br>
-                                    Reason for discrepancy: UNKNOWN</p>
-                                    
-                                    <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-flames'); playAudio('bgm');">EXIT LOGS</button>
+                                    <br><p><strong>END OF RESTRICTED ARCHIVE</strong></p>
+                                    <button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-flames'); playAudio('bgm');">EXIT LOGS</button>
                                 </div>`;
                             box.style.opacity = '1';
                         }, 500);
                     };
-                } else {
-                    alert("Archive Key Invalid.");
-                }
+                } else { alert("Archive Key Invalid."); }
             });
         }
     </script>
