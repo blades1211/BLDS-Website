@@ -130,14 +130,8 @@
             opacity: 0;
             transition: opacity 1.5s ease;
         }
-        #logo-left {
-            left: -150px; 
-            animation: spinExtremelySlow 25s linear infinite;
-        }
-        #logo-right {
-            right: -150px; 
-            animation: spinExtremelySlow 25s linear infinite;
-        }
+        #logo-left { left: -150px; animation: spinExtremelySlow 25s linear infinite; }
+        #logo-right { right: -150px; animation: spinExtremelySlow 25s linear infinite; }
 
         /* --- SPECIAL ANIMATION LOGO 12 FLAMES --- */
         .blds-slam-shining {
@@ -198,6 +192,34 @@
         footer a { color: #888; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dashed #444; padding-bottom: 2px; }
         footer a:hover { color: #fff; border-bottom-color: #fff; }
 
+        /* --- DRAGGABLE OWNER PANEL PANEL --- */
+        #owner-trigger-btn {
+            position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid #444;
+            color: #fff; font-size: 1.2rem; cursor: pointer; z-index: 99999;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
+        
+        #owner-panel {
+            position: fixed; top: 15%; left: 30%; width: 320px;
+            background: #0a0a0a; border: 2px solid #fff; z-index: 999999;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
+        }
+        .owner-header {
+            background: #151515; padding: 10px; cursor: move; font-weight: bold;
+            font-size: 0.85rem; letter-spacing: 2px; border-bottom: 1px solid #333;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .owner-field { display: flex; flex-direction: column; gap: 4px; }
+        .owner-field label { font-size: 0.75rem; color: #888; letter-spacing: 1px; }
+        .owner-field input {
+            padding: 8px; background: #111; border: 1px solid #444; color: #fff;
+            font-family: monospace; font-size: 0.9rem;
+        }
+
         /* --- ANIMATIONS --- */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spinExtremelySlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -231,6 +253,30 @@
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
         <span id="toast-title">Achievement Name</span>
+    </div>
+
+    <button id="owner-trigger-btn" onclick="toggleOwnerPanel()">⚙️</button>
+
+    <div id="owner-panel">
+        <div class="owner-header" id="owner-panel-dragheader">
+            <span>OWNER INTERFACE</span>
+            <span style="cursor:pointer; font-weight:bold; font-size:1.1rem;" onclick="toggleOwnerPanel()">&times;</span>
+        </div>
+        <div class="owner-body">
+            <div class="owner-field">
+                <label>DOMINION NAME</label>
+                <input type="text" id="owner-name-input">
+            </div>
+            <div class="owner-field">
+                <label>CURRENT STREAK</label>
+                <input type="number" id="owner-current-input">
+            </div>
+            <div class="owner-field">
+                <label>HIGHEST STREAK</label>
+                <input type="number" id="owner-high-input">
+            </div>
+            <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE CHANGES</button>
+        </div>
     </div>
 
     <div id="gate-screen">
@@ -271,9 +317,7 @@
 
     <div id="cutscene-overlay">
         <img id="logo-slam" class="blds-slam-shining" src="logo.png" onerror="this.src='https://placehold.co/200x200/000000/ffffff?text=BLDS'">
-        
         <div id="cutscene-text-box" class="cutscene-text"></div>
-        
         <img id="logo-left" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
         <img id="logo-right" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
     </div>
@@ -299,7 +343,7 @@
             <div class="progress-container">
                 <div id="ach-progress-bar" class="progress-bar"></div>
             </div>
-            <div style="font-size:0.75rem; text-align:right; color:#888; margin-bottom:15px;" id="progress-text">0/4 Unlocked</div>
+            <div style="font-size:0.75rem; text-align:right; color:#888; margin-bottom:15px;" id="progress-text">0/7 Unlocked</div>
 
             <div id="ac-made-it" class="badge-card">
                 <h4>"You made it"</h4>
@@ -316,6 +360,18 @@
             <div id="ac-2-flames" class="badge-card">
                 <h4>"2 Flames"</h4>
                 <small>Sacred and hidden</small>
+            </div>
+            <div id="ac-michael" class="badge-card">
+                <h4>"Michael"</h4>
+                <small>Lorenzo / Who is That</small>
+            </div>
+            <div id="ac-william" class="badge-card">
+                <h4>"William"</h4>
+                <small>Nayottama / Who is That</small>
+            </div>
+            <div id="ac-felix" class="badge-card">
+                <h4>"Felix"</h4>
+                <small>Prince / Who is That</small>
             </div>
         </div>
     </div>
@@ -373,9 +429,7 @@
 
         function unlockAudioContext() {
             const audios = document.querySelectorAll('audio');
-            audios.forEach(track => {
-                track.load();
-            });
+            audios.forEach(track => { track.load(); });
             document.removeEventListener('click', unlockAudioContext);
             document.removeEventListener('keydown', unlockAudioContext);
         }
@@ -384,6 +438,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             updateUI();
+            makeElementDraggable(document.getElementById("owner-panel"));
 
             setTimeout(() => {
                 document.getElementById('loading-spinner').style.opacity = '0';
@@ -398,9 +453,7 @@
                 }
             }, 3000);
 
-            if(username) {
-                syncWithFirebase();
-            }
+            if(username) { syncWithFirebase(); }
         });
 
         function applyButtonTransition(btnElement, callback) {
@@ -416,10 +469,11 @@
             const el = document.getElementById(id);
             if(el) {
                 el.muted = false; 
-                el.currentTime = 0;
+                el.pause(); 
+                el.currentTime = 0; 
                 let playPromise = el.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(e => console.log(`Gagal memutar audio ${id}:`, e));
+                    playPromise.catch(e => console.log(`Audio error ${id}:`, e));
                 }
             }
         }
@@ -499,11 +553,14 @@
             if(unlockedBadges.includes('2-dim')) document.getElementById('ac-2-dim').classList.add('badge-unlocked');
             if(unlockedBadges.includes('forgotten')) document.getElementById('ac-forgotten').classList.add('badge-unlocked');
             if(unlockedBadges.includes('2-flames')) document.getElementById('ac-2-flames').classList.add('badge-unlocked');
+            if(unlockedBadges.includes('michael')) document.getElementById('ac-michael').classList.add('badge-unlocked');
+            if(unlockedBadges.includes('william')) document.getElementById('ac-william').classList.add('badge-unlocked');
+            if(unlockedBadges.includes('felix')) document.getElementById('ac-felix').classList.add('badge-unlocked');
 
             let totalUnlocked = unlockedBadges.length;
-            let percent = (totalUnlocked / 4) * 100;
+            let percent = (totalUnlocked / 7) * 100;
             document.getElementById('ach-progress-bar').style.width = percent + "%";
-            document.getElementById('progress-text').innerText = `${totalUnlocked}/4 Unlocked`;
+            document.getElementById('progress-text').innerText = `${totalUnlocked}/7 Unlocked`;
 
             startCooldownTimer();
         }
@@ -614,8 +671,6 @@
 
         function triggerOriginLore(btn) {
             applyButtonTransition(btn, () => {
-                playAudio('sfx-text-fade');
-
                 const overlay = document.getElementById('cutscene-overlay');
                 const box = document.getElementById('cutscene-text-box');
                 
@@ -626,6 +681,9 @@
                 overlay.style.display = 'flex';
                 overlay.style.background = '#000';
                 box.style.opacity = '1';
+
+                // JALUR SUARA DIPERBAIKI (Dimainkan sesudah display layout flex siap)
+                playAudio('sfx-text-fade');
 
                 box.innerHTML = `
                     <div class="lore-scroll-box">
@@ -783,6 +841,79 @@
             }, 600);
         }
 
+        /* --- DRAGGABLE INTERFACE HANDLER --- */
+        function makeElementDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = document.getElementById(elmnt.id + "0g-dragheader") || document.getElementById(elmnt.id + "-dragheader");
+            if (header) {
+                header.onmousedown = dragMouseDown;
+                header.ontouchstart = dragMouseDown;
+            } else {
+                elmnt.onmousedown = dragMouseDown;
+                elmnt.ontouchstart = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                if(e.type !== 'touchstart') { e.preventDefault(); }
+                pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                document.onmouseup = closeDragElement;
+                document.ontouchend = closeDragElement;
+                document.onmousemove = elementDrag;
+                document.ontouchmove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+
+        function toggleOwnerPanel() {
+            const panel = document.getElementById('owner-panel');
+            if(panel.style.display === 'flex') {
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'flex';
+                document.getElementById('owner-name-input').value = username;
+                document.getElementById('owner-current-input').value = currentStreak;
+                document.getElementById('owner-high-input').value = highStreak;
+            }
+        }
+
+        function saveOwnerChanges(btn) {
+            applyButtonTransition(btn, () => {
+                let newName = document.getElementById('owner-name-input').value.trim();
+                let newCurrent = parseInt(document.getElementById('owner-current-input').value) || 0;
+                let newHigh = parseInt(document.getElementById('owner-high-input').value) || 0;
+
+                if(!newName) { alert("Nama tidak boleh kosong!"); return; }
+
+                username = newName;
+                currentStreak = newCurrent;
+                highStreak = newHigh;
+
+                saveToFirebase();
+                alert("Owner Commands Executed! Data synced.");
+                toggleOwnerPanel();
+            });
+        }
+
         async function submitCode(btn) {
             applyButtonTransition(btn, async () => {
                 let code = document.getElementById('code-input-field').value.trim();
@@ -802,7 +933,17 @@
                 box.innerHTML = '';
                 box.style.opacity = '0';
 
-                if (code === "White") {
+                // CODES DETECTIONS FOR NEW REWARD ACHIEVEMENT
+                if (code === "Michael") {
+                    unlockAchievement('michael', '"Michael"\nLorenzo\nWho is That');
+                }
+                else if (code === "William") {
+                    unlockAchievement('william', '"William"\nNayottama\nWho is That');
+                }
+                else if (code === "Felix") {
+                    unlockAchievement('felix', '"Felix"\nPrince\nWho is That');
+                }
+                else if (code === "White") {
                     bodyEl.classList.remove('invert-half-right');
                     bodyEl.classList.add('invert-full');
                 } 
@@ -860,15 +1001,9 @@
                     overlay.style.background = '#000';
 
                     let initLines = [
-                        "NO ACTIVE RECORD FOUND",
-                        "Attempting reconstruction...",
-                        "Searching fragments...",
-                        "Searching fragments...",
-                        "Searching fragments...",
-                        "1 Fragment Detected",
-                        "Core Signature Match:\n99.87%",
-                        "Historical Reconstruction Available",
-                        "Opening Archive..."
+                        "NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "Searching fragments...",
+                        "Searching fragments...", "Searching fragments...", "1 Fragment Detected",
+                        "Core Signature Match:\n99.87%", "Historical Reconstruction Available", "Opening Archive..."
                     ];
                     await runTextSequence(initLines, 4000);
 
@@ -967,15 +1102,9 @@
                     overlay.style.background = '#000';
 
                     let scanLines = [
-                        "ARCHIVE STATUS: STABLE",
-                        "Loading Flame Database...",
-                        "10 Entries Found.",
-                        "Verification Complete.",
-                        "...",
-                        "Unexpected Result Detected.",
-                        "Database Scan Repeated.",
-                        "10 Entries Found.",
-                        "Unexpected Result Detected."
+                        "ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.",
+                        "Verification Complete.", "...", "Unexpected Result Detected.",
+                        "Database Scan Repeated.", "10 Entries Found.", "Unexpected Result Detected."
                     ];
                     await runTextSequence(scanLines, 4000);
 
