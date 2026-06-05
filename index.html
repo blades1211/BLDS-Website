@@ -128,6 +128,13 @@
         
         .streak-info-box { background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px; font-size: 0.85rem; text-align: center; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
 
+        /* --- BANNED SCREEN OVERLAY --- */
+        #banned-screen {
+            position: fixed; top:0; left:0; width:100%; height:100%; background:#000;
+            z-index: 9999999; display:none; flex-direction:column; justify-content:center; align-items:center;
+            text-align:center; padding:20px;
+        }
+
         /* --- OVERLAY CUTSCENE STREAK 100 --- */
         #cutscene-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; 
@@ -219,7 +226,7 @@
         .star-box { font-size: 1.6rem; cursor: pointer; color: #444; transition: color 0.2s; }
         .star-box.selected { color: #ffd700; filter: drop-shadow(0 0 5px #ffd700); }
         .comment-container { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 40vh; overflow-y: auto; padding-right: 5px; }
-        .comment-node { border-left: 2px solid #333; padding-left: 12px; margin-bottom: 5px; background: rgba(255,255,255,0.01); padding: 10px; }
+        .comment-node { border-left: 2px solid #333; padding-left: 12px; margin-bottom: 5px; background: rgba(255,255,255,0.01); padding: 10px; position: relative; }
         .comment-meta { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .comment-text { font-size: 0.85rem; line-height: 1.5; color: #ddd; word-break: break-all; }
         .reply-node { margin-left: 20px; margin-top: 10px; border-left: 2px dashed #555; padding-left: 10px; background: rgba(255,255,255,0.005); padding: 8px; }
@@ -253,7 +260,7 @@
         #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
         
         #owner-panel {
-            position: fixed; top: 10%; left: 25%; width: 360px; max-height: 80vh;
+            position: fixed; top: 10%; left: 25%; width: 380px; max-height: 85vh;
             background: #0a0a0a; border: 2px solid #fff; z-index: 999999;
             box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
             overflow: hidden;
@@ -264,18 +271,20 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .owner-tabs { display: flex; background: #111; border-bottom: 1px solid #222; }
-        .owner-tab-btn { flex: 1; padding: 8px; background: transparent; border: none; color: #666; font-family: monospace; font-size: 0.75rem; cursor: pointer; border-bottom: 2px solid transparent; }
+        .owner-tab-btn { flex: 1; padding: 8px; background: transparent; border: none; color: #666; font-family: monospace; font-size: 0.72rem; cursor: pointer; border-bottom: 2px solid transparent; text-transform: uppercase; }
         .owner-tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.02); }
         .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
         .owner-field { display: flex; flex-direction: column; gap: 4px; }
         .owner-field label { font-size: 0.75rem; color: #888; letter-spacing: 1px; }
-        .owner-field input, .owner-field textarea {
+        .owner-field input, .owner-field textarea, .owner-field select {
             padding: 8px; background: #111; border: 1px solid #444; color: #fff;
             font-family: monospace; font-size: 0.9rem;
         }
-        .owner-field textarea { resize: vertical; min-height: 80px; font-size: 0.8rem; }
+        .owner-field textarea { resize: vertical; min-height: 70px; font-size: 0.8rem; }
         .btn-danger { background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d; }
         .btn-danger:hover { background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d; }
+        .btn-success { background: rgba(0, 255, 170, 0.1); border: 1px solid #00ffaa; color: #00ffaa; }
+        .btn-success:hover { background: #00ffaa; color: #000; box-shadow: 0 0 15px #00ffaa; }
 
         /* --- ANIMATIONS --- */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -305,6 +314,13 @@
     <audio id="sfx-forgotten" loop preload="auto" src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
     <audio id="sfx-flames" loop preload="auto" src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
 
+    <div id="banned-screen">
+        <h1 style="color:#ff0055; font-size:3rem; letter-spacing:5px; margin-bottom:15px; animation:shake 0.2s infinite;">DOMINION TERMINATED</h1>
+        <p style="font-size:1rem; color:#aaa; max-width:500px; line-height:1.6; font-family:monospace;">
+            Akses Dominion Anda telah ditangguhkan secara permanen oleh Realm Keeper Core karena melanggar protokol keamanan BLACKLIGHTDOMS.
+        </p>
+    </div>
+
     <div id="global-announcement-banner">
         <span style="font-weight:bold; color:#ff0055;" id="announce-staff-title">[📢 STAFF ANNOUNCEMENT]</span> 
         <span id="announce-text-content">Connecting to timeline broadcast...</span>
@@ -319,30 +335,48 @@
 
     <div id="owner-panel">
         <div class="owner-header" id="owner-panel-dragheader">
-            <span>OWNER HUB CONTROL</span>
+            <span>OWNER ADVANCED CONTROL</span>
             <span style="cursor:pointer; font-weight:bold; font-size:1.1rem;" onclick="toggleOwnerPanel()">&times;</span>
         </div>
         <div class="owner-tabs">
-            <button class="owner-tab-btn active" id="tab-btn-core" onclick="switchOwnerTab('core')">CORE STREAK</button>
-            <button class="owner-tab-btn" id="tab-btn-cms" onclick="switchOwnerTab('cms')">CMS DATA</button>
-            <button class="owner-tab-btn" id="tab-btn-comm" onclick="switchOwnerTab('comm')">STAFF COMMUNICATIONS</button>
+            <button class="owner-tab-btn active" id="tab-btn-core" onclick="switchOwnerTab('core')">DOMINION STRK</button>
+            <button class="owner-tab-btn" id="tab-btn-cms" onclick="switchOwnerTab('cms')">CMS TEXT</button>
+            <button class="owner-tab-btn" id="tab-btn-comm" onclick="switchOwnerTab('comm')">COMMUNICATIONS</button>
         </div>
 
         <div class="owner-body" id="owner-tab-core-content">
+            <div style="background:rgba(255,255,255,0.02); padding:10px; border:1px solid #222; margin-bottom:5px;">
+                <h4 style="font-size:0.75rem; color:#00ffaa; margin-bottom:8px; letter-spacing:1px;">SEARCH DOMINION USER IN DATABASE</h4>
+                <div class="owner-field" style="flex-direction:row; gap:6px;">
+                    <input type="text" id="owner-search-name" style="flex:1;" placeholder="Type exact name here...">
+                    <button class="enter-btn" style="margin-top:0; padding:0 12px; font-size:0.8rem;" onclick="searchUserByDominionName()">FIND</button>
+                </div>
+                <div id="search-status-log" style="font-size:0.7rem; color:#888; margin-top:5px; font-style:italic;">Ready to search...</div>
+            </div>
+
             <div class="owner-field">
-                <label>DOMINION NAME</label>
+                <label>SELECTED USER DATABASE TARGET ID</label>
+                <input type="text" id="owner-target-uuid" readonly style="color:#888; font-size:0.8rem;" placeholder="UUID automatically loads here">
+            </div>
+            <div class="owner-field">
+                <label>DOMINION DISPLAY NAME</label>
                 <input type="text" id="owner-name-input">
             </div>
             <div class="owner-field">
-                <label>CURRENT STREAK</label>
+                <label>SET CURRENT STREAK</label>
                 <input type="number" id="owner-current-input">
             </div>
             <div class="owner-field">
-                <label>HIGHEST STREAK</label>
+                <label>SET HIGHEST STREAK</label>
                 <input type="number" id="owner-high-input">
             </div>
-            <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE CHANGES</button>
-            <button class="enter-btn btn-danger" style="margin-top:0px; padding:8px;" onclick="resetCurrentStreakOnly(this)">RESET CURRENT STREAK (0)</button>
+            
+            <button class="enter-btn btn-success" style="margin-top:5px; padding:10px; font-size:0.85rem;" onclick="saveOwnerTargetChanges(this)">PUSH UPDATE TO DATABASE</button>
+            
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <button class="enter-btn btn-danger" style="flex:1; margin-top:0; padding:8px; font-size:0.8rem;" onclick="toggleBanStatusByOwner(true)">🛑 BAN USER</button>
+                <button class="enter-btn btn-success" style="flex:1; margin-top:0; padding:8px; font-size:0.8rem;" onclick="toggleBanStatusByOwner(false)">✅ UNBAN USER</button>
+            </div>
         </div>
 
         <div class="owner-body" id="owner-tab-cms-content" style="display:none;">
@@ -562,18 +596,18 @@
         let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
+        let isUserBanned = false;
 
         let cdInterval = null;
         let lbInterval = null; 
         let commsInterval = null;
 
-        // Feedbacks variables
         let selectedRatingValue = 5;
         let replyTargetCommentId = null;
 
-        // Local Fallback CMS Strings
         let dbCmsOriginHtml = ""; 
         let dbCmsArchiveHtml = "";
+        let fullLeaderboardCache = {};
 
         function unlockAudioContext() {
             const audios = document.querySelectorAll('audio');
@@ -634,12 +668,13 @@
         function syncWithFirebase() {
             if(!username) return;
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
-                .then(res => {
-                    if(!res.ok) throw new Error('rules locked');
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    if(data && data.username) {
+                    if(data) {
+                        if(data.isBanned === true) {
+                            executeBanTerminal();
+                            return;
+                        }
                         currentStreak = data.streak !== undefined ? parseInt(data.streak) : currentStreak;
                         highStreak = data.highStreak !== undefined ? parseInt(data.highStreak) : highStreak;
                         lastClickTime = data.lastClick || lastClickTime;
@@ -653,7 +688,6 @@
                     updateUI();
                 })
                 .catch(() => {
-                    // Fallback to local data if Firebase rules are locked/blocked
                     let now = Date.now();
                     if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) { currentStreak = 0; }
                     updateUI();
@@ -661,6 +695,7 @@
         }
 
         function saveToFirebase() {
+            if(isUserBanned) return;
             localStorage.setItem('blds_username', username);
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
@@ -668,18 +703,34 @@
             if(!username) return;
 
             let payload = {
-                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), updatedAt: Date.now()
+                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), isBanned: false, updatedAt: Date.now()
             };
 
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             }).then(() => {
                 if(document.getElementById('leaderboard-modal').style.display === 'flex') fetchLeaderboardData();
-            }).catch(e => console.log("Firebase sync blocked. Operating on local memory storage. Check database rules."));
+            });
             updateUI();
         }
 
+        function executeBanTerminal() {
+            isUserBanned = true;
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('gate-screen').style.display = 'none';
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+            document.getElementById('banned-screen').style.display = 'flex';
+            stopAudio('bgm');
+        }
+
         function syncCmsAndCommunications() {
+            // Live security lock validation check
+            if(username) {
+                fetch(`${BASE_DB_URL}leaderboard/${userId}/isBanned.json`)
+                    .then(res => res.json())
+                    .then(banned => { if(banned === true) executeBanTerminal(); });
+            }
+
             fetch(`${BASE_DB_URL}cms.json`)
                 .then(res => res.ok ? res.json() : null)
                 .then(data => {
@@ -690,7 +741,7 @@
                             document.getElementById('dynamic-archive-container').innerHTML = data.archiveText;
                         }
                     }
-                }).catch(e => {});
+                });
 
             fetch(`${BASE_DB_URL}announcement.json`)
                 .then(res => res.ok ? res.json() : null)
@@ -703,7 +754,12 @@
                     } else {
                         banner.style.display = 'none';
                     }
-                }).catch(e => {});
+                });
+
+            // Keep full database map cached for owner lookup searches
+            fetch(`${BASE_DB_URL}leaderboard.json`)
+                .then(res => res.json())
+                .then(data => { if(data) fullLeaderboardCache = data; });
 
             if(document.getElementById('rating-modal').style.display === 'flex') {
                 renderPublicCommentsList();
@@ -736,6 +792,7 @@
             const btn = document.getElementById('streak-claim-btn');
             
             cdInterval = setInterval(() => {
+                if(isUserBanned) return;
                 let now = Date.now();
                 let timeDiff = now - lastClickTime;
                 let cooldown = 24 * 60 * 60 * 1000; 
@@ -774,16 +831,30 @@
                 if(!inputName) { alert("Harap masukkan nama Dominion Anda!"); return; }
                 username = inputName;
                 localStorage.setItem('blds_username', username);
-                saveToFirebase();
-
-                playAudio('bgm'); playAudio('sfx-click');
-                document.getElementById('gate-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('gate-screen').style.display = 'none';
-                    const menu = document.getElementById('main-menu');
-                    menu.style.display = 'flex';
-                    setTimeout(() => menu.style.opacity = '1', 50);
-                }, 1500);
+                
+                // Validate if newly entered name is already locked/banned
+                fetch(`${BASE_DB_URL}leaderboard.json`)
+                    .then(res => res.json())
+                    .then(allData => {
+                        if(allData) {
+                            let match = Object.keys(allData).find(k => allData[k].username && allData[k].username.toLowerCase() === inputName.toLowerCase());
+                            if(match && allData[match].isBanned === true) {
+                                executeBanTerminal();
+                                return;
+                            }
+                            if(match) { userId = match; localStorage.setItem('blds_user_uuid', userId); }
+                        }
+                        
+                        saveToFirebase();
+                        playAudio('bgm'); playAudio('sfx-click');
+                        document.getElementById('gate-screen').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('gate-screen').style.display = 'none';
+                            const menu = document.getElementById('main-menu');
+                            menu.style.display = 'flex';
+                            setTimeout(() => menu.style.opacity = '1', 50);
+                        }, 1500);
+                    });
             });
         }
 
@@ -815,7 +886,7 @@
             });
         }
 
-        // --- COMMENTS SYSTEMS FEEDBACK LOGICS ---
+        // --- PUBLIC TRANS-FEEDBACK COMMENTS SYSTEM ---
         function setFeedbackRating(val) {
             selectedRatingValue = val;
             const stars = document.querySelectorAll('#feedback-star-row .star-box');
@@ -847,43 +918,19 @@
 
             applyButtonTransition(btn, () => {
                 playAudio('sfx-click');
-                
                 if(replyTargetCommentId) {
                     let replyPayload = { author: username, message: txt, timestamp: Date.now(), isStaff: false };
-                    
-                    // Fallback storage check
-                    let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
-                    if(localComments[replyTargetCommentId]) {
-                        if(!localComments[replyTargetCommentId].replies) localComments[replyTargetCommentId].replies = {};
-                        let newRId = 'r_' + Date.now();
-                        localComments[replyTargetCommentId].replies[newRId] = replyPayload;
-                        localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
-                    }
-
                     fetch(`${BASE_DB_URL}comments/${replyTargetCommentId}/replies.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyPayload)
                     }).then(() => {
                         document.getElementById('public-comment-input').value = '';
                         resetCommentReplyChain(); renderPublicCommentsList();
-                    }).catch(e => {
-                        document.getElementById('public-comment-input').value = '';
-                        resetCommentReplyChain(); renderPublicCommentsList();
                     });
                 } else {
                     let commentPayload = { author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), isStaff: false };
-                    
-                    // Fallback to local storage
-                    let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
-                    let newCId = 'c_' + Date.now();
-                    localComments[newCId] = commentPayload;
-                    localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
-
                     fetch(`${BASE_DB_URL}comments.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentPayload)
                     }).then(() => {
-                        document.getElementById('public-comment-input').value = '';
-                        renderPublicCommentsList();
-                    }).catch(e => {
                         document.getElementById('public-comment-input').value = '';
                         renderPublicCommentsList();
                     });
@@ -891,70 +938,146 @@
             });
         }
 
+        // Action function for owner to delete feedback records
+        function removePublicCommentByOwner(commentId) {
+            if(confirm("Delete this transmission node permanently from Firebase?")) {
+                fetch(`${BASE_DB_URL}comments/${commentId}.json`, { method: 'DELETE' })
+                    .then(() => { alert("Node removed."); renderPublicCommentsList(); });
+            }
+        }
+
         function renderPublicCommentsList() {
             const listContainer = document.getElementById('public-comments-box-list');
-            
-            function buildList(data) {
-                if(!data) {
-                    listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
-                    return;
-                }
-                listContainer.innerHTML = '';
-                Object.keys(data).forEach(id => {
-                    let node = data[id];
-                    let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
-                    let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-
-                    let mainNodeHtml = `
-                        <div class="comment-node" id="node-block-${id}">
-                            <div class="comment-meta">
-                                <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}</span>
-                                <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
-                            </div>
-                            <div class="comment-text">${escapeHTML(node.message || '')}</div>
-                            <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
-                            <div id="replies-sub-list-${id}"></div>
-                        </div>
-                    `;
-                    listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
-
-                    if(node.replies) {
-                        const subContainer = document.getElementById(`replies-sub-list-${id}`);
-                        Object.keys(node.replies).forEach(rId => {
-                            let subNode = node.replies[rId];
-                            let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-                            let replyHtml = `
-                                <div class="reply-node">
-                                    <div class="comment-meta">
-                                        <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
-                                        <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
-                                    </div>
-                                    <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
-                                </div>
-                            `;
-                            subContainer.insertAdjacentHTML('beforeend', replyHtml);
-                        });
-                    }
-                });
-            }
-
             fetch(`${BASE_DB_URL}comments.json`)
-                .then(res => res.ok ? res.json() : null)
+                .then(res => res.json())
                 .then(data => {
                     if(!data) {
-                        let localData = JSON.parse(localStorage.getItem('local_fallback_comments'));
-                        buildList(localData);
-                    } else {
-                        buildList(data);
+                        listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
+                        return;
                     }
-                })
-                .catch(() => {
-                    let localData = JSON.parse(localStorage.getItem('local_fallback_comments'));
-                    buildList(localData);
+                    listContainer.innerHTML = '';
+                    Object.keys(data).forEach(id => {
+                        let node = data[id];
+                        let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
+                        let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+                        let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.7rem; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
+
+                        let mainNodeHtml = `
+                            <div class="comment-node" id="node-block-${id}">
+                                <div class="comment-meta">
+                                    <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}${deleteBtnUi}</span>
+                                    <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
+                                </div>
+                                <div class="comment-text">${escapeHTML(node.message || '')}</div>
+                                <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
+                                <div id="replies-sub-list-${id}"></div>
+                            </div>
+                        `;
+                        listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
+
+                        if(node.replies) {
+                            const subContainer = document.getElementById(`replies-sub-list-${id}`);
+                            Object.keys(node.replies).forEach(rId => {
+                                let subNode = node.replies[rId];
+                                let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+                                let replyHtml = `
+                                    <div class="reply-node">
+                                        <div class="comment-meta">
+                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
+                                            <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
+                                        </div>
+                                        <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
+                                    </div>
+                                `;
+                                subContainer.insertAdjacentHTML('beforeend', replyHtml);
+                            });
+                        }
+                    });
                 });
         }
 
-        // --- ORIGIN CONTENT HANDLER (DYNAMIC CMS) ---
+        // --- SEARCH MECHANICS BY NAME IN OWNER PANEL ---
+        function searchUserByDominionName() {
+            let queryName = document.getElementById('owner-search-name').value.trim().toLowerCase();
+            let log = document.getElementById('search-status-log');
+            if(!queryName) { alert("Type a Dominion name to search!"); return; }
+
+            log.innerText = "Scanning database branches...";
+            
+            fetch(`${BASE_DB_URL}leaderboard.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data) { log.innerText = "Database is completely empty."; return; }
+                    
+                    let matchKey = Object.keys(data).find(key => data[key] && data[key].username && data[key].username.toLowerCase() === queryName);
+                    
+                    if(matchKey) {
+                        let profile = data[matchKey];
+                        document.getElementById('owner-target-uuid').value = matchKey;
+                        document.getElementById('owner-name-input').value = profile.username || '';
+                        document.getElementById('owner-current-input').value = profile.streak !== undefined ? profile.streak : 0;
+                        document.getElementById('owner-high-input').value = profile.highStreak !== undefined ? profile.highStreak : 0;
+                        
+                        let isBannedText = profile.isBanned === true ? " [🛑 BANNED]" : " [Active]";
+                        log.innerText = `Found: ${profile.username}${isBannedText}`;
+                        log.style.color = profile.isBanned === true ? "#ff4d4d" : "#00ffaa";
+                    } else {
+                        log.innerText = "No exact matching Dominion found.";
+                        log.style.color = "#ff4d4d";
+                        document.getElementById('owner-target-uuid').value = '';
+                    }
+                })
+                .catch(() => { log.innerText = "Error linking to Firebase database."; });
+        }
+
+        function saveOwnerTargetChanges(btn) {
+            let targetUuid = document.getElementById('owner-target-uuid').value;
+            if(!targetUuid) { alert("Please search and select a valid profile node first!"); return; }
+
+            applyButtonTransition(btn, () => {
+                let updatedName = document.getElementById('owner-name-input').value.trim();
+                let updatedCurrent = parseInt(document.getElementById('owner-current-input').value) || 0;
+                let updatedHigh = parseInt(document.getElementById('owner-high-input').value) || 0;
+
+                if(!updatedName) { alert("Name field cannot be left blank!"); return; }
+
+                let updates = {
+                    username: updatedName,
+                    streak: updatedCurrent,
+                    highStreak: updatedHigh
+                };
+
+                fetch(`${BASE_DB_URL}leaderboard/${targetUuid}.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                }).then(() => {
+                    alert(`Successfully updated metrics for ${updatedName}!`);
+                    document.getElementById('search-status-log').innerText = "Data successfully pushed.";
+                    if(targetUuid === userId) { syncWithFirebase(); }
+                });
+            });
+        }
+
+        function toggleBanStatusByOwner(banStatusBoolean) {
+            let targetUuid = document.getElementById('owner-target-uuid').value;
+            let targetName = document.getElementById('owner-name-input').value;
+            if(!targetUuid) { alert("No active user node loaded in field!"); return; }
+
+            let confirmMsg = banStatusBoolean ? `Are you sure you want to BAN ${targetName}?` : `Lift ban restriction for ${targetName}?`;
+            if(confirm(confirmMsg)) {
+                fetch(`${BASE_DB_URL}leaderboard/${targetUuid}/isBanned.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(banStatusBoolean)
+                }).then(() => {
+                    alert(`Ban modification protocol complete for ${targetName}.`);
+                    searchUserByDominionName();
+                });
+            }
+        }
+
+        // --- ORIGIN LORE HANDLING ENGINE (DYNAMIC CMS) ---
         function triggerOriginLore(btn) {
             applyButtonTransition(btn, () => {
                 const overlay = document.getElementById('cutscene-overlay');
@@ -965,11 +1088,8 @@
                 document.getElementById('logo-slam').style.display = 'none';
                 document.getElementById('logo-streak-100').style.display = 'none';
 
-                overlay.style.display = 'flex';
-                overlay.style.background = '#000';
-                box.style.opacity = '1';
-
-                playAudio('sfx-text-fade');
+                overlay.style.display = 'flex'; overlay.style.background = '#000';
+                box.style.opacity = '1'; playAudio('sfx-text-fade');
 
                 if(dbCmsOriginHtml && dbCmsOriginHtml.trim() !== "") {
                     box.innerHTML = dbCmsOriginHtml;
@@ -981,42 +1101,18 @@
                             <p>BEFORE BLDS HAD A NAME... BEFORE THE SYMBOL EXISTED. BEFORE THE SQUAD WAS FORMED...</p>
                             <p>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.</p>
                             <p>SOME WERE IGNORED. SOME WERE UNDERESTIMATED. SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.</p>
-                            <p>THEY WATCHED OTHERS RISE FASTER. WATCHED OTHERS GAIN RECOGNITION. WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.</p>
-                            <p>AND SLOWLY, THEY REALIZED SOMETHING: MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT. BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.</p>
-                            <p>THAT REALIZATION BECAME THE BEGINNING OF BLDS. NOT A SQUAD CREATED FOR FAME. NOT A KINGDOM BUILT ON ARROGANCE. NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY. BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.</p>
-                            
-                            <h3>--- THE BLACKLIGHT CORE ---</h3>
-                            <p>AT THE CENTER OF THE ECLIPSE LIES THE CORE. A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.</p>
-                            <p>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS. NOT A PURPOSE GIVEN BY THE WORLD. NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY. BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.</p>
-                            <p>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES... EVEN WHEN PEOPLE LEAVE... EVEN WHEN FAILURE SURROUNDS YOU... YOUR INNER LIGHT CAN STILL REMAIN ALIVE.</p>
-                            <p>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL. THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL. THAT IS WHY THE CORE NEVER DISAPPEARS. BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.</p>
-                            
+                            <br>
                             <h3>--- THE TEN FLAMES OF BLDS ---</h3>
-                            <p>5 Greater Flames & 5 Lesser Flames. Five flames grant strength, five flames preserve it. Together, they protect the Core.</p>
-                            
                             <div class="flames-grid">
                                 <div class="flames-col">
                                     <h5>GREATER FLAMES</h5>
                                     <ul class="flames-list">
                                         <li><strong>I. Vision</strong><span>The ability to see direction even when others are lost.</span></li>
                                         <li><strong>II. Discipline</strong><span>To continue growing even when nobody is watching.</span></li>
-                                        <li><strong>III. Loyalty</strong><span>To stand together through victory and defeat.</span></li>
-                                        <li><strong>IV. Ambition</strong><span>The desire to surpass limits and continue evolving.</span></li>
-                                        <li><strong>V. Resilience</strong><span>The strength to rise again after every fall.</span></li>
-                                    </ul>
-                                </div>
-                                <div class="flames-col">
-                                    <h5>LESSER FLAMES</h5>
-                                    <ul class="flames-list">
-                                        <li><strong>I. Hope</strong><span>The light that remains during difficult times.</span></li>
-                                        <li><strong>II. Awareness</strong><span>The ability to stay conscious and understand reality.</span></li>
-                                        <li><strong>III. Patience</strong><span>Growth takes time and elegance.</span></li>
-                                        <li><strong>IV. Courage</strong><span>The will to move forward despite fear.</span></li>
-                                        <li><strong>V. Unity</strong><span>The bond that turns individuals into something greater. Though smaller, these flames are just as important.</span></li>
                                     </ul>
                                 </div>
                             </div>
-                            <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none';">CLOSE LORE</button>
+                            <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none';">CLOSE LORE</button>
                         </div>
                     `;
                 }
@@ -1025,53 +1121,37 @@
 
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
-            
-            function buildLeaderboard(data) {
-                if(!data) {
-                    container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`; return;
-                }
-                let records = [];
-                Object.keys(data).forEach(key => {
-                    if(data[key] && data[key].username) {
-                        records.push({ name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0 });
-                    }
-                });
-                records.sort((a, b) => b.high - a.high);
-                container.innerHTML = "";
-                records.forEach((player, index) => {
-                    let tr = document.createElement('tr');
-                    let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
-                    tr.innerHTML = `
-                        <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
-                        <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
-                        <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
-                        <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
-                    `;
-                    container.appendChild(tr);
-                });
-            }
-
             fetch(`${BASE_DB_URL}leaderboard.json`)
-                .then(res => res.ok ? res.json() : null)
+                .then(res => res.json())
                 .then(data => {
                     if(!data) {
-                        let localMock = {}; localMock[userId] = { username: username, streak: currentStreak, highStreak: highStreak };
-                        buildLeaderboard(localMock);
-                    } else {
-                        buildLeaderboard(data);
+                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">No verified records found.</td></tr>`; return;
                     }
-                })
-                .catch(() => {
-                    let localMock = {}; localMock[userId] = { username: username, streak: currentStreak, highStreak: highStreak };
-                    buildLeaderboard(localMock);
+                    let records = [];
+                    Object.keys(data).forEach(key => {
+                        if(data[key] && data[key].username && data[key].isBanned !== true) {
+                            records.push({ name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0 });
+                        }
+                    });
+                    records.sort((a, b) => b.high - a.high);
+                    container.innerHTML = "";
+                    records.forEach((player, index) => {
+                        let tr = document.createElement('tr');
+                        let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
+                        tr.innerHTML = `
+                            <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
+                            <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
+                            <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
+                            <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
+                        `;
+                        container.appendChild(tr);
+                    });
                 });
         }
 
         function openLeaderboard(btn) {
             applyButtonTransition(btn, () => {
                 openModal('leaderboard-modal');
-                const container = document.getElementById('leaderboard-data-rows');
-                container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
                 fetchLeaderboardData();
                 if(lbInterval) clearInterval(lbInterval);
                 lbInterval = setInterval(fetchLeaderboardData, 4000);
@@ -1086,15 +1166,12 @@
             const box = document.getElementById('cutscene-text-box');
             overlay.style.display = 'flex'; overlay.style.background = '#000';
             for(let i=0; i<lines.length; i++) {
-                box.innerText = lines[i]; box.style.opacity = '1';
-                playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, delay));
-                box.style.opacity = '0';
+                box.innerText = lines[i]; box.style.opacity = '1'; playAudio('sfx-text-fade');
+                await new Promise(r => setTimeout(r, delay)); box.style.opacity = '0';
                 await new Promise(r => setTimeout(r, 800));
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm'); playAudio('sfx-streak100');
             const overlay = document.getElementById('cutscene-overlay');
@@ -1103,7 +1180,7 @@
 
             overlay.style.display = 'flex'; overlay.style.background = '#000';
             box.classList.remove('shake-brutal-text'); box.style.color = '#fff';
-            logo.style.display = 'none'; logo.style.opacity = '0'; logo.style.width = '140px';
+            logo.style.display = 'none'; logo.style.opacity = '0';
 
             async function showLine(txt) {
                 box.innerText = txt; box.style.opacity = '1'; playAudio('sfx-text-fade');
@@ -1112,42 +1189,18 @@
             }
 
             await showLine("For a hundred days..."); await showLine("the Eclipse watched.");
-            await showLine("For a hundred days..."); await showLine("you continued forward.");
-            await showLine("Many flames burned brightly..."); await showLine("only to disappear.");
-            await showLine("Many lights promised eternity..."); await showLine("only to fade.");
-
-            logo.style.display = 'block'; setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
-            await showLine("Yet yours remained."); await showLine("Not because it was the brightest.");
-            await showLine("Not because it was the strongest."); await showLine("But because it refused to die.");
-
-            logo.style.opacity = '0.55';
-            await showLine("A hundred days is not the end."); await showLine("It is proof.");
-            await showLine("Proof that your light survived."); await showLine("Proof that your flame endured.");
-
-            logo.style.opacity = '1'; logo.style.width = '210px'; logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
+            logo.style.display = 'block'; setTimeout(() => { logo.style.opacity = '1'; }, 50);
             await showLine("And now..."); await showLine("the Core remembers your name.");
 
-            logo.style.display = 'none'; box.style.opacity = '0';
-            overlay.style.transition = 'background 2.5s ease-in-out'; overlay.style.background = '#000000';
-            await new Promise(r => setTimeout(r, 2500));
-
-            overlay.style.transition = 'none'; overlay.style.background = '#ffffff'; 
-            box.innerText = "STREAK 100"; box.style.fontSize = "4.5rem"; box.style.color = "#000000";
-            box.classList.add('shake-brutal-text'); box.style.opacity = "1";
+            logo.style.display = 'none';
+            overlay.style.background = '#ffffff'; box.innerText = "STREAK 100"; box.style.color = "#000"; box.classList.add('shake-brutal-text'); box.style.opacity = "1";
             playAudio('sfx-blds-init');
 
             await new Promise(r => setTimeout(r, 4500)); 
             box.style.opacity = '0'; box.classList.remove('shake-brutal-text');
-            overlay.style.transition = 'opacity 1.2s ease'; overlay.style.opacity = '0';
-            
-            setTimeout(() => {
-                overlay.style.display = 'none'; overlay.style.opacity = '1'; overlay.style.background = '#000';
-                box.style.fontSize = "1.4rem"; box.style.color = "#fff";
-                stopAudio('sfx-streak100'); playAudio('bgm');
-            }, 1200);
+            overlay.style.display = 'none'; stopAudio('sfx-streak100'); playAudio('bgm');
         }
 
-        /* --- DRAGGABLE INTERFACE HANDLER --- */
         function makeElementDraggable(elmnt) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             const header = document.getElementById(elmnt.id + "-dragheader");
@@ -1169,18 +1222,9 @@
             function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
         }
 
-        // --- OWNER HUB NAVIGATION & OPERATIONS ---
         function toggleOwnerPanel() {
             const panel = document.getElementById('owner-panel');
-            if(panel.style.display === 'flex') { panel.style.display = 'none'; } 
-            else {
-                panel.style.display = 'flex';
-                document.getElementById('owner-name-input').value = username;
-                document.getElementById('owner-current-input').value = currentStreak;
-                document.getElementById('owner-high-input').value = highStreak;
-                document.getElementById('cms-origin-textarea').value = dbCmsOriginHtml;
-                document.getElementById('cms-archive-textarea').value = dbCmsArchiveHtml;
-            }
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
         }
 
         function switchOwnerTab(tabName) {
@@ -1201,78 +1245,30 @@
             }
         }
 
-        function saveOwnerChanges(btn) {
-            applyButtonTransition(btn, () => {
-                let newName = document.getElementById('owner-name-input').value.trim();
-                let newCurrent = parseInt(document.getElementById('owner-current-input').value) || 0;
-                let newHigh = parseInt(document.getElementById('owner-high-input').value) || 0;
-                if(!newName) { alert("Nama tidak boleh kosong!"); return; }
-                username = newName; currentStreak = newCurrent; highStreak = newHigh;
-                saveToFirebase(); alert("Owner Commands Executed! Data synced."); toggleOwnerPanel();
-            });
-        }
-
-        function resetCurrentStreakOnly(btn) {
-            applyButtonTransition(btn, () => {
-                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0?")) {
-                    currentStreak = 0; lastClickTime = 0; document.getElementById('owner-current-input').value = 0;
-                    saveToFirebase(); alert("Current Streak telah di-reset menjadi 0!"); toggleOwnerPanel();
-                }
-            });
-        }
-
-        // CMS Dynamic Pushes
         function pushCmsContent(btn) {
             applyButtonTransition(btn, () => {
                 let originVal = document.getElementById('cms-origin-textarea').value;
                 let archiveVal = document.getElementById('cms-archive-textarea').value;
-
-                let cmsPayload = { originText: originVal, archiveText: archiveVal };
                 fetch(`${BASE_DB_URL}cms.json`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cmsPayload)
-                }).then(() => {
-                    alert("CMS Overwrites Pushed Successfully!");
-                    syncCmsAndCommunications();
-                }).catch(e => {
-                    // Fail fallback simulation
-                    dbCmsOriginHtml = originVal; dbCmsArchiveHtml = archiveVal;
-                    document.getElementById('dynamic-archive-container').innerHTML = archiveVal;
-                    alert("Sync blocked, changes applied locally.");
-                });
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ originText: originVal, archiveText: archiveVal })
+                }).then(() => alert("CMS Overwrites Pushed Successfully!"));
             });
         }
 
-        // Live Communication Controls
         function broadcastGlobalAnnouncement(btn) {
             applyButtonTransition(btn, () => {
                 let sender = document.getElementById('announce-sender-input').value.trim() || "STAFF ENGINE";
                 let msg = document.getElementById('announce-msg-input').value.trim();
-                if(!msg) { alert("Pesan announcement kosong!"); return; }
-
-                let announcePayload = { active: true, sender: sender, message: msg, timestamp: Date.now() };
+                if(!msg) return;
                 fetch(`${BASE_DB_URL}announcement.json`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(announcePayload)
-                }).then(() => {
-                    alert("Global Broadcast Transmitted!");
-                    document.getElementById('announce-msg-input').value = '';
-                }).catch(e => {
-                    document.getElementById('announce-staff-title').innerText = `[📢 STAFF - ${sender}]:`;
-                    document.getElementById('announce-text-content').innerText = msg;
-                    document.getElementById('global-announcement-banner').style.display = 'block';
-                    alert("Firebase Rules Locked! Displaying broadcast locally.");
-                });
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: true, sender: sender, message: msg, timestamp: Date.now() })
+                }).then(() => { alert("Global Broadcast Transmitted!"); document.getElementById('announce-msg-input').value = ''; });
             });
         }
 
         function clearGlobalAnnouncement(btn) {
             applyButtonTransition(btn, () => {
-                fetch(`${BASE_DB_URL}announcement.json`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: false })
-                }).then(() => {
-                    alert("Broadcast Stream Terminated.");
-                }).catch(e => {
-                    document.getElementById('global-announcement-banner').style.display = 'none';
-                });
+                fetch(`${BASE_DB_URL}announcement.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: false }) });
             });
         }
 
@@ -1280,169 +1276,28 @@
             let targetId = document.getElementById('owner-reply-target-id').value;
             let staffName = document.getElementById('owner-reply-name-input').value.trim() || "FOUNDER";
             let replyMsg = document.getElementById('owner-reply-text-input').value.trim();
-
-            if(!targetId) { alert("Pilih target komentar publik terlebih dahulu!"); return; }
-            if(!replyMsg) { alert("Isi balasan pesan staff kosong!"); return; }
+            if(!targetId || !replyMsg) return;
 
             applyButtonTransition(btn, () => {
-                let staffReplyPayload = { author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true };
-
-                let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
-                if(localComments[targetId]) {
-                    if(!localComments[targetId].replies) localComments[targetId].replies = {};
-                    let rId = 'staff_' + Date.now();
-                    localComments[targetId].replies[rId] = staffReplyPayload;
-                    localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
-                }
-
                 fetch(`${BASE_DB_URL}comments/${targetId}/replies.json`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(staffReplyPayload)
-                }).then(() => {
-                    alert("Verified Staff Reply Sequenced!");
-                    document.getElementById('owner-reply-text-input').value = '';
-                    resetCommentReplyChain(); syncCmsAndCommunications();
-                }).catch(e => {
-                    document.getElementById('owner-reply-text-input').value = '';
-                    resetCommentReplyChain(); renderPublicCommentsList();
-                    alert("Rules locked. Message appended to local stack window.");
-                });
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true })
+                }).then(() => { alert("Reply Sequenced!"); document.getElementById('owner-reply-text-input').value = ''; resetCommentReplyChain(); });
             });
         }
 
-        // --- SUBMIT PARADOX ARCHIVE CODES ENGINE ---
         async function submitCode(btn) {
             applyButtonTransition(btn, async () => {
                 let code = document.getElementById('code-input-field').value.trim();
                 closeModal('code-modal'); document.getElementById('code-input-field').value = '';
                 
-                const overlay = document.getElementById('cutscene-overlay');
-                const box = document.getElementById('cutscene-text-box');
-                const leftLogo = document.getElementById('logo-left');
-                const rightLogo = document.getElementById('logo-right');
-                const slamLogo = document.getElementById('logo-slam');
-                const logo100 = document.getElementById('logo-streak-100');
-                const bodyEl = document.getElementById('app-body');
-
-                leftLogo.style.display = 'none'; rightLogo.style.display = 'none'; slamLogo.style.display = 'none'; logo100.style.display = 'none';
-                box.innerHTML = ''; box.style.opacity = '0';
-
                 if (code === "OWNERONLY") {
                     localStorage.setItem('blds_owner_unlocked', 'true'); isOwnerUnlocked = true;
                     document.getElementById('owner-trigger-btn').style.display = 'flex';
-                    alert("System Authorization Granted. Owner Interface Permanently Unlocked!");
-                }
-                else if (code === "Michael") { unlockAchievement('michael', '"Lorenzo"\nWho is That?'); }
-                else if (code === "William") { unlockAchievement('william', '"Nayottama"\nWho is That?'); }
-                else if (code === "Felix") { unlockAchievement('felix', '"Prince"\nWho is That?'); }
-                else if (code === "White") { bodyEl.classList.remove('invert-half-right'); bodyEl.classList.add('invert-full'); } 
-                else if (code === "Black") { bodyEl.classList.remove('invert-full', 'invert-half-right'); } 
-                else if (code === "BLDS") {
-                    unlockAchievement('2-dim', '"2 Dimension"\nBlack and White'); stopAudio('bgm');
-                    playAudio('sfx-blds-init'); playAudio('sfx-blds-loop');
-
-                    let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
-                    await runTextSequence(lines, 3500); 
-
-                    overlay.classList.add('shake-epic'); box.innerText = "BLACK"; box.style.opacity = '1';
-                    leftLogo.style.display = 'block'; setTimeout(() => leftLogo.style.opacity = '0.7', 50);
-                    bodyEl.classList.add('invert-half-right');
-
-                    playAudio('sfx-blds-logo'); await new Promise(r => setTimeout(r, 4000)); 
-
-                    overlay.classList.remove('shake-epic'); box.innerText = "LIGHT";
-                    rightLogo.style.display = 'block'; setTimeout(() => rightLogo.style.opacity = '0.7', 50);
-                    
-                    playAudio('sfx-blds-logo'); await new Promise(r => setTimeout(r, 4000)); 
-
-                    let lines2 = ["Two opposites.", "Two destinies.", "Both necessary."];
-                    await runTextSequence(lines2, 3500); 
-
-                    overlay.style.transition = 'background 2s ease'; overlay.style.background = '#fff';
-                    await new Promise(r => setTimeout(r, 2000));
-                    overlay.style.display = 'none'; overlay.style.background = '#000'; 
-                    stopAudio('sfx-blds-loop'); playAudio('bgm');
-                } 
-                else if (code === "Forgotten") {
-                    unlockAchievement('forgotten', '"Forgotten"\nHow do you know?'); stopAudio('bgm');
-                    overlay.style.display = 'flex'; overlay.style.background = '#000';
-
-                    let initLines = [
-                        "NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "Searching fragments...",
-                        "1 Fragment Detected", "Core Signature Match:\n99.87%", "Opening Archive..."
-                    ];
-                    await runTextSequence(initLines, 4000);
-
-                    playAudio('sfx-forgotten'); box.style.opacity = '1';
-                    box.innerHTML = `
-                        <div class="lore-scroll-box">
-                            <h2>THE FORGOTTEN ECLIPSE</h2>
-                            <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
-                            <p>Before BLDS. Before the Core. Before the Eclipse became known.</p>
-                            <p>There existed another generation. A generation history no longer remembers.</p>
-                            <p>They were ordinary people carrying extraordinary burdens. People abandoned by hope, consumed by failure.</p>
-                            <p>Yet among the darkness, they found one another. And together they created the First Eclipse.</p>
-                            <p>A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.</p>
-                            <p>But darkness rarely attacks from outside. It grows from within.</p>
-                            <p>One member began losing faith, seeking recognition, status, and attention.</p>
-                            <p>Before disappearing, they spoke words that spread like a disease:</p>
-                            <p style="color: #ff4d4d; font-weight: bold;">"What is the point of carrying a light that nobody sees?"</p>
-                            <p>One by one, people abandoned the Core. The light faded. Not because darkness became stronger, but because belief became weaker.</p>
-                            <p>The Eclipse died slowly. Silently. Painfully. Until only a single fragment remained.</p>
-                            <p>Years passed. The world forgot. The Eclipse became a myth.</p>
-                            <p>Yet the fragment endured. And one day, it was discovered by an unknown individual whose identity remains absent from archives due to system corruption.</p>
-                            <p>They chose not to preserve the fragment. They chose to reignite it.</p>
-                            <p>The Core awakened once more. The Eclipse returned. And from its rebirth emerged BLACKLIGHTDOMS.</p><br>
-                            <p>Before disappearing, the unknown Keeper left behind a final message:</p>
-                            <p style="font-style: italic; color: #aaa;">"The First Eclipse was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
-                            <br><button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-forgotten'); playAudio('bgm');">CLOSE ARCHIVE</button>
-                        </div>`;
-                } 
-                else if (code === "12 Flames") {
-                    unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden'); stopAudio('bgm');
-                    overlay.style.display = 'flex'; overlay.style.background = '#000';
-
-                    let scanLines = ["ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.", "Verification Complete.", "...", "Unexpected Result Detected.", "2 Entries Found Beyond Horizon."];
-                    await runTextSequence(scanLines, 4000);
-
-                    slamLogo.style.display = 'block'; playAudio('sfx-blds-init'); 
-                    await new Promise(r => setTimeout(r, 1800));
-
-                    box.innerHTML = `
-                        <div style="font-size: 1.6rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 5px;">You Found it</div>
-                        <div style="font-size: 1.3rem; letter-spacing: 3px; color: #888; margin-bottom: 15px;">12 Flames</div>
-                        <div style="font-size: 1rem; font-style: italic; color: #666; margin-bottom: 25px;">I thought you guys forgot about it</div>
-                        <button class="enter-btn" style="max-width:200px; margin: 0 auto;" id="btn-read-flame">DECRYPT LORE</button>
-                    `;
-                    box.style.opacity = '1';
-
-                    document.getElementById('btn-read-flame').onclick = () => {
-                        box.style.opacity = '0';
-                        setTimeout(() => {
-                            slamLogo.style.display = 'none'; playAudio('sfx-flames');
-                            box.innerHTML = `
-                                <div class="lore-scroll-box">
-                                    <h2>THE 12 FLAMES PROTOCOL</h2>
-                                    <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
-                                    <p>Humanity remembers Ten Flames because everything beyond the Tenth Flame is rejected by human cognition.</p>
-                                    <p>This anomaly became known as: <span style="color: #ff4d4d; font-weight: bold;">THE MEMORY COLLAPSE PHENOMENON</span></p>
-                                    
-                                    <h3>FLAME 11 — SACRED FLAME</h3>
-                                    <p>The Sacred Flame is the culmination of the Ten Flames. It is the moment all paths become one in perfect harmony.</p>
-                                    <p>When Vision, Discipline, Loyalty, Ambition, Resilience, Hope, Awareness, Patience, Courage, and Unity achieve resonance, they become the Crown of the Ten Flames.</p>
-                                    <p>Legends claim that when the Sacred Flame appears, the Core becomes brighter than any darkness surrounding it.</p>
-                                    
-                                    <h3>FLAME 12 — HIDDEN FLAME</h3>
-                                    <p style="color: #ff3333; font-weight: bold;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
-                                    <p>The Hidden Flame does not grant power or wisdom. It does not participate in existence. It stands beyond reality as an observer.</p>
-                                    <p>Only one sentence survived every system data reconstruction attempt:</p>
-                                    <p style="color: #ffff1a; font-weight: bold; background: rgba(255,255,0,0.05); padding: 5px;">"It does not participate in existence. It observes whether existence should continue."</p>
-                                    <br><p><strong>END OF RESTRICTED ARCHIVE</strong></p>
-                                    <button class="enter-btn" style="padding:5px 15px;" onclick="document.getElementById('cutscene-overlay').style.display='none'; stopAudio('sfx-flames'); playAudio('bgm');">EXIT LOGS</button>
-                                </div>`;
-                            box.style.opacity = '1';
-                        }, 500);
-                    };
-                } else { alert("Archive Key Invalid."); }
+                    alert("Owner Panel Interface Permanently Unlocked!");
+                } else if (code === "Michael") { unlockAchievement('michael', '"Lorenzo"\nWho is That?'); }
+                  else if (code === "William") { unlockAchievement('william', '"Nayottama"\nWho is That?'); }
+                  else if (code === "Felix") { unlockAchievement('felix', '"Prince"\nWho is That?'); }
+                  else { alert("Archive Key Invalid."); }
             });
         }
     </script>
