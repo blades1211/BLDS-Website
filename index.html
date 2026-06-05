@@ -114,20 +114,25 @@
         
         .streak-info-box { background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px; font-size: 0.85rem; text-align: center; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
 
-        /* --- OVERLAY CUTSCENE STREAK 100 NEW --- */
-        #cutscene-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center; }
+        /* --- OVERLAY CUTSCENE STREAK 100 --- */
+        #cutscene-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; 
+            display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center;
+            transition: background 1s ease; /* Untuk transisi menghitam/memutih halus */
+        }
         .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; margin-top: 20px; }
         
         .shake-epic { animation: shake 0.15s infinite alternate; }
         
-        /* JINAKKAN JADI GETARAN ELEGAN, BUKAN KEJANG-KEJANG */
-        .shake-text { 
-            animation: textGlowShake 0.25s infinite ease-in-out alternate; 
-            font-weight: bold; 
-            text-shadow: 0 0 30px rgba(0,0,0,0.6); 
+        /* GUNCANGAN BRUTAL ACAK DAN FONT TEBAL UNTUK STREAK 100 */
+        .shake-brutal-text { 
+            font-family: 'Impact', 'Arial Black', sans-serif !important;
+            animation: brutalGquake 0.08s infinite alternate ease-in-out; 
+            letter-spacing: 4px;
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.6)); /* Tambah aura shockwave tipis */
         }
 
-        /* ANIMASI LOGO NAIK TURUN SMOOTH (CUTSCENE 100) */
+        /* LOGO ANIMASI NAIK TURUN SMOOTH */
         .logo-streak-dynamic {
             width: 150px;
             opacity: 0;
@@ -142,11 +147,14 @@
             100% { transform: translateY(0px); }
         }
         
-        /* ADJUST GETARAN SUPAYA HALUS DAN BERBOBOT */
-        @keyframes textGlowShake {
-            0% { transform: translate(1.5px, 1px) scale(1); text-shadow: 0 0 15px rgba(0,0,0,0.4); }
-            50% { transform: translate(-1.5px, -1px) scale(1.03); text-shadow: 0 0 35px rgba(0,0,0,0.8); }
-            100% { transform: translate(1px, -1px) scale(1); }
+        /* ANIMASI GEMPA BRUTAL: ATAS, BAWAH, KIRI, KANAN, MIRING SECARA ACAK */
+        @keyframes brutalGquake {
+            0% { transform: translate(5px, 3px) rotate(1deg); }
+            20% { transform: translate(-4px, -5px) rotate(-1.5deg); }
+            40% { transform: translate(-7px, 2px) rotate(2deg); }
+            60% { transform: translate(6px, -3px) rotate(-1deg); }
+            80% { transform: translate(-3px, 6px) rotate(1.5deg); }
+            100% { transform: translate(4px, -2px) rotate(0deg); }
         }
 
         /* --- MECHANISM DUAL LOGO CODE BLDS --- */
@@ -465,7 +473,6 @@
         let lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         
-        // AMBIL STATUS OWNER PANEL YANG TERSIMPAN DI BROWSER
         let isOwnerUnlocked = localStorage.getItem('blds_owner_unlocked') === 'true';
 
         let cdInterval = null;
@@ -484,7 +491,6 @@
             updateUI();
             makeElementDraggable(document.getElementById("owner-panel"));
 
-            // JIKA OWNER SUDAH PERNAH DI-UNLOCK, TETAP TAMPILKAN SETELAH REFRESH
             if (isOwnerUnlocked) {
                 document.getElementById('owner-trigger-btn').style.display = 'flex';
             }
@@ -770,7 +776,7 @@
                                 <ul class="flames-list">
                                     <li><strong>I. Hope</strong><span>The light that remains during difficult times.</span></li>
                                     <li><strong>II. Awareness</strong><span>The ability to stay conscious and understand reality.</span></li>
-                                    <li><strong>III. Patience</strong><span>Growth takes time and endurance.</span></li>
+                                    <li><strong>III. Patience</strong><span>Growth takes time and elegance.</span></li>
                                     <li><strong>IV. Courage</strong><span>The will to move forward despite fear.</span></li>
                                     <li><strong>V. Unity</strong><span>The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.</span></li>
                                 </ul>
@@ -860,7 +866,7 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC REMASTERED (4 SECONDS FADE) --- */
+        /* --- STREAK 100 SYSTEM CINEMATIC (4s FADE + BRUTAL QUAKE) --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
@@ -873,8 +879,7 @@
             // Reset Default State Cutscene
             overlay.style.display = 'flex';
             overlay.style.background = '#000';
-            bodyEl.classList.add('invert-full'); // Transisi layar menggelap (Inversi warna total aktif)
-            box.classList.remove('shake-text');
+            box.classList.remove('shake-brutal-text');
             box.style.color = '#fff';
 
             logo.style.display = 'none';
@@ -882,14 +887,14 @@
             logo.style.width = '140px';
             logo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4))';
 
-            // SEKARANG FADE IN OUT PAS 4 DETIK (3200ms TAMPIL, 800ms OUT TRANSITION)
+            // Fade In Out Pas 4 Detik (3200ms Tampil, 800ms Transisi Hilang)
             async function showLine(txt) {
                 box.innerText = txt;
                 box.style.opacity = '1';
                 playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, 3200)); // Tampil mantap
+                await new Promise(r => setTimeout(r, 3200));
                 box.style.opacity = '0';
-                await new Promise(r => setTimeout(r, 800));  // Selesai dalam putaran waktu 4 detik
+                await new Promise(r => setTimeout(r, 800));
             }
 
             // --- PHASE 1 ---
@@ -902,7 +907,7 @@
             await showLine("Many lights promised eternity...");
             await showLine("only to fade.");
 
-            // --- PHASE 2 (Logo mulai muncul smooth 20-30%) ---
+            // --- PHASE 2 (Logo muncul tipis) ---
             logo.style.display = 'block';
             setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
             
@@ -911,7 +916,7 @@
             await showLine("Not because it was the strongest.");
             await showLine("But because it refused to die.");
 
-            // --- PHASE 3 (Logo semakin tebal 40-60%) ---
+            // --- PHASE 3 (Logo menebal) ---
             logo.style.opacity = '0.55';
             
             await showLine("A hundred days is not the end.");
@@ -919,7 +924,7 @@
             await showLine("Proof that your light survived.");
             await showLine("Proof that your flame endured.");
 
-            // --- PHASE 4 (Logo 100% Membesar & Bersinar) ---
+            // --- PHASE 4 (Logo Maksimal) ---
             logo.style.opacity = '1';
             logo.style.width = '210px';
             logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
@@ -927,28 +932,36 @@
             await showLine("And now...");
             await showLine("the Core remembers your name.");
 
-            // --- PHASE 5 (TRANSISI FULL PUTIH + GETAR STREAK 100) ---
+            // --- PHASE 5: TRANSISI MENGHITAM PERLAHAN ---
             logo.style.display = 'none';
-            overlay.style.transition = 'background 0.2s ease';
-            overlay.style.background = '#fff'; // Layar transisi full putih
+            box.style.opacity = '0';
             
-            bodyEl.classList.remove('invert-full'); // Lepas inversi global agar warna kontras balik
+            // Ubah background ke hitam legam perlahan-lahan
+            overlay.style.transition = 'background 2.5s ease-in-out';
+            overlay.style.background = '#000000';
+            await new Promise(r => setTimeout(r, 2500)); // Nunggu proses menghitam selesai
+
+            // --- PHASE 6: LEDAKAN GETARAN BRUTAL (STREAK 100) ---
+            // Tiba-tiba background dihentak jadi PUTIH BENDERANG untuk efek flash bang kejutan
+            overlay.style.transition = 'none'; 
+            overlay.style.background = '#ffffff'; 
 
             box.innerText = "STREAK 100";
-            box.style.fontSize = "3.8rem";
-            box.style.color = "#000"; // Teks hitam di atas background putih biar kontras kelihatan gila
-            box.classList.add('shake-text'); // Animasi getar yang baru, dijamin ga kejang-kejang lagi
+            box.style.fontSize = "4.5rem"; // Diperbesar biar mantap
+            box.style.color = "#000000";   // Hitam tebal di atas putih
+            box.classList.add('shake-brutal-text'); // AKSI GEMPA BRUTAL AKTIF
             box.style.opacity = "1";
             
             playAudio('sfx-blds-init');
 
-            await new Promise(r => setTimeout(r, 4500)); // Durasi puncak getaran teks
+            // Durasi gempa bumi brutal di layar
+            await new Promise(r => setTimeout(r, 4500)); 
 
-            // --- PHASE 6 (BALIK MENU & CLEAR ALL EFFECTS) ---
+            // --- PHASE 7: SELESAI & BALIK MENU ---
             box.style.opacity = '0';
-            box.classList.remove('shake-text');
+            box.classList.remove('shake-brutal-text');
             
-            overlay.style.transition = 'opacity 1s ease';
+            overlay.style.transition = 'opacity 1.2s ease';
             overlay.style.opacity = '0';
             
             setTimeout(() => {
@@ -960,7 +973,7 @@
                 
                 stopAudio('sfx-streak100');
                 playAudio('bgm');
-            }, 1000);
+            }, 1200);
         }
 
         /* --- DRAGGABLE INTERFACE HANDLER --- */
