@@ -42,32 +42,6 @@
         }
         @keyframes moveBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- INVERSION EFFECTS --- */
-        .invert-full { filter: invert(1) !important; }
-        
-        .invert-half-right::after {
-            content: ''; 
-            position: fixed; 
-            top: 0; 
-            right: 0; 
-            width: 50%; 
-            height: 100%;
-            background: transparent; 
-            backdrop-filter: invert(1); 
-            pointer-events: none; 
-            z-index: 9999;
-        }
-
-        /* --- TRANSISI TOMBOL (CLICK FEEDBACK) --- */
-        .btn-active-effect {
-            animation: buttonClickGlow 0.2s ease-in-out;
-        }
-        @keyframes buttonClickGlow {
-            0% { transform: scale(1); background: transparent; }
-            50% { transform: scale(0.95); background: #fff; color: #000; }
-            100% { transform: scale(1); }
-        }
-
         /* --- NOTIFIKASI ACHIEVEMENT POPUP --- */
         #achievement-toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
@@ -78,21 +52,13 @@
         }
         #achievement-toast span { display: block; font-size: 0.8rem; font-weight: normal; margin-top: 5px; color: #444; }
 
-        /* --- PROGRESS BAR ACHIEVEMENT --- */
-        .progress-container { width: 100%; background: #222; border: 1px solid #444; height: 15px; margin: 15px 0; position: relative; }
-        .progress-bar { height: 100%; background: #fff; width: 0%; transition: width 0.5s ease; }
-
         /* --- GATE SCREEN & LOADING --- */
         #gate-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
             transition: opacity 1.5s ease;
         }
-        .spin-loading {
-            width: 100px; height: 100px;
-            animation: spin 4s linear infinite !important;
-            display: block;
-        }
+        .spin-loading { width: 100px; height: 100px; animation: spin 4s linear infinite !important; display: block; }
         #enter-container { display: none; text-align: center; animation: fadeIn 1.5s ease forwards; width: 100%; max-width: 320px; padding: 20px; }
         .blds-logo-glow { width: 130px; filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.9)); animation: logoGlow 3s infinite alternate; display: block; margin: 0 auto; }
 
@@ -115,165 +81,42 @@
         .streak-info-box { background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px; font-size: 0.85rem; text-align: center; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
 
         /* --- SECTION FEEDBACK (KOMENTAR & GOOGLE RATING) --- */
-        .feedback-section {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid #222;
-            padding: 20px;
-            margin-top: 10px;
-            text-align: left;
-        }
-        .feedback-title {
-            font-size: 1rem;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed #333;
-            padding-bottom: 5px;
-            text-align: center;
-        }
+        .feedback-section { width: 100%; max-width: 450px; background: rgba(255,255,255,0.02); border: 1px solid #222; padding: 20px; margin-top: 10px; text-align: left; }
+        .feedback-title { font-size: 1rem; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px dashed #333; padding-bottom: 5px; text-align: center; }
 
         /* GOOGLE STYLE RATING DASHBOARD */
-        .rating-dashboard {
-            display: flex;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid #222;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            align-items: center;
-            gap: 15px;
-        }
-        .rating-big-score {
-            text-align: center;
-            flex: 1;
-        }
-        .rating-big-score h1 {
-            font-size: 2.8rem;
-            color: #fff;
-            line-height: 1;
-        }
-        .rating-big-stars {
-            color: #ffd700;
-            font-size: 0.85rem;
-            margin: 4px 0;
-        }
-        .rating-total-count {
-            font-size: 0.75rem;
-            color: #888;
-        }
-        .rating-histogram {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .histo-row {
-            display: flex;
-            align-items: center;
-            font-size: 0.75rem;
-            color: #aaa;
-            gap: 8px;
-        }
-        .histo-star-label {
-            width: 12px;
-            text-align: right;
-        }
-        .histo-bar-bg {
-            flex: 1;
-            height: 6px;
-            background: #222;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .histo-bar-fill {
-            height: 100%;
-            background: #ffd700;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
+        .rating-dashboard { display: flex; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; padding: 15px; border-radius: 4px; margin-bottom: 20px; align-items: center; gap: 15px; }
+        .rating-big-score { text-align: center; flex: 1; }
+        .rating-big-score h1 { font-size: 2.8rem; color: #fff; line-height: 1; }
+        .rating-big-stars { color: #ffd700; font-size: 0.85rem; margin: 4px 0; }
+        .rating-total-count { font-size: 0.75rem; color: #888; }
+        .rating-histogram { flex: 2; display: flex; flex-direction: column; gap: 4px; }
+        .histo-row { display: flex; align-items: center; font-size: 0.75rem; color: #aaa; gap: 8px; }
+        .histo-star-label { width: 12px; text-align: right; }
+        .histo-bar-bg { flex: 1; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+        .histo-bar-fill { height: 100%; background: #ffd700; width: 0%; transition: width 0.5s ease; }
 
-        .star-rating {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .star {
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: #444;
-            transition: color 0.2s ease;
-        }
-        .star.selected {
-            color: #ffd700;
-            text-shadow: 0 0 10px rgba(255,215,0,0.5);
-        }
-        .feedback-input {
-            width: 100%;
-            height: 70px;
-            background: #0a0a0a;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            resize: none;
-            margin-bottom: 10px;
-        }
-        .feedback-input:focus {
-            outline: none;
-            border-color: #fff;
-        }
-        .comment-list {
-            margin-top: 20px;
-            max-height: 450px;
-            overflow-y: auto;
-            border-top: 1px solid #222;
-            padding-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .comment-item {
-            background: rgba(255,255,255,0.01);
-            padding: 12px;
-            border-left: 2px solid #fff;
-            font-size: 0.8rem;
-        }
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            color: #888;
-            margin-bottom: 4px;
-        }
-        .comment-stars {
-            color: #ffd700;
-            font-size: 0.75rem;
-        }
+        .star-rating { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .star { font-size: 1.8rem; cursor: pointer; color: #444; transition: color 0.2s ease; }
+        .star.selected { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .feedback-input { width: 100%; height: 70px; background: #0a0a0a; border: 1px solid #444; color: #fff; padding: 10px; font-family: monospace; font-size: 0.85rem; resize: none; margin-bottom: 10px; }
+        .feedback-input:focus { outline: none; border-color: #fff; }
+        
+        .comment-list { margin-top: 20px; max-height: 450px; overflow-y: auto; border-top: 1px solid #222; padding-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+        .comment-item { background: rgba(255,255,255,0.01); padding: 12px; border-left: 2px solid #fff; font-size: 0.8rem; }
+        .comment-header { display: flex; justify-content: space-between; color: #888; margin-bottom: 4px; }
+        .comment-stars { color: #ffd700; font-size: 0.75rem; }
         
         /* TIKTOK STYLE REPLY MECHANISM */
-        .reply-trigger-btn {
-            background: transparent; border: none; color: #888; font-size: 0.75rem; cursor: pointer; text-decoration: underline; margin-top: 6px; display: inline-block; padding: 2px 0;
-        }
+        .reply-trigger-btn { background: transparent; border: none; color: #888; font-size: 0.75rem; cursor: pointer; text-decoration: underline; margin-top: 6px; display: inline-block; padding: 2px 0; }
         .reply-trigger-btn:hover { color: #fff; }
         
-        .replies-container {
-            margin-top: 10px; padding-left: 15px; border-left: 1px dashed #444; display: none; flex-direction: column; gap: 8px;
-        }
-        .reply-item {
-            background: rgba(255,255,255,0.02); padding: 8px; font-size: 0.75rem; border-radius: 2px;
-        }
-        .owner-badge {
-            background: #ff4d4d; color: #000; font-weight: bold; font-size: 0.65rem; padding: 1px 4px; border-radius: 2px; margin-right: 4px; letter-spacing: 0.5px; display: inline-block; vertical-align: middle;
-        }
+        .replies-container { margin-top: 10px; padding-left: 15px; border-left: 1px dashed #444; display: none; flex-direction: column; gap: 8px; }
+        .reply-item { background: rgba(255,255,255,0.02); padding: 8px; font-size: 0.75rem; border-radius: 2px; }
+        .owner-badge { background: #ff4d4d; color: #000; font-weight: bold; font-size: 0.65rem; padding: 1px 4px; border-radius: 2px; margin-right: 4px; letter-spacing: 0.5px; display: inline-block; }
         
-        .public-reply-box {
-            display: flex; gap: 6px; margin-top: 6px;
-        }
-        .public-reply-input {
-            flex: 1; background: #111; border: 1px solid #333; color: #fff; font-family: monospace; font-size: 0.75rem; padding: 4px 8px;
-        }
+        .public-reply-box { display: flex; gap: 6px; margin-top: 6px; }
+        .public-reply-input { flex: 1; background: #111; border: 1px solid #333; color: #fff; font-family: monospace; font-size: 0.75rem; padding: 4px 8px; }
         .public-reply-input:focus { outline: none; border-color: #888; }
 
         /* --- MODAL --- */
@@ -286,7 +129,6 @@
         .ld-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
         .ld-table th, .ld-table td { border: 1px solid #222; padding: 10px 8px; text-align: left; }
         .ld-table th { background: #111; color: #fff; letter-spacing: 1px; }
-        .ld-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 
         footer { margin-top: 10px; display: flex; gap: 20px; padding-bottom: 20px; }
         footer a { color: #888; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dashed #444; padding-bottom: 2px; }
@@ -298,7 +140,6 @@
             border-radius: 50%; background: #111; border: 2px solid #fff;
             color: #fff; font-size: 1.4rem; cursor: pointer; z-index: 1000000;
             display: none; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255,255,255,0.3);
-            transition: transform 0.2s, background 0.2s;
         }
         #owner-trigger-btn:hover { transform: scale(1.1); background: #fff; color: #000; }
         
@@ -308,26 +149,18 @@
             box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
             max-height: 85vh; overflow-y: auto;
         }
-        .owner-header {
-            background: #151515; padding: 10px; cursor: move; font-weight: bold;
-            font-size: 0.85rem; letter-spacing: 2px; border-bottom: 1px solid #333;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .owner-header { background: #151515; padding: 10px; cursor: move; font-weight: bold; font-size: 0.85rem; letter-spacing: 2px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
         .owner-body { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
         .owner-section-title { font-size: 0.8rem; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 3px; color: #fff; letter-spacing: 1px; margin-top: 5px; }
         .owner-field { display: flex; flex-direction: column; gap: 4px; }
         .owner-field label { font-size: 0.75rem; color: #888; letter-spacing: 1px; }
-        .owner-field input, .owner-field textarea {
-            padding: 8px; background: #111; border: 1px solid #444; color: #fff; font-family: monospace; font-size: 0.9rem;
-        }
+        .owner-field input, .owner-field textarea { padding: 8px; background: #111; border: 1px solid #444; color: #fff; font-family: monospace; font-size: 0.9rem; }
         .btn-danger { background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d; }
         .btn-danger:hover { background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d; }
         .btn-warn { background: rgba(255, 165, 0, 0.1); border: 1px solid #ffa500; color: #ffa500; }
         .btn-warn:hover { background: #ffa500; color: #000; box-shadow: 0 0 15px #ffa500; }
 
-        .owner-comment-item {
-            background: #111; border: 1px solid #222; padding: 8px; font-size: 0.75rem; display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px;
-        }
+        .owner-comment-item { background: #111; border: 1px solid #222; padding: 8px; font-size: 0.75rem; display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px; }
         @keyframes pulse { from { opacity: 0.3; } to { opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes logoGlow { from { filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); } to { filter: drop-shadow(0 0 30px rgba(255,255,255,0.9)); } }
@@ -559,6 +392,14 @@
             let text = inputEl.value.trim();
             if(!text) return;
 
+            // Ambil data balasan saat ini untuk mengecek batasan maksimal 200 reply per komentar
+            let currentRes = await fetch(`${BASE_DB_URL}feedbacks/${commentId}/replies.json`);
+            let currentReplies = await currentRes.json();
+            if(currentReplies && Object.keys(currentReplies).length >= 200) {
+                alert("Komentar ini telah mencapai batas maksimal 200 balasan!");
+                return;
+            }
+
             let replyId = 'rep_' + Date.now();
             let payload = {
                 id: replyId,
@@ -657,6 +498,7 @@
                         });
                     }
 
+                    // TIKTOK STYLE: Pas diklik, tombol "Lihat Balasan (X)" muncul jika balasan > 0, terisolasi per postingan komentar
                     let viewRepliesBtn = totalReplies > 0 ? 
                         `<button class="reply-trigger-btn" id="trigger-btn-${item.id}" data-open-text="Lihat Balasan (${totalReplies})" onclick="toggleRepliesVisibility('${item.id}')">Lihat Balasan (${totalReplies})</button>` : "";
 
@@ -686,7 +528,7 @@
                         let ownerDiv = document.createElement('div');
                         ownerDiv.className = "owner-comment-item";
                         ownerDiv.innerHTML = `
-                            <div><strong>${escapeHTML(item.username)}</strong> <span style="color: #666; font-size:0.65rem;">(${item.userId})</span>: "${escapeHTML(item.text)}"</div>
+                            <div><strong>${escapeHTML(item.username)}</strong> <span style="color: #ff4d4d; font-size:0.65rem; font-weight:bold;">[UUID: ${item.userId}]</span>: "${escapeHTML(item.text)}"</div>
                             <div style="display:flex; gap:5px; margin-top:5px;">
                                 <button class="enter-btn" style="padding:2px 6px; font-size:0.7rem; margin:0;" onclick="replyCommentFromOwner('${item.id}')">REPLY</button>
                                 <button class="enter-btn btn-danger" style="padding:2px 6px; font-size:0.7rem; margin:0;" onclick="deleteCommentFromOwner('${item.id}')">DELETE</button>
@@ -700,11 +542,19 @@
             }
         }
 
+        // FORCE DELETE VIA DIRECT FIREBASE URL TARGETING (Bypass Client Sync Delay)
         async function deleteCommentFromOwner(commentId) {
-            if(confirm("Hapus total komentar ini?")) {
-                await fetch(`${BASE_DB_URL}feedbacks/${commentId}.json`, { method: 'DELETE' });
-                alert("Komentar berhasil dihapus!");
-                fetchFeedbackData();
+            if(confirm("Hapus total komentar ini dari server database?")) {
+                try {
+                    await fetch(`${BASE_DB_URL}feedbacks/${commentId}.json`, { 
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    alert("Komentar utama dan seluruh sub-reply di bawahnya berhasil dibersihkan!");
+                    fetchFeedbackData();
+                } catch(err) {
+                    alert("Gagal menghapus! Cek setelan Rules Firebase Console Anda.");
+                }
             }
         }
 
@@ -712,6 +562,13 @@
             let pseudo = document.getElementById('owner-reply-pseudo').value.trim() || "BladeS";
             let txt = document.getElementById('owner-reply-text').value.trim();
             if(!txt) { alert("Tulis konten teks di kotak STAFF REPLY CONTENT!"); return; }
+
+            let currentRes = await fetch(`${BASE_DB_URL}feedbacks/${commentId}/replies.json`);
+            let currentReplies = await currentRes.json();
+            if(currentReplies && Object.keys(currentReplies).length >= 200) {
+                alert("Komentar ini telah mencapai batas maksimal 200 balasan!");
+                return;
+            }
 
             let replyId = 'rep_' + Date.now();
             let replyPayload = {
@@ -734,7 +591,7 @@
             fetchFeedbackData();
         }
 
-        // AUTO PURGE & BAN SYSTEM
+        // HARD PURGE & AUTO BAN USER BY USERNAME MATCH
         async function banUserByName() {
             let targetName = document.getElementById('owner-target-name').value.trim();
             if(!targetName) { alert("Masukkan nama target di kolom TARGET DOMINION NAME!"); return; }
@@ -747,23 +604,19 @@
             if(!targetUUID) { alert("Target tidak ditemukan di sistem!"); return; }
 
             if(confirm(`Yakin ingin BAN total user: ${targetName} (${targetUUID})?\nSemua komentar pelaku akan otomatis dibersihkan!`)) {
-                // 1. Masukkan ke Banlist
                 await fetch(`${BASE_DB_URL}banlist/${targetUUID}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ banned: true, bannedAt: Date.now(), name: targetName })
                 });
 
-                // 2. Cari dan Hapus Semua Komentar Pelaku di Database (Purge System)
                 let resFb = await fetch(`${BASE_DB_URL}feedbacks.json`);
                 let dataFb = await resFb.json();
                 if(dataFb) {
                     for (let commentId in dataFb) {
-                        // Jika komentar utama milik target, hapus total
                         if (dataFb[commentId]?.userId === targetUUID) {
                             await fetch(`${BASE_DB_URL}feedbacks/${commentId}.json`, { method: 'DELETE' });
                         } else if (dataFb[commentId]?.replies) {
-                            // Jika target ada me-reply di postingan orang lain, bersihkan reply-nya saja
                             let replies = dataFb[commentId].replies;
                             for (let replyId in replies) {
                                 if (replies[replyId]?.userId === targetUUID) {
