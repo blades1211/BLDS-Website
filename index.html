@@ -114,10 +114,31 @@
         
         .streak-info-box { background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px; font-size: 0.85rem; text-align: center; letter-spacing: 1px; color: #aaa; margin-bottom: 5px; }
 
-        /* --- OVERLAY CUTSCENE --- */
+        /* --- OVERLAY CUTSCENE STREAK 100 NEW --- */
         #cutscene-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center; }
-        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; }
+        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.6s ease; opacity: 0; margin-top: 20px; }
         .shake-epic { animation: shake 0.1s infinite alternate; }
+        .shake-text { animation: textGlowShake 0.15s infinite alternate; font-weight: bold; text-shadow: 0 0 25px rgba(0,0,0,0.8); }
+
+        /* ANIMASI LOGO NAIK TURUN SMOOTH (CUTSCENE 100) */
+        .logo-streak-dynamic {
+            width: 150px;
+            opacity: 0;
+            display: none;
+            transition: opacity 1s ease, transform 1s ease, width 1s ease, filter 1s ease;
+            animation: floatUpDown 4s ease-in-out infinite;
+            z-index: 5;
+        }
+        @keyframes floatUpDown {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes textGlowShake {
+            0% { transform: translate(1px, 1px) scale(1); text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+            50% { transform: translate(-1px, -1px) scale(1.02); text-shadow: 0 0 25px rgba(0,0,0,0.9); }
+            100% { transform: translate(1px, -1px) scale(1); }
+        }
 
         /* --- MECHANISM DUAL LOGO CODE BLDS --- */
         .side-logo {
@@ -324,6 +345,8 @@
     </div>
 
     <div id="cutscene-overlay">
+        <img id="logo-streak-100" class="logo-streak-dynamic" src="logo.png" onerror="this.src='https://placehold.co/150x150/000000/ffffff?text=BLDS'">
+        
         <img id="logo-slam" class="blds-slam-shining" src="logo.png" onerror="this.src='https://placehold.co/200x200/000000/ffffff?text=BLDS'">
         <div id="cutscene-text-box" class="cutscene-text"></div>
         <img id="logo-left" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
@@ -692,6 +715,7 @@
                 document.getElementById('logo-left').style.display = 'none';
                 document.getElementById('logo-right').style.display = 'none';
                 document.getElementById('logo-slam').style.display = 'none';
+                document.getElementById('logo-streak-100').style.display = 'none';
 
                 overlay.style.display = 'flex';
                 overlay.style.background = '#000';
@@ -825,34 +849,107 @@
             }
         }
 
+        /* --- STREAK 100 SYSTEM CINEMATIC REMASTERED --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
 
-            const lines = [
-                "For a hundred days...", "The Eclipse watched.", "You continued forward.", "And now...", "The core remembers your name."
-            ];
-            await runTextSequence(lines, 4000);
-
             const overlay = document.getElementById('cutscene-overlay');
-            overlay.style.transition = 'background 0.5s ease';
-            overlay.style.background = '#fff';
+            const box = document.getElementById('cutscene-text-box');
+            const logo = document.getElementById('logo-streak-100');
+            const bodyEl = document.getElementById('app-body');
+
+            // Reset Default State Cutscene
+            overlay.style.display = 'flex';
+            overlay.style.background = '#000';
+            bodyEl.classList.add('invert-full'); // Transisi layar menggelap (Inversi warna total aktif)
+            box.classList.remove('shake-text');
+            box.style.color = '#fff';
+
+            logo.style.display = 'none';
+            logo.style.opacity = '0';
+            logo.style.width = '140px';
+            logo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4))';
+
+            // Helper internal untuk text fade-in & out 3 detik pas
+            async function showLine(txt) {
+                box.innerText = txt;
+                box.style.opacity = '1';
+                playAudio('sfx-text-fade');
+                await new Promise(r => setTimeout(r, 2400)); // Tampil
+                box.style.opacity = '0';
+                await new Promise(r => setTimeout(r, 600)); // Durasi out total 3 detik
+            }
+
+            // --- PHASE 1 ---
+            await showLine("For a hundred days...");
+            await showLine("the Eclipse watched.");
+            await showLine("For a hundred days...");
+            await showLine("you continued forward.");
+            await showLine("Many flames burned brightly...");
+            await showLine("only to disappear.");
+            await showLine("Many lights promised eternity...");
+            await showLine("only to fade.");
+
+            // --- PHASE 2 (Logo mulai muncul smooth 20-30%) ---
+            logo.style.display = 'block';
+            setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
+            
+            await showLine("Yet yours remained.");
+            await showLine("Not because it was the brightest.");
+            await showLine("Not because it was the strongest.");
+            await showLine("But because it refused to die.");
+
+            // --- PHASE 3 (Logo semakin tebal 40-60%) ---
+            logo.style.opacity = '0.55';
+            
+            await showLine("A hundred days is not the end.");
+            await showLine("It is proof.");
+            await showLine("Proof that your light survived.");
+            await showLine("Proof that your flame endured.");
+
+            // --- PHASE 4 (Logo 100% Membesar & Bersinar) ---
+            logo.style.opacity = '1';
+            logo.style.width = '210px';
+            logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
+
+            await showLine("And now...");
+            await showLine("the Core remembers your name.");
+
+            // --- PHASE 5 (TRANSISI FULL PUTIH + GETAR STREAK 100) ---
+            logo.style.display = 'none';
+            overlay.style.transition = 'background 0.2s ease';
+            overlay.style.background = '#fff'; // Layar transisi full putih
+            
+            bodyEl.classList.remove('invert-full'); // Lepas inversi global agar warna kontras balik
+
+            box.innerText = "STREAK 100";
+            box.style.fontSize = "3.8rem";
+            box.style.color = "#000"; // Teks hitam di atas background putih biar kontras kelihatan gila
+            box.classList.add('shake-text');
+            box.style.opacity = "1";
+            
+            playAudio('sfx-blds-init');
+
+            await new Promise(r => setTimeout(r, 4500)); // Durasi puncak getaran teks
+
+            // --- PHASE 6 (BALIK MENU & CLEAR ALL EFFECTS) ---
+            box.style.opacity = '0';
+            box.classList.remove('shake-text');
+            
+            overlay.style.transition = 'opacity 1s ease';
+            overlay.style.opacity = '0';
             
             setTimeout(() => {
-                overlay.classList.add('invert-full', 'shake-epic');
-                const box = document.getElementById('cutscene-text-box');
-                box.innerText = "STREAK 100";
-                box.style.fontSize = "3.5rem";
-                box.style.opacity = "1";
+                overlay.style.display = 'none';
+                overlay.style.opacity = '1';
+                overlay.style.background = '#000';
+                box.style.fontSize = "1.4rem";
+                box.style.color = "#fff";
                 
-                setTimeout(() => {
-                    overlay.classList.remove('invert-full', 'shake-epic');
-                    overlay.style.display = 'none';
-                    box.style.fontSize = "1.4rem"; 
-                    stopAudio('sfx-streak100');
-                    playAudio('bgm');
-                }, 5000);
-            }, 600);
+                stopAudio('sfx-streak100');
+                playAudio('bgm');
+            }, 1000);
         }
 
         /* --- DRAGGABLE INTERFACE HANDLER --- */
@@ -928,12 +1025,11 @@
             });
         }
 
-        // --- FUNGSI BARU KHUSUS RESET STREAK ---
         function resetCurrentStreakOnly(btn) {
             applyButtonTransition(btn, () => {
                 if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0? (High Streak tetap aman)")) {
                     currentStreak = 0;
-                    lastClickTime = 0; // Mengosongkan waktu cooldown agar bisa claim langsung dari hari pertama
+                    lastClickTime = 0; 
                     document.getElementById('owner-current-input').value = 0;
                     
                     saveToFirebase();
@@ -954,21 +1050,22 @@
                 const leftLogo = document.getElementById('logo-left');
                 const rightLogo = document.getElementById('logo-right');
                 const slamLogo = document.getElementById('logo-slam');
+                const logo100 = document.getElementById('logo-streak-100');
                 const bodyEl = document.getElementById('app-body');
 
                 leftLogo.style.display = 'none';
                 rightLogo.style.display = 'none';
                 slamLogo.style.display = 'none';
+                logo100.style.display = 'none';
                 box.innerHTML = '';
                 box.style.opacity = '0';
 
-                // --- UNLOCK OWNER PANEL CODE ---
                 if (code === "OWNERONLY") {
                     localStorage.setItem('blds_owner_unlocked', 'true');
+                    isOwnerUnlocked = true;
                     document.getElementById('owner-trigger-btn').style.display = 'flex';
-                    alert("System Authorization Granted. Owner Interface Unlocked!");
+                    alert("System Authorization Granted. Owner Interface Permanently Unlocked!");
                 }
-                // --- REVISED REWARD CODES ---
                 else if (code === "Michael") {
                     unlockAchievement('michael', '"Lorenzo"\nWho is That?');
                 }
@@ -1171,7 +1268,7 @@
                                     <p>Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance.</p>
                                     <p>This anomaly became known as:</p>
                                     <p style="color: #ff4d4d; font-weight: bold;">THE MEMORY COLLAPSE PHENOMENON</p>
-                                    <p>Researchers initially believed the phenomenon to be a recording failure.</p>
+                                    <p>Researchers initially believe the phenomenon to be a recording failure.</p>
                                     <p>They were wrong.</p>
                                     <p>The information was not being erased.</p>
                                     <p>Humanity was rejecting it.</p>
