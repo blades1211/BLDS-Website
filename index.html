@@ -119,7 +119,7 @@
         .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; }
         .shake-epic { animation: shake 0.1s infinite alternate; }
 
-        /* --- MECHANISM DUAL LOGO CODE BLDS (Eksklusif BLDS) --- */
+        /* --- MECHANISM DUAL LOGO CODE BLDS --- */
         .side-logo {
             position: fixed;
             width: 300px;
@@ -143,11 +143,11 @@
         .blds-slam-shining {
             width: 200px;
             filter: drop-shadow(0 0 35px rgba(255, 255, 255, 1));
-            animation: slamTilt Smooth 1.8s ease-in-out forwards;
+            animation: slamTiltSmooth 1.8s ease-in-out forwards;
             display: none;
             margin-bottom: 20px;
         }
-        @keyframes slamTilt {
+        @keyframes slamTiltSmooth {
             0% { transform: scale(3) rotate(0deg); opacity: 0; }
             20% { transform: scale(1) rotate(-15deg); opacity: 1; }
             50% { transform: scale(1) rotate(15deg); }
@@ -216,17 +216,17 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop preload="auto" src="audio/freesound_community-space-ambience-56265.mp3"></audio>
-    <audio id="sfx-click" preload="auto" src="audio/sfx-click.mp3"></audio> 
-    <audio id="sfx-text-fade" preload="auto" src="audio/universfield-scary-swoosh-142323.mp3"></audio>
-    <audio id="sfx-streak100" loop preload="auto" src="audio/idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
+    <audio id="bgm" loop preload="auto" src="freesound_community-space-ambience-56265.mp3"></audio>
+    <audio id="sfx-click" preload="auto" src="sfx-click.mp3"></audio> 
+    <audio id="sfx-text-fade" preload="auto" src="universfield-scary-swoosh-142323.mp3"></audio>
+    <audio id="sfx-streak100" loop preload="auto" src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
     
-    <audio id="sfx-blds-init" preload="auto" src="audio/soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
-    <audio id="sfx-blds-loop" loop preload="auto" src="audio/black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
-    <audio id="sfx-blds-logo" preload="auto" src="audio/dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
+    <audio id="sfx-blds-init" preload="auto" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
+    <audio id="sfx-blds-loop" loop preload="auto" src="black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
+    <audio id="sfx-blds-logo" preload="auto" src="dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
     
-    <audio id="sfx-forgotten" loop preload="auto" src="audio/liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
-    <audio id="sfx-flames" loop preload="auto" src="audio/fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
+    <audio id="sfx-forgotten" loop preload="auto" src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
+    <audio id="sfx-flames" loop preload="auto" src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -371,6 +371,18 @@
         let cdInterval = null;
         let lbInterval = null; 
 
+        // Fungsi pemicu interaksi global agar browser mengizinkan audio suara langsung terbuka kuncinya
+        function unlockAudioContext() {
+            const audios = document.querySelectorAll('audio');
+            audios.forEach(track => {
+                track.load();
+            });
+            document.removeEventListener('click', unlockAudioContext);
+            document.removeEventListener('keydown', unlockAudioContext);
+        }
+        document.addEventListener('click', unlockAudioContext);
+        document.addEventListener('keydown', unlockAudioContext);
+
         window.addEventListener('DOMContentLoaded', () => {
             updateUI();
 
@@ -404,8 +416,12 @@
         function playAudio(id) {
             const el = document.getElementById(id);
             if(el) {
+                el.muted = false; 
                 el.currentTime = 0;
-                el.play().catch(e => console.log("Audio play blocked/failed:", e));
+                let playPromise = el.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => console.log(`Gagal memutar audio ${id}:`, e));
+                }
             }
         }
 
@@ -761,7 +777,7 @@
                 setTimeout(() => {
                     overlay.classList.remove('invert-full', 'shake-epic');
                     overlay.style.display = 'none';
-                    box.style.fontSize = "1.4rem"; // reset
+                    box.style.fontSize = "1.4rem"; 
                     stopAudio('sfx-streak100');
                     playAudio('bgm');
                 }, 5000);
@@ -781,7 +797,6 @@
                 const slamLogo = document.getElementById('logo-slam');
                 const bodyEl = document.getElementById('app-body');
 
-                // Bersihkan penanda sisa modal/cutscene lama
                 leftLogo.style.display = 'none';
                 rightLogo.style.display = 'none';
                 slamLogo.style.display = 'none';
@@ -805,26 +820,23 @@
                     let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
                     await runTextSequence(lines, 3500); 
 
-                    // --- SCENE TULISAN "BLACK" ---
+                    // --- SCENE "BLACK" ---
                     overlay.classList.add('shake-epic');
                     box.innerText = "BLACK"; 
                     box.style.opacity = '1';
                     
-                    // Logo Kiri Muncul Setengah Pinggir & Muter Sangat Lambat Pelan Banget
                     leftLogo.style.display = 'block';
                     setTimeout(() => leftLogo.style.opacity = '0.7', 50);
                     
-                    // Efek Inversi Samping Kanan Vertikal Aktif Permanen Sekarang
                     bodyEl.classList.add('invert-half-right');
 
                     playAudio('sfx-blds-logo');
                     await new Promise(r => setTimeout(r, 4000)); 
 
-                    // --- SCENE TULISAN "LIGHT" ---
+                    // --- SCENE "LIGHT" ---
                     overlay.classList.remove('shake-epic');
                     box.innerText = "LIGHT";
                     
-                    // Logo Kanan Ikut Muncul Setengah Pinggir & Ikut Muter Pelan Banget
                     rightLogo.style.display = 'block';
                     setTimeout(() => rightLogo.style.opacity = '0.7', 50);
                     
@@ -839,7 +851,7 @@
                     await new Promise(r => setTimeout(r, 2000));
 
                     overlay.style.display = 'none';
-                    overlay.style.background = '#000'; // Reset background overlay
+                    overlay.style.background = '#000'; 
                     stopAudio('sfx-blds-loop');
                     playAudio('bgm');
                 } 
@@ -847,11 +859,9 @@
                     unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
                     stopAudio('bgm');
                     
-                    // Transisi layar menggelap sempurna
                     overlay.style.display = 'flex';
                     overlay.style.background = '#000';
 
-                    // Sequence Teks Awal Pembuka Data Terfragmentasi (Fade In Out 4 detik)
                     let initLines = [
                         "NO ACTIVE RECORD FOUND",
                         "Attempting reconstruction...",
@@ -865,7 +875,6 @@
                     ];
                     await runTextSequence(initLines, 4000);
 
-                    // Pasang Background Loop Rahasia Musik Forgotten
                     playAudio('sfx-forgotten');
                     box.style.opacity = '1';
 
@@ -960,7 +969,6 @@
                     overlay.style.display = 'flex';
                     overlay.style.background = '#000';
 
-                    // Sequence Teks Awal DB Scanning (Fade In Out 4 detik)
                     let scanLines = [
                         "ARCHIVE STATUS: STABLE",
                         "Loading Flame Database...",
@@ -974,12 +982,10 @@
                     ];
                     await runTextSequence(scanLines, 4000);
 
-                    // LOGO KEBANTING SLAM ANIMATION & SHINING GLOW
                     slamLogo.style.display = 'block';
-                    playAudio('sfx-blds-init'); // Efek Sub Whoosh benturan keras
+                    playAudio('sfx-blds-init'); 
                     await new Promise(r => setTimeout(r, 1800));
 
-                    // Teks Tambahan Dibawah Logo Terbanting
                     box.innerHTML = `
                         <div style="font-size: 1.6rem; letter-spacing: 4px; font-weight: bold; margin-bottom: 5px;">You Found it</div>
                         <div style="font-size: 1.3rem; letter-spacing: 3px; color: #888; margin-bottom: 15px;">12 Flames</div>
@@ -988,7 +994,6 @@
                     `;
                     box.style.opacity = '1';
 
-                    // Tunggu User Mengklik Dekripsi untuk meluncurkan sisa Lore
                     document.getElementById('btn-read-flame').onclick = () => {
                         box.style.opacity = '0';
                         setTimeout(() => {
