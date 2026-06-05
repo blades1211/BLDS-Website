@@ -777,7 +777,6 @@
             localStorage.setItem('blds_l_clk', lastClickTime);
             if(!username) return;
 
-            // Pastikan custom title & theme saat ini ikut tersimpan secara presisi
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
                 .then(res => res.json())
                 .then(existData => {
@@ -991,7 +990,6 @@
             document.getElementById('owner-reply-target-id').value = '';
         }
 
-        // FUNGSI TOGGLE ACCORDION UNTUK MELIHAT BALASAN
         function toggleRepliesVisibility(id) {
             const el = document.getElementById(`replies-wrapper-${id}`);
             const btn = document.getElementById(`toggle-btn-${id}`);
@@ -1038,7 +1036,14 @@
             }
         }
 
-        // HELPER UNTUK MEMBENTUK TAG BADGE CUSTOM SINKRON DENGAN DATA USER
+        // EXCLUSIVE OWNER FUNCTION: MENGHAPUS DATA REPLY BERDASARKAN ID UTAMA & ID REPLYNYA
+        function removePublicReplyByOwner(commentId, replyId) {
+            if(confirm("Delete this reply branch node permanently?")) {
+                fetch(`${BASE_DB_URL}comments/${commentId}/replies/${replyId}.json`, { method: 'DELETE' })
+                    .then(() => { alert("Reply branch node purged."); renderPublicCommentsList(); });
+            }
+        }
+
         function generateUserBadgeMarkup(authorUid) {
             if(!fullLeaderboardCache || !authorUid || !fullLeaderboardCache[authorUid]) return "";
             let p = fullLeaderboardCache[authorUid];
@@ -1065,7 +1070,6 @@
                     let totalRatingSum = 0;
                     let totalCommentsCount = 0;
 
-                    // Simpan status open/close accordion saat ini sebelum di-rerender
                     let accordionStates = {};
                     document.querySelectorAll('.replies-wrapper-block').forEach(el => {
                         let id = el.id.replace('replies-wrapper-', '');
@@ -1085,7 +1089,6 @@
                         let userCustomTag = generateUserBadgeMarkup(node.authorUid);
                         let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.75rem; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
 
-                        // Menghitung total balasan yang ada di dalam node ini
                         let repliesCount = node.replies ? Object.keys(node.replies).length : 0;
                         let toggleRepliesBtn = repliesCount > 0 ? `<button class="replies-toggle-btn" id="toggle-btn-${id}" onclick="toggleRepliesVisibility('${id}')">👁 Lihat Balasan (${repliesCount})</button>` : '';
 
@@ -1116,10 +1119,14 @@
                             Object.keys(node.replies).forEach(rId => {
                                 let subNode = node.replies[rId];
                                 let subUserCustomTag = generateUserBadgeMarkup(subNode.authorUid);
+                                
+                                // DETEKSI JIKA OWNER AKTIF, MAKA MUNCULKAN TOMBOL DELETE REPLY
+                                let deleteReplyBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.68rem; cursor:pointer; margin-left:8px;" onclick="removePublicReplyByOwner('${id}', '${rId}')">[DELETE REPLY]</span>` : '';
+
                                 let replyHtml = `
                                     <div class="reply-node">
                                         <div class="comment-meta">
-                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${subUserCustomTag}</span>
+                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${subUserCustomTag}${deleteReplyBtnUi}</span>
                                             <span style="font-size:0.65rem; color:#444;">REPLY NODE</span>
                                         </div>
                                         <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
@@ -1144,7 +1151,6 @@
                 });
         }
 
-        // --- SEARCH MECHANICS BY NAME IN OWNER PANEL ---
         function searchUserByDominionName() {
             let queryName = document.getElementById('owner-search-name').value.trim().toLowerCase();
             let log = document.getElementById('search-status-log');
@@ -1166,7 +1172,6 @@
                         document.getElementById('owner-current-input').value = profile.streak !== undefined ? profile.streak : 0;
                         document.getElementById('owner-high-input').value = profile.highStreak !== undefined ? profile.highStreak : 0;
                         
-                        // Isi data custom title dan tema yang tersimpan di firebase
                         document.getElementById('owner-custom-title-text').value = profile.customTitle || '';
                         document.getElementById('owner-custom-title-theme').value = profile.customTheme || 'badge-theme-gold';
 
@@ -1211,7 +1216,7 @@
                 }).then(() => {
                     alert(`Successfully updated metrics & titles for ${updatedName}!`);
                     document.getElementById('search-status-log').innerText = "Data successfully pushed.";
-                    syncCmsAndCommunications(); // Force refresh cache
+                    syncCmsAndCommunications();
                     if(targetUuid === userId) { syncWithFirebase(); }
                 });
             });
@@ -1235,7 +1240,6 @@
             }
         }
 
-        // --- ORIGIN LORE HANDLING ENGINE (DYNAMIC CMS) ---
         function triggerOriginLore(btn) {
             applyButtonTransition(btn, () => {
                 const overlay = document.getElementById('cutscene-overlay');
