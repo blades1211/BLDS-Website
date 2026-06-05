@@ -634,7 +634,10 @@
         function syncWithFirebase() {
             if(!username) return;
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
-                .then(res => res.json())
+                .then(res => {
+                    if(!res.ok) throw new Error('rules locked');
+                    return res.json();
+                })
                 .then(data => {
                     if(data && data.username) {
                         currentStreak = data.streak !== undefined ? parseInt(data.streak) : currentStreak;
@@ -650,6 +653,7 @@
                     updateUI();
                 })
                 .catch(() => {
+                    // Fallback to local data if Firebase rules are locked/blocked
                     let now = Date.now();
                     if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) { currentStreak = 0; }
                     updateUI();
@@ -657,42 +661,39 @@
         }
 
         function saveToFirebase() {
-            if(!username) return;
-            let payload = {
-                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), updatedAt: Date.now()
-            };
             localStorage.setItem('blds_username', username);
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
             localStorage.setItem('blds_l_clk', lastClickTime);
+            if(!username) return;
+
+            let payload = {
+                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), updatedAt: Date.now()
+            };
 
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             }).then(() => {
                 if(document.getElementById('leaderboard-modal').style.display === 'flex') fetchLeaderboardData();
-            });
+            }).catch(e => console.log("Firebase sync blocked. Operating on local memory storage. Check database rules."));
             updateUI();
         }
 
         function syncCmsAndCommunications() {
-            // Fetch CMS Content data
             fetch(`${BASE_DB_URL}cms.json`)
-                .then(res => res.json())
+                .then(res => res.ok ? res.json() : null)
                 .then(data => {
                     if(data) {
-                        if(data.originText) {
-                            dbCmsOriginHtml = data.originText;
-                        }
+                        if(data.originText) dbCmsOriginHtml = data.originText;
                         if(data.archiveText) {
                             dbCmsArchiveHtml = data.archiveText;
                             document.getElementById('dynamic-archive-container').innerHTML = data.archiveText;
                         }
                     }
-                });
+                }).catch(e => {});
 
-            // Fetch Announcements data
             fetch(`${BASE_DB_URL}announcement.json`)
-                .then(res => res.json())
+                .then(res => res.ok ? res.json() : null)
                 .then(data => {
                     const banner = document.getElementById('global-announcement-banner');
                     if(data && data.active === true && data.message) {
@@ -702,9 +703,8 @@
                     } else {
                         banner.style.display = 'none';
                     }
-                });
+                }).catch(e => {});
 
-            // Fetch Comments real-time
             if(document.getElementById('rating-modal').style.display === 'flex') {
                 renderPublicCommentsList();
             }
@@ -831,8 +831,6 @@
             indicator.innerText = `REPLYING TO: @${authorName} (Click to Cancel)`;
             indicator.style.display = 'block';
             indicator.onclick = resetCommentReplyChain;
-
-            // Update side-panel text if Owner open tab 3
             document.getElementById('owner-reply-target-id').value = commentId;
         }
 
@@ -851,24 +849,41 @@
                 playAudio('sfx-click');
                 
                 if(replyTargetCommentId) {
-                    // Add nested reply to target node
-                    let replyPayload = {
-                        author: username, message: txt, timestamp: Date.now(), isStaff: false
-                    };
+                    let replyPayload = { author: username, message: txt, timestamp: Date.now(), isStaff: false };
+                    
+                    // Fallback storage check
+                    let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
+                    if(localComments[replyTargetCommentId]) {
+                        if(!localComments[replyTargetCommentId].replies) localComments[replyTargetCommentId].replies = {};
+                        let newRId = 'r_' + Date.now();
+                        localComments[replyTargetCommentId].replies[newRId] = replyPayload;
+                        localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
+                    }
+
                     fetch(`${BASE_DB_URL}comments/${replyTargetCommentId}/replies.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyPayload)
                     }).then(() => {
                         document.getElementById('public-comment-input').value = '';
                         resetCommentReplyChain(); renderPublicCommentsList();
+                    }).catch(e => {
+                        document.getElementById('public-comment-input').value = '';
+                        resetCommentReplyChain(); renderPublicCommentsList();
                     });
                 } else {
-                    // Main Node Comment
-                    let commentPayload = {
-                        author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), isStaff: false
-                    };
+                    let commentPayload = { author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), isStaff: false };
+                    
+                    // Fallback to local storage
+                    let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
+                    let newCId = 'c_' + Date.now();
+                    localComments[newCId] = commentPayload;
+                    localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
+
                     fetch(`${BASE_DB_URL}comments.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentPayload)
                     }).then(() => {
+                        document.getElementById('public-comment-input').value = '';
+                        renderPublicCommentsList();
+                    }).catch(e => {
                         document.getElementById('public-comment-input').value = '';
                         renderPublicCommentsList();
                     });
@@ -878,52 +893,64 @@
 
         function renderPublicCommentsList() {
             const listContainer = document.getElementById('public-comments-box-list');
+            
+            function buildList(data) {
+                if(!data) {
+                    listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
+                    return;
+                }
+                listContainer.innerHTML = '';
+                Object.keys(data).forEach(id => {
+                    let node = data[id];
+                    let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
+                    let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+
+                    let mainNodeHtml = `
+                        <div class="comment-node" id="node-block-${id}">
+                            <div class="comment-meta">
+                                <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}</span>
+                                <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
+                            </div>
+                            <div class="comment-text">${escapeHTML(node.message || '')}</div>
+                            <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
+                            <div id="replies-sub-list-${id}"></div>
+                        </div>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
+
+                    if(node.replies) {
+                        const subContainer = document.getElementById(`replies-sub-list-${id}`);
+                        Object.keys(node.replies).forEach(rId => {
+                            let subNode = node.replies[rId];
+                            let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+                            let replyHtml = `
+                                <div class="reply-node">
+                                    <div class="comment-meta">
+                                        <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
+                                        <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
+                                    </div>
+                                    <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
+                                </div>
+                            `;
+                            subContainer.insertAdjacentHTML('beforeend', replyHtml);
+                        });
+                    }
+                });
+            }
+
             fetch(`${BASE_DB_URL}comments.json`)
-                .then(res => res.json())
+                .then(res => res.ok ? res.json() : null)
                 .then(data => {
                     if(!data) {
-                        listContainer.innerHTML = `<div style="text-align:center; color:#555; font-size:0.8rem; margin-top:20px;">No public records transmitted yet.</div>`;
-                        return;
+                        let localData = JSON.parse(localStorage.getItem('local_fallback_comments'));
+                        buildList(localData);
+                    } else {
+                        buildList(data);
                     }
-                    listContainer.innerHTML = '';
-                    // Sort nodes
-                    Object.keys(data).forEach(id => {
-                        let node = data[id];
-                        let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
-                        let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-
-                        let mainNodeHtml = `
-                            <div class="comment-node" id="node-block-${id}">
-                                <div class="comment-meta">
-                                    <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}</span>
-                                    <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
-                                </div>
-                                <div class="comment-text">${escapeHTML(node.message || '')}</div>
-                                <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
-                                <div id="replies-sub-list-${id}"></div>
-                            </div>
-                        `;
-                        listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
-
-                        // Parse nested sub-replies
-                        if(node.replies) {
-                            const subContainer = document.getElementById(`replies-sub-list-${id}`);
-                            Object.keys(node.replies).forEach(rId => {
-                                let subNode = node.replies[rId];
-                                let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-                                let replyHtml = `
-                                    <div class="reply-node">
-                                        <div class="comment-meta">
-                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
-                                            <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
-                                        </div>
-                                        <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
-                                    </div>
-                                `;
-                                subContainer.insertAdjacentHTML('beforeend', replyHtml);
-                            });
-                        }
-                    });
+                })
+                .catch(() => {
+                    let localData = JSON.parse(localStorage.getItem('local_fallback_comments'));
+                    buildList(localData);
                 });
         }
 
@@ -947,7 +974,6 @@
                 if(dbCmsOriginHtml && dbCmsOriginHtml.trim() !== "") {
                     box.innerHTML = dbCmsOriginHtml;
                 } else {
-                    // Default Fallback template
                     box.innerHTML = `
                         <div class="lore-scroll-box">
                             <h2>BLACKLIGHTDOMS ORIGIN</h2>
@@ -999,33 +1025,45 @@
 
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
+            
+            function buildLeaderboard(data) {
+                if(!data) {
+                    container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`; return;
+                }
+                let records = [];
+                Object.keys(data).forEach(key => {
+                    if(data[key] && data[key].username) {
+                        records.push({ name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0 });
+                    }
+                });
+                records.sort((a, b) => b.high - a.high);
+                container.innerHTML = "";
+                records.forEach((player, index) => {
+                    let tr = document.createElement('tr');
+                    let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
+                    tr.innerHTML = `
+                        <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
+                        <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
+                        <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
+                        <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
+                    `;
+                    container.appendChild(tr);
+                });
+            }
+
             fetch(`${BASE_DB_URL}leaderboard.json`)
-                .then(res => res.json())
+                .then(res => res.ok ? res.json() : null)
                 .then(data => {
                     if(!data) {
-                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`; return;
+                        let localMock = {}; localMock[userId] = { username: username, streak: currentStreak, highStreak: highStreak };
+                        buildLeaderboard(localMock);
+                    } else {
+                        buildLeaderboard(data);
                     }
-                    let records = [];
-                    Object.keys(data).forEach(key => {
-                        if(data[key] && data[key].username) {
-                            records.push({
-                                name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0
-                            });
-                        }
-                    });
-                    records.sort((a, b) => b.high - a.high);
-                    container.innerHTML = "";
-                    records.forEach((player, index) => {
-                        let tr = document.createElement('tr');
-                        let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
-                        tr.innerHTML = `
-                            <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
-                            <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
-                            <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
-                            <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
-                        `;
-                        container.appendChild(tr);
-                    });
+                })
+                .catch(() => {
+                    let localMock = {}; localMock[userId] = { username: username, streak: currentStreak, highStreak: highStreak };
+                    buildLeaderboard(localMock);
                 });
         }
 
@@ -1056,7 +1094,7 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC (4s FADE + BRUTAL QUAKE) --- */
+        /* --- STREAK 100 SYSTEM CINEMATIC --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm'); playAudio('sfx-streak100');
             const overlay = document.getElementById('cutscene-overlay');
@@ -1140,8 +1178,6 @@
                 document.getElementById('owner-name-input').value = username;
                 document.getElementById('owner-current-input').value = currentStreak;
                 document.getElementById('owner-high-input').value = highStreak;
-                
-                // Pre-populate CMS inputs with current HTML string cache
                 document.getElementById('cms-origin-textarea').value = dbCmsOriginHtml;
                 document.getElementById('cms-archive-textarea').value = dbCmsArchiveHtml;
             }
@@ -1197,6 +1233,11 @@
                 }).then(() => {
                     alert("CMS Overwrites Pushed Successfully!");
                     syncCmsAndCommunications();
+                }).catch(e => {
+                    // Fail fallback simulation
+                    dbCmsOriginHtml = originVal; dbCmsArchiveHtml = archiveVal;
+                    document.getElementById('dynamic-archive-container').innerHTML = archiveVal;
+                    alert("Sync blocked, changes applied locally.");
                 });
             });
         }
@@ -1214,6 +1255,11 @@
                 }).then(() => {
                     alert("Global Broadcast Transmitted!");
                     document.getElementById('announce-msg-input').value = '';
+                }).catch(e => {
+                    document.getElementById('announce-staff-title').innerText = `[📢 STAFF - ${sender}]:`;
+                    document.getElementById('announce-text-content').innerText = msg;
+                    document.getElementById('global-announcement-banner').style.display = 'block';
+                    alert("Firebase Rules Locked! Displaying broadcast locally.");
                 });
             });
         }
@@ -1224,6 +1270,8 @@
                     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: false })
                 }).then(() => {
                     alert("Broadcast Stream Terminated.");
+                }).catch(e => {
+                    document.getElementById('global-announcement-banner').style.display = 'none';
                 });
             });
         }
@@ -1237,18 +1285,26 @@
             if(!replyMsg) { alert("Isi balasan pesan staff kosong!"); return; }
 
             applyButtonTransition(btn, () => {
-                // Securely write directly into nested array with isStaff force flag
-                let staffReplyPayload = {
-                    author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true
-                };
+                let staffReplyPayload = { author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true };
+
+                let localComments = JSON.parse(localStorage.getItem('local_fallback_comments')) || {};
+                if(localComments[targetId]) {
+                    if(!localComments[targetId].replies) localComments[targetId].replies = {};
+                    let rId = 'staff_' + Date.now();
+                    localComments[targetId].replies[rId] = staffReplyPayload;
+                    localStorage.setItem('local_fallback_comments', JSON.stringify(localComments));
+                }
 
                 fetch(`${BASE_DB_URL}comments/${targetId}/replies.json`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(staffReplyPayload)
                 }).then(() => {
                     alert("Verified Staff Reply Sequenced!");
                     document.getElementById('owner-reply-text-input').value = '';
-                    resetCommentReplyChain();
-                    syncCmsAndCommunications();
+                    resetCommentReplyChain(); syncCmsAndCommunications();
+                }).catch(e => {
+                    document.getElementById('owner-reply-text-input').value = '';
+                    resetCommentReplyChain(); renderPublicCommentsList();
+                    alert("Rules locked. Message appended to local stack window.");
                 });
             });
         }
