@@ -220,6 +220,12 @@
             padding: 8px; background: #111; border: 1px solid #444; color: #fff;
             font-family: monospace; font-size: 0.9rem;
         }
+        .btn-danger {
+            background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d;
+        }
+        .btn-danger:hover {
+            background: #ff4d4d; color: #000; box-shadow: 0 0 15px #ff4d4d;
+        }
 
         /* --- ANIMATIONS --- */
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -277,6 +283,7 @@
                 <input type="number" id="owner-high-input">
             </div>
             <button class="enter-btn" style="margin-top:5px; padding:8px;" onclick="saveOwnerChanges(this)">SAVE CHANGES</button>
+            <button class="enter-btn btn-danger" style="margin-top:0px; padding:8px;" onclick="resetCurrentStreakOnly(this)">RESET CURRENT STREAK (0)</button>
         </div>
     </div>
 
@@ -918,6 +925,21 @@
                 saveToFirebase();
                 alert("Owner Commands Executed! Data synced.");
                 toggleOwnerPanel();
+            });
+        }
+
+        // --- FUNGSI BARU KHUSUS RESET STREAK ---
+        function resetCurrentStreakOnly(btn) {
+            applyButtonTransition(btn, () => {
+                if(confirm("Apakah Anda yakin ingin me-reset CURRENT STREAK menjadi 0? (High Streak tetap aman)")) {
+                    currentStreak = 0;
+                    lastClickTime = 0; // Mengosongkan waktu cooldown agar bisa claim langsung dari hari pertama
+                    document.getElementById('owner-current-input').value = 0;
+                    
+                    saveToFirebase();
+                    alert("Current Streak telah di-reset menjadi 0!");
+                    toggleOwnerPanel();
+                }
             });
         }
 
