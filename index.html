@@ -218,7 +218,7 @@
 
     <audio id="bgm" loop preload="auto" src="freesound_community-space-ambience-56265.mp3"></audio>
     <audio id="sfx-click" preload="auto" src="sfx-click.mp3"></audio> 
-    <audio id="sfx-text-fade" preload="auto" src="universfield-scary-swoosh-142323.mp3"></audio>
+    <audio id="sfx-text-fade" preload="auto" src="Dragon-studio-blizzard-transition-463210.mp3"></audio>
     <audio id="sfx-streak100" loop preload="auto" src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
     
     <audio id="sfx-blds-init" preload="auto" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
@@ -371,7 +371,6 @@
         let cdInterval = null;
         let lbInterval = null; 
 
-        // Fungsi pemicu interaksi global agar browser mengizinkan audio suara langsung terbuka kuncinya
         function unlockAudioContext() {
             const audios = document.querySelectorAll('audio');
             audios.forEach(track => {
@@ -820,7 +819,6 @@
                     let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
                     await runTextSequence(lines, 3500); 
 
-                    // --- SCENE "BLACK" ---
                     overlay.classList.add('shake-epic');
                     box.innerText = "BLACK"; 
                     box.style.opacity = '1';
@@ -833,7 +831,6 @@
                     playAudio('sfx-blds-logo');
                     await new Promise(r => setTimeout(r, 4000)); 
 
-                    // --- SCENE "LIGHT" ---
                     overlay.classList.remove('shake-epic');
                     box.innerText = "LIGHT";
                     
