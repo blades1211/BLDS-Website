@@ -334,19 +334,19 @@
 
         /* --- DRAGGABLE OWNER PANEL --- */
         #owner-trigger-btn {
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-            border-radius: 50%; background: #111; border: 2px solid #fff;
-            color: #fff; font-size: 1.4rem; cursor: pointer; z-index: 1000000;
-            display: none; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255,255,255,0.3);
-            transition: transform 0.2s, background 0.2s;
+            position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(20,20,20,0.8); border: 1px solid #444;
+            color: #fff; font-size: 1.2rem; cursor: pointer; z-index: 99999;
+            display: none; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
         }
-        #owner-trigger-btn:hover { transform: scale(1.1); background: #fff; color: #000; }
+        #owner-trigger-btn:hover { transform: scale(1.1); border-color: #fff; }
         
         #owner-panel {
-            position: fixed; top: 15%; right: 80px; width: 360px;
+            position: fixed; top: 5%; left: 30%; width: 360px;
             background: #0a0a0a; border: 2px solid #fff; z-index: 999999;
             box-shadow: 0 0 30px rgba(255,255,255,0.2); display: none; flex-direction: column;
-            max-height: 80vh; overflow-y: auto;
+            max-height: 90vh; overflow-y: auto;
         }
         .owner-header {
             background: #151515; padding: 10px; cursor: move; font-weight: bold;
@@ -852,4 +852,95 @@
                 if (lastClickTime !== 0 && timeDiff < cooldown) {
                     let remaining = cooldown - timeDiff;
                     let hrs = Math.floor(remaining / 3600000), mins = Math.floor((remaining % 3600000) / 60000), secs = Math.floor((remaining % 60000) / 1000);
-                    btn.innerText = `COOLDOWN (${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(
+                    btn.innerText = `COOLDOWN (${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`;
+                    btn.disabled = true;
+                } else {
+                    btn.innerText = "CLAIM DAILY STREAK";
+                    btn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        function claimDailyStreak(btn) {
+            applyButtonTransition(btn, () => {
+                currentStreak += 1;
+                if(currentStreak > highStreak) highStreak = currentStreak;
+                lastClickTime = Date.now();
+                saveToFirebase();
+                alert(`Streak claimed! Current: ${currentStreak} Days.`);
+            });
+        }
+
+        function openModal(id, btn) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openLeaderboard() { openModal('leaderboard-modal'); fetchLeaderboardData(); }
+        function closeLeaderboardModal() { closeModal('leaderboard-modal'); }
+
+        function fetchLeaderboardData() {
+            const container = document.getElementById('leaderboard-data-rows');
+            fetch(`${BASE_DB_URL}leaderboard.json`).then(res => res.json()).then(data => {
+                if(!data) return;
+                let records = Object.keys(data).map(k => ({ name: data[k].username, current: data[k].streak, high: data[k].highStreak }));
+                records.sort((a, b) => b.high - a.high);
+                container.innerHTML = records.map((p, i) => `<tr><td>#${i+1}</td><td>${escapeHTML(p.name)}</td><td>${p.current}d</td><td>${p.high}d</td></tr>`).join('');
+            });
+        }
+
+        function toggleOwnerPanel() {
+            const panel = document.getElementById('owner-panel');
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+            if(panel.style.display === 'flex') {
+                document.getElementById('owner-name-input').value = username;
+                document.getElementById('owner-current-input').value = currentStreak;
+                document.getElementById('owner-high-input').value = highStreak;
+                fetchFeedbackData();
+            }
+        }
+
+        function saveOwnerChanges() {
+            username = document.getElementById('owner-name-input').value.trim();
+            currentStreak = parseInt(document.getElementById('owner-current-input').value) || 0;
+            highStreak = parseInt(document.getElementById('owner-high-input').value) || 0;
+            saveToFirebase();
+            toggleOwnerPanel();
+        }
+
+        function resetCurrentStreakOnly() { if(confirm("Reset current streak?")) { currentStreak = 0; lastClickTime = 0; saveToFirebase(); toggleOwnerPanel(); } }
+        function escapeHTML(str) { return str ? str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t)) : ''; }
+        function playAudio(id) { let el = document.getElementById(id); if(el) el.play().catch(()=>{}); }
+        function applyButtonTransition(btn, cb) { if(btn) { btn.classList.add('btn-active-effect'); setTimeout(() => { btn.classList.remove('btn-active-effect'); cb(); }, 200); } else cb(); }
+
+        function makeElementDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = document.getElementById(elmnt.id + "-dragheader");
+            if (header) { header.onmousedown = dragMouseDown; header.ontouchstart = dragMouseDown; }
+            function dragMouseDown(e) {
+                pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                document.onmouseup = closeDragElement; document.ontouchend = closeDragElement;
+                document.onmousemove = elementDrag; document.ontouchmove = elementDrag;
+            }
+            function elementDrag(e) {
+                let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                pos1 = pos3 - clientX; pos2 = pos4 - clientY; pos3 = clientX; pos4 = clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+        }
+
+        function submitCode(btn) {
+            applyButtonTransition(btn, () => {
+                let code = document.getElementById('code-input-field').value.trim();
+                closeModal('code-modal');
+                if (code === "OWNERONLY") {
+                    localStorage.setItem('blds_owner_unlocked', 'true');
+                    isOwnerUnlocked = true;
+                    document.getElementById('owner-trigger-btn').style.display = 'flex';
+                    alert("Owner Interface Unlocked!");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
