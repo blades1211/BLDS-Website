@@ -267,17 +267,28 @@
         .comment-node { border-left: 2px solid #333; padding-left: 12px; margin-bottom: 5px; background: rgba(255,255,255,0.01); padding: 10px; position: relative; }
         .comment-meta { font-size: 0.75rem; color: #888; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .comment-text { font-size: 0.85rem; line-height: 1.5; color: #ddd; word-break: break-all; }
-        .reply-node { margin-left: 20px; margin-top: 10px; border-left: 2px dashed #555; padding-left: 10px; background: rgba(255,255,255,0.005); padding: 8px; }
         
-        /* UNCOPYABLE ANTI-TIRU STAFF STYLING */
-        .staff-badge {
-            background: linear-gradient(45deg, #ffd700, #ff0055);
+        /* DYNAMIC ACCORDION FOR REPLIES */
+        .replies-toggle-btn {
+            background: none; border: none; color: #888; font-family: monospace; font-size: 0.72rem; cursor: pointer; margin-top: 5px; display: inline-block; margin-right: 15px;
+        }
+        .replies-toggle-btn:hover { color: #fff; text-decoration: underline; }
+        .replies-wrapper-block { display: none; margin-top: 8px; }
+
+        .reply-node { margin-left: 20px; margin-top: 8px; border-left: 2px dashed #555; padding-left: 10px; background: rgba(255,255,255,0.005); padding: 8px; }
+        
+        /* UNCOPYABLE CUSTOM STYLING TAG / TITLES */
+        .custom-staff-badge {
             color: #000; font-weight: bold; font-size: 0.65rem;
             padding: 2px 6px; border-radius: 2px; letter-spacing: 1px;
-            margin-left: 5px; display: inline-block;
-            box-shadow: 0 0 8px rgba(255, 0, 85, 0.5);
-            text-shadow: none;
+            margin-left: 5px; display: inline-block; text-shadow: none;
+            box-shadow: 0 0 6px rgba(255,255,255,0.2);
         }
+        /* Custom Theme Gradients */
+        .badge-theme-gold { background: linear-gradient(45deg, #ffd700, #ff8c00); box-shadow: 0 0 8px #ffd700; }
+        .badge-theme-crimson { background: linear-gradient(45deg, #ff0055, #990022); color: #fff; box-shadow: 0 0 8px #ff0055; }
+        .badge-theme-emerald { background: linear-gradient(45deg, #00ffaa, #006633); box-shadow: 0 0 8px #00ffaa; }
+        .badge-theme-purple { background: linear-gradient(45deg, #b026ff, #4b0082); color: #fff; box-shadow: 0 0 8px #b026ff; }
 
         .comment-input-area { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #222; padding-top: 15px; }
         .reply-btn-ui { font-size: 0.7rem; color: #00ffaa; background: transparent; border: none; cursor: pointer; font-family: monospace; text-transform: uppercase; margin-top: 5px; display: inline-block; }
@@ -400,6 +411,24 @@
                 <label>DOMINION DISPLAY NAME</label>
                 <input type="text" id="owner-name-input">
             </div>
+            
+            <div style="background:rgba(255,255,255,0.01); border:1px dashed #333; padding:10px; display:flex; flex-direction:column; gap:8px;">
+                <h4 style="font-size:0.7rem; color:#ffd700; letter-spacing:1px;">CUSTOM TITLE DISPENSATION</h4>
+                <div class="owner-field">
+                    <label>CUSTOM TITLE TEXT (e.g. ADMIN, OWNER, ELITE)</label>
+                    <input type="text" id="owner-custom-title-text" placeholder="Leave blank for none">
+                </div>
+                <div class="owner-field">
+                    <label>BACKGROUND THEME STYLE</label>
+                    <select id="owner-custom-title-theme">
+                        <option value="badge-theme-gold">Gold Glow (★)</option>
+                        <option value="badge-theme-crimson">Neon Crimson (🔥)</option>
+                        <option value="badge-theme-emerald">Emerald Matrix (📟)</option>
+                        <option value="badge-theme-purple">Cyberpunk Purple (🔮)</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="owner-field">
                 <label>SET CURRENT STREAK</label>
                 <input type="number" id="owner-current-input">
@@ -444,20 +473,20 @@
                 <button class="enter-btn btn-danger" style="margin-top:4px; padding:6px; font-size:0.8rem;" onclick="clearGlobalAnnouncement(this)">TERMINATE BROADCAST</button>
             </div>
             <div>
-                <h4 style="font-size:0.75rem; letter-spacing:1px; margin-bottom:8px; color:#00ffaa;">VERIFIED OWNER REPLY BOX</h4>
+                <h4 style="font-size:0.75rem; letter-spacing:1px; margin-bottom:8px; color:#00ffaa;">VERIFIED REPLIES CONTROLLER</h4>
                 <div class="owner-field" style="margin-bottom:8px;">
                     <label>REPLY TO TARGET (COMMENT ID)</label>
                     <input type="text" id="owner-reply-target-id" readonly placeholder="Click 'REPLY' on public comment list">
                 </div>
                 <div class="owner-field" style="margin-bottom:8px;">
-                    <label>CUSTOM STAFF DISPENSATION NAME</label>
-                    <input type="text" id="owner-reply-name-input" placeholder="e.g. Right Hand - Nayottama">
+                    <label>CUSTOM DISPLAY NAME</label>
+                    <input type="text" id="owner-reply-name-input" placeholder="Defaults to current dominion profile name">
                 </div>
                 <div class="owner-field">
-                    <label>VERIFIED STAFF MESSAGE</label>
-                    <textarea id="owner-reply-text-input" placeholder="Type verified staff response..."></textarea>
+                    <label>MESSAGE TEXT</label>
+                    <textarea id="owner-reply-text-input" placeholder="Type public response node..."></textarea>
                 </div>
-                <button class="enter-btn" style="margin-top:8px; padding:6px; font-size:0.8rem;" onclick="submitOwnerVerifiedReply(this)">EXECUTE SECURE REPLY</button>
+                <button class="enter-btn" style="margin-top:8px; padding:6px; font-size:0.8rem;" onclick="submitOwnerVerifiedReply(this)">EXECUTE REPLAY PIPELINE</button>
             </div>
         </div>
     </div>
@@ -748,15 +777,21 @@
             localStorage.setItem('blds_l_clk', lastClickTime);
             if(!username) return;
 
-            let payload = {
-                username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), isBanned: false, updatedAt: Date.now()
-            };
+            // Pastikan custom title & theme saat ini ikut tersimpan secara presisi
+            fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
+                .then(res => res.json())
+                .then(existData => {
+                    let oldTitle = (existData && existData.customTitle) ? existData.customTitle : "";
+                    let oldTheme = (existData && existData.customTheme) ? existData.customTheme : "";
 
-            fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-            }).then(() => {
-                if(document.getElementById('leaderboard-modal').style.display === 'flex') fetchLeaderboardData();
-            });
+                    let payload = {
+                        username: username, streak: parseInt(currentStreak), highStreak: parseInt(highStreak), lastClick: parseInt(lastClickTime), isBanned: false, updatedAt: Date.now(), customTitle: oldTitle, customTheme: oldTheme
+                    };
+
+                    fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
+                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+                    });
+                });
             updateUI();
         }
 
@@ -803,11 +838,14 @@
 
             fetch(`${BASE_DB_URL}leaderboard.json`)
                 .then(res => res.json())
-                .then(data => { if(data) fullLeaderboardCache = data; });
-
-            if(document.getElementById('rating-modal').style.display === 'flex') {
-                renderPublicCommentsList();
-            }
+                .then(data => { 
+                    if(data) {
+                        fullLeaderboardCache = data; 
+                        if(document.getElementById('rating-modal').style.display === 'flex') {
+                            renderPublicCommentsList();
+                        }
+                    } 
+                });
         }
 
         function updateUI() {
@@ -929,7 +967,6 @@
             });
         }
 
-        // --- PUBLIC TRANS-FEEDBACK COMMENTS SYSTEM ---
         function setFeedbackRating(val) {
             selectedRatingValue = val;
             const stars = document.querySelectorAll('#feedback-star-row .star-box');
@@ -954,6 +991,19 @@
             document.getElementById('owner-reply-target-id').value = '';
         }
 
+        // FUNGSI TOGGLE ACCORDION UNTUK MELIHAT BALASAN
+        function toggleRepliesVisibility(id) {
+            const el = document.getElementById(`replies-wrapper-${id}`);
+            const btn = document.getElementById(`toggle-btn-${id}`);
+            if(el.style.display === "block") {
+                el.style.display = "none";
+                btn.innerText = "👁 Lihat Balasan";
+            } else {
+                el.style.display = "block";
+                btn.innerText = "👁 Sembunyikan Balasan";
+            }
+        }
+
         function submitPublicComment(btn) {
             if(!username) return;
             const txt = document.getElementById('public-comment-input').value.trim();
@@ -962,7 +1012,7 @@
             applyButtonTransition(btn, () => {
                 playAudio('sfx-click');
                 if(replyTargetCommentId) {
-                    let replyPayload = { author: username, message: txt, timestamp: Date.now(), isStaff: false };
+                    let replyPayload = { author: username, message: txt, timestamp: Date.now(), authorUid: userId };
                     fetch(`${BASE_DB_URL}comments/${replyTargetCommentId}/replies.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyPayload)
                     }).then(() => {
@@ -970,7 +1020,7 @@
                         resetCommentReplyChain(); renderPublicCommentsList();
                     });
                 } else {
-                    let commentPayload = { author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), isStaff: false };
+                    let commentPayload = { author: username, message: txt, rating: selectedRatingValue, timestamp: Date.now(), authorUid: userId };
                     fetch(`${BASE_DB_URL}comments.json`, {
                         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentPayload)
                     }).then(() => {
@@ -988,6 +1038,17 @@
             }
         }
 
+        // HELPER UNTUK MEMBENTUK TAG BADGE CUSTOM SINKRON DENGAN DATA USER
+        function generateUserBadgeMarkup(authorUid) {
+            if(!fullLeaderboardCache || !authorUid || !fullLeaderboardCache[authorUid]) return "";
+            let p = fullLeaderboardCache[authorUid];
+            if(p.customTitle && p.customTitle.trim() !== "") {
+                let themeClass = p.customTheme || "badge-theme-gold";
+                return `<span class="custom-staff-badge ${themeClass}">[${escapeHTML(p.customTitle.toUpperCase())}]</span>`;
+            }
+            return "";
+        }
+
         function renderPublicCommentsList() {
             const listContainer = document.getElementById('public-comments-box-list');
             fetch(`${BASE_DB_URL}comments.json`)
@@ -1001,33 +1062,51 @@
                         return;
                     }
 
-                    // CALCULATE PLAY STORE SUMMARY STATISTICS DYNAMICALLY
                     let totalRatingSum = 0;
                     let totalCommentsCount = 0;
+
+                    // Simpan status open/close accordion saat ini sebelum di-rerender
+                    let accordionStates = {};
+                    document.querySelectorAll('.replies-wrapper-block').forEach(el => {
+                        let id = el.id.replace('replies-wrapper-', '');
+                        accordionStates[id] = el.style.display === 'block';
+                    });
 
                     listContainer.innerHTML = '';
                     Object.keys(data).forEach(id => {
                         let node = data[id];
                         
-                        // Accumulate stars calculation
                         if(node.rating !== undefined) {
                             totalRatingSum += parseInt(node.rating);
                             totalCommentsCount++;
                         }
 
                         let starsUi = '★'.repeat(node.rating || 0) + '☆'.repeat(5 - (node.rating || 0));
-                        let staffTag = node.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
-                        let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.7 habit; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
+                        let userCustomTag = generateUserBadgeMarkup(node.authorUid);
+                        let deleteBtnUi = isOwnerUnlocked ? `<span style="color:#ff4d4d; font-size:0.75rem; cursor:pointer; margin-left:10px;" onclick="removePublicCommentByOwner('${id}')">[DELETE]</span>` : '';
+
+                        // Menghitung total balasan yang ada di dalam node ini
+                        let repliesCount = node.replies ? Object.keys(node.replies).length : 0;
+                        let toggleRepliesBtn = repliesCount > 0 ? `<button class="replies-toggle-btn" id="toggle-btn-${id}" onclick="toggleRepliesVisibility('${id}')">👁 Lihat Balasan (${repliesCount})</button>` : '';
+
+                        let isOpenedBefore = accordionStates[id] ? "style='display: block;'" : "style='display: none;'";
+                        let toggleTxtBefore = accordionStates[id] ? `👁 Sembunyikan Balasan (${repliesCount})` : `👁 Lihat Balasan (${repliesCount})`;
+                        if(repliesCount > 0 && accordionStates[id]) {
+                            toggleRepliesBtn = `<button class="replies-toggle-btn" id="toggle-btn-${id}" onclick="toggleRepliesVisibility('${id}')">${toggleTxtBefore}</button>`;
+                        }
 
                         let mainNodeHtml = `
                             <div class="comment-node" id="node-block-${id}">
                                 <div class="comment-meta">
-                                    <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${staffTag}${deleteBtnUi}</span>
+                                    <span style="font-weight:bold; color:#fff;">@${escapeHTML(node.author || 'Anonymous')}${userCustomTag}${deleteBtnUi}</span>
                                     <span style="color:#ffd700; letter-spacing:1px; font-size:0.75rem;">${starsUi}</span>
                                 </div>
                                 <div class="comment-text">${escapeHTML(node.message || '')}</div>
                                 <button class="reply-btn-ui" onclick="selectCommentToReply('${id}', '${escapeHTML(node.author)}')">↳ Reply</button>
-                                <div id="replies-sub-list-${id}"></div>
+                                ${toggleRepliesBtn}
+                                <div class="replies-wrapper-block" id="replies-wrapper-${id}" ${isOpenedBefore}>
+                                    <div id="replies-sub-list-${id}"></div>
+                                </div>
                             </div>
                         `;
                         listContainer.insertAdjacentHTML('beforeend', mainNodeHtml);
@@ -1036,12 +1115,12 @@
                             const subContainer = document.getElementById(`replies-sub-list-${id}`);
                             Object.keys(node.replies).forEach(rId => {
                                 let subNode = node.replies[rId];
-                                let rStaffTag = subNode.isStaff ? `<span class="staff-badge">[👑 STAFF | REALM KEEPER]</span>` : '';
+                                let subUserCustomTag = generateUserBadgeMarkup(subNode.authorUid);
                                 let replyHtml = `
                                     <div class="reply-node">
                                         <div class="comment-meta">
-                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${rStaffTag}</span>
-                                            <span style="font-size:0.65rem; color:#444;">REPLY RECORD</span>
+                                            <span style="font-weight:bold; color:#00ffaa;">@${escapeHTML(subNode.author || 'Anonymous')}${subUserCustomTag}</span>
+                                            <span style="font-size:0.65rem; color:#444;">REPLY NODE</span>
                                         </div>
                                         <div class="comment-text">${escapeHTML(subNode.message || '')}</div>
                                     </div>
@@ -1051,11 +1130,9 @@
                         }
                     });
 
-                    // Update UI Statistics Box
                     if(totalCommentsCount > 0) {
                         let avg = (totalRatingSum / totalCommentsCount);
                         document.getElementById('live-avg-rating-num').innerText = avg.toFixed(1);
-                        
                         let roundedStars = Math.round(avg);
                         document.getElementById('live-avg-stars-row').innerText = '★'.repeat(roundedStars) + '☆'.repeat(5 - roundedStars);
                         document.getElementById('live-total-reviewers-count').innerText = `${totalCommentsCount} total reviews`;
@@ -1089,6 +1166,10 @@
                         document.getElementById('owner-current-input').value = profile.streak !== undefined ? profile.streak : 0;
                         document.getElementById('owner-high-input').value = profile.highStreak !== undefined ? profile.highStreak : 0;
                         
+                        // Isi data custom title dan tema yang tersimpan di firebase
+                        document.getElementById('owner-custom-title-text').value = profile.customTitle || '';
+                        document.getElementById('owner-custom-title-theme').value = profile.customTheme || 'badge-theme-gold';
+
                         let isBannedText = profile.isBanned === true ? " [🛑 BANNED]" : " [Active]";
                         log.innerText = `Found: ${profile.username}${isBannedText}`;
                         log.style.color = profile.isBanned === true ? "#ff4d4d" : "#00ffaa";
@@ -1109,13 +1190,18 @@
                 let updatedName = document.getElementById('owner-name-input').value.trim();
                 let updatedCurrent = parseInt(document.getElementById('owner-current-input').value) || 0;
                 let updatedHigh = parseInt(document.getElementById('owner-high-input').value) || 0;
+                
+                let updatedTitle = document.getElementById('owner-custom-title-text').value.trim();
+                let updatedTheme = document.getElementById('owner-custom-title-theme').value;
 
                 if(!updatedName) { alert("Name field cannot be left blank!"); return; }
 
                 let updates = {
                     username: updatedName,
                     streak: updatedCurrent,
-                    highStreak: updatedHigh
+                    highStreak: updatedHigh,
+                    customTitle: updatedTitle,
+                    customTheme: updatedTheme
                 };
 
                 fetch(`${BASE_DB_URL}leaderboard/${targetUuid}.json`, {
@@ -1123,8 +1209,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updates)
                 }).then(() => {
-                    alert(`Successfully updated metrics for ${updatedName}!`);
+                    alert(`Successfully updated metrics & titles for ${updatedName}!`);
                     document.getElementById('search-status-log').innerText = "Data successfully pushed.";
+                    syncCmsAndCommunications(); // Force refresh cache
                     if(targetUuid === userId) { syncWithFirebase(); }
                 });
             });
@@ -1201,7 +1288,7 @@
                     let records = [];
                     Object.keys(data).forEach(key => {
                         if(data[key] && data[key].username && data[key].isBanned !== true) {
-                            records.push({ name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0 });
+                            records.push({ name: data[key].username, current: parseInt(data[key].streak) || 0, high: parseInt(data[key].highStreak) || 0, uid: key });
                         }
                     });
                     records.sort((a, b) => b.high - a.high);
@@ -1209,9 +1296,10 @@
                     records.forEach((player, index) => {
                         let tr = document.createElement('tr');
                         let isMe = player.name === username ? "style='background: rgba(255,255,255,0.15); font-weight: bold;'" : "";
+                        let leaderBadge = generateUserBadgeMarkup(player.uid);
                         tr.innerHTML = `
                             <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
-                            <td ${isMe}>${escapeHTML(player.name)} ${player.name === username ? ' (You)' : ''}</td>
+                            <td ${isMe}>${escapeHTML(player.name)}${leaderBadge} ${player.name === username ? ' (You)' : ''}</td>
                             <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
                             <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
                         `;
@@ -1231,67 +1319,6 @@
 
         function closeLeaderboardModal() { closeModal('leaderboard-modal'); if(lbInterval) { clearInterval(lbInterval); lbInterval = null; } }
         function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
-
-        async function runTextSequence(lines, delay = 4000) {
-            const overlay = document.getElementById('cutscene-overlay');
-            const box = document.getElementById('cutscene-text-box');
-            overlay.style.display = 'flex'; overlay.style.background = '#000';
-            for(let i=0; i<lines.length; i++) {
-                box.innerText = lines[i]; box.style.opacity = '1'; playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, delay)); box.style.opacity = '0';
-                await new Promise(r => setTimeout(r, 800));
-            }
-        }
-
-        async function startStreak100Cutscene() {
-            stopAudio('bgm'); playAudio('sfx-streak100');
-            const overlay = document.getElementById('cutscene-overlay');
-            const box = document.getElementById('cutscene-text-box');
-            const logo = document.getElementById('logo-streak-100');
-
-            overlay.style.display = 'flex'; overlay.style.background = '#000';
-            box.classList.remove('shake-brutal-text'); box.style.color = '#fff';
-            logo.style.display = 'none'; logo.style.opacity = '0';
-
-            async function showLine(txt) {
-                box.innerText = txt; box.style.opacity = '1'; playAudio('sfx-text-fade');
-                await new Promise(r => setTimeout(r, 3200)); box.style.opacity = '0';
-                await new Promise(r => setTimeout(r, 800));
-            }
-
-            await showLine("For a hundred days..."); await showLine("the Eclipse watched.");
-            logo.style.display = 'block'; setTimeout(() => { logo.style.opacity = '1'; }, 50);
-            await showLine("And now..."); await showLine("the Core remembers your name.");
-
-            logo.style.display = 'none';
-            overlay.style.background = '#ffffff'; box.innerText = "STREAK 100"; box.style.color = "#000"; box.classList.add('shake-brutal-text'); box.style.opacity = "1";
-            playAudio('sfx-blds-init');
-
-            await new Promise(r => setTimeout(r, 4500)); 
-            box.style.opacity = '0'; box.classList.remove('shake-brutal-text');
-            overlay.style.display = 'none'; stopAudio('sfx-streak100'); playAudio('bgm');
-        }
-
-        function makeElementDraggable(elmnt) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            const header = document.getElementById(elmnt.id + "-dragheader");
-            if (header) { header.onmousedown = dragMouseDown; header.ontouchstart = dragMouseDown; }
-            function dragMouseDown(e) {
-                e = e || window.event; if(e.type !== 'touchstart') { e.preventDefault(); }
-                pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-                pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-                document.onmouseup = closeDragElement; document.ontouchend = closeDragElement;
-                document.onmousemove = elementDrag; document.ontouchmove = elementDrag;
-            }
-            function elementDrag(e) {
-                e = e || window.event;
-                let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-                let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-                pos1 = pos3 - clientX; pos2 = pos4 - clientY; pos3 = clientX; pos4 = clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            }
-            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
-        }
 
         function toggleOwnerPanel() {
             const panel = document.getElementById('owner-panel');
@@ -1345,14 +1372,14 @@
 
         function submitOwnerVerifiedReply(btn) {
             let targetId = document.getElementById('owner-reply-target-id').value;
-            let staffName = document.getElementById('owner-reply-name-input').value.trim() || "FOUNDER";
+            let staffName = document.getElementById('owner-reply-name-input').value.trim() || username;
             let replyMsg = document.getElementById('owner-reply-text-input').value.trim();
             if(!targetId || !replyMsg) return;
 
             applyButtonTransition(btn, () => {
                 fetch(`${BASE_DB_URL}comments/${targetId}/replies.json`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ author: staffName, message: replyMsg, timestamp: Date.now(), isStaff: true })
-                }).then(() => { alert("Reply Sequenced!"); document.getElementById('owner-reply-text-input').value = ''; resetCommentReplyChain(); });
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ author: staffName, message: replyMsg, timestamp: Date.now(), authorUid: userId })
+                }).then(() => { alert("Reply Sequenced!"); document.getElementById('owner-reply-text-input').value = ''; resetCommentReplyChain(); renderPublicCommentsList(); });
             });
         }
 
@@ -1370,6 +1397,27 @@
                   else if (code === "Felix") { unlockAchievement('felix', '"Prince"\nWho is That?'); }
                   else { alert("Archive Key Invalid."); }
             });
+        }
+
+        function makeElementDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = document.getElementById(elmnt.id + "-dragheader");
+            if (header) { header.onmousedown = dragMouseDown; header.ontouchstart = dragMouseDown; }
+            function dragMouseDown(e) {
+                e = e || window.event; if(e.type !== 'touchstart') { e.preventDefault(); }
+                pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                document.onmouseup = closeDragElement; document.ontouchend = closeDragElement;
+                document.onmousemove = elementDrag; document.ontouchmove = elementDrag;
+            }
+            function elementDrag(e) {
+                e = e || window.event;
+                let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                pos1 = pos3 - clientX; pos2 = pos4 - clientY; pos3 = clientX; pos4 = clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
         }
     </script>
 </body>
