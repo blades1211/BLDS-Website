@@ -118,7 +118,7 @@
         #cutscene-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; 
             display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center;
-            transition: background 1s ease; /* Untuk transisi menghitam/memutih halus */
+            transition: background 1s ease;
         }
         .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; transition: opacity 0.8s ease; opacity: 0; margin-top: 20px; }
         
@@ -129,7 +129,40 @@
             font-family: 'Impact', 'Arial Black', sans-serif !important;
             animation: brutalGquake 0.08s infinite alternate ease-in-out; 
             letter-spacing: 4px;
-            filter: drop-shadow(0 0 20px rgba(255,0,0,0.6)); /* Tambah aura shockwave tipis */
+            filter: drop-shadow(0 0 20px rgba(255,0,0,0.6));
+        }
+
+        /* TAMPILAN THANK YOU (STREAK 100 ENDING) */
+        .thankyou-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 650px;
+            text-align: center;
+            animation: fadeIn 1.5s ease forwards;
+            z-index: 15;
+        }
+        .thankyou-title {
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 25px rgba(255,255,255,0.6);
+        }
+        .thankyou-msg {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            letter-spacing: 1px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        .thankyou-signature {
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 40px;
         }
 
         /* LOGO ANIMASI NAIK TURUN SMOOTH */
@@ -147,7 +180,7 @@
             100% { transform: translateY(0px); }
         }
         
-        /* ANIMASI GEMPA BRUTAL: ATAS, BAWAH, KIRI, KANAN, MIRING SECARA ACAK */
+        /* ANIMASI GEMPA BRUTAL */
         @keyframes brutalGquake {
             0% { transform: translate(5px, 3px) rotate(1deg); }
             20% { transform: translate(-4px, -5px) rotate(-1.5deg); }
@@ -366,6 +399,14 @@
         
         <img id="logo-slam" class="blds-slam-shining" src="logo.png" onerror="this.src='https://placehold.co/200x200/000000/ffffff?text=BLDS'">
         <div id="cutscene-text-box" class="cutscene-text"></div>
+        
+        <div id="thankyou-screen" class="thankyou-container">
+            <div class="thankyou-title">🎉Thank You🎉</div>
+            <div class="thankyou-msg">We really appreciate your hard work so far, we wish you a happy 100 streak, don't forget to always protect the core</div>
+            <div class="thankyou-signature">- BLDS STAFF</div>
+            <button class="enter-btn" style="max-width:250px;" onclick="exitStreak100Cutscene()">BACK TO MENU</button>
+        </div>
+
         <img id="logo-left" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
         <img id="logo-right" class="side-logo" src="logo.png" onerror="this.src='https://placehold.co/300x300/000000/ffffff?text=BLDS'">
     </div>
@@ -733,6 +774,7 @@
                 document.getElementById('logo-right').style.display = 'none';
                 document.getElementById('logo-slam').style.display = 'none';
                 document.getElementById('logo-streak-100').style.display = 'none';
+                document.getElementById('thankyou-screen').style.display = 'none';
 
                 overlay.style.display = 'flex';
                 overlay.style.background = '#000';
@@ -866,7 +908,7 @@
             }
         }
 
-        /* --- STREAK 100 SYSTEM CINEMATIC (4s FADE + BRUTAL QUAKE) --- */
+        /* --- STREAK 100 SYSTEM CINEMATIC (MENGHITAM + GEMPA + THANK YOU SCREEN) --- */
         async function startStreak100Cutscene() {
             stopAudio('bgm');
             playAudio('sfx-streak100');
@@ -874,11 +916,13 @@
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
             const logo = document.getElementById('logo-streak-100');
-            const bodyEl = document.getElementById('app-body');
+            const thankYouScreen = document.getElementById('thankyou-screen');
 
-            // Reset Default State Cutscene
+            // Reset state awal
             overlay.style.display = 'flex';
             overlay.style.background = '#000';
+            thankYouScreen.style.display = 'none';
+            box.style.display = 'block';
             box.classList.remove('shake-brutal-text');
             box.style.color = '#fff';
 
@@ -887,7 +931,6 @@
             logo.style.width = '140px';
             logo.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.4))';
 
-            // Fade In Out Pas 4 Detik (3200ms Tampil, 800ms Transisi Hilang)
             async function showLine(txt) {
                 box.innerText = txt;
                 box.style.opacity = '1';
@@ -907,7 +950,7 @@
             await showLine("Many lights promised eternity...");
             await showLine("only to fade.");
 
-            // --- PHASE 2 (Logo muncul tipis) ---
+            // --- PHASE 2 ---
             logo.style.display = 'block';
             setTimeout(() => { logo.style.opacity = '0.25'; }, 50);
             
@@ -916,7 +959,7 @@
             await showLine("Not because it was the strongest.");
             await showLine("But because it refused to die.");
 
-            // --- PHASE 3 (Logo menebal) ---
+            // --- PHASE 3 ---
             logo.style.opacity = '0.55';
             
             await showLine("A hundred days is not the end.");
@@ -924,7 +967,7 @@
             await showLine("Proof that your light survived.");
             await showLine("Proof that your flame endured.");
 
-            // --- PHASE 4 (Logo Maksimal) ---
+            // --- PHASE 4 ---
             logo.style.opacity = '1';
             logo.style.width = '210px';
             logo.style.filter = 'drop-shadow(0 0 35px rgba(255,255,255,1))';
@@ -936,31 +979,44 @@
             logo.style.display = 'none';
             box.style.opacity = '0';
             
-            // Ubah background ke hitam legam perlahan-lahan
             overlay.style.transition = 'background 2.5s ease-in-out';
             overlay.style.background = '#000000';
-            await new Promise(r => setTimeout(r, 2500)); // Nunggu proses menghitam selesai
+            await new Promise(r => setTimeout(r, 2500));
 
-            // --- PHASE 6: LEDAKAN GETARAN BRUTAL (STREAK 100) ---
-            // Tiba-tiba background dihentak jadi PUTIH BENDERANG untuk efek flash bang kejutan
+            // --- PHASE 6: LEDAKAN GEMPA BRUTAL STREAK 100 (FLASH BANG WHITE) ---
             overlay.style.transition = 'none'; 
             overlay.style.background = '#ffffff'; 
 
             box.innerText = "STREAK 100";
-            box.style.fontSize = "4.5rem"; // Diperbesar biar mantap
-            box.style.color = "#000000";   // Hitam tebal di atas putih
-            box.classList.add('shake-brutal-text'); // AKSI GEMPA BRUTAL AKTIF
+            box.style.fontSize = "4.5rem"; 
+            box.style.color = "#000000";   
+            box.classList.add('shake-brutal-text'); 
             box.style.opacity = "1";
             
             playAudio('sfx-blds-init');
-
-            // Durasi gempa bumi brutal di layar
             await new Promise(r => setTimeout(r, 4500)); 
 
-            // --- PHASE 7: SELESAI & BALIK MENU ---
+            // --- PHASE 7: TRANSISI MEMUDAR MASUK KE SCREEN THANK YOU ---
             box.style.opacity = '0';
             box.classList.remove('shake-brutal-text');
-            
+            box.style.display = 'none';
+
+            // Balikin background overlay pelan-pelan ke hitam untuk baca teks thank you
+            overlay.style.transition = 'background 1.5s ease';
+            overlay.style.background = '#000000';
+            await new Promise(r => setTimeout(r, 1500));
+
+            // Munculin interface Thank You Screen secara elegan
+            thankYouScreen.style.display = 'flex';
+        }
+
+        /* --- FUNGSI BALIK KE MENU DARI CUTSCENE --- */
+        function exitStreak100Cutscene() {
+            playAudio('sfx-click');
+            const overlay = document.getElementById('cutscene-overlay');
+            const box = document.getElementById('cutscene-text-box');
+            const thankYouScreen = document.getElementById('thankyou-screen');
+
             overlay.style.transition = 'opacity 1.2s ease';
             overlay.style.opacity = '0';
             
@@ -968,6 +1024,10 @@
                 overlay.style.display = 'none';
                 overlay.style.opacity = '1';
                 overlay.style.background = '#000';
+                thankYouScreen.style.display = 'none';
+                
+                // Kembalikan ukuran box text normal
+                box.style.display = 'block';
                 box.style.fontSize = "1.4rem";
                 box.style.color = "#fff";
                 
@@ -1075,14 +1135,17 @@
                 const rightLogo = document.getElementById('logo-right');
                 const slamLogo = document.getElementById('logo-slam');
                 const logo100 = document.getElementById('logo-streak-100');
+                const thankYouScreen = document.getElementById('thankyou-screen');
                 const bodyEl = document.getElementById('app-body');
 
                 leftLogo.style.display = 'none';
                 rightLogo.style.display = 'none';
                 slamLogo.style.display = 'none';
                 logo100.style.display = 'none';
+                thankYouScreen.style.display = 'none';
                 box.innerHTML = '';
                 box.style.opacity = '0';
+                box.style.display = 'block';
 
                 if (code === "OWNERONLY") {
                     localStorage.setItem('blds_owner_unlocked', 'true');
