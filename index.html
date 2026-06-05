@@ -44,9 +44,19 @@
 
         /* --- INVERSION EFFECTS --- */
         .invert-full { filter: invert(1) !important; }
+        
+        /* Efek Inversi Setengah Layar Kanan Vertikal */
         .invert-half-right::after {
-            content: ''; position: fixed; top: 0; right: 0; width: 50%; height: 100%;
-            background: transparent; backdrop-filter: invert(1); pointer-events: none; z-index: 9999;
+            content: ''; 
+            position: fixed; 
+            top: 0; 
+            right: 0; 
+            width: 50%; 
+            height: 100%;
+            background: transparent; 
+            backdrop-filter: invert(1); 
+            pointer-events: none; 
+            z-index: 9999;
         }
 
         /* --- TRANSISI TOMBOL (CLICK FEEDBACK) --- */
@@ -79,7 +89,6 @@
             background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100;
             transition: opacity 1.5s ease;
         }
-        /* Perbaikan: Animasi Muter Diaktifkan Sempurna */
         .spin-loading {
             width: 100px; height: 100px;
             animation: spin 4s linear infinite !important;
@@ -122,13 +131,12 @@
             opacity: 0;
             transition: opacity 1.5s ease;
         }
-        /* Penempatan Setengah Logo di Pinggir Layar dan Muter Terus Tanpa Berhenti */
         #logo-left {
-            left: -150px; /* Setengah terpotong tembok kiri (|) */
+            left: -150px; /* Setengah terpotong tembok kiri |) */
             animation: spinSlow 8s linear infinite;
         }
         #logo-right {
-            right: -150px; /* Setengah terpotong tembok kanan (|) */
+            right: -150px; /* Setengah terpotong tembok kanan (| */
             animation: spinSlow 8s linear infinite;
         }
 
@@ -181,15 +189,15 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav"></audio>
-    <audio id="sfx-click" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/903/903-84.wav"></audio>
-    <audio id="sfx-text-fade" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2566/2566-84.wav"></audio>
-    <audio id="sfx-streak100" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/123/123-84.wav"></audio>
-    <audio id="sfx-blds-init" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2753/2753-84.wav"></audio>
-    <audio id="sfx-blds-loop" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1983/1983-84.wav"></audio>
-    <audio id="sfx-blds-logo" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2759/2759-84.wav"></audio>
-    <audio id="sfx-forgotten" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2069/2069-84.wav"></audio>
-    <audio id="sfx-flames" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
+    <audio id="bgm" loop preload="auto" src="audio/bgm.mp3"></audio>
+    <audio id="sfx-click" preload="auto" src="audio/sfx-click.mp3"></audio>
+    <audio id="sfx-text-fade" preload="auto" src="audio/sfx-text-fade.mp3"></audio>
+    <audio id="sfx-streak100" loop preload="auto" src="audio/sfx-streak100.mp3"></audio>
+    <audio id="sfx-blds-init" preload="auto" src="audio/sfx-blds-init.mp3"></audio>
+    <audio id="sfx-blds-loop" loop preload="auto" src="audio/sfx-blds-loop.mp3"></audio>
+    <audio id="sfx-blds-logo" preload="auto" src="audio/sfx-blds-logo.mp3"></audio>
+    <audio id="sfx-forgotten" loop preload="auto" src="audio/sfx-forgotten.mp3"></audio>
+    <audio id="sfx-flames" loop preload="auto" src="audio/sfx-flames.mp3"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -352,7 +360,6 @@
             }
         });
 
-        // Efek transisi tombol universal
         function applyButtonTransition(btnElement, callback) {
             if(!btnElement) { if(callback) callback(); return; }
             btnElement.classList.add('btn-active-effect');
@@ -691,7 +698,6 @@
             }, 600);
         }
 
-        // AMBIL INPUT KEY ARCHIVE PARADOX SYSTEM
         async function submitCode(btn) {
             applyButtonTransition(btn, async () => {
                 let code = document.getElementById('code-input-field').value.trim();
@@ -723,22 +729,28 @@
                     let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness"];
                     await runTextSequence(lines, 3500); 
 
-                    // --- PAS BLACK: MUNCUL LOGO KIRI (MUTAR TERUS DI TEMBOK) ---
+                    // --- PAS TULISAN "BLACK" ---
                     overlay.classList.add('shake-epic');
-                    box.innerText = "BLACK"; box.style.opacity = '1';
+                    box.innerText = "BLACK"; 
+                    box.style.opacity = '1';
                     
+                    // 1. Logo Kiri Muncul Setengah Pinggir & Muter Konstan
                     leftLogo.style.display = 'block';
                     setTimeout(() => leftLogo.style.opacity = '0.8', 50);
                     
+                    // 2. Layar Bagian Kanan langsung Kena Inversi Warna Vertikal secara Permanen!
+                    bodyEl.classList.add('invert-half-right');
+
                     document.getElementById('sfx-blds-logo').currentTime = 0;
                     document.getElementById('sfx-blds-logo').play().catch(()=>{});
                     
                     await new Promise(r => setTimeout(r, 4000)); 
 
-                    // --- PAS LIGHT: MUNCUL LOGO KANAN (KEDUA LOGO MUTAR BERSAMAAN TANPA BERHENTI) ---
+                    // --- PAS TULISAN "LIGHT" ---
                     overlay.classList.remove('shake-epic');
                     box.innerText = "LIGHT";
                     
+                    // Logo Kanan Muncul Setengah Pinggir & Ikut Muter Konstan Bersamaan
                     rightLogo.style.display = 'block';
                     setTimeout(() => rightLogo.style.opacity = '0.8', 50);
                     
@@ -750,14 +762,13 @@
                     let lines2 = ["Two opposites.", "Two destinies.", "Both necessary."];
                     await runTextSequence(lines2, 3500); 
 
-                    // Tutup layar sekuensial, biarkan inversi kanan bekerja permanen
+                    // Flash putih transisi penutup cutscene
                     overlay.style.transition = 'background 2s ease';
                     overlay.style.background = '#fff';
                     await new Promise(r => setTimeout(r, 2000));
 
+                    // Menutup overlay, efek inversi belah kanan tetap melekat di layout utama
                     overlay.style.display = 'none';
-                    // Mengaktifkan filter inversi belah kanan permanen pada layout utama
-                    bodyEl.classList.add('invert-half-right'); 
                     
                     document.getElementById('sfx-blds-loop').pause();
                     document.getElementById('bgm').play().catch(()=>{});
