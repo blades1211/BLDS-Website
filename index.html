@@ -162,15 +162,15 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/ambient_hum_air_conditioner.ogg"></audio>
-    <audio id="sfx-click" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/alien_computer_terminal.ogg"></audio>
-    <audio id="sfx-text-fade" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/tech_interface_click.ogg"></audio>
-    <audio id="sfx-streak100" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/cosmic_drone.ogg"></audio>
-    <audio id="sfx-blds-init" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/deep_space_sub.ogg"></audio>
-    <audio id="sfx-blds-loop" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/sub_bass_hum.ogg"></audio>
-    <audio id="sfx-blds-logo" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/power_down_cyber_attack.ogg"></audio>
-    <audio id="sfx-forgotten" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/industrial_sub_basement.ogg"></audio>
-    <audio id="sfx-flames" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/field_recording_waves_crashing.ogg"></audio>
+    <audio id="bgm" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav"></audio>
+    <audio id="sfx-click" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/903/903-84.wav"></audio>
+    <audio id="sfx-text-fade" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2566/2566-84.wav"></audio>
+    <audio id="sfx-streak100" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/123/123-84.wav"></audio>
+    <audio id="sfx-blds-init" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2753/2753-84.wav"></audio>
+    <audio id="sfx-blds-loop" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1983/1983-84.wav"></audio>
+    <audio id="sfx-blds-logo" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2759/2759-84.wav"></audio>
+    <audio id="sfx-forgotten" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2069/2069-84.wav"></audio>
+    <audio id="sfx-flames" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2433/2433-84.wav"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -461,7 +461,8 @@
 
             // Selesaikan Autoplay Block Policy Browser melalui interaksi ini
             const coreBGM = document.getElementById('bgm');
-            coreBGM.volume = 0.4;
+            coreBGM.muted = false;
+            coreBGM.volume = 0.2;
             coreBGM.play().then(() => {
                 console.log("Audio Stream Connected.");
             }).catch(e => console.log("Audio play blocked:", e));
@@ -541,7 +542,7 @@
             `;
         }
 
-        // AMBIL DATA & PEMBARUAN TABEL LEADERBOARD 2 KOLOM
+        // AMBIL DATA & PEMBARUAN TABEL LEADERBOARD 2 KOLOM (Diperbaiki parsing URL-nya)
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
             
@@ -564,7 +565,6 @@
                         }
                     });
 
-                    // Urutkan peringkat utama berdasarkan nilai High Streak tertinggi
                     records.sort((a, b) => b.high - a.high);
 
                     container.innerHTML = "";
