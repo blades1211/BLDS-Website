@@ -102,17 +102,30 @@
 
         /* --- OVERLAY CUTSCENE --- */
         #cutscene-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; padding: 30px; text-align: center; }
-        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; opacity: 0; max-width: 800px; z-index: 10; }
+        .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; }
         .shake-epic { animation: shake 0.1s infinite alternate; }
+
+        /* --- LORE CONTAINER (FOR INSTANT SHOW) --- */
+        .lore-scroll-box {
+            text-align: left; 
+            max-height: 75vh; 
+            overflow-y: auto; 
+            font-size: 0.9rem; 
+            line-height: 1.7; 
+            font-family: monospace; 
+            padding-right: 10px;
+        }
+        .lore-scroll-box h2 { letter-spacing: 4px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 5px;}
+        .lore-scroll-box h4 { color: #888; letter-spacing: 2px; margin-bottom: 15px;}
 
         /* --- LOGO ANIMATION FOR BLDS CUTSCENE --- */
         #cutscene-logo { 
             position: absolute;
-            width: 450px; 
+            width: 220px;
             display: none; 
             opacity: 0;
             z-index: 5;
-            transition: transform 3s linear, opacity 1s ease;
+            transition: transform 4s ease-out, opacity 1s ease;
         }
 
         /* --- MODAL --- */
@@ -307,28 +320,40 @@
             }
         });
 
+        // --- SISTEM SYNC ABSEN & RESET BERDASARKAN WAKTU 48 JAM ---
         function syncWithFirebase() {
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
                 .then(res => res.json())
                 .then(data => {
                     if(data) {
-                        currentStreak = data.streak || 0;
-                        highStreak = data.highStreak || 0;
+                        currentStreak = data.streak !== undefined ? data.streak : 0;
+                        highStreak = data.highStreak !== undefined ? data.highStreak : 0;
                         lastClickTime = data.lastClick || 0;
                         username = data.username || username;
                         
+                        // LOGIKA RESET: Batas toleransi mencet adalah 48 jam penuh dari klik terakhir.
+                        // 24 jam pertama = Masa Cooldown (tombol ke-lock).
+                        // 24 jam kedua = Masa Aktif klaim berikutnya. Jika lewat dari batas ini (Total 48 jam), streak hangus!
                         let now = Date.now();
-                        if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
-                            currentStreak = 0;
+                        let limitReset = 48 * 60 * 60 * 1000; 
+                        
+                        if (lastClickTime !== 0 && (now - lastClickTime) > limitReset) {
+                            currentStreak = 0; 
                             saveToFirebase();
                         }
                     }
                     updateUI();
                 })
                 .catch(() => {
+                    // Backup offline lokal
                     currentStreak = parseInt(localStorage.getItem('blds_c_str')) || 0;
                     highStreak = parseInt(localStorage.getItem('blds_h_str')) || 0;
                     lastClickTime = parseInt(localStorage.getItem('blds_l_clk')) || 0;
+                    
+                    let now = Date.now();
+                    if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
+                        currentStreak = 0;
+                    }
                     updateUI();
                 });
         }
@@ -350,7 +375,7 @@
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(payload)
-            }).catch(() => console.log("Local backup saved."));
+            }).catch(() => console.log("Lokal berhasil dicadangkan."));
             
             updateUI();
         }
@@ -380,7 +405,7 @@
             cdInterval = setInterval(() => {
                 let now = Date.now();
                 let timeDiff = now - lastClickTime;
-                let cooldown = 24 * 60 * 60 * 1000;
+                let cooldown = 24 * 60 * 60 * 1000; // Mengunci tombol selama 24 jam awal
 
                 if (lastClickTime !== 0 && timeDiff < cooldown) {
                     let remaining = cooldown - timeDiff;
@@ -391,9 +416,16 @@
                     btn.innerText = `COOLDOWN (${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')})`;
                     btn.disabled = true;
                 } else {
+                    // Masuk ke rentang waktu klaim (24 jam sisa menuju limit hangus 48 jam)
                     btn.innerText = "CLAIM DAILY STREAK";
                     btn.disabled = false;
-                    clearInterval(cdInterval);
+                    
+                    // Cek real-time saat aplikasi terbuka, jika melewati batas toleransi 48 jam, auto reset
+                    if (lastClickTime !== 0 && timeDiff > (48 * 60 * 60 * 1000)) {
+                        currentStreak = 0;
+                        saveToFirebase();
+                        clearInterval(cdInterval);
+                    }
                 }
             }, 1000);
         }
@@ -418,7 +450,8 @@
                 return;
             }
             username = inputName;
-            saveToFirebase();
+            
+            syncWithFirebase();
 
             document.getElementById('sfx-click').play().catch(()=>{});
             document.getElementById('bgm').play().catch(()=>{});
@@ -458,51 +491,35 @@
             }
         }
 
+        // --- INSTANT SHOW LORE: ORIGIN ---
         function triggerOriginLore() {
-            const body = document.getElementById('app-body');
-            body.classList.add('blink-effect');
-            document.getElementById('sfx-click').play().catch(()=>{});
+            document.getElementById('sfx-text-fade').currentTime = 0;
+            document.getElementById('sfx-text-fade').play().catch(()=>{});
 
-            setTimeout(async () => {
-                body.classList.remove('blink-effect');
-                
-                let lines = [
-                    "BEFORE BLDS HAD A NAME...",
-                    "BEFORE THE SYMBOL EXISTED.",
-                    "BEFORE THE SQUAD WAS FORMED...",
-                    "THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.",
-                    "SOME WERE IGNORED. SOME WERE UNDERESTIMATED.",
-                    "SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.",
-                    "THEY WATCHED OTHERS RISE FASTER.",
-                    "WATCHED OTHERS GAIN RECOGNITION.",
-                    "WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.",
-                    "AND SLOWLY, THEY REALIZED SOMETHING:",
-                    "MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT.",
-                    "BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.",
-                    "THAT REALIZATION BECAME THE BEGINNING OF BLDS.",
-                    "NOT A SQUAD CREATED FOR FAME. NOT A KINGDOM BUILT ON ARROGANCE.",
-                    "NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY.",
-                    "BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.",
-                    "--- THE BLACKLIGHT CORE ---",
-                    "AT THE CENTER OF THE ECLIPSE LIES THE CORE.",
-                    "A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.",
-                    "THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS.",
-                    "NOT A PURPOSE GIVEN BY THE WORLD.",
-                    "NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY.",
-                    "BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.",
-                    "IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES...",
-                    "EVEN WHEN PEOPLE LEAVE...",
-                    "EVEN WHEN FAILURE SURROUNDS YOU...",
-                    "YOUR INNER LIGHT CAN STILL REMAIN ALIVE.",
-                    "BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL.",
-                    "THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL.",
-                    "THAT IS WHY THE CORE NEVER DISAPPEARS.",
-                    "BECAUSE PURPOSE CANNOT BE ERASED BY FEAR."
-                ];
-                
-                await runTextSequence(lines, 1800);
-                document.getElementById('cutscene-overlay').style.display = 'none';
-            }, 400);
+            const overlay = document.getElementById('cutscene-overlay');
+            const box = document.getElementById('cutscene-text-box');
+            
+            overlay.style.display = 'flex';
+            overlay.style.background = '#000';
+
+            box.innerHTML = `
+                <div class="lore-scroll-box">
+                    <h2>BLACKLIGHTDOMS ORIGIN</h2>
+                    <h4>CLASSIFICATION: MAIN CORE RECORD</h4>
+                    <p>BEFORE BLDS HAD A NAME... BEFORE THE SYMBOL EXISTED. BEFORE THE SQUAD WAS FORMED...</p>
+                    <p>THERE WERE ONLY INDIVIDUALS TRYING TO SURVIVE THEIR OWN DARKNESS.</p>
+                    <p>SOME WERE IGNORED. SOME WERE UNDERESTIMATED. SOME FAILED OVER AND OVER AGAIN UNTIL THEY STOPPED EXPECTING ANYONE TO BELIEVE IN THEM.</p>
+                    <p>THEY WATCHED OTHERS RISE FASTER. WATCHED OTHERS GAIN RECOGNITION. WATCHED PEOPLE QUIT THE MOMENT THINGS BECAME DIFFICULT.</p><br>
+                    <p>AND SLOWLY, THEY REALIZED SOMETHING: MOST PEOPLE ONLY SHINE WHEN THE WORLD IS BRIGHT. BUT VERY FEW CAN CONTINUE MOVING FORWARD WHEN EVERYTHING TURNS DARK.</p>
+                    <p>THAT REALIZATION BECAME THE BEGINNING OF BLDS. NOT A SQUAD CREATED FOR FAME. NOT A KINGDOM BUILT ON ARROGANCE. NOT A PLACE FOR PEOPLE SEARCHING ONLY FOR VICTORY. BUT A DOMINION BUILT BY THOSE WHO REFUSED TO DISAPPEAR.</p><br>
+                    <h3>--- THE BLACKLIGHT CORE ---</h3>
+                    <p>AT THE CENTER OF THE ECLIPSE LIES THE CORE. A SINGLE STAR THAT CONTINUES TO SHINE NO MATTER HOW DARK THE SKY BECOMES.</p>
+                    <p>THE CORE REPRESENTS THE INNER PURPOSE CARRIED BY EVERY MEMBER OF BLDS. NOT A PURPOSE GIVEN BY THE WORLD. NOT A PURPOSE CREATED BY ATTENTION OR POPULARITY. BUT A PURPOSE DISCOVERED THROUGH HARDSHIP.</p>
+                    <p>IT IS THE REMINDER THAT: EVEN WHEN EVERYTHING AROUND YOU CHANGES... EVEN WHEN PEOPLE LEAVE... EVEN WHEN FAILURE SURROUNDS YOU... YOUR INNER LIGHT CAN STILL REMAIN ALIVE.</p><br>
+                    <p>BLDS BELIEVES THE STRONGEST PEOPLE ARE NOT THOSE WHO NEVER FALL. THE STRONGEST ARE THE ONES WHO CONTINUE STANDING AFTER EVERY FALL. THAT IS WHY THE CORE NEVER DISAPPEARS. BECAUSE PURPOSE CANNOT BE ERASED BY FEAR.</p>
+                    <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none';">CLOSE LORE</button>
+                </div>
+            `;
         }
 
         function openLeaderboard() {
@@ -552,7 +569,8 @@
             );
         }
 
-        async function runTextSequence(lines, delay = 1500) {
+        // --- SEQUENCE KHAS: JEDA PASTI 4 DETIK PER TEKS ---
+        async function runTextSequence(lines, delay = 4000) {
             const overlay = document.getElementById('cutscene-overlay');
             const box = document.getElementById('cutscene-text-box');
             overlay.style.display = 'flex';
@@ -583,7 +601,7 @@
                 "And now...", "The core remembers your name."
             ];
 
-            await runTextSequence(lines, 2000);
+            await runTextSequence(lines, 4000);
 
             const overlay = document.getElementById('cutscene-overlay');
             overlay.style.transition = 'background 0.5s ease';
@@ -634,131 +652,132 @@
                 document.getElementById('sfx-blds-loop').play().catch(()=>{});
 
                 let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
-                await runTextSequence(lines, 1400);
+                await runTextSequence(lines, 4000); 
 
-                // Setup Logo raksasa dari luar layar (tersembunyi secara posisi/skala awal)
+                // Setup logo dari arah samping kiri layar (proporsional)
                 logo.style.display = 'block';
-                logo.style.transform = 'translate(-100vw, -100vh) scale(3) rotate(-180deg)';
+                logo.style.left = '-300px';
+                logo.style.right = 'auto';
+                logo.style.top = 'calc(50% - 110px)';
+                logo.style.transform = 'scale(1) rotate(-180deg)';
                 logo.style.opacity = '0';
                 
-                // Trigger BLACK
                 overlay.classList.add('shake-epic');
                 box.innerText = "BLACK"; box.style.opacity = '1';
                 
                 document.getElementById('sfx-blds-logo').currentTime = 0;
                 document.getElementById('sfx-blds-logo').play().catch(()=>{});
                 
-                // Transisi logo masuk setengah bagian secara perlahan
+                // Slide in dari kiri & memutar perlahan
                 setTimeout(() => {
-                    logo.style.opacity = '0.4';
-                    logo.style.transform = 'translate(-40%, -20%) scale(2.2) rotate(-45deg)';
+                    logo.style.opacity = '0.5';
+                    logo.style.left = '-50px'; 
+                    logo.style.transform = 'scale(1.1) rotate(-30deg)';
                 }, 50);
                 
-                await new Promise(r => setTimeout(r, 2500));
+                await new Promise(r => setTimeout(r, 4000)); 
 
-                // Trigger LIGHT
+                // Bagian kanan (LIGHT)
                 overlay.classList.remove('shake-epic');
                 overlay.classList.add('invert-half-right');
                 box.innerText = "LIGHT";
                 
+                logo.style.opacity = '0';
+                logo.style.left = 'auto';
+                logo.style.right = '-300px';
+                logo.style.transform = 'scale(1) rotate(180deg)';
+                
                 document.getElementById('sfx-blds-logo').currentTime = 0;
                 document.getElementById('sfx-blds-logo').play().catch(()=>{});
                 
+                // Slide in dari kanan & memutar perlahan
                 setTimeout(() => {
-                    logo.style.transform = 'translate(-35%, -15%) scale(2.2) rotate(-20deg)';
+                    logo.style.opacity = '0.5';
+                    logo.style.right = '-50px'; 
+                    logo.style.transform = 'scale(1.1) rotate(30deg)';
                 }, 50);
                 
-                await new Promise(r => setTimeout(r, 2500));
+                await new Promise(r => setTimeout(r, 4000)); 
 
                 overlay.classList.remove('invert-half-right');
                 logo.style.opacity = '0';
                 setTimeout(() => { logo.style.display = 'none'; }, 1000);
                 
                 let lines2 = ["Two opposites.", "Two destinies.", "Two truths.", "Both necessary."];
-                await runTextSequence(lines2, 1400);
+                await runTextSequence(lines2, 4000); 
 
                 overlay.style.transition = 'background 2.5s ease';
                 overlay.style.background = '#fff';
-                await new Promise(r => setTimeout(r, 2500));
+                await new Promise(r => setTimeout(r, 4000));
 
+                // Keluar cutscene, kunci efek invert-half-right secara PERMANEN!
                 overlay.style.display = 'none';
                 bodyEl.classList.add('invert-half-right');
                 
                 document.getElementById('sfx-blds-loop').pause();
                 document.getElementById('bgm').play().catch(()=>{});
             } 
+            // --- INSTANT SHOW LORE: FORGOTTEN ---
             else if (code === "Forgotten") {
                 unlockAchievement('forgotten', '"Forgotten"\nHow do you know?');
                 document.getElementById('bgm').pause();
                 document.getElementById('sfx-forgotten').currentTime = 0;
                 document.getElementById('sfx-forgotten').play().catch(()=>{});
 
-                let lines = [
-                    "NO ACTIVE RECORD FOUND", "Attempting reconstruction...", "Searching fragments...",
-                    "Searching fragments...", "Searching fragments...", "1 Fragment Detected",
-                    "Core Signature Match:\n99.87%", "Historical Reconstruction Available", "Opening Archive..."
-                ];
-                await runTextSequence(lines, 1200);
+                overlay.style.display = 'flex';
+                overlay.style.background = '#000';
 
-                box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace; z-index:20; position:relative;">
+                box.innerHTML = `<div class="lore-scroll-box">
                     <h2>THE FORGOTTEN ECLIPSE</h2>
-                    <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4><br>
-                    Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation. A generation history no longer remembers. They were not heroes. They were not rulers. They were not legends. They were ordinary people carrying extraordinary burdens. People abandoned by hope. People consumed by failure. People who had forgotten how to believe in themselves. Yet among the darkness, they found one another. And together they created something the world believed impossible. The First Eclipse. A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.<br><br>
-                    For a time, the Eclipse flourished. The Core grew brighter. More people arrived. More souls found purpose. The Eclipse was never built upon strength. It was built upon belief. Belief that even the most lost person could still become something greater.<br><br>
-                    But darkness rarely attacks from outside. It grows from within. One member began losing faith. They looked beyond the Eclipse and saw recognition. Status. Validation. Attention. Things the Eclipse never promised. Eventually they left. Not because they hated the Eclipse. But because they no longer believed in it. Before disappearing, they spoke words that spread through the Eclipse like a disease: "What is the point of carrying a light that nobody sees?"<br><br>
-                    Others began asking the same question. Then more. Then even more. One by one, people abandoned the Core. One by one, the light faded. Not because darkness became stronger. But because belief became weaker. The Eclipse did not fall in a single night. It died slowly. Silently. Painfully. Until only a fragment remained. A single piece of the Core. Still shining. Still waiting.<br><br>
-                    Years passed. The world forgot. History moved on. The Eclipse became a myth. Yet the fragment endured. And one day, it was discovered. Not by a king. Not by a hero. Not by a chosen one. By an unknown individual whose identity remains absent from every surviving archive. Every attempt to recover their name results in corruption. Every reference ends in missing data.<br><br>
-                    What is known is this: They chose not to preserve the fragment. They chose to reignite it. The Core awakened once more. The Eclipse returned. And from its rebirth emerged a new generation. A new dominion. A second chance. A name eventually formed around it. BLACKLIGHTDOMS<br><br>
-                    Before disappearing, the unknown Keeper left behind a final message: "The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."
-                    <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-forgotten').push?null:document.getElementById('sfx-forgotten').pause(); document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
+                    <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
+                    <p>Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation. A generation history no longer remembers. They were not heroes. They were not rulers. They were not legends. They were ordinary people carrying extraordinary burdens. People abandoned by hope. People consumed by failure. People who had forgotten how to believe in themselves. Yet among the darkness, they found one another. And together they created something the world believed impossible. The First Eclipse. A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.</p><br>
+                    <p>For a time, the Eclipse flourished. The Core grew brighter. More people arrived. More souls found purpose. The Eclipse was never built upon strength. It was built upon belief. Belief that even the most lost person could still become something greater.</p>
+                    <p>But darkness rarely attacks from outside. It grows from within. One member began losing faith. They looked beyond the Eclipse and saw recognition. Status. Validation. Attention. Things the Eclipse never promised. Eventually they left. Not because they hated the Eclipse. But because they no longer believed in it. Before disappearing, they spoke words that spread through the Eclipse like a disease: "What is the point of carrying a light that nobody sees?"</p><br>
+                    <p>Others began asking the same question. Then more. Then even more. One by one, people abandoned the Core. One by one, the light faded. Not because darkness became stronger. But because belief became weaker. The Eclipse did not fall in a single night. It died slowly. Silently. Painfully. Until only a fragment remained. A single piece of the Core. Still shining. Still waiting.</p>
+                    <p>Years passed. The world forgot. History moved on. The Eclipse became a myth. Yet the fragment endured. And one day, it was discovered. Not by a king. Not by a hero. Not by a chosen one. By an unknown individual whose identity remains absent from every surviving archive. Every attempt to recover their name results in corruption. Every reference ends in missing data.</p><br>
+                    <p>What is known is this: They chose not to preserve the fragment. They chose to reignite it. The Core awakened once more. The Eclipse returned. And from its rebirth emerged a new generation. A new dominion. A second chance. A name eventually formed around it. BLACKLIGHTDOMS</p>
+                    <p>Before disappearing, the unknown Keeper left behind a final message: "The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
+                    <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-forgotten').pause(); document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
                 </div>`;
                 box.style.opacity = '1';
             } 
+            // --- INSTANT SHOW LORE: 12 FLAMES ---
             else if (code === "12 Flames") {
                 unlockAchievement('2-flames', '"2 Flames"\nSacred and hidden');
                 document.getElementById('bgm').pause();
                 document.getElementById('sfx-flames').currentTime = 0;
                 document.getElementById('sfx-flames').play().catch(()=>{});
 
-                let lines = [
-                    "ARCHIVE STATUS: STABLE", "Loading Flame Database...", "10 Entries Found.",
-                    "Verification Complete.", "...", "Unexpected Result Detected.",
-                    "Database Scan Repeated.", "10 Entries Found.", "Unexpected Result Detected."
-                ];
-                await runTextSequence(lines, 1000);
+                overlay.style.display = 'flex';
+                overlay.style.background = '#000';
 
-                box.innerHTML = `<br><h3>You Found it</h3><br><h2>12 Flames</h2><br><p>I thought you guys forgot about it</p>
-                <br><button class="enter-btn" id="next-flame-btn" style="padding:5px 15px; font-size:0.9rem;">READ RESTRICTED LORE</button>`;
+                box.innerHTML = `<div class="lore-scroll-box">
+                    <h2>THE 12 FLAMES PROTOCOL</h2>
+                    <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
+                    <p>Humanity remembers Ten Flames. Not because only Ten Flames exist. But because everything beyond the Tenth Flame is rejected by human cognition. Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance. This anomaly became known as: THE MEMORY COLLAPSE PHENOMENON.</p><br>
+                    <strong>THE TEN FLAMES OF BLDS</strong><br>
+                    <p>I. Vision: The ability to see direction even when others are lost.<br>
+                    II. Discipline: To continue growing even when nobody is watching.<br>
+                    III. Loyalty: To stand together through victory and defeat.<br>
+                    IV. Ambition: The desire to surpass limits and continue evolving.<br>
+                    V. Resilience: The strength to rise again after every fall.<br>
+                    VI. Hope: The light that remains during difficult times.<br>
+                    VII. Awareness: The ability to stay conscious and understand reality.<br>
+                    VIII. Patience: Growth takes time and endurance.<br>
+                    IX. Courage: The will to move forward despite fear.<br>
+                    X. Unity: The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.</p>
+                    <p>Five flames grant strength. Five flames preserve it. Together, they protect the Core.</p><br>
+                    <strong>FLAME 11 — SACRED FLAME</strong><br>
+                    <p>The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one. When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame. Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.</p>
+                    <p>Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles: The Flame of Unity, The Flame Beyond Division, The Crown of the Ten Flames, The Flame That Contains All Flames. Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.</p><br>
+                    <strong>FLAME 12 — HIDDEN FLAME</strong><br>
+                    <p style="color:#ff3333;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
+                    <p>Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records. The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.</p>
+                    <p>Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written. Only one statement survived every reconstruction attempt: "It does not participate in existence. It observes whether existence should continue." No archive continues beyond this point. Only silence.</p><br>
+                    <small>END OF RESTRICTED ARCHIVE | Total Recorded Flames: 10 | Total Observed Flames: 12 | Discrepancy: UNKNOWN</small>
+                    <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-flames').pause(); document.getElementById('bgm').play();">EXIT SYSTEM</button>
+                </div>`;
                 box.style.opacity = '1';
-
-                document.getElementById('next-flame-btn').onclick = () => {
-                    box.innerHTML = `<div style="text-align:left; max-height:70vh; overflow-y:auto; font-size:0.85rem; line-height:1.6; font-family:monospace; z-index:20; position:relative;">
-                        <h2>THE 12 FLAMES PROTOCOL</h2>
-                        <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4><br>
-                        Humanity remembers Ten Flames. Not because only Ten Flames exist. But because everything beyond the Tenth Flame is rejected by human cognition. Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance. This anomaly became known as: THE MEMORY COLLAPSE PHENOMENON.<br><br>
-                        <strong>THE TEN FLAMES OF BLDS</strong><br>
-                        I. Vision: The ability to see direction even when others are lost.<br>
-                        II. Discipline: To continue growing even when nobody is watching.<br>
-                        III. Loyalty: To stand together through victory and defeat.<br>
-                        IV. Ambition: The desire to surpass limits and continue evolving.<br>
-                        V. Resilience: The strength to rise again after every fall.<br>
-                        VI. Hope: The light that remains during difficult times.<br>
-                        VII. Awareness: The ability to stay conscious and understand reality.<br>
-                        VIII. Patience: Growth takes time and endurance.<br>
-                        IX. Courage: The will to move forward despite fear.<br>
-                        X. Unity: The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.<br><br>
-                        Five flames grant strength. Five flames preserve it. Together, they protect the Core.<br><br>
-                        <strong>FLAME 11 — SACRED FLAME</strong><br>
-                        The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one. When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame. Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.<br><br>
-                        Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles: The Flame of Unity, The Flame Beyond Division, The Crown of the Ten Flames, The Flame That Contains All Flames. Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.<br><br>
-                        <strong>FLAME 12 — HIDDEN FLAME</strong><br>
-                        <span style="color:#ff3333;">WARNING: ARCHIVE INSTABILITY DETECTED</span><br>
-                        Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records. The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.<br><br>
-                        Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written. Only one statement survived every reconstruction attempt: "It does not participate in existence. It observes whether existence should continue." No archive continues beyond this point. Only silence.<br><br>
-                        END OF RESTRICTED ARCHIVE<br>Total Recorded Flames: 10<br>Total Observed Flames: 12<br>Reason for discrepancy: UNKNOWN
-                        <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-flames').pause(); document.getElementById('bgm').play();">EXIT SYSTEM</button>
-                    </div>`;
-                };
             } else {
                 alert("Archive Key Invalid.");
             }
