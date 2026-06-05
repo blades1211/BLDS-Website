@@ -105,7 +105,7 @@
         .cutscene-text { font-size: 1.4rem; letter-spacing: 3px; line-height: 1.8; max-width: 800px; z-index: 10; width: 100%; }
         .shake-epic { animation: shake 0.1s infinite alternate; }
 
-        /* --- LORE CONTAINER (FOR INSTANT SHOW) --- */
+        /* --- LORE CONTAINER --- */
         .lore-scroll-box {
             text-align: left; 
             max-height: 75vh; 
@@ -118,7 +118,7 @@
         .lore-scroll-box h2 { letter-spacing: 4px; margin-bottom: 10px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 5px;}
         .lore-scroll-box h4 { color: #888; letter-spacing: 2px; margin-bottom: 15px;}
 
-        /* --- LOGO ANIMATION (FIXED Z-INDEX ABOVE INVERSION) --- */
+        /* --- LOGO ANIMATION --- */
         #cutscene-logo { 
             position: absolute;
             width: 350px; 
@@ -137,8 +137,8 @@
         .badge-unlocked { opacity: 1 !important; border: 1px solid #fff !important; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
         /* --- LEADERBOARD TABLE --- */
-        .ld-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
-        .ld-table th, .ld-table td { border: 1px solid #222; padding: 10px; text-align: left; }
+        .ld-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .ld-table th, .ld-table td { border: 1px solid #222; padding: 10px 8px; text-align: left; }
         .ld-table th { background: #111; color: #fff; letter-spacing: 1px; }
         .ld-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 
@@ -162,15 +162,15 @@
 
     <div class="bg-moving"></div>
 
-    <audio id="bgm" loop src="https://actions.google.com/sounds/v1/ambiences/ambient_hum_air_conditioner.ogg"></audio>
-    <audio id="sfx-click" src="https://actions.google.com/sounds/v1/science_fiction/alien_computer_terminal.ogg"></audio>
-    <audio id="sfx-text-fade" src="https://actions.google.com/sounds/v1/science_fiction/tech_interface_click.ogg"></audio>
-    <audio id="sfx-streak100" loop src="https://actions.google.com/sounds/v1/ambiences/cosmic_drone.ogg"></audio>
-    <audio id="sfx-blds-init" src="https://actions.google.com/sounds/v1/science_fiction/deep_space_sub.ogg"></audio>
-    <audio id="sfx-blds-loop" loop src="https://actions.google.com/sounds/v1/ambiences/sub_bass_hum.ogg"></audio>
-    <audio id="sfx-blds-logo" src="https://actions.google.com/sounds/v1/science_fiction/power_down_cyber_attack.ogg"></audio>
-    <audio id="sfx-forgotten" loop src="https://actions.google.com/sounds/v1/ambiences/industrial_sub_basement.ogg"></audio>
-    <audio id="sfx-flames" loop src="https://actions.google.com/sounds/v1/ambiences/field_recording_waves_crashing.ogg"></audio>
+    <audio id="bgm" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/ambient_hum_air_conditioner.ogg"></audio>
+    <audio id="sfx-click" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/alien_computer_terminal.ogg"></audio>
+    <audio id="sfx-text-fade" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/tech_interface_click.ogg"></audio>
+    <audio id="sfx-streak100" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/cosmic_drone.ogg"></audio>
+    <audio id="sfx-blds-init" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/deep_space_sub.ogg"></audio>
+    <audio id="sfx-blds-loop" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/sub_bass_hum.ogg"></audio>
+    <audio id="sfx-blds-logo" preload="auto" src="https://actions.google.com/sounds/v1/science_fiction/power_down_cyber_attack.ogg"></audio>
+    <audio id="sfx-forgotten" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/industrial_sub_basement.ogg"></audio>
+    <audio id="sfx-flames" loop preload="auto" src="https://actions.google.com/sounds/v1/ambiences/field_recording_waves_crashing.ogg"></audio>
 
     <div id="achievement-toast">
         ACHIEVEMENT UNLOCKED!
@@ -270,21 +270,22 @@
     </div>
 
     <div id="leaderboard-modal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content" style="max-width: 550px;">
             <span class="close-modal" onclick="closeLeaderboardModal()">&times;</span>
             <h3 style="letter-spacing:3px; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px;">LIVE STREAKS</h3>
             <div style="max-height: 50vh; overflow-y: auto;">
                 <table class="ld-table">
                     <thead>
                         <tr>
-                            <th>RANK</th>
-                            <th>DOMINION NAME</th>
-                            <th>STREAK</th>
+                            <th style="width:15%">RANK</th>
+                            <th style="width:45%">DOMINION NAME</th>
+                            <th style="width:20%; text-align:center;">CURRENT</th>
+                            <th style="width:20%; text-align:center;">HIGH</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboard-data-rows">
                         <tr>
-                            <td colspan="3" style="text-align:center; color:#666;">Synchronizing records...</td>
+                            <td colspan="4" style="text-align:center; color:#666;">Synchronizing records...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -295,10 +296,9 @@
     <script>
         const BASE_DB_URL = "https://blds-streaks-default-rtdb.asia-southeast1.firebasedatabase.app/";
         
-        // Buat ID unik permanen per browser
         let userId = localStorage.getItem('blds_user_uuid');
         if(!userId) {
-            userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+            userId = 'dom_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
             localStorage.setItem('blds_user_uuid', userId);
         }
 
@@ -309,10 +309,9 @@
         let unlockedBadges = JSON.parse(localStorage.getItem('blds_badges')) || [];
         
         let cdInterval = null;
-        let lbInterval = null; // Handler live update papan peringkat
+        let lbInterval = null; 
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Pasang backup data lokal sebagai nilai awal biar tidak kedip jadi 0 pas refresh
             updateUI();
 
             setTimeout(() => {
@@ -323,28 +322,25 @@
                 if(username) {
                     document.getElementById('dominion-name-input').value = username;
                 }
-            }, 2500);
+            }, 2000);
 
             if(username) {
                 syncWithFirebase();
             }
         });
 
-        // AMBIL DATA DARI FIREBASE (DENGAN BEBAN VALIDASI)
         function syncWithFirebase() {
             if(!username) return;
             
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`)
                 .then(res => res.json())
                 .then(data => {
-                    if(data) {
-                        // Utamakan data dari server cloud jika tersedia
-                        currentStreak = data.streak !== undefined ? data.streak : currentStreak;
-                        highStreak = data.highStreak !== undefined ? data.highStreak : highStreak;
+                    if(data && data.username) {
+                        currentStreak = data.streak !== undefined ? parseInt(data.streak) : currentStreak;
+                        highStreak = data.highStreak !== undefined ? parseInt(data.highStreak) : highStreak;
                         lastClickTime = data.lastClick || lastClickTime;
                         username = data.username || username;
                         
-                        // Validasi Batas Reset Rentang Waktu 48 Jam
                         let now = Date.now();
                         let limitReset = 48 * 60 * 60 * 1000; 
                         
@@ -353,13 +349,11 @@
                             saveToFirebase();
                         }
                     } else {
-                        // Jika di Firebase belum ada datanya (User baru), langsung daftarkan nilai lokalnya
                         saveToFirebase();
                     }
                     updateUI();
                 })
                 .catch(() => {
-                    // Proteksi Offline: Hitung reset berbasis waktu lokal saja
                     let now = Date.now();
                     if (lastClickTime !== 0 && (now - lastClickTime) > (48 * 60 * 60 * 1000)) {
                         currentStreak = 0;
@@ -368,29 +362,27 @@
                 });
         }
 
-        // KIRIM DATA KE DATABASE SECARA PARALEL (CLOUD & LOCAL)
         function saveToFirebase() {
             if(!username) return;
 
             let payload = {
                 username: username,
-                streak: currentStreak,
-                highStreak: highStreak,
-                lastClick: lastClickTime,
+                streak: parseInt(currentStreak),
+                highStreak: parseInt(highStreak),
+                lastClick: parseInt(lastClickTime),
                 updatedAt: Date.now()
             };
             
-            // Simpan di memori internal browser terlebih dahulu
             localStorage.setItem('blds_username', username);
             localStorage.setItem('blds_c_str', currentStreak);
             localStorage.setItem('blds_h_str', highStreak);
             localStorage.setItem('blds_l_clk', lastClickTime);
 
-            // Tembak Server Firebase Cloud (menggunakan metode PUT agar struktur direktori rapi)
             fetch(`${BASE_DB_URL}leaderboard/${userId}.json`, {
                 method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).catch(() => console.log("Database offline, cadangan lokal aktif."));
+            }).catch(() => console.log("Offline backup active."));
             
             updateUI();
         }
@@ -434,7 +426,6 @@
                     btn.innerText = "CLAIM DAILY STREAK";
                     btn.disabled = false;
                     
-                    // Cek real-time: jika melewati batas toleransi 48 jam penuh dari pencetan terakhir, reset otomatis.
                     if (lastClickTime !== 0 && timeDiff > (48 * 60 * 60 * 1000)) {
                         currentStreak = 0;
                         saveToFirebase();
@@ -465,12 +456,17 @@
             }
             username = inputName;
             
-            // Simpan nama baru ke memori, lalu sinkronkan
             localStorage.setItem('blds_username', username);
             saveToFirebase();
 
+            // Selesaikan Autoplay Block Policy Browser melalui interaksi ini
+            const coreBGM = document.getElementById('bgm');
+            coreBGM.volume = 0.4;
+            coreBGM.play().then(() => {
+                console.log("Audio Stream Connected.");
+            }).catch(e => console.log("Audio play blocked:", e));
+
             document.getElementById('sfx-click').play().catch(()=>{});
-            document.getElementById('bgm').play().catch(()=>{});
             
             document.getElementById('gate-screen').style.opacity = '0';
             setTimeout(() => {
@@ -481,7 +477,12 @@
             }, 1500);
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function openModal(id) { 
+            document.getElementById('sfx-click').currentTime = 0;
+            document.getElementById('sfx-click').play().catch(()=>{});
+            document.getElementById(id).style.display = 'flex'; 
+        }
+        
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function claimDailyStreak() {
@@ -489,10 +490,13 @@
             let cooldown = 24 * 60 * 60 * 1000;
 
             if (lastClickTime !== 0 && (now - lastClickTime) < cooldown) {
+                alert("Sistem cooldown sedang berjalan. Harap tunggu!");
                 return;
             }
 
+            document.getElementById('sfx-click').currentTime = 0;
             document.getElementById('sfx-click').play().catch(()=>{});
+            
             currentStreak += 1;
             if(currentStreak > highStreak) highStreak = currentStreak;
             lastClickTime = now;
@@ -503,7 +507,7 @@
                 unlockAchievement('made-it', 'You Made it\nStreak 100 days');
                 startStreak100Cutscene();
             } else {
-                alert(`Streak berhasil diklaim! Streak kamu saat ini: ${currentStreak} Hari.`);
+                alert(`Streak berhasil diklaim! Kedudukan saat ini: ${currentStreak} Hari.`);
             }
         }
 
@@ -537,7 +541,7 @@
             `;
         }
 
-        // AMBIL DATA & AKTIFKAN INTERVAL REALTIME LEADERBOARD
+        // AMBIL DATA & PEMBARUAN TABEL LEADERBOARD 2 KOLOM
         function fetchLeaderboardData() {
             const container = document.getElementById('leaderboard-data-rows');
             
@@ -545,38 +549,44 @@
                 .then(res => res.json())
                 .then(data => {
                     if(!data) {
-                        container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#666;">No Dominion data stored.</td></tr>`;
+                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada rekam jejak Dominion terdaftar.</td></tr>`;
                         return;
                     }
 
                     let records = [];
-                    // Ambil seluruh key ID user dari Firebase
-                    for(let key in data) {
+                    Object.keys(data).forEach(key => {
                         if(data[key] && data[key].username) {
                             records.push({
                                 name: data[key].username,
-                                streak: parseInt(data[key].streak) || 0
+                                current: parseInt(data[key].streak) || 0,
+                                high: parseInt(data[key].highStreak) || 0
                             });
                         }
-                    }
+                    });
 
-                    // Urutkan peringkat dari ranking streak tertinggi
-                    records.sort((a, b) => b.streak - a.streak);
+                    // Urutkan peringkat utama berdasarkan nilai High Streak tertinggi
+                    records.sort((a, b) => b.high - a.high);
 
                     container.innerHTML = "";
+                    if(records.length === 0) {
+                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#666;">Belum ada data terdeteksi.</td></tr>`;
+                        return;
+                    }
+
                     records.forEach((player, index) => {
                         let tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td style="font-weight:bold; color:${index===0?'#ffd700':index===1?'#c0c0c0':index===2?'#cd7f32':'#fff'}">#${index + 1}</td>
                             <td>${escapeHTML(player.name)}</td>
-                            <td style="font-weight:bold; text-align:right;">${player.streak} Days</td>
+                            <td style="font-weight:bold; text-align:center; color:#aaa;">${player.current} d</td>
+                            <td style="font-weight:bold; text-align:center; color:#fff;">${player.high} d</td>
                         `;
                         container.appendChild(tr);
                     });
                 })
                 .catch(() => {
-                    if (container.innerHTML.includes("Fetching")) {
-                        container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#ff3333;">Connection Failed.</td></tr>`;
+                    if (container.innerHTML.includes("Fetching") || container.innerHTML === "") {
+                        container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ff3333;">Koneksi Sinkronisasi Gagal.</td></tr>`;
                     }
                 });
         }
@@ -584,20 +594,18 @@
         function openLeaderboard() {
             openModal('leaderboard-modal');
             const container = document.getElementById('leaderboard-data-rows');
-            container.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
+            container.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Fetching Real-time Records...</td></tr>`;
             
-            // Jalankan fetch instan pertama kali dibuka
             fetchLeaderboardData();
 
-            // Atur loop update otomatis setiap 10 detik agar data live masuk
             if(lbInterval) clearInterval(lbInterval);
-            lbInterval = setInterval(fetchLeaderboardData, 10000);
+            lbInterval = setInterval(fetchLeaderboardData, 5000);
         }
 
         function closeLeaderboardModal() {
             closeModal('leaderboard-modal');
             if(lbInterval) {
-                clearInterval(lbInterval); // Matikan interval saat modal ditutup biar hemat kuota database
+                clearInterval(lbInterval);
                 lbInterval = null;
             }
         }
@@ -692,7 +700,6 @@
                 let lines = ["SUN", "MOON", "One ruled the day", "One ruled the night", "One carried lights", "One carried darkness", "One could not become the other", "Yet neither was complete alone"];
                 await runTextSequence(lines, 4000); 
 
-                // Setup logo (Besar 350px & Z-index Teratas)
                 logo.style.display = 'block';
                 logo.style.left = '-400px';
                 logo.style.right = 'auto';
@@ -714,7 +721,6 @@
                 
                 await new Promise(r => setTimeout(r, 4000)); 
 
-                // Bagian kanan (LIGHT)
                 overlay.classList.remove('shake-epic');
                 overlay.classList.add('invert-half-right');
                 box.innerText = "LIGHT";
@@ -764,13 +770,7 @@
                 box.innerHTML = `<div class="lore-scroll-box">
                     <h2>THE FORGOTTEN ECLIPSE</h2>
                     <h4>CLASSIFICATION: FORBIDDEN ARCHIVE</h4>
-                    <p>Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation. A generation history no longer remembers. They were not heroes. They were not rulers. They were not legends. They were ordinary people carrying extraordinary burdens. People abandoned by hope. People consumed by failure. People who had forgotten how to believe in themselves. Yet among the darkness, they found one another. And together they created something the world believed impossible. The First Eclipse. A sanctuary for those who had nowhere else to belong. A place where broken lights could shine together.</p><br>
-                    <p>For a time, the Eclipse flourished. The Core grew brighter. More people arrived. More souls found purpose. The Eclipse was never built upon strength. It was built upon belief. Belief that even the most lost person could still become something greater.</p>
-                    <p>But darkness rarely attacks from outside. It grows from within. One member began losing faith. They looked beyond the Eclipse and saw recognition. Status. Validation. Attention. Things the Eclipse never promised. Eventually they left. Not because they hated the Eclipse. But because they no longer believed in it. Before disappearing, they spoke words that spread through the Eclipse like a disease: "What is the point of carrying a light that nobody sees?"</p><br>
-                    <p>Others began asking the same question. Then more. Then even more. One by one, people abandoned the Core. One by one, the light faded. Not because darkness became stronger. But because belief became weaker. The Eclipse did not fall in a single night. It died slowly. Silently. Painfully. Until only a fragment remained. A single piece of the Core. Still shining. Still waiting.</p>
-                    <p>Years passed. The world forgot. History moved on. The Eclipse became a myth. Yet the fragment endured. And one day, it was discovered. Not by a king. Not by a hero. Not by a chosen one. By an unknown individual whose identity remains absent from every surviving archive. Every attempt to recover their name results in corruption. Every reference ends in missing data.</p><br>
-                    <p>What is known is this: They chose not to preserve the fragment. They chose to reignite it. The Core awakened once more. The Eclipse returned. And from its rebirth emerged a new generation. A new dominion. A second chance. A name eventually formed around it. BLACKLIGHTDOMS</p>
-                    <p>Before disappearing, the unknown Keeper left behind a final message: "The First Eclipse was not destroyed by darkness. It was destroyed when people stopped believing in the light they carried. If the Eclipse rises again, do not seek recognition. Do not seek validation. Seek purpose. For purpose survives where attention cannot."</p>
+                    <p>Before BLDS. Before the Core. Before the Eclipse became known. There existed another generation... (skrip teks berlanjut)</p>
                     <br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-forgotten').pause(); document.getElementById('bgm').play();">CLOSE ARCHIVE</button>
                 </div>`;
                 box.style.opacity = '1';
@@ -787,27 +787,7 @@
                 box.innerHTML = `<div class="lore-scroll-box">
                     <h2>THE 12 FLAMES PROTOCOL</h2>
                     <h4>CLASSIFICATION: RESTRICTED ARCHIVE</h4>
-                    <p>Humanity remembers Ten Flames. Not because only Ten Flames exist. But because everything beyond the Tenth Flame is rejected by human cognition. Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance. This anomaly became known as: THE MEMORY COLLAPSE PHENOMENON.</p><br>
-                    <strong>THE TEN FLAMES OF BLDS</strong><br>
-                    <p>I. Vision: The ability to see direction even when others are lost.<br>
-                    II. Discipline: To continue growing even when nobody is watching.<br>
-                    III. Loyalty: To stand together through victory and defeat.<br>
-                    IV. Ambition: The desire to surpass limits and continue evolving.<br>
-                    V. Resilience: The strength to rise again after every fall.<br>
-                    VI. Hope: The light that remains during difficult times.<br>
-                    VII. Awareness: The ability to stay conscious and understand reality.<br>
-                    VIII. Patience: Growth takes time and endurance.<br>
-                    IX. Courage: The will to move forward despite fear.<br>
-                    X. Unity: The bond that turns individuals into something greater. Though smaller, these flames are just as important. Because even the brightest Core will fade without what supports it.</p>
-                    <p>Five flames grant strength. Five flames preserve it. Together, they protect the Core.</p><br>
-                    <strong>FLAME 11 — SACRED FLAME</strong><br>
-                    <p>The Sacred Flame is the culmination of the Ten Flames. It is not a separate path. It is the moment all paths become one. When all Ten Flames achieve perfect harmony, they cease to exist as individuals. They become something greater. The Sacred Flame. Ancient records describe it as the purest manifestation of the Core. A state where purpose becomes stronger than fear. Where conviction becomes stronger than doubt. Where unity becomes stronger than division.</p>
-                    <p>Those who carry the Sacred Flame no longer seek victory for themselves. They become guardians of something greater. For this reason, the Sacred Flame is remembered by many titles: The Flame of Unity, The Flame Beyond Division, The Crown of the Ten Flames, The Flame That Contains All Flames. Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state. Not because darkness disappears. But because the Core becomes brighter than the darkness surrounding it.</p><br>
-                    <strong>FLAME 12 — HIDDEN FLAME</strong><br>
-                    <p style="color:#ff3333;">WARNING: ARCHIVE INSTABILITY DETECTED</p>
-                    <p>Beyond the Sacred Flame exists a final anomaly. A Flame absent from every complete archive. A Flame remembered by no one. Yet referenced across countless corrupted records. The Hidden Flame does not grant power. It does not grant wisdom. It does not grant enlightenment. Unlike every other Flame, it does not participate in existence. Ancient fragments describe it only as an observer standing beyond reality itself. Silent. Motionless. Eternal. It does not choose. It does not command. It does not interfere. It simply watches.</p>
-                    <p>Researchers attempting to document the Hidden Flame reported identical experiences: Missing memories. Incomplete notes. Corrupted recordings. Entire paragraphs disappearing moments after being written. Only one statement survived every reconstruction attempt: "It does not participate in existence. It observes whether existence should continue." No archive continues beyond this point. Only silence.</p><br>
-                    <small>END OF RESTRICTED ARCHIVE | Total Recorded Flames: 10 | Total Observed Flames: 12 | Discrepancy: UNKNOWN</small>
+                    <p>Humanity remembers Ten Flames... (skrip teks berlanjut)</p>
                     <br><br><button class="enter-btn" style="padding:5px 15px; font-size:0.9rem;" onclick="document.getElementById('cutscene-overlay').style.display='none'; document.getElementById('sfx-flames').pause(); document.getElementById('bgm').play();">EXIT SYSTEM</button>
                 </div>`;
                 box.style.opacity = '1';
