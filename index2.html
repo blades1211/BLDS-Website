@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse - Archive Transmission</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        /* Container Utama */
+        #cutscene-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Efek Transisi Teks 4 Detik (Fade In / Fade Out) */
+        .text-line {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            letter-spacing: 2px;
+            opacity: 0;
+            max-width: 800px;
+            position: absolute;
+            transition: opacity 4s ease-in-out;
+            white-space: pre-line;
+        }
+
+        .text-line.show {
+            opacity: 1;
+        }
+
+        /* Pengaturan File Logo */
+        #logo-container {
+            position: absolute;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        #main-logo {
+            width: 250px;
+            height: auto;
+            opacity: 0;
+            transition: opacity 4s ease-in-out, transform 0.5s ease;
+        }
+
+        /* Animasi Logo Naik Turun Smooth (Streak 100) */
+        @keyframes floatingLogo {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .float-smooth {
+            animation: floatingLogo 4s ease-in-out infinite;
+        }
+
+        /* Animasi Logo Kebanting & Miring Kiri-Kanan (12 Flames) */
+        @keyframes slamMiring {
+            0% { transform: scale(3) rotate(0deg); filter: brightness(0); }
+            20% { transform: scale(1) rotate(0deg); filter: brightness(2); }
+            40% { transform: scale(1) rotate(-10deg); }
+            70% { transform: scale(1) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .slam-glowing {
+            animation: slamMiring 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+
+        /* Elemen Khusus Belah Dua untuk Kode BLDS */
+        .blds-split-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .split-side {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .split-left {
+            left: 0;
+            justify-content: flex-end;
+        }
+
+        .split-right {
+            right: 0;
+            justify-content: flex-start;
+        }
+
+        .half-logo {
+            width: 250px;
+            height: auto;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinning {
+            animation: spinSlow 15s linear infinite;
+        }
+
+        /* Efek Guncangan Layar Brutal / Gempa */
+        @keyframes earthquake {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-8px, 5px); }
+            20% { transform: translate(7px, -6px); }
+            30% { transform: translate(-6px, -3px); }
+            40% { transform: translate(5px, 6px); }
+            50% { transform: translate(-4px, 4px); }
+            60% { transform: translate(6px, -4px); }
+            70% { transform: translate(-7px, 3px); }
+            80% { transform: translate(4px, -5px); }
+            90% { transform: translate(-3px, 6px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .shake-brutal {
+            animation: earthquake 0.15s linear infinite;
+        }
+
+        /* Transisi Flash Putih */
+        #flash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            opacity: 0;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        /* Gaya Teks STREAK 100 Puncak */
+        .streak-puncak {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px #fff, 0 0 40px #fff;
+            display: none;
+            z-index: 100;
+        }
+
+        /* EFEK PERMANEN BLDS: Inversi Setengah Layar Kanan secara Vertikal */
+        .blds-permanent-invert::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            backdrop-filter: invert(1);
+            -webkit-backdrop-filter: invert(1);
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" loop preload="auto" src="freesound_community-space-ambience-56265.mp3"></audio>
+    <audio id="sfx-click" preload="auto" src="sfx-click.mp3"></audio> 
+    <audio id="sfx-text-fade" preload="auto" src="Dragon-studio-blizzard-transition-463210.mp3"></audio>
+    <audio id="sfx-streak100" loop preload="auto" src="idoberg-relaxing-cinematic-pads-303218.mp3"></audio>
+    <audio id="sfx-blds-init" preload="auto" src="soundshelfstudio-cinematic-deep-sub-whoosh-541062.mp3"></audio>
+    <audio id="sfx-blds-loop" loop preload="auto" src="black_kumizhi-chorus-ambient-pad-524736.mp3"></audio>
+    <audio id="sfx-blds-logo" preload="auto" src="dragon-studio-whoosh-cinematic-sound-effect-376889.mp3"></audio>
+    <audio id="sfx-forgotten" loop preload="auto" src="liecio-cartoon-sci-fi-mystery-132275.mp3"></audio>
+    <audio id="sfx-flames" loop preload="auto" src="fronbondi_skegs-pad-ethereal-voices-from-above-background-sound-effect-320432.mp3"></audio>
+
+    <div id="flash-screen"></div>
+
+    <div id="streak-text-container" class="">
+        <div id="text-streak-100" class="streak-puncak">STREAK 100</div>
+    </div>
+
+    <div id="cutscene-container">
+        
+        <div id="logo-container">
+            <img id="main-logo" src="logo.png" alt="BLDS Logo">
+        </div>
+
+        <div id="blds-split-box" class="blds-split-container">
+            <div class="split-side split-left">
+                <img id="logo-left" class="half-logo spinning" src="logo.png" style="clip-path: inset(0 50% 0 0); transform: translateX(50%);">
+            </div>
+            <div class="split-side split-right" id="right-invert-zone">
+                <img id="logo-right" class="half-logo spinning" src="logo.png" style="clip-path: inset(0 0 0 50%); transform: translateX(-50%);">
+            </div>
+        </div>
+
+        <div id="text-box" class="text-line"></div>
+
+    </div>
+
+    <script>
+        // Database Alur Cutscene Berdasarkan Pilihan Code / Trigger
+        const archiveData = {
+            "streak100": {
+                audio: "sfx-streak100",
+                timeline: [
+                    { type: "text", content: "For a hundred days..." },
+                    { type: "text", content: "the Eclipse watched." },
+                    { type: "text", content: "For a hundred days..." },
+                    { type: "text", content: "you continued forward." },
+                    { type: "text", content: "Many flames burned brightly..." },
+                    { type: "text", content: "only to disappear." },
+                    { type: "text", content: "Many lights promised eternity..." },
+                    { type: "text", content: "only to fade." },
+                    { type: "text", content: "Yet yours remained.", action: () => showLogoProgress(0.25, 'float') },
+                    { type: "text", content: "Not because it was the brightest." },
+                    { type: "text", content: "Not because it was the strongest." },
+                    { type: "text", content: "But because it refused to die.", action: () => showLogoProgress(0.50, 'float') },
+                    { type: "text", content: "A hundred days is not the end." },
+                    { type: "text", content: "It is proof." },
+                    { type: "text", content: "Proof that your light survived." },
+                    { type: "text", content: "Proof that your flame endured.", action: () => showLogoProgress(1.0, 'float-scale') },
+                    { type: "text", content: "And now...\n\nthe Core remembers your name." },
+                    { type: "special", action: triggerStreak100Ending }
+                ]
+            },
+            "Forgotten": {
+                audio: "sfx-forgotten",
+                timeline: [
+                    { type: "text", content: "Forgotten\n\nNO ACTIVE RECORD FOUND" },
+                    { type: "text", content: "Attempting reconstruction..." },
+                    { type: "text", content: "Searching fragments...\nSearching fragments...\nSearching fragments..." },
+                    { type: "text", content: "1 Fragment Detected" },
+                    { type: "text", content: "Core Signature Match:\n99.87%" },
+                    { type: "text", content: "Historical Reconstruction Available" },
+                    { type: "text", content: "Opening Archive..." },
+                    // Masuk Lore
+                    { type: "text", content: "THE FORGOTTEN ECLIPSE\nCLASSIFICATION: FORBIDDEN ARCHIVE" },
+                    { type: "text", content: "Before BLDS.\nBefore the Core.\nBefore the Eclipse became known." },
+                    { type: "text", content: "There existed another generation.\nA generation history no longer remembers." },
+                    { type: "text", content: "They were not heroes.\nThey were not rulers.\nThey were not legends." },
+                    { type: "text", content: "They were ordinary people carrying extraordinary burdens." },
+                    { type: "text", content: "People abandoned by hope.\nPeople consumed by failure.\nPeople who had forgotten how to believe in themselves." },
+                    { type: "text", content: "Yet among the darkness, they found one another." },
+                    { type: "text", content: "And together they created something the world believed impossible." },
+                    { type: "text", content: "The First Eclipse." },
+                    { type: "text", content: "A sanctuary for those who had nowhere else to belong.\nA place where broken lights could shine together." },
+                    { type: "text", content: "For a time, the Eclipse flourished." },
+                    { type: "text", content: "The Core grew brighter.\nMore people arrived.\nMore souls found purpose.\nMore hearts found direction." },
+                    { type: "text", content: "The Eclipse was never built upon strength.\nIt was built upon belief." },
+                    { type: "text", content: "Belief that even the most lost person could still become something greater." },
+                    { type: "text", content: "But darkness rarely attacks from outside.\nIt grows from within." },
+                    { type: "text", content: "One member began losing faith." },
+                    { type: "text", content: "They looked beyond the Eclipse and saw recognition.\nStatus.\nValidation.\nAttention." },
+                    { type: "text", content: "Things the Eclipse never promised." },
+                    { type: "text", content: "Eventually they left." },
+                    { type: "text", content: "Not because they hated the Eclipse.\nBut because they no longer believed in it." },
+                    { type: "text", content: "Before disappearing, they spoke words that spread through the Eclipse like a disease:" },
+                    { type: "text", content: "\"What is the point of carrying a light that nobody sees?\"" },
+                    { type: "text", content: "Others began asking the same question.\nThen more.\nThen even more." },
+                    { type: "text", content: "One by one, people abandoned the Core.\nOne by one, the light faded." },
+                    { type: "text", content: "Not because darkness became stronger.\nBut because belief became weaker." },
+                    { type: "text", content: "The Eclipse did not fall in a single night.\nIt died slowly.\nSilently.\nPainfully." },
+                    { type: "text", content: "Until only a fragment remained." },
+                    { type: "text", content: "A single piece of the Core.\nStill shining.\nStill waiting." },
+                    { type: "text", content: "Years passed.\nThe world forgot.\nHistory moved on." },
+                    { type: "text", content: "The Eclipse became a myth." },
+                    { type: "text", content: "Yet the fragment endured.\nAnd one day, it was discovered." },
+                    { type: "text", content: "Not by a king.\nNot by a hero.\nNot by a chosen one." },
+                    { type: "text", content: "By an unknown individual whose identity remains absent from every surviving archive." },
+                    { type: "text", content: "Every attempt to recover their name results in corruption.\nEvery reference ends in missing data." },
+                    { type: "text", content: "What is known is this:\nThey chose not to preserve the fragment.\nThey chose to reignite it." },
+                    { type: "text", content: "The Core awakened once more.\nThe Eclipse returned." },
+                    { type: "text", content: "And from its rebirth emerged a new generation.\nA new dominion.\nA second chance." },
+                    { type: "text", content: "A name eventually formed around it.\n\nBLACKLIGHTDOMS" },
+                    { type: "text", content: "Before disappearing, the unknown Keeper left behind a final message:" },
+                    { type: "text", content: "\"The First Eclipse was not destroyed by darkness.\nIt was destroyed when people stopped believing in the light they carried." },
+                    { type: "text", content: "If the Eclipse rises again,\ndo not seek recognition.\nDo not seek validation." },
+                    { type: "text", content: "Seek purpose.\nFor purpose survives where attention cannot.\"" },
+                    { type: "special", action: endCutscene }
+                ]
+            },
+            "12 flames": {
+                audio: "sfx-flames",
+                timeline: [
+                    { type: "text", content: "ARCHIVE STATUS: STABLE" },
+                    { type: "text", content: "Loading Flame Database..." },
+                    { type: "text", content: "10 Entries Found.\n\nVerification Complete." },
+                    { type: "text", content: "..." },
+                    { type: "text", content: "Unexpected Result Detected.\n\nDatabase Scan Repeated." },
+                    { type: "text", content: "10 Entries Found.\n\nUnexpected Result Detected." },
+                    { type: "special", action: trigger12FlamesSlamLogo },
+                    { type: "text", content: "You Found it\n\n12 Flames" },
+                    { type: "text", content: "I thought you guys forgot about it" },
+                    { type: "special", action: () => hideLogo() },
+                    // Masuk Lore
+                    { type: "text", content: "THE 12 FLAMES PROTOCOL\nCLASSIFICATION: RESTRICTED ARCHIVE" },
+                    { type: "text", content: "Humanity remembers Ten Flames.\nNot because only Ten Flames exist." },
+                    { type: "text", content: "But because everything beyond the Tenth Flame is rejected by human cognition." },
+                    { type: "text", content: "Throughout history, every archive attempting to document additional Flames suffered corruption, omission, or complete disappearance." },
+                    { type: "text", content: "This anomaly became known as:\n\nTHE MEMORY COLLAPSE PHENOMENON" },
+                    { type: "text", content: "Researchers initially believed the phenomenon to be a recording failure.\n\nThey were wrong." },
+                    { type: "text", content: "The information was not being erased.\nHumanity was rejecting it." },
+                    { type: "text", content: "The mind instinctively refused to retain what existed beyond the Tenth Flame." },
+                    { type: "text", content: "Yet scattered fragments continued appearing across unrelated archives.\nFragments referencing two impossible entries." },
+                    { type: "text", content: "Entry Eleven.\nEntry Twelve." },
+                    { type: "text", content: "FLAME 11 — SACRED FLAME" },
+                    { type: "text", content: "The Sacred Flame is the culmination of the Ten Flames.\nIt is not a separate path.\nIt is the moment all paths become one." },
+                    { type: "text", content: "Vision. Discipline. Loyalty. Ambition. Resilience. Hope. Awareness. Patience. Courage. Unity." },
+                    { type: "text", content: "Ancient records suggest these Flames were never meant to exist separately.\nThey are fragments of a greater whole." },
+                    { type: "text", content: "Each Flame strengthens another.\nEach Flame protects another.\nEach Flame preserves the Core." },
+                    { type: "text", content: "When all Ten Flames achieve perfect harmony, they cease to exist as individuals.\nThey become something greater." },
+                    { type: "text", content: "The Sacred Flame." },
+                    { type: "text", content: "Ancient records describe it as the purest manifestation of the Core.\nA state where purpose becomes stronger than fear." },
+                    { type: "text", content: "Where conviction becomes stronger than doubt.\nWhere unity becomes stronger than division." },
+                    { type: "text", content: "Those who carry the Sacred Flame no longer seek victory for themselves.\nThey become guardians of something greater." },
+                    { type: "text", content: "For this reason, the Sacred Flame is remembered by many titles:" },
+                    { type: "text", content: "The Flame of Unity.\nThe Flame Beyond Division.\nThe Crown of the Ten Flames.\nThe Flame That Contains All Flames." },
+                    { type: "text", content: "Legends claim that when the Sacred Flame appears, the Eclipse reaches its perfect state." },
+                    { type: "text", content: "Not because darkness disappears.\nBut because the Core becomes brighter than the darkness surrounding it." },
+                    { type: "text", content: "FLAME 12 — HIDDEN FLAME\n\nWARNING: ARCHIVE INSTABILITY DETECTED" },
+                    { type: "text", content: "Beyond the Sacred Flame exists a final anomaly.\nA Flame absent from every complete archive." },
+                    { type: "text", content: "A Flame remembered by no one.\nYet referenced across countless corrupted records." },
+                    { type: "text", content: "The Hidden Flame does not grant power.\nIt does not grant wisdom.\nIt does not grant enlightenment." },
+                    { type: "text", content: "Unlike every other Flame, it does not participate in existence." },
+                    { type: "text", content: "Ancient fragments describe it only as an observer standing beyond reality itself.\n\nSilent. Motionless. Eternal." },
+                    { type: "text", content: "It does not choose.\nIt does not command.\nIt does not interfere.\n\nIt simply watches." },
+                    { type: "text", content: "Researchers attempting to document the Hidden Flame reported identical experiences:" },
+                    { type: "text", content: "Missing memories.\nIncomplete notes.\nCorrupted recordings." },
+                    { type: "text", content: "Entire paragraphs disappearing moments after being written." },
+                    { type: "text", content: "Only one statement survived every reconstruction attempt.\nA single sentence recovered from dozens of unrelated archives:" },
+                    { type: "text", content: "\"It does not participate in existence.\nIt observes whether existence should continue.\"" },
+                    { type: "text", content: "No archive continues beyond this point.\nNo explanation follows.\nNo conclusion exists.\n\nOnly silence." },
+                    { type: "text", content: "END OF RESTRICTED ARCHIVE\n\nTotal Recorded Flames: 10\nTotal Observed Flames: 12\nReason for discrepancy: UNKNOWN" },
+                    { type: "special", action: endCutscene }
+                ]
+            },
+            "BLDS": {
+                audio: null, // Logika audio dinamis manual di timeline khusus BLDS
+                timeline: [
+                    { type: "text", content: "SUN" },
+                    { type: "text", content: "MOON" },
+                    { type: "text", content: "One ruled the day" },
+                    { type: "text", content: "One ruled the night" },
+                    { type: "text", content: "One carried lights" },
+                    { type: "text", content: "One carried darkness" },
+                    { type: "text", content: "One could not become the other" },
+                    { type: "text", content: "Yet neither was complete alone" },
+                    { type: "special", action: triggerBldsBlackStep },
+                    { type: "special", action: triggerBldsLightStep },
+                    { type: "text", content: "Two opposites.\nTwo destinies.\nTwo truths.\n\nBoth necessary." },
+                    { type: "special", action: triggerBldsFinalTransition }
+                ]
+            }
+        };
+
+        // Mengambil kode dari Parameter URL (?code=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentCode = urlParams.get('code');
+
+        let currentTimeline = [];
+        let stepIndex = 0;
+        const textBox = document.getElementById('text-box');
+        const mainLogo = document.getElementById('main-logo');
+        const logoContainer = document.getElementById('logo-container');
+
+        // Mengaktifkan sistem saat user interaksi pertama kali (kebijakan Autoplay Browser)
+        window.addEventListener('click', startCutscene, { once: true });
+        window.addEventListener('keydown', startCutscene, { once: true });
+
+        // Teks petunjuk awal jika audio ketahan browser
+        textBox.innerHTML = "[ CLICK OR PRESS ANY KEY TO INITIALIZE DECRYPTION ]";
+        textBox.classList.add('show');
+
+        function startCutscene() {
+            textBox.classList.remove('show');
+            
+            if (!currentCode || !archiveData[currentCode]) {
+                textBox.innerHTML = "ERROR: INVALID ENCRYPTION CORE RECONSTRUCTION";
+                textBox.classList.add('show');
+                return;
+            }
+
+            currentTimeline = archiveData[currentCode].timeline;
+            
+            // Putar audio bawaan jika ada
+            if (archiveData[currentCode].audio) {
+                playAudio(archiveData[currentCode].audio);
+            } else if (currentCode !== "BLDS") {
+                playAudio('bgm');
+            }
+
+            setTimeout(executeNextStep, 1000);
+        }
+
+        // Pengendali Alur Otomatis
+        function executeNextStep() {
+            if (stepIndex >= currentTimeline.length) return;
+
+            const currentStep = currentTimeline[stepIndex];
+            stepIndex++;
+
+            if (currentStep.type === "text") {
+                // Mainkan SFX Transisi Teks jika bukan di bagian sun/moon
+                if (currentCode !== "BLDS") {
+                    playAudio('sfx-text-fade');
+                }
+
+                textBox.innerHTML = currentStep.content;
+                textBox.classList.add('show');
+
+                // Jika ada fungsi tambahan yang diselipkan saat teks muncul
+                if (currentStep.action) currentStep.action();
+
+                // Durasi baca statis sebelum mulai fade-out (Total Siklus 4 detik Fade-In + Tampil + 4 detik Fade-Out)
+                setTimeout(() => {
+                    textBox.classList.remove('show');
+                    // Tunggu transisi fade-out selesai baru lanjut baris baru
+                    setTimeout(executeNextStep, 4500);
+                }, 4000);
+
+            } else if (currentStep.type === "special") {
+                currentStep.action();
+            }
+        }
+
+        // ==========================================
+        //  FUNGSI AKSI KHUSUS / VISUAL ENGINE
+        // ==========================================
+
+        // Mengatur Persentase Opasitas Logo (Streak 100)
+        function showLogoProgress(progress, mode) {
+            logoContainer.style.display = "flex";
+            mainLogo.style.opacity = progress;
+            
+            if (mode === 'float') {
+                mainLogo.classList.add('float-smooth');
+            } else if (mode === 'float-scale') {
+                mainLogo.style.transform = "scale(1.3)";
+            }
+        }
+
+        function hideLogo() {
+            mainLogo.style.opacity = 0;
+            setTimeout(() => { logoContainer.style.display = "none"; }, 4000);
+        }
+
+        // Akhir Sakral Streak 100
+        function triggerStreak100Ending() {
+            const flash = document.getElementById('flash-screen');
+            const streakText = document.getElementById('text-streak-100');
+            const containerBox = document.getElementById('streak-text-container');
+
+            flash.style.transition = "opacity 0.8s ease-in";
+            flash.style.opacity = 1;
+
+            setTimeout(() => {
+                logoContainer.style.display = "none";
+                textBox.style.display = "none";
+                
+                streakText.style.display = "block";
+                containerBox.classList.add('shake-brutal');
+                
+                flash.style.transition = "opacity 4s ease-out";
+                flash.style.opacity = 0;
+
+                // Selesai cutscene, kunci di layar teks bergetar brutal
+            }, 800);
+        }
+
+        // Logo Kebanting dan Bersinar Smooth (12 Flames)
+        function trigger12FlamesSlamLogo() {
+            logoContainer.style.display = "flex";
+            mainLogo.style.opacity = 1;
+            mainLogo.classList.add('slam-glowing');
+            
+            setTimeout(executeNextStep, 3500);
+        }
+
+        // Blok Langkah Proyeksi Komponen BLACK (BLDS)
+        function triggerBldsBlackStep() {
+            playAudio('sfx-blds-init');
+            document.body.classList.add('shake-brutal');
+            
+            textBox.innerHTML = "BLACK";
+            textBox.classList.add('show');
+
+            const splitBox = document.getElementById('blds-split-box');
+            splitBox.style.display = "block";
+            
+            const leftLogo = document.getElementById('logo-left');
+            leftLogo.style.opacity = "0.5";
+
+            setTimeout(() => {
+                document.body.classList.remove('shake-brutal');
+                textBox.classList.remove('show');
+                setTimeout(executeNextStep, 3000);
+            }, 3000);
+        }
+
+        // Blok Langkah Proyeksi Komponen LIGHT (BLDS)
+        function triggerBldsLightStep() {
+            playAudio('sfx-blds-logo');
+            
+            textBox.innerHTML = "LIGHT";
+            textBox.classList.add('show');
+
+            const rightSide = document.getElementById('right-invert-zone');
+            const rightLogo = document.getElementById('logo-right');
+            
+            // Efek Inversi Vertikal Langsung Aktif di Sisi Kanan Layar
+            rightSide.style.backdropFilter = "invert(1)";
+            rightSide.style.webkitBackdropFilter = "invert(1)";
+            rightLogo.style.opacity = "0.5";
+
+            setTimeout(() => {
+                textBox.classList.remove('show');
+                setTimeout(executeNextStep, 3000);
+            }, 3000);
+        }
+
+        // Akhir Transisi Putih Parah & Lambat (BLDS)
+        function triggerBldsFinalTransition() {
+            playAudio('sfx-blds-loop');
+            const flash = document.getElementById('flash-screen');
+            
+            // Transisi Putih super lambat & smooth parah
+            flash.style.transition = "opacity 6s cubic-bezier(0.25, 1, 0.5, 1)";
+            flash.style.opacity = 1;
+
+            setTimeout(() => {
+                // Sembunyikan elemen cutscene sementara
+                document.getElementById('blds-split-box').style.display = "none";
+                textBox.style.display = "none";
+
+                // Ubah tampilan menjadi permanen setengah terinversi (BLDS Mode)
+                document.body.classList.add('blds-permanent-invert');
+
+                // Kembalikan layar dari putih secara perlahan
+                flash.style.transition = "opacity 5s ease-out";
+                flash.style.opacity = 0;
+
+                // Tampilkan menu awal lo di sini jika mau otomatis balik ke menu utama
+                //Atau biarkan stay menikmati visual estetik inversinya.
+            }, 6500);
+        }
+
+        // Penutup Standar Pembersihan Halaman
+        function endCutscene() {
+            textBox.innerHTML = "[ TRANSMISSION ARCHIVE TERMINATED ]";
+            textBox.classList.add('show');
+        }
+
+        // Global Audio Player Controller
+        function playAudio(id) {
+            const allAudios = document.querySelectorAll('audio');
+            // Matikan audio lain jika berganti musik utama agar tidak tabrakan
+            if(id.startsWith('sfx-streak100') || id.startsWith('sfx-forgotten') || id.startsWith('sfx-flames') || id.startsWith('sfx-blds-loop')) {
+                allAudios.forEach(aud => { if(!aud.id.startsWith('sfx-text-fade')) aud.pause(); });
+            }
+            const targetAudio = document.getElementById(id);
+            if (targetAudio) {
+                targetAudio.currentTime = 0;
+                targetAudio.play().catch(e => console.log("Audio play blocked by browser validation rules."));
+            }
+        }
+    </script>
+</body>
+</html>
